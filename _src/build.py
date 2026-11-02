@@ -357,7 +357,6 @@ def culture():
 </section>
 
 <section class="section dark why" aria-labelledby="why-title">
-  <div class="why-word" aria-hidden="true">ჭიდაობა<span class="eq">=</span><span class="tr">Wrestling</span></div>
   <div class="wrap">
     <div class="why-grid">
       <h2 id="why-title" class="display h-lg stagger"><span>Why the name Chidaoba</span></h2>
