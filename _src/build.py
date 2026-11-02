@@ -128,7 +128,7 @@ def footer(path=""):
   </div>
   <div class="foot-mark" aria-hidden="true"><svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet"><text x="0" y="128" textLength="1000" lengthAdjust="spacingAndGlyphs">CHIDAOBA</text></svg></div>
   <div class="wrap">
-    <div class="foot-bottom label"><span>© <span data-year>2026</span> Chidaoba Culture</span><span class="ka">ჭიდაობა · A culture that moves</span><a class="foot-top" href="#top">Back to top ↑</a></div>
+    <div class="foot-bottom label"><span>© <span data-year>2026</span> Chidaoba Culture</span><span>Tbilisi, Georgia</span><a class="foot-top" href="#top">Back to top ↑</a></div>
   </div>
 </footer>
 <a class="wa-float" href="{WA}" rel="noopener" aria-label="Message us on WhatsApp">{WA_ICON}<span>WhatsApp</span></a>
@@ -137,7 +137,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "13"
+ASSET_V = "14"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
@@ -165,7 +165,7 @@ def home():
     <p class="label muted fade-load hero-top"><span><span class="bar"></span>Chidaoba Culture, Tbilisi, Georgia</span><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
     <div>
       <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
-      <p class="lead soft fade-load">A culture shaped by movement, discipline and the spirit of Georgian wrestling, and a home for everyone who wrestles and grapples today.</p>
+      <p class="lead soft fade-load">CHIDAOBA is a sports brand from Tbilisi, inspired by Georgian wrestling. We organise training camps in Georgia and make apparel for wrestling, judo and grappling.</p>
       <div class="ctas fade-load">
         <a class="btn btn-primary" href="/camps/">Explore camps {arrow()}</a>
         <a class="btn btn-ghost" href="/shop/">Shop {arrow()}</a>
@@ -173,7 +173,6 @@ def home():
     </div>
     <div class="hero-foot label muted">
       <span>Chidaoba, UNESCO Intangible Cultural Heritage, 2018</span>
-      <span class="scroll-cue"><i></i>Scroll</span>
     </div>
   </div>
 </section>
@@ -182,10 +181,10 @@ def home():
   <div class="wrap">
     <div class="intro">
       <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 · The culture</p>
-      <h2 id="intro-title" class="display h-lg reveal">More than a wrestling style<span class="dot">.</span></h2>
+      <h2 id="intro-title" class="display h-lg reveal">Our roots<span class="dot">.</span></h2>
       <div class="text reveal">
-        <p class="scrub scrub-sm">Chidaoba is more than a traditional wrestling discipline. It is movement, discipline and heritage, a connection between generations, carried through the grip.</p>
-        <p class="body muted">For centuries it has combined wrestling with music, dance and its own garments. CHIDAOBA CULTURE exists to preserve, develop, modernise and share that culture, and to connect it with today’s wrestling, judo, Brazilian Jiu-Jitsu and grappling world.</p>
+        <p class="scrub scrub-sm">Chidaoba is the traditional wrestling of Georgia, recognised by UNESCO as cultural heritage. Our brand takes its name and values from it.</p>
+        <p class="body muted">We connect this heritage with the sports people train today: wrestling, judo, Brazilian jiu-jitsu and grappling.</p>
         <a class="link" href="/culture/" style="align-self:start">What is Chidaoba</a>
       </div>
       <div class="stats stagger">
@@ -201,8 +200,8 @@ def home():
   <div class="wrap">
     <div class="sec-head">
       <p class="label muted"><span class="bar"></span>02 · Camps &amp; Events</p>
-      <h2 id="camps-title" class="display h-lg reveal">Train. Connect. Experience<span class="dot">.</span></h2>
-      <p class="body soft reveal">Training camps, workshops, competitions and cultural experiences rooted in Georgian grappling culture, in Georgia and abroad.</p>
+      <h2 id="camps-title" class="display h-lg reveal">Training camps in Georgia</h2>
+      <p class="body soft reveal">Camps for BJJ and grappling, wrestling and judo, with local coaches, accommodation and meals.</p>
     </div>
     <article class="feature reveal">
       <div class="feature-visual" aria-hidden="true">{sym_svg("")}<div class="ring"></div></div>
@@ -225,15 +224,15 @@ def home():
     <div class="duo">
       <article class="reveal">
         <p class="label"><span class="bar"></span>03 · Community</p>
-        <h2 class="display h-md">Built by people<span class="dot">.</span></h2>
+        <h2 class="display h-md">Community</h2>
         <p class="body muted">Athletes, coaches and clubs who carry the culture, in Georgia and around the world. Profiles are in preparation.</p>
         <div class="cols3"><div><b>Athletes</b><span>Wrestlers and grapplers</span></div><div><b>Coaches</b><span>The people who teach</span></div><div><b>Clubs</b><span>Where to train</span></div></div>
         <a class="link" href="/contact/" style="align-self:start">Coach, athlete or club? Get in touch</a>
       </article>
       <article class="reveal">
         <p class="label"><span class="bar"></span>04 · Journal</p>
-        <h2 class="display h-md">Stories from the circle<span class="dot">.</span></h2>
-        <p class="body muted">An editorial home for Georgian wrestling and grappling: heritage, technique, training and the people behind it. First stories coming soon.</p>
+        <h2 class="display h-md">Journal<span class="dot">.</span></h2>
+        <p class="body muted">Articles about Georgian wrestling and grappling: history, technique, training and athletes. Coming soon.</p>
         <ul class="chips">{jchips}</ul>
         <a class="link" href="/journal/" style="align-self:start">Visit the journal</a>
       </article>
@@ -247,9 +246,9 @@ def home():
     <div class="drop-grid">
       <div class="reveal">
         <p class="label muted"><span class="bar"></span>05 · Apparel</p>
-        <h2 id="drop-title" class="display h-lg">Drop 01<span class="dot">.</span></h2>
-        <p class="lead soft">Fight wear, gis and kimonos, gear and everyday pieces. The first collection is in development. Tell us what you want first.</p>
-        <a class="btn btn-primary" href="/shop/" style="align-self:start">Explore collection {arrow()}</a>
+        <h2 id="drop-title" class="display h-lg">Shop</h2>
+        <p class="lead soft">Rashguards, shorts, gis, gear and everyday clothing. The first collection is in development.</p>
+        <a class="btn btn-primary" href="/shop/" style="align-self:start">View shop {arrow()}</a>
       </div>
     </div>
   </div>
@@ -257,8 +256,8 @@ def home():
 
 <section class="section dark invite" aria-labelledby="invite-title" style="border-top:1px solid var(--carbon-line)">
   <div class="wrap">
-    <p class="label muted"><span class="bar"></span>06 · Join</p>
-    <h2 id="invite-title" class="display h-lg reveal" style="margin-top:24px">More than a sport. A culture we share<span class="dot">.</span></h2>
+    <p class="label muted"><span class="bar"></span>06 · Newsletter</p>
+    <h2 id="invite-title" class="display h-lg reveal" style="margin-top:24px">Stay updated</h2>
     <div class="invite-links reveal">
       <a href="{IG}" rel="noopener"><span class="label muted">Instagram</span><b>{IG_HANDLE} →</b></a>
       <a href="/camps/"><span class="label muted">Upcoming</span><b>Camps &amp; events →</b></a>
@@ -305,15 +304,15 @@ AFP = "https://en.prothomalo.com/sports/Chidaoba-wrestling-gets-UNESCO-protected
 def culture():
     story = [
         ("Long before it was a sport, Chidaoba was preparation for battle, a skill it kept until the late Middle Ages.", "UNESCO"),
-        ("Then the fight became a celebration. Tournaments moved into open-air arenas in villages and towns, surrounded by large crowds.", "UNESCO; AFP, 2018"),
-        ("Music opened every bout. The zurna and the doli set the rhythm, the crowd formed the circle, and sometimes the wrestlers left the arena dancing.", "UNESCO"),
-        ("Its code was chivalric. Strength mattered, but so did respect: for the opponent, and for the people watching.", "UNESCO Decision 13.COM 10.b.15"),
-        ("It was passed from one generation to the next, in families, schools and village clubs. Children learned by watching, then practised outdoors from spring to autumn.", "UNESCO; AFP, 2018"),
-        ("Today there is a wrestling section in almost every village and city in Georgia. The tradition is still alive.", "UNESCO"),
+        ("Later it became a public sport. Tournaments were held in open-air arenas in villages and towns, in front of large crowds.", "UNESCO; AFP, 2018"),
+        ("Bouts were accompanied by traditional music played on the zurna and the doli.", "UNESCO"),
+        ("The rules were based on fairness and respect for the opponent and the audience.", "UNESCO Decision 13.COM 10.b.15"),
+        ("The skills were passed down through families, schools and village clubs.", "UNESCO; AFP, 2018"),
+        ("Today there is a wrestling club in almost every village and city in Georgia.", "UNESCO"),
     ]
     st = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p></div>'
                  for i, (t, src) in enumerate(story))
-    disc = [("Traditional Georgian Chidaoba", "The root", True), ("Wrestling", "", False), ("Grappling", "", False),
+    disc = [("Wrestling", "", False), ("Grappling", "", False),
             ("Brazilian Jiu-Jitsu", "", False), ("Judo", "", False), ("Related combat &amp; grappling sports", "", False)]
     dl = "".join(f'<li{" class=\"root\"" if r else ""}><span>{t}</span>{f"<small>{tag}</small>" if tag else ""}</li>' for t, tag, r in disc)
     mq_items = ['<span class="k">ჭიდაობა</span>', '<span>Wrestling</span>', '<span class="d">·</span>', '<span>Grappling</span>',
@@ -324,12 +323,11 @@ def culture():
 <section class="cx-hero dark" aria-labelledby="c-title">
   <div class="ghost-word" aria-hidden="true">ჭ</div>
   <div class="wrap">
-    <p class="label muted fade-load"><span class="bar"></span>Culture · <span class="ka">ჭიდაობა</span></p>
-    <h1 id="c-title" class="display"><span class="ln"><span>Rooted in</span></span><span class="ln"><span>heritage.</span></span><span class="ln"><span>Built for the</span></span><span class="ln"><span>future<span class="dot">.</span></span></span></h1>
-    <p class="lead soft fade-load">CHIDAOBA is a Georgian-rooted sports culture brand inspired by the tradition of wrestling. We celebrate where grappling comes from, support where it is going, and bring its community closer together.</p>
+    <p class="label muted fade-load"><span class="bar"></span>Culture</p>
+    <h1 id="c-title" class="display"><span class="ln"><span>About</span></span><span class="ln"><span>Chidaoba</span></span></h1>
+    <p class="lead soft fade-load">CHIDAOBA is a sports brand from Tbilisi, inspired by Georgian traditional wrestling. We support wrestling and grappling sports and the people who practise them.</p>
     <div class="cx-hero-foot fade-load">
       <span class="label muted">UNESCO Intangible Cultural Heritage of Humanity, 2018</span>
-      <span class="label muted scroll-cue"><i></i>Scroll</span>
     </div>
   </div>
 </section>
@@ -344,8 +342,8 @@ def culture():
 <section class="section light" aria-labelledby="details-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>02 · Chidaoba in four details</p>
-      <h2 id="details-title" class="display h-md">Four details<span class="dot">.</span></h2>
+      <p class="label"><span class="bar"></span>02 · Key facts</p>
+      <h2 id="details-title" class="display h-md">Key facts</h2>
     </div>
     <div class="details stagger">
       <div><b data-count="2018" data-from="1900">2018</b><p>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</p></div>
@@ -360,11 +358,11 @@ def culture():
   <div class="why-word" aria-hidden="true">ჭიდაობა<span class="eq">=</span><span class="tr">Wrestling</span></div>
   <div class="wrap">
     <div class="why-grid">
-      <h2 id="why-title" class="display h-lg stagger"><span>A word that carries our roots<span class="dot">.</span></span></h2>
+      <h2 id="why-title" class="display h-lg stagger"><span>Why the name Chidaoba</span></h2>
       <div class="text stagger">
-        <p class="label muted"><span class="bar"></span>03 · Why Chidaoba?</p>
-        <p class="lead soft">In Georgian, ჭიდაობა (Chidaoba) means wrestling. It is a familiar, everyday word, and one that carries generations of Georgian life, identity and tradition.</p>
-        <p class="body soft">We chose it deliberately. CHIDAOBA takes that word beyond its traditional meaning and gives it a modern, international presence, so that a word every Georgian knows becomes a name the whole grappling world can recognise.</p>
+        <p class="label muted"><span class="bar"></span>03 · The name</p>
+        <p class="lead soft">In Georgian, ჭიდაობა (Chidaoba) means wrestling. It is an everyday word that every Georgian knows.</p>
+        <p class="body soft">We chose this name because it connects our brand to the Georgian wrestling tradition. Our goal is to make it known internationally.</p>
       </div>
     </div>
   </div>
@@ -373,9 +371,9 @@ def culture():
 <section class="section dark" aria-labelledby="disc-title" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px">
-      <p class="label muted"><span class="bar"></span>04 · More than one discipline</p>
-      <h2 id="disc-title" class="display h-md">Inspired by heritage. Open to every grappler<span class="dot">.</span></h2>
-      <p class="body soft">CHIDAOBA is inspired by Georgian heritage, but it is not limited to one traditional discipline. We support the sports that share its grip, its discipline and its values.</p>
+      <p class="label muted"><span class="bar"></span>04 · Our sports</p>
+      <h2 id="disc-title" class="display h-md">The sports we support</h2>
+      <p class="body soft">Our brand is inspired by Georgian wrestling, and we work with all grappling sports.</p>
     </div>
     <ul class="disc">{dl}</ul>
   </div>
@@ -385,8 +383,8 @@ def culture():
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:56px">
       <p class="label"><span class="bar"></span>05 · What we do</p>
-      <h2 id="purpose-title" class="display h-md">A brand and a community<span class="dot">.</span></h2>
-      <p class="body muted">Built around these disciplines, their athletes, their culture and their shared values.</p>
+      <h2 id="purpose-title" class="display h-md">What we do</h2>
+      <p class="body muted">We focus on three things.</p>
     </div>
     <div class="pillars stagger">
       <div><b>Promote</b><p>Wrestling and grappling sports, in Georgia and around the world.</p></div>
@@ -398,16 +396,6 @@ def culture():
 
 <section class="dark" aria-hidden="true"><div class="marquee"><div class="marquee-track">{mq}</div></div></section>
 
-<section class="cx-close dark" aria-labelledby="close-title">
-  <div class="wrap stagger">
-    <p class="label muted"><span class="bar"></span>ჭიდაობა</p>
-    <h2 id="close-title" class="display h-lg" style="margin-top:24px">A culture that moves<span class="dot">.</span></h2>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:40px">
-      <a class="btn btn-primary" href="/camps/">Camps &amp; events {arrow()}</a>
-      <a class="btn btn-ghost" href="{IG}" rel="noopener">Follow {IG_HANDLE} {arrow()}</a>
-    </div>
-  </div>
-</section>
 
 </div>
 """
@@ -442,8 +430,8 @@ def camps():
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
     <p class="label muted fade-load"><span class="bar"></span>Camps &amp; Events</p>
-    <h1 class="display h-xl"><span class="ln"><span>Train. Connect.</span></span><span class="ln"><span>Experience<span class="dot">.</span></span></span></h1>
-    <p class="lead soft fade-load">Training camps in Georgia for BJJ &amp; grappling, freestyle &amp; Greco-Roman wrestling and judo, with local coaches, and the culture around the mat.</p>
+    <h1 class="display h-xl"><span class="ln"><span>Training camps</span></span></h1>
+    <p class="lead soft fade-load">Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo, with experienced local coaches.</p>
     <a class="hero-story fade-load" href="/georgia/" style="margin-top:22px">Why train in Georgia {arrow()}</a>
   </div>
 </section>
@@ -461,7 +449,7 @@ def camps():
     <div class="sec-head" style="margin-bottom:40px">
       <p class="label"><span class="bar"></span>Where we train</p>
       <h2 class="display h-md">Our venues</h2>
-      <p class="body muted">Training halls, rooms and meals in one place, chosen for camps that feel like more than a trip.</p>
+      <p class="body muted">Training halls, accommodation and meals in one place.</p>
     </div>
     <div id="venue-list" class="venue-list"></div>
   </div>
@@ -471,7 +459,7 @@ def camps():
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
       <p class="label"><span class="bar"></span>How it works</p>
-      <h2 class="display h-md">Three steps to the mat<span class="dot">.</span></h2>
+      <h2 class="display h-md">How to sign up</h2>
     </div>
     <div class="steps stagger">
       <div><span class="n">01</span><h3>Choose</h3><p>Pick your sport, then the camp and package that suit you: training only, with accommodation, or all-inclusive.</p></div>
@@ -491,7 +479,7 @@ def camps():
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:24px">
       <p class="label"><span class="bar"></span>Questions</p>
-      <h2 class="display h-md">Good to know<span class="dot">.</span></h2>
+      <h2 class="display h-md">FAQ</h2>
     </div>
     <div class="faq">{fq}</div>
     <div class="team-cta">
@@ -513,39 +501,39 @@ def admin():
     return ""
 
 def community():
-    return inner("Community", "Built by people<span class=\"dot\">.</span>",
-                 "Athletes, coaches, clubs and the international community who carry the culture forward.",
-                 "Profiles and the club directory are in preparation<span class=\"dot\">.</span>",
+    return inner("Community", "Community",
+                 "Athletes, coaches and clubs from Georgia and abroad.",
+                 "Athlete profiles and a club directory are coming soon<span class=\"dot\">.</span>",
                  ["Athletes", "Coaches", "Clubs &amp; Academies", "International Community"],
                  ig_btn("Get in touch on Instagram"))
 
 def journal():
-    return inner("Journal", "Stories from the circle<span class=\"dot\">.</span>",
-                 "Heritage, technique, training, interviews and the people behind Georgian wrestling and grappling.",
-                 "The first stories are being written<span class=\"dot\">.</span>",
+    return inner("Journal", "Journal<span class=\"dot\">.</span>",
+                 "Articles about Georgian wrestling and grappling: history, technique, training and interviews.",
+                 "The first articles are coming soon<span class=\"dot\">.</span>",
                  ["Heritage", "Technique", "Training", "Interviews", "Athletes", "Events", "Culture", "News"], ig_btn())
 
 def georgia():
     roots = [
-        "In Georgia, wrestling is not a hobby. It is part of who people are.",
-        "For centuries, Chidaoba prepared men for battle. Later it moved into village squares, with music, big crowds and a code of honour.",
-        "Today there is a wrestling section in almost every village and city. Kids grow up on the mat, and the whole street knows who won on Sunday.",
-        "You are not visiting a sport here. You are stepping into a culture that has been training for generations.",
+        "Wrestling has been part of Georgian life for centuries.",
+        "Chidaoba, the traditional Georgian wrestling, was used to prepare soldiers and later became a popular public sport.",
+        "Today almost every village and city has a wrestling club, and many children start training at a young age.",
+        "Training here means training in a country where these sports are taken seriously.",
     ]
     rt = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p></div>' for i, t in enumerate(roots))
-    chapters = [("roots", "Roots"), ("champions", "Champions"), ("newwave", "New wave"), ("land", "The land"),
-                ("table", "The table"), ("people", "The people"), ("know", "Good to know")]
+    chapters = [("roots", "Roots"), ("champions", "Champions"), ("newwave", "BJJ"), ("land", "Nature"),
+                ("table", "Food"), ("people", "Hospitality"), ("know", "Practical info")]
     ch = "".join(f'<a href="#{k}"><b>{i+1:02d}</b> {t}</a>' for i, (k, t) in enumerate(chapters))
-    day = [("07:30", "Breakfast with a view of the Caucasus"), ("09:00", "Morning session: technique and drilling"),
-           ("12:30", "Long Georgian lunch"), ("14:00", "Rest, swim, or walk to the old towers"),
-           ("17:30", "Evening session: sparring and live rounds"), ("20:30", "Supra: dinner, toasts and stories")]
+    day = [("08:00", "Breakfast"), ("10:00", "Morning session: technique"),
+           ("13:00", "Lunch"), ("14:00", "Rest and free time"),
+           ("18:00", "Evening session: sparring"), ("20:30", "Dinner")]
     dl = "".join(f'<li><span>{t}</span><b>{x}</b></li>' for t, x in day)
-    food = [("Khinkali", "Twisted dumplings full of spiced meat and broth. Hold the top, bite, sip, eat. Never use a fork."),
-            ("Khachapuri", "Bread and melted cheese, in a different shape in every region. The Adjarian one comes with an egg and butter on top."),
-            ("Mtsvadi", "Meat grilled over vine branches. Simple, smoky, and exactly what you want after two sessions."),
-            ("Pkhali &amp; badrijani", "Vegetables with walnut paste and herbs, and fried aubergine rolls. Georgian food is not only meat."),
-            ("Lobio", "Slow cooked beans in a clay pot, served with cornbread and pickles."),
-            ("Churchkhela", "Walnuts dipped in thickened grape juice and dried. Georgia's original energy bar.")]
+    food = [("Khinkali", "Dumplings filled with spiced meat and broth."),
+            ("Khachapuri", "Bread baked with cheese. The Adjarian version is topped with egg and butter."),
+            ("Mtsvadi", "Grilled meat, traditionally cooked over vine branches."),
+            ("Pkhali &amp; badrijani", "Vegetables with walnut paste, and fried aubergine rolls with walnut filling."),
+            ("Lobio", "Bean stew cooked in a clay pot, served with cornbread."),
+            ("Churchkhela", "Walnuts coated in thickened grape juice. A traditional snack.")]
     fd = "".join(f'<div class="food"><h3>{n}</h3><p>{d}</p></div>' for n, d in food)
     know = [("Visa", "Citizens of many countries, including the EU, UK and US, can stay without a visa for up to a year. Check the rules for your passport before you book."),
             ("Flights", "International airports in Tbilisi, Kutaisi and Batumi, with direct routes from across Europe and the Middle East."),
@@ -559,13 +547,9 @@ def georgia():
 <section class="cx-hero dark" aria-labelledby="g-title">
   <div class="ghost-word" aria-hidden="true">ჭ</div>
   <div class="wrap">
-    <p class="label muted fade-load"><span class="bar"></span>Why Georgia · <span class="ka">საქართველო</span></p>
-    <h1 id="g-title" class="display"><span class="ln"><span>Come train</span></span><span class="ln"><span>where it</span></span><span class="ln"><span>runs deep</span></span></h1>
-    <p class="lead soft fade-load">Mountains above the mat, the Black Sea a few hours away, a table that never ends, and a country where everyone knows somebody who wrestles. This is what a camp in Georgia feels like.</p>
-    <div class="cx-hero-foot fade-load">
-      <span class="label muted">A small country with a very big grip</span>
-      <span class="label muted scroll-cue"><i></i>Scroll</span>
-    </div>
+    <p class="label muted fade-load"><span class="bar"></span>Why Georgia</p>
+    <h1 id="g-title" class="display"><span class="ln"><span>Why train</span></span><span class="ln"><span>in Georgia</span></span></h1>
+    <p class="lead soft fade-load">Georgia has a long wrestling tradition, world-class judo and wrestling athletes and a growing BJJ community. It is also an easy and affordable country to visit, with mountains, sea and great food.</p>
   </div>
 </section>
 
@@ -582,8 +566,8 @@ def georgia():
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
       <p class="label"><span class="bar"></span>02 · Champions</p>
-      <h2 id="champ-title" class="display h-lg">Pound for pound, a grappling superpower</h2>
-      <p class="body muted">Around 3.5 million people live in Georgia, fewer than in many single cities. Their results on the mat look like those of a country ten times bigger.</p>
+      <h2 id="champ-title" class="display h-lg">Results on the international stage</h2>
+      <p class="body muted">Georgia has about 3.5 million people, but it is one of the most successful countries in the world in judo and wrestling.</p>
     </div>
     <div class="details stagger">
       <div><b data-count="7">7</b><p>Olympic medals at Paris 2024, Georgia's best Games as an independent country. Judo and wrestling led the way.</p></div>
@@ -598,12 +582,12 @@ def georgia():
 <section class="section dark" id="newwave" aria-labelledby="nw-title">
   <div class="wrap gx-split">
     <div class="stagger">
-      <p class="label muted"><span class="bar"></span>03 · The new wave</p>
-      <h2 id="nw-title" class="display h-lg">And now, everybody rolls</h2>
+      <p class="label muted"><span class="bar"></span>03 · BJJ and grappling</p>
+      <h2 id="nw-title" class="display h-lg">A growing BJJ community</h2>
     </div>
     <div class="stagger">
-      <p class="lead soft">Brazilian jiu-jitsu and no-gi grappling are spreading fast in Georgia. New academies keep opening across Tbilisi, international tournaments now come to the city, and the mats are full of people who grew up wrestling or doing judo.</p>
-      <p class="body soft">That mix is what makes training here special. Your partner might be a BJJ blue belt, a former Greco-Roman wrestler or a judoka with a national medal. Expect strong grips, real takedowns and rounds that test you.</p>
+      <p class="lead soft">Brazilian jiu-jitsu and no-gi grappling are growing quickly in Georgia. New academies are opening in Tbilisi, and international tournaments are now held in the city.</p>
+      <p class="body soft">Many local athletes also have a wrestling or judo background, so training is technical and physically demanding.</p>
       <ul class="chips gx-chips"><li>BJJ</li><li>No-gi</li><li>Freestyle</li><li>Greco-Roman</li><li>Judo</li></ul>
     </div>
   </div>
@@ -613,31 +597,30 @@ def georgia():
 <section class="section light" id="land" aria-labelledby="land-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>04 · The land</p>
-      <h2 id="land-title" class="display h-lg">The perfect place to sweat</h2>
-      <p class="body muted">Georgia packs a whole continent into a small map. You can train in the mountains in the morning and be near the sea a day later.</p>
+      <p class="label"><span class="bar"></span>04 · Nature and climate</p>
+      <h2 id="land-title" class="display h-lg">Mountains, sea and good weather</h2>
+      <p class="body muted">Georgia is a small country with a lot of variety. The mountains and the Black Sea coast are both a few hours from Tbilisi.</p>
     </div>
     <div class="pillars stagger gx-land">
-      <div><b>The mountains</b><p>The Greater Caucasus runs along the north, with peaks above 5,000 m. In Svaneti, medieval stone towers stand over villages, and the air is cool even in July. It is altitude training without trying.</p></div>
-      <div><b>The sea</b><p>The Black Sea coast around Batumi brings warm water, beaches and subtropical green. Perfect for a recovery day, or for staying on after camp.</p></div>
-      <div><b>The seasons</b><p>Hot, sunny summers in the lowlands, mild springs and golden autumns, and real snow in the mountains in winter. Camps run when the weather is at its best.</p></div>
+      <div><b>The mountains</b><p>The Greater Caucasus runs along the north of the country, with peaks above 5,000 m. Mountain regions such as Svaneti stay cool in summer, which makes them good for training.</p></div>
+      <div><b>The sea</b><p>The Black Sea coast around Batumi has beaches and warm water in summer. A good option for rest days or after the camp.</p></div>
+      <div><b>The seasons</b><p>Summers are warm and sunny, spring and autumn are mild, and winters bring snow to the mountains. Most camps run from late spring to early autumn.</p></div>
     </div>
     <div class="gx-day reveal">
-      <p class="label"><span class="bar"></span>A camp day in the mountains</p>
+      <p class="label"><span class="bar"></span>Example camp day</p>
       <ol>{dl}</ol>
     </div>
   </div>
 </section>
 
 <section class="section dark why" id="table" aria-labelledby="table-title">
-  <div class="why-word" aria-hidden="true">სუფრა<span class="eq">=</span><span class="tr">Supra</span></div>
   <div class="wrap">
     <div class="why-grid">
-      <h2 id="table-title" class="display h-lg stagger"><span>A table that never ends</span></h2>
+      <h2 id="table-title" class="display h-lg stagger"><span>Food and wine</span></h2>
       <div class="text stagger">
-        <p class="label muted"><span class="bar"></span>05 · The table</p>
-        <p class="lead soft">A Georgian feast is called a supra. Plates are stacked on plates, a tamada leads the toasts, and dinner can last longer than your sparring session.</p>
-        <p class="body soft">Georgia is also where wine began. Archaeologists found traces of winemaking around 8,000 years old near Tbilisi, and families still make it in clay qvevri buried in the ground, a method UNESCO lists as heritage of humanity.</p>
+        <p class="label muted"><span class="bar"></span>05 · Food</p>
+        <p class="lead soft">Georgian food is one of the best reasons to visit. A traditional feast is called a supra, with many dishes and toasts led by a tamada.</p>
+        <p class="body soft">Georgia also has one of the oldest winemaking traditions in the world, about 8,000 years. Wine is still made in clay vessels called qvevri, a method listed by UNESCO.</p>
       </div>
     </div>
     <div class="foods stagger">{fd}</div>
@@ -647,13 +630,13 @@ def georgia():
 <section class="section light" id="people" aria-labelledby="people-title">
   <div class="wrap gx-split">
     <div class="stagger">
-      <p class="label"><span class="bar"></span>06 · The people</p>
-      <h2 id="people-title" class="display h-lg">A guest is a gift</h2>
+      <p class="label"><span class="bar"></span>06 · Hospitality</p>
+      <h2 id="people-title" class="display h-lg">Hospitality</h2>
     </div>
     <div class="stagger">
-      <p class="lead">There is an old Georgian saying: a guest is a gift from God. You will feel it at the table, in the gym and on the street.</p>
-      <p class="body muted">People are proud of their country and love to share it. Someone will invite you home, someone will pour you one more glass, and someone will start singing. Georgian polyphonic singing is on UNESCO's heritage list too, and you might hear it at your own supra.</p>
-      <p class="body muted">At CHIDAOBA camps you train together, eat together and travel together. Most people arrive as strangers and leave with a team.</p>
+      <p class="lead">Georgians are known for their hospitality. There is a saying that a guest is a gift from God.</p>
+      <p class="body muted">Visitors are often invited to share a meal or join a celebration. Traditional polyphonic singing, listed by UNESCO, is still part of many gatherings.</p>
+      <p class="body muted">At our camps you train, eat and travel together as a group.</p>
     </div>
   </div>
 </section>
@@ -662,55 +645,45 @@ def georgia():
 <section class="section alt" id="know" aria-labelledby="know-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px">
-      <p class="label"><span class="bar"></span>07 · Good to know</p>
-      <h2 id="know-title" class="display h-md">Easy to get to, hard to leave</h2>
+      <p class="label"><span class="bar"></span>07 · Practical information</p>
+      <h2 id="know-title" class="display h-md">Practical information</h2>
     </div>
     <div class="details gx-know stagger">{kn}</div>
   </div>
 </section>
 
-<section class="cx-close dark" aria-labelledby="gclose-title">
-  <div class="wrap stagger">
-    <p class="label muted"><span class="bar"></span>გელოდებით · We are waiting for you</p>
-    <h2 id="gclose-title" class="display h-lg" style="margin-top:24px">Your camp starts here</h2>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:40px">
-      <a class="btn btn-primary" href="/camps/">See camps {arrow()}</a>
-      <a class="btn btn-ghost" href="{WA}" rel="noopener">Ask us on WhatsApp {arrow()}</a>
-    </div>
-  </div>
-</section>
 
 </div>
 """
 
 
 SHOP = [
-  ("fightwear", "Fight wear", "Made for rolling, scrambling and hard rounds.", [
-    ("Rashguards", "Long and short sleeve. Tight fit, flatlock seams, colours that last.", "BJJ · Grappling"),
-    ("Fight shorts", "Stretch panels, no pockets, a waistband that stays put.", "BJJ · Grappling"),
+  ("fightwear", "Fight wear", "Rashguards, shorts, spats and singlets.", [
+    ("Rashguards", "Long and short sleeve, tight fit.", "BJJ · Grappling"),
+    ("Fight shorts", "Stretch fabric, no pockets, secure waistband.", "BJJ · Grappling"),
     ("Spats", "Compression leggings for no-gi and wrestling.", "No-gi · Wrestling"),
-    ("Wrestling singlets", "Classic cut, competition ready, in red and carbon.", "Freestyle · Greco-Roman"),
+    ("Wrestling singlets", "Competition cut, in red and black.", "Freestyle · Greco-Roman"),
   ]),
-  ("gis", "Gis &amp; kimonos", "Heavyweight cloth, reinforced where it counts.", [
-    ("BJJ gi", "Pearl weave jacket, ripstop pants, clean CHIDAOBA marks.", "BJJ"),
-    ("Judo kimono", "Double weave judogi for training and randori.", "Judo"),
+  ("gis", "Gis &amp; kimonos", "Gis, kimonos and belts.", [
+    ("BJJ gi", "Pearl weave jacket and ripstop pants.", "BJJ"),
+    ("Judo kimono", "Double weave judogi for training.", "Judo"),
     ("Belts", "Rank belts for BJJ and judo.", "BJJ · Judo"),
   ]),
-  ("gear", "Gear", "Everything that goes in the bag, and the bag.", [
-    ("Gear bags", "Duffels and backpacks with a separate wet compartment.", "All disciplines"),
-    ("Headgear", "Ear guards to save your ears from the mat.", "Wrestling · Grappling"),
+  ("gear", "Gear", "Bags and protective gear.", [
+    ("Gear bags", "Duffel bags and backpacks with a separate wet compartment.", "All disciplines"),
+    ("Headgear", "Ear guards for wrestling and grappling.", "Wrestling · Grappling"),
     ("Mouthguards", "Boil and bite, with a case.", "All disciplines"),
-    ("Knee pads", "Low profile pads for shots and scrambles.", "Wrestling"),
-    ("Wrestling shoes", "Light, grippy, ankle support.", "Wrestling"),
-    ("Tape", "Finger and joint tape for the grip fighters.", "All disciplines"),
+    ("Knee pads", "Low profile knee pads.", "Wrestling"),
+    ("Wrestling shoes", "Lightweight, with ankle support.", "Wrestling"),
+    ("Tape", "Finger and joint tape.", "All disciplines"),
   ]),
-  ("lifestyle", "Lifestyle", "The culture off the mat.", [
-    ("Hoodies", "Heavy cotton, relaxed fit, ჭ on the chest.", "Everyday"),
-    ("T-shirts", "Heavyweight tees in carbon, chalk and red.", "Everyday"),
-    ("Sweatshirts", "Crewnecks for travel days and cold gyms.", "Everyday"),
-    ("Track pants", "Tapered joggers to wear to and from training.", "Everyday"),
-    ("Caps &amp; beanies", "Embroidered ჭ, nothing loud.", "Everyday"),
-    ("Tote bags", "Heavy canvas for the gym or the market.", "Everyday"),
+  ("lifestyle", "Lifestyle", "Everyday clothing and accessories.", [
+    ("Hoodies", "Heavy cotton, relaxed fit.", "Everyday"),
+    ("T-shirts", "Heavyweight T-shirts in black, white and red.", "Everyday"),
+    ("Sweatshirts", "Crewneck sweatshirts.", "Everyday"),
+    ("Track pants", "Tapered joggers.", "Everyday"),
+    ("Caps &amp; beanies", "With embroidered logo.", "Everyday"),
+    ("Tote bags", "Heavy canvas tote bags.", "Everyday"),
   ]),
 ]
 
@@ -740,17 +713,17 @@ def shop():
 <section class="page-hero dark">
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
-    <p class="label muted fade-load"><span class="bar"></span>Shop · Drop 01 in development</p>
-    <h1 class="display h-xl"><span class="ln"><span>Built for</span></span><span class="ln"><span>the mat</span></span></h1>
-    <p class="lead soft fade-load">Fight wear, gis, gear and everyday pieces for wrestlers, grapplers and judoka. Designed in Tbilisi. See something you want? Tap order and message us on WhatsApp.</p>
+    <p class="label muted fade-load"><span class="bar"></span>Shop</p>
+    <h1 class="display h-xl"><span class="ln"><span>Shop</span></span></h1>
+    <p class="lead soft fade-load">Fight wear, gis, gear and everyday clothing for wrestling, judo and grappling. Designed in Tbilisi. To order, tap the button on any item and message us on WhatsApp.</p>
     <nav class="shop-nav fade-load" aria-label="Shop sections">{nav}</nav>
   </div>
 </section>
 {depts}
 <section class="section dark" id="request"><div class="wrap reg">
   <div class="reg-intro">
-    <p class="label muted"><span class="bar"></span>Shape Drop 01</p>
-    <h2 class="display h-lg">Tell us what you want first</h2>
+    <p class="label muted"><span class="bar"></span>Pre-order list</p>
+    <h2 class="display h-lg">Tell us what you want</h2>
     <p class="body soft">Pick what you would buy and your size. The most wanted pieces get made first, and everyone on this list gets early access and launch pricing.</p>
   </div>
   <form class="js-form" data-key="{WEB3FORMS_KEY}" data-done="shop-done" data-multi="wants,sizes" novalidate>
@@ -800,8 +773,8 @@ def notfound():
     return f"""
 <section class="page-hero dark" style="min-height:70vh">{sym_svg("ghost")}<div class="wrap" style="position:relative">
 <p class="label muted"><span class="bar"></span>404</p>
-<h1 class="display h-xl">Off the mat<span class="dot">.</span></h1>
-<p class="lead soft">This page doesn’t exist yet.</p>
+<h1 class="display h-xl">Page not found</h1>
+<p class="lead soft">This page does not exist.</p>
 <div style="margin-top:36px"><a class="btn btn-primary" href="/">Back to home {arrow()}</a></div></div></section>"""
 
 def contact():
@@ -812,7 +785,7 @@ def contact():
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
     <p class="label muted fade-load"><span class="bar"></span>Contact</p>
-    <h1 class="display h-xl"><span class="ln"><span>Let’s talk<span class="dot">.</span></span></span></h1>
+    <h1 class="display h-xl"><span class="ln"><span>Contact</span></span></h1>
     <p class="lead soft fade-load">Questions about camps, clubs, partnerships or the brand? Write to us, or message us on WhatsApp.</p>
   </div>
 </section>
@@ -848,9 +821,9 @@ def contact():
 </section>"""
 
 PAGES = [
-    ("/", "index.html", "CHIDAOBA CULTURE | Rooted in heritage. Built for the future.",
+    ("/", "index.html", "CHIDAOBA CULTURE | About Chidaoba.",
      "Georgian wrestling heritage expressed through modern sports culture. Chidaoba, camps and events, community, journal and apparel, from Tbilisi, Georgia.", home),
-    ("/georgia/", "georgia/index.html", "Why Georgia | Train where grappling runs deep, CHIDAOBA CULTURE",
+    ("/georgia/", "georgia/index.html", "Why Georgia | Training camps in Georgia, CHIDAOBA CULTURE",
      "Why train in Georgia: a wrestling culture centuries old, Olympic and world champions, booming BJJ, the Caucasus mountains, the Black Sea and the Georgian table.", georgia),
     ("/culture/", "culture/index.html", "Culture | Chidaoba and the CHIDAOBA brand",
      "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
