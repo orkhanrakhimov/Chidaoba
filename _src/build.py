@@ -85,6 +85,11 @@ FB_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><
 MAIL_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">'
              '<rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>')
 
+FLAG = ('<svg class="flag" viewBox="0 0 30 20" width="21" height="14" role="img" aria-label="Georgia"><rect width="30" height="20" fill="#fff"/>'
+        '<path fill="#E8112D" d="M13 0h4v20h-4zM0 8h30v4H0z"/>'
+        + "".join(f'<path fill="#E8112D" d="M{x-.6} {y-2.4}h1.2v1.8h1.8v1.2h-1.8v1.8h-1.2v-1.8h-1.8v-1.2h1.8z"/>' for x, y in [(6.5, 4), (23.5, 4), (6.5, 16), (23.5, 16)])
+        + '</svg>')
+
 def socials(cls="socials"):
     items = [(WA, "WhatsApp", WA_ICON), (IG, "Instagram", IG_ICON), (FB, "Facebook", FB_ICON), (f"mailto:{EMAIL}", "Email", MAIL_ICON)]
     return f'<div class="{cls}">' + "".join(
@@ -122,13 +127,12 @@ def footer(path=""):
         <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
         <li><a href="/georgia/">Why Georgia</a></li><li><a href="/community/">Community</a></li><li><a href="/journal/">Journal</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
       <div class="foot-col"><h3>Connect</h3>{socials()}<ul style="margin-top:22px"><li><a href="/contact/">Contact</a></li></ul></div>
-      <div class="foot-col"><h3>Based in</h3><p class="foot-addr">Tbilisi, Georgia<br><span class="foot-time" data-tbilisi-time>GMT+4</span></p>
-        <h3 style="margin-top:28px">Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
+      <div class="foot-col"><h3>Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
     </div>
   </div>
   <div class="foot-mark" aria-hidden="true"><svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet"><text x="0" y="128" textLength="1000" lengthAdjust="spacingAndGlyphs">CHIDAOBA</text></svg></div>
   <div class="wrap">
-    <div class="foot-bottom label"><span>© <span data-year>2026</span> Chidaoba Culture</span><span>Tbilisi, Georgia</span><a class="foot-top" href="#top">Back to top ↑</a></div>
+    <div class="foot-bottom label"><span class="foot-copy">© <span data-year>2026</span> Chidaoba Culture {FLAG}</span><a class="foot-top" href="#top">Back to top ↑</a></div>
   </div>
 </footer>
 <a class="wa-float" href="{WA}" rel="noopener" aria-label="Message us on WhatsApp">{WA_ICON}<span>WhatsApp</span></a>
@@ -137,7 +141,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "14"
+ASSET_V = "16"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
@@ -162,10 +166,10 @@ def home():
 <section class="hero dark" aria-labelledby="hero-title">
   {sym_svg("hero-sym")}
   <div class="wrap">
-    <p class="label muted fade-load hero-top"><span><span class="bar"></span>Chidaoba Culture, Tbilisi, Georgia</span><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
+    <p class="label muted fade-load hero-top"><span class="hero-brand"><span class="bar"></span>Chidaoba Culture {FLAG}</span><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
     <div>
       <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
-      <p class="lead soft fade-load">CHIDAOBA is a sports brand from Tbilisi, inspired by Georgian wrestling. We organise training camps in Georgia and make apparel for wrestling, judo and grappling.</p>
+      <p class="lead soft fade-load">Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.</p>
       <div class="ctas fade-load">
         <a class="btn btn-primary" href="/camps/">Explore camps {arrow()}</a>
         <a class="btn btn-ghost" href="/shop/">Shop {arrow()}</a>
@@ -324,7 +328,7 @@ def culture():
   <div class="wrap">
     <p class="label muted fade-load"><span class="bar"></span>Culture</p>
     <h1 id="c-title" class="display"><span class="ln"><span>About</span></span><span class="ln"><span>Chidaoba</span></span></h1>
-    <p class="lead soft fade-load">CHIDAOBA is a sports brand from Tbilisi, inspired by Georgian traditional wrestling. We support wrestling and grappling sports and the people who practise them.</p>
+    <p class="lead soft fade-load">CHIDAOBA is a sports brand inspired by Georgian traditional wrestling. We support wrestling and grappling sports and the people who practise them.</p>
     <div class="cx-hero-foot fade-load">
       <span class="label muted">UNESCO Intangible Cultural Heritage of Humanity, 2018</span>
     </div>
@@ -713,7 +717,7 @@ def shop():
   <div class="wrap" style="position:relative">
     <p class="label muted fade-load"><span class="bar"></span>Shop</p>
     <h1 class="display h-xl"><span class="ln"><span>Shop</span></span></h1>
-    <p class="lead soft fade-load">Fight wear, gis, gear and everyday clothing for wrestling, judo and grappling. Designed in Tbilisi. To order, tap the button on any item and message us on WhatsApp.</p>
+    <p class="lead soft fade-load">Fight wear, gis, gear and everyday clothing for wrestling, judo and grappling. To order, tap the button on any item and message us on WhatsApp.</p>
     <nav class="shop-nav fade-load" aria-label="Shop sections">{nav}</nav>
   </div>
 </section>
@@ -795,7 +799,6 @@ def contact():
         <a href="{WA}" rel="noopener"><span class="label muted">WhatsApp</span><b>{WA_SHOW}</b></a>
         <a href="{IG}" rel="noopener"><span class="label muted">Instagram</span><b>{IG_HANDLE}</b></a>
         <a href="{FB}" rel="noopener"><span class="label muted">Facebook</span><b>fb.com/chidaoba</b></a>
-        <div><span class="label muted">Based in</span><b>Tbilisi, Georgia</b></div>
       </div>
     </div>
     <form id="contact-form" class="js-form" data-key="{WEB3FORMS_KEY}" data-done="contact-done" novalidate>
@@ -820,7 +823,7 @@ def contact():
 
 PAGES = [
     ("/", "index.html", "CHIDAOBA CULTURE | About Chidaoba.",
-     "Georgian wrestling heritage expressed through modern sports culture. Chidaoba, camps and events, community, journal and apparel, from Tbilisi, Georgia.", home),
+     "Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.", home),
     ("/georgia/", "georgia/index.html", "Why Georgia | Training camps in Georgia, CHIDAOBA CULTURE",
      "Why train in Georgia: a wrestling culture centuries old, Olympic and world champions, booming BJJ, the Caucasus mountains, the Black Sea and the Georgian table.", georgia),
     ("/culture/", "culture/index.html", "Culture | Chidaoba and the CHIDAOBA brand",
