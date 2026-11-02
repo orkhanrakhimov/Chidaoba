@@ -610,7 +610,6 @@ def georgia():
   </div>
 </section>
 
-<section class="gx-band" aria-hidden="true"><img src="/assets/venues/mulakhi/summer-terrace-pool.jpg" alt="" loading="lazy" data-par></section>
 
 <section class="section light" id="land" aria-labelledby="land-title">
   <div class="wrap">
@@ -660,7 +659,6 @@ def georgia():
   </div>
 </section>
 
-<section class="gx-band" aria-hidden="true"><img src="/assets/venues/mulakhi/summer-pitch.jpg" alt="" loading="lazy" data-par></section>
 
 <section class="section alt" id="know" aria-labelledby="know-title">
   <div class="wrap">
