@@ -67,7 +67,7 @@ ul { padding: 0; list-style: none; }
 .site-head { position: sticky; top: 0; z-index: 50; height: var(--head); background: var(--carbon); color: var(--chalk);
              border-bottom: 1px solid var(--carbon-line); }
 .site-head .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.brand img { height: 30px; width: auto; }
+.brand img { height: 36px; width: auto; }
 .nav { display: flex; gap: clamp(18px, 2.2vw, 36px); }
 .nav a { font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; text-decoration: none;
          padding: 6px 0; border-bottom: 1.5px solid transparent; }

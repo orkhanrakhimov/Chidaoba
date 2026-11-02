@@ -55,7 +55,7 @@ def header(path):
     mlinks = "".join(f'<a href="{h}"{" aria-current=\"page\"" if h == path else ""}>{t}</a>' for h, t in NAV)
     return f"""<header class="site-head">
   <div class="wrap">
-    <a class="brand" href="/" aria-label="CHIDAOBA CULTURE — home"><img src="/assets/img/lockup-chalk.svg" alt="CHIDAOBA CULTURE" width="300" height="30"></a>
+    <a class="brand" href="/" aria-label="CHIDAOBA CULTURE — home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA CULTURE" width="26" height="36"></a>
     <nav class="nav" aria-label="Main">{links}</nav>
     <div class="head-tools">
       <a class="bag" href="/shop/" aria-label="Shopping bag, 0 items">{BAG}<span aria-hidden="true">0</span></a>
