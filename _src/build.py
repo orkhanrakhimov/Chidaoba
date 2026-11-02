@@ -118,7 +118,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "3"
+ASSET_V = "4"
 EXTRA_JS = {"/camps/": ["config", "data", "camps"], "/camps/camp/": ["config", "data", "camps"], "/admin/": ["config", "data", "admin"]}
 
 def page(path, title, desc, main):
