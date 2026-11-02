@@ -211,3 +211,27 @@ create or replace function public.touch() returns trigger language plpgsql as $$
 begin new.updated_at := now(); return new; end; $$;
 drop trigger if exists camps_touch on public.camps;
 create trigger camps_touch before update on public.camps for each row execute function public.touch();
+
+-- =====================================================================
+-- Update 002 — camp photos, venue details and map
+-- =====================================================================
+alter table public.camps add column if not exists cover_url  text;
+alter table public.camps add column if not exists gallery    jsonb not null default '[]'::jsonb;  -- [{url, alt}]
+alter table public.camps add column if not exists address    text;
+alter table public.camps add column if not exists map_url    text;
+alter table public.camps add column if not exists venue_info text;
+alter table public.camps add column if not exists venue_key  text;   -- preset venue, e.g. 'mulakhi'
+
+-- public image bucket: anyone can view, only admins can upload / change / delete
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('camp-images', 'camp-images', true, 5242880, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update set public = true, file_size_limit = 5242880, allowed_mime_types = array['image/jpeg','image/png','image/webp'];
+
+drop policy if exists camp_images_read on storage.objects;
+create policy camp_images_read on storage.objects for select using (bucket_id = 'camp-images');
+drop policy if exists camp_images_insert on storage.objects;
+create policy camp_images_insert on storage.objects for insert to authenticated with check (bucket_id = 'camp-images' and public.is_admin());
+drop policy if exists camp_images_update on storage.objects;
+create policy camp_images_update on storage.objects for update to authenticated using (bucket_id = 'camp-images' and public.is_admin());
+drop policy if exists camp_images_delete on storage.objects;
+create policy camp_images_delete on storage.objects for delete to authenticated using (bucket_id = 'camp-images' and public.is_admin());

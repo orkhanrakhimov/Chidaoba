@@ -133,7 +133,18 @@
     regs: function (campId) {
       return req('/rest/v1/registrations?select=*' + (campId ? '&camp_id=eq.' + campId : '') + '&order=created_at.desc', {}, true);
     },
-    updateReg: function (id, patch) { return req('/rest/v1/registrations?id=eq.' + id, { method: 'PATCH', body: patch, headers: { Prefer: 'return=representation' } }, true); }
+    updateReg: function (id, patch) { return req('/rest/v1/registrations?id=eq.' + id, { method: 'PATCH', body: patch, headers: { Prefer: 'return=representation' } }, true); },
+    upload: function (blob, name) {
+      var s = session(), path = 'camps/' + Date.now() + '-' + Math.random().toString(36).slice(2, 7) + '-' + name;
+      var base = C.SUPABASE_URL.replace(/\/$/, '');
+      return fetch(base + '/storage/v1/object/camp-images/' + path, {
+        method: 'POST', body: blob,
+        headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + (s ? s.access_token : ''), 'Content-Type': blob.type || 'image/jpeg', 'x-upsert': 'false' }
+      }).catch(function () { throw new Error(NET); }).then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error('Upload failed (' + r.status + '). ' + (/bucket/i.test(t) ? 'Run the latest database update.' : '')); });
+        return base + '/storage/v1/object/public/camp-images/' + path;
+      });
+    }
   };
   function attach(camps, counts) {
     var m = {}; (counts || []).forEach(function (c) { m[c.camp_id] = c; });
@@ -141,16 +152,16 @@
   }
 
   // ---------------- Demo (this browser only) ----------------
-  var DK = 'chd_demo_db';
+  var DK = 'chd_demo_db2';
   function uid() { return 'x' + Math.random().toString(36).slice(2, 10); }
   function iso(offset) { var t = today(); t.setDate(t.getDate() + offset); return t.toISOString().slice(0, 10); }
   function seed() {
     return {
       camps: [{
-        id: uid(), slug: 'demo-bjj-camp-tbilisi', title: 'DEMO — BJJ & No-Gi Camp, Tbilisi', discipline: 'bjj', status: 'published', featured: true,
-        start_date: iso(60), end_date: iso(66), city: 'Tbilisi', country: 'Georgia', venue: '[Venue]', level: 'All levels',
+        id: uid(), slug: 'demo-bjj-camp-tbilisi', title: 'DEMO — BJJ & No-Gi Mountain Camp, Svaneti', venue_key: 'mulakhi', gallery: [], discipline: 'bjj', status: 'published', featured: true,
+        start_date: iso(60), end_date: iso(66), city: 'Mulakhi, Svaneti', country: 'Georgia', venue: 'Ilia Gabliani Sports Complex', level: 'All levels',
         summary: 'Sample camp to preview how camps look. Seven days of gi and no-gi training with Georgian wrestling coaches.',
-        description: 'This is sample content for demo mode only — it is not a real camp.\n\nTwo sessions a day: technique in the morning, live rounds in the evening. Between sessions: recovery, food and time to explore Tbilisi.',
+        description: 'This is sample content for demo mode only — it is not a real camp.\n\nTwo sessions a day: technique in the morning, live rounds in the evening. Between sessions: recovery, food and time to explore Svaneti.',
         capacity: 20, currency: 'EUR', early_bird_deadline: iso(20), registration_deadline: iso(50), deposit_pct: 30, payment_days: 7,
         group_min: 4, group_discount_pct: 10, bank_details: '[Bank name]\n[Account holder]\nIBAN: [GE00 XX00 0000 0000 0000 00]\nReference: your booking code',
         packages: [
@@ -215,13 +226,16 @@
     deleteCamp: function (id) { var x = db(); x.camps = x.camps.filter(function (c) { return c.id !== id; }); x.regs = x.regs.filter(function (r) { return r.camp_id !== id; }); save(x); return wait(true); },
     regs: function (campId) { var x = db(); return wait(x.regs.filter(function (r) { return !campId || r.camp_id === campId; })); },
     updateReg: function (id, patch) { var x = db(); x.regs.forEach(function (r) { if (r.id === id) Object.assign(r, patch); }); save(x); return wait(true); },
-    reset: function () { localStorage.removeItem(DK); return wait(true); }
+    reset: function () { localStorage.removeItem(DK); return wait(true); },
+    upload: function (blob) { return new Promise(function (res) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.readAsDataURL(blob); }); }
   };
 
   var useDemo = demoOn || !live;
   window.CHD = {
     api: useDemo ? demoApi : liveApi,
     mode: useDemo ? (demoOn ? 'demo' : 'empty') : 'live',
+    venue: function (c) { return (window.CHD_VENUES || {})[c && c.venue_key] || null; },
+    cover: function (c) { var v = (window.CHD_VENUES || {})[c && c.venue_key]; return c && c.cover_url ? { url: c.cover_url, thumb: c.cover_url, alt: c.title } : (v ? v.cover : null); },
     live: live, DISC: DISC, money: money, dateRange: dateRange, days: days, isEarly: isEarly, fromPrice: fromPrice, quote: quote, esc: esc, d: d, today: today
   };
   // Without Supabase and without ?demo=1, the public site shows no camps (never sample data).

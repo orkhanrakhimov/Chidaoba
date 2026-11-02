@@ -76,7 +76,8 @@
     var rows = state.camps.map(function (c) {
       var s = statsFor(c); if (c.status !== 'cancelled') { tot.people += s.people; tot.booked += s.booked; tot.received += s.received; tot.unpaid += s.unpaid; }
       var pct = c.capacity ? Math.min(100, Math.round(s.people / c.capacity * 100)) : 0;
-      return '<tr><td><a href="#edit/' + c.id + '"><b>' + e(c.title) + '</b></a><span class="sub">' + e(H.DISC[c.discipline] || '') + ' · ' + e(H.dateRange(c.start_date, c.end_date)) + '</span></td>' +
+      var cv = H.cover(c);
+      return '<tr><td class="cam-td">' + (cv ? '<img class="cam-th" src="' + e(cv.thumb) + '" alt="">' : '<span class="cam-th"></span>') + '<div><a href="#edit/' + c.id + '"><b>' + e(c.title) + '</b></a><span class="sub">' + e(H.DISC[c.discipline] || '') + ' · ' + e(H.dateRange(c.start_date, c.end_date)) + '</span></div></td>' +
         '<td><span class="pill-s s-' + c.status + '">' + STATUS[c.status] + '</span></td>' +
         '<td><b>' + s.people + (c.capacity ? ' / ' + c.capacity : '') + '</b>' + (c.capacity ? '<i class="bar"><b style="width:' + pct + '%"></b></i>' : '') + (s.wl ? '<span class="sub">+' + s.wl + ' waitlist</span>' : '') + '</td>' +
         '<td>' + money(s.booked, c.currency) + '</td><td>' + money(s.received, c.currency) + (s.unpaid ? '<span class="sub warn">' + s.unpaid + ' awaiting deposit</span>' : '') + '</td>' +
@@ -145,7 +146,7 @@
     return { title: '', slug: '', discipline: 'bjj', status: 'draft', featured: false, start_date: '', end_date: '', city: '', country: 'Georgia', venue: '', level: 'All levels',
       summary: '', description: '', capacity: 20, currency: 'EUR', early_bird_deadline: '', registration_deadline: '', deposit_pct: 30, payment_days: 7,
       group_min: 4, group_discount_pct: 10, bank_details: '', packages: [{ id: 'training', name: 'Training only', description: '', price: '', early_price: '' }],
-      addons: [], schedule: [], included: [], excluded: [], coaches: [], faq: [] };
+      addons: [], schedule: [], included: [], excluded: [], coaches: [], faq: [], cover_url: null, gallery: [], venue_key: '', address: '', map_url: '', venue_info: '' };
   }
   function slugify(t) { return (t || '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70); }
   function inp(n, l, v, t, extra) { return '<div class="field"><label for="e-' + n + '">' + l + '</label><input id="e-' + n + '" name="' + n + '" type="' + (t || 'text') + '" value="' + e(v == null ? '' : v) + '"' + (extra || '') + '></div>'; }
@@ -188,6 +189,12 @@
         '<label class="chk"><input type="checkbox" name="featured"' + (c.featured ? ' checked' : '') + '> Feature this camp</label></div>' +
         area('summary', 'Card summary (1–2 sentences)', c.summary) + area('description', 'Full description (blank line = new paragraph)', c.description)) +
 
+      sec('Photos & location', photosHtml(c) +
+        '<div class="g2">' + sel('venue_key', 'Venue', c.venue_key || '', venueOpts()) + inp('address', 'Address (for the map)', c.address) +
+        inp('map_url', 'Google Maps link (optional)', c.map_url, 'url', ' placeholder="https://maps.app.goo.gl/…"') + '</div>' +
+        area('venue_info', 'Venue notes (extra details for this camp)', c.venue_info, 'Rooms, transfers, what to bring…') +
+        '<p class="note">Choosing a venue adds its photos, facilities, meals and map to the camp page. Your own photos above appear first.</p>') +
+
       sec('Spots & pricing', '<div class="g3">' + inp('capacity', 'Capacity (people)', c.capacity, 'number', ' min="1"') +
         sel('currency', 'Currency', c.currency, { EUR: 'EUR €', GEL: 'GEL ₾', USD: 'USD $' }) + inp('deposit_pct', 'Deposit %', c.deposit_pct, 'number', ' min="0" max="100"') +
         inp('payment_days', 'Days to pay deposit', c.payment_days, 'number', ' min="1" max="60"') + inp('early_bird_deadline', 'Early-bird ends', c.early_bird_deadline, 'date') +
@@ -205,6 +212,7 @@
       '<div class="adm-foot"><button class="btn btn-primary" type="submit">Save camp</button>' + (id ? '<button type="button" class="btn btn-ghost danger" id="del">Delete camp</button>' : '') + '<p class="form-msg"></p></div></form>', 'dash');
 
     var form = $('#ef');
+    wirePhotos(c);
     var title = form.elements.title, slug = form.elements.slug, touched = !!c.slug;
     slug.addEventListener('input', function () { touched = true; });
     title.addEventListener('input', function () { if (!touched) slug.value = slugify(title.value); });
@@ -223,6 +231,56 @@
       });
     }
   }
+  function venueOpts() {
+    var o = { '': '— None —' }, V = window.CHD_VENUES || {};
+    Object.keys(V).forEach(function (k) { o[k] = V[k].name + ' — ' + V[k].place; }); return o;
+  }
+  function photosHtml(c) {
+    var gal = (c.gallery || []);
+    return '<div class="ph-wrap"><div class="ph-cover"><span class="rf-l">Cover photo</span><div class="ph-slot" id="ph-cover">' +
+      (c.cover_url ? '<img src="' + e(c.cover_url) + '" alt=""><button type="button" class="ph-x" data-cover aria-label="Remove cover">×</button>' : '<span>No cover — the venue’s photo is used</span>') +
+      '</div><label class="btn btn-ghost ph-btn">Upload cover<input type="file" accept="image/*" id="ph-cover-in" hidden></label></div>' +
+      '<div class="ph-gal"><span class="rf-l">Gallery</span><div class="ph-grid" id="ph-grid">' +
+      gal.map(function (g, i) { return '<figure data-i="' + i + '"><img src="' + e(g.url) + '" alt=""><button type="button" class="ph-x" aria-label="Remove photo">×</button></figure>'; }).join('') +
+      '</div><label class="btn btn-ghost ph-btn">Add photos<input type="file" accept="image/*" multiple id="ph-gal-in" hidden></label><p class="form-msg" id="ph-msg"></p></div></div>';
+  }
+  function shrink(file, max) {
+    return new Promise(function (res, rej) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var k = Math.min(1, max / Math.max(img.width, img.height)), w = Math.round(img.width * k), h = Math.round(img.height * k);
+        var cv = document.createElement('canvas'); cv.width = w; cv.height = h; cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url); cv.toBlob(function (b) { b ? res(b) : rej(new Error('Could not read image')); }, 'image/jpeg', 0.82);
+      };
+      img.onerror = function () { rej(new Error('Could not read image')); }; img.src = url;
+    });
+  }
+  function wirePhotos(c) {
+    var msg = $('#ph-msg');
+    function up(file) { return shrink(file, H.mode === 'demo' ? 1100 : 2000).then(function (b) { return H.api.upload(b, (file.name || 'photo').replace(/[^a-z0-9.]+/gi, '-').replace(/\.[^.]+$/, '') + '.jpg'); }); }
+    function redraw() {
+      $('#ph-cover').innerHTML = c.cover_url ? '<img src="' + e(c.cover_url) + '" alt=""><button type="button" class="ph-x" data-cover aria-label="Remove cover">×</button>' : '<span>No cover — the venue’s photo is used</span>';
+      $('#ph-grid').innerHTML = (c.gallery || []).map(function (g, i) { return '<figure data-i="' + i + '"><img src="' + e(g.url) + '" alt=""><button type="button" class="ph-x" aria-label="Remove photo">×</button></figure>'; }).join('');
+    }
+    $('#ph-cover-in').addEventListener('change', function () {
+      var f = this.files[0]; if (!f) return; msg.className = 'form-msg'; msg.textContent = 'Uploading…';
+      up(f).then(function (u) { c.cover_url = u; redraw(); msg.textContent = 'Cover uploaded — remember to save the camp.'; })
+        .catch(function (err) { msg.className = 'form-msg err'; msg.textContent = err.message; });
+      this.value = '';
+    });
+    $('#ph-gal-in').addEventListener('change', function () {
+      var fs = [].slice.call(this.files); if (!fs.length) return; var n = 0; msg.className = 'form-msg'; msg.textContent = 'Uploading 0 / ' + fs.length + '…';
+      fs.reduce(function (p, f) { return p.then(function () { return up(f).then(function (u) { c.gallery = (c.gallery || []).concat([{ url: u, alt: '' }]); n++; msg.textContent = 'Uploading ' + n + ' / ' + fs.length + '…'; redraw(); }); }); }, Promise.resolve())
+        .then(function () { msg.textContent = fs.length + ' photo' + (fs.length > 1 ? 's' : '') + ' uploaded — remember to save the camp.'; })
+        .catch(function (err) { msg.className = 'form-msg err'; msg.textContent = err.message; });
+      this.value = '';
+    });
+    app.querySelector('.ph-wrap').addEventListener('click', function (ev) {
+      var x = ev.target.closest('.ph-x'); if (!x) return;
+      if (x.hasAttribute('data-cover')) c.cover_url = null; else { var i = +x.closest('figure').dataset.i; c.gallery = c.gallery.filter(function (_, k) { return k !== i; }); }
+      redraw();
+    });
+  }
   function sec(t, inner) { return '<section class="adm-sec"><h2>' + t + '</h2>' + inner + '</section>'; }
 
   function read(form, key) {
@@ -235,7 +293,8 @@
     var num = function (v) { return v === '' || v == null ? null : +v; };
     var lines = function (v) { return v.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); };
     var o = { id: c.id };
-    ['title', 'slug', 'discipline', 'status', 'city', 'country', 'venue', 'level', 'summary', 'description', 'currency', 'bank_details'].forEach(function (k) { o[k] = E[k].value.trim(); });
+    ['title', 'slug', 'discipline', 'status', 'city', 'country', 'venue', 'level', 'summary', 'description', 'currency', 'bank_details', 'address', 'map_url', 'venue_info'].forEach(function (k) { o[k] = E[k].value.trim(); });
+    o.venue_key = E.venue_key.value || null; o.cover_url = c.cover_url || null; o.gallery = c.gallery || [];
     ['start_date', 'end_date', 'early_bird_deadline', 'registration_deadline'].forEach(function (k) { o[k] = E[k].value || null; });
     o.capacity = num(E.capacity.value); o.deposit_pct = num(E.deposit_pct.value) || 0; o.payment_days = num(E.payment_days.value) || 7;
     o.group_min = num(E.group_min.value); o.group_discount_pct = num(E.group_discount_pct.value) || 0; o.featured = E.featured.checked;

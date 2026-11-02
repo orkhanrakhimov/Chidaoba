@@ -48,7 +48,9 @@
     function card(c) {
       var st = state(c), s = spots(c), from = H.fromPrice(c), early = H.isEarly(c);
       var n = H.days(c.start_date, c.end_date);
-      return '<a class="camp-card st-' + st.key + (c.featured ? ' featured' : '') + '" href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '">' +
+      var cv = H.cover(c), v = H.venue(c);
+      return '<a class="camp-card st-' + st.key + (c.featured ? ' featured' : '') + (cv ? ' has-img' : '') + '" href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '">' +
+        (cv ? '<div class="cc-img"><img src="' + e(cv.thumb) + '" alt="' + e(cv.alt || '') + '" loading="lazy"></div>' : '') + '<div class="cc-body">' +
         '<div class="cc-top"><span class="label">' + e(H.DISC[c.discipline] || '') + '</span><span class="cc-status">' + e(st.label) + '</span></div>' +
         '<h3>' + e(c.title) + '</h3>' +
         '<dl class="cc-meta"><div><dt>Dates</dt><dd>' + e(H.dateRange(c.start_date, c.end_date)) + (n ? ' · ' + n + ' days' : '') + '</dd></div>' +
@@ -57,7 +59,7 @@
         (c.summary ? '<p class="cc-sum">' + e(c.summary) + '</p>' : '') +
         '<div class="cc-foot"><div class="cc-price">' + (from != null ? '<span>From</span><b>' + H.money(from, c.currency) + '</b>' + (early ? '<em>Early-bird</em>' : '') : '<b>Price TBA</b>') + '</div>' +
         (s && c.status !== 'completed' ? '<div class="cc-spots"><span>' + (s.left ? s.left + ' of ' + c.capacity + ' spots left' : 'Waitlist open') + '</span><i><b style="width:' + s.pct + '%"></b></i></div>' : '') +
-        '<span class="cc-cta">View camp <span class="arr">→</span></span></div></a>';
+        '<span class="cc-cta">View camp <span class="arr">→</span></span></div></div></a>';
     }
     list.innerHTML = '<p class="body soft loading">Loading camps…</p>';
     H.api.listCamps().then(function (c) { all = c || []; render('all'); })
@@ -92,7 +94,8 @@
     var canBook = c.status === 'published' && st.key !== 'closed';
     var sched = (c.schedule || []).filter(function (d) { return d && (d.day || (d.items || []).length); });
     var html = '';
-    html += '<section class="camp-hero dark"><div class="wrap">' +
+    var cv = H.cover(c), V = H.venue(c);
+    html += '<section class="camp-hero dark' + (cv ? ' has-img' : '') + '">' + (cv ? '<img class="camp-hero-img" src="' + e(cv.url) + '" alt="' + e(cv.alt || '') + '">' : '') + '<div class="wrap">' +
       '<a class="back label muted" href="/camps/">← All camps</a>' +
       '<p class="label muted" style="margin-top:28px"><span class="bar"></span>' + e(H.DISC[c.discipline] || 'Camp') + '</p>' +
       '<h1 class="display h-lg">' + e(c.title) + '</h1>' +
@@ -105,6 +108,35 @@
     html += '<section class="section light camp-body"><div class="wrap camp-grid"><div class="camp-main">';
     if (c.summary) html += '<p class="lead">' + e(c.summary) + '</p>';
     if (c.description) html += '<div class="prose camp-desc">' + paras(c.description) + '</div>';
+    var gal = (c.gallery || []).map(function (g) { return { url: g.url, thumb: g.url, alt: g.alt || c.title }; }).concat(V ? V.gallery : []);
+    if (V || c.address || c.venue_info || gal.length) {
+      var loc = c.address || (V && V.address) || [c.venue, c.city, c.country].filter(Boolean).join(', ');
+      var q = (V && !c.address) ? V.map_query : loc;
+      var vh = '';
+      if (V) {
+        vh += '<p class="lead">' + e(V.intro) + '</p><div class="v-facts">' + V.facts.map(function (f) { return '<div><b>' + e(f[0]) + '</b><span>' + e(f[1]) + '</span></div>'; }).join('') + '</div>';
+      }
+      if (gal.length) {
+        vh += '<div class="gal" data-n="' + gal.length + '">' + gal.slice(0, 5).map(function (g, i) {
+          return '<button type="button" class="gal-i' + (i === 0 ? ' big' : '') + '" data-i="' + i + '" aria-label="View photo: ' + e(g.alt) + '"><img src="' + e(i === 0 ? g.url : g.thumb) + '" alt="' + e(g.alt) + '" loading="lazy">' +
+            (i === 4 && gal.length > 5 ? '<span class="gal-more">+' + (gal.length - 5) + ' photos</span>' : '') + '</button>';
+        }).join('') + '</div>';
+      }
+      if (V) {
+        vh += '<div class="incl v-list"><div><h3>Indoors</h3><ul>' + V.indoor.map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div>' +
+          '<div><h3>Outdoors</h3><ul>' + V.outdoor.map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div></div>';
+        vh += '<details class="menu"><summary>What you’ll eat — the daily menu</summary><div class="menu-grid">' + V.menu.map(function (m) { return '<div><b>' + e(m.meal) + '</b><p>' + e(m.items) + '</p></div>'; }).join('') + '</div></details>';
+      }
+      if (c.venue_info) vh += '<div class="prose camp-desc">' + paras(c.venue_info) + '</div>';
+      if (loc) {
+        var mq = encodeURIComponent(q || loc), open = c.map_url || ('https://www.google.com/maps/search/?api=1&query=' + mq);
+        vh += '<div class="map"><div class="map-top"><div><span class="label">Where</span><b>' + e(V ? V.name : (c.venue || loc)) + '</b><span>' + e(loc) + '</span></div>' +
+          '<a class="btn btn-ghost" href="' + e(open) + '" target="_blank" rel="noopener">Open in Google Maps <span class="arr">→</span></a></div>' +
+          '<button type="button" class="map-load" data-q="' + e(mq) + '">Show map</button></div>';
+      }
+      html += block('Where you’ll train &amp; stay', vh);
+      galleryData = gal;
+    }
     if ((c.packages || []).length) {
       html += block('Packages', '<div class="pkg-list">' + c.packages.map(function (p) {
         var ep = early && p.early_price !== '' && p.early_price != null;
@@ -158,6 +190,13 @@
     html += modal(c, st);
     root.innerHTML = html;
 
+    root.querySelectorAll('.gal-i').forEach(function (b) { b.addEventListener('click', function () { lightbox(+b.dataset.i); }); });
+    var ml = root.querySelector('.map-load');
+    if (ml) ml.addEventListener('click', function () {
+      var f = document.createElement('iframe'); f.className = 'map-frame'; f.loading = 'lazy'; f.title = 'Map';
+      f.referrerPolicy = 'no-referrer-when-downgrade'; f.src = 'https://www.google.com/maps?q=' + ml.dataset.q + '&z=12&output=embed';
+      ml.replaceWith(f);
+    });
     // schedule tabs
     root.querySelectorAll('.sched-tabs button').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -167,6 +206,23 @@
       });
     });
     if (canBook && (c.packages || []).length) wireBooking(c, st);
+  }
+  var galleryData = [];
+  function lightbox(i) {
+    var g = galleryData; if (!g.length) return;
+    var lb = document.createElement('div'); lb.className = 'lb'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
+    lb.innerHTML = '<button class="lb-x" aria-label="Close">×</button><button class="lb-p" aria-label="Previous">‹</button><figure><img alt=""><figcaption></figcaption></figure><button class="lb-n" aria-label="Next">›</button>';
+    document.body.appendChild(lb); document.body.classList.add('modal-open');
+    function show() { var x = g[i]; lb.querySelector('img').src = x.url; lb.querySelector('img').alt = x.alt; lb.querySelector('figcaption').textContent = (i + 1) + ' / ' + g.length + (x.alt ? ' — ' + x.alt : ''); }
+    function close() { lb.remove(); document.body.classList.remove('modal-open'); document.removeEventListener('keydown', key); }
+    function key(ev) { if (ev.key === 'Escape') close(); if (ev.key === 'ArrowRight') { i = (i + 1) % g.length; show(); } if (ev.key === 'ArrowLeft') { i = (i - 1 + g.length) % g.length; show(); } }
+    lb.addEventListener('click', function (ev) {
+      if (ev.target.closest('.lb-n')) { i = (i + 1) % g.length; show(); } else if (ev.target.closest('.lb-p')) { i = (i - 1 + g.length) % g.length; show(); }
+      else if (ev.target.closest('.lb-x') || ev.target === lb) close();
+    });
+    var sx = null; lb.addEventListener('touchstart', function (ev) { sx = ev.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', function (ev) { if (sx == null) return; var dx = ev.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) { i = (i + (dx < 0 ? 1 : -1) + g.length) % g.length; show(); } sx = null; });
+    document.addEventListener('keydown', key); show(); lb.querySelector('.lb-x').focus();
   }
   function fact(k, v) { return '<div><span class="label muted">' + k + '</span><b>' + e(v) + '</b></div>'; }
   function block(t, inner) { return '<div class="camp-block reveal in"><h2 class="display h-md">' + t + '<span class="dot">.</span></h2>' + inner + '</div>'; }

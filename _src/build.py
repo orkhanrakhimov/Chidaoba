@@ -118,8 +118,8 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "5"
-EXTRA_JS = {"/camps/": ["config", "data", "camps"], "/camps/camp/": ["config", "data", "camps"], "/admin/": ["config", "data", "admin"]}
+ASSET_V = "6"
+EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
     js = "".join(f'<script src="/assets/js/{n}.js?v={ASSET_V}" defer></script>' for n in EXTRA_JS.get(path, []))
