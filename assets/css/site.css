@@ -770,3 +770,68 @@ body.menu-open .wa-float { display: none; }
 .light .dark .btn-primary:hover, .dark .dark .btn-primary:hover { background: transparent; color: var(--chalk); }
 .light .dark .btn-ghost { color: var(--chalk); }
 .adm .field select { background-color: transparent; background-position: calc(100% - 12px) 55%, calc(100% - 6px) 55%; background-size: 6px 6px; background-repeat: no-repeat; }
+
+/* =====================================================================
+   STYLE B — ATHLETIC (Archivo, expanded headlines, red actions)
+   Overrides the base styles above.
+   ===================================================================== */
+:root { --font: 'Archivo', 'Noto Sans Georgian', system-ui, -apple-system, sans-serif; --red-dark: #9A1F2A; }
+body { font-family: var(--font); font-variation-settings: 'wdth' 100; }
+.dot, .label .bar { display: none; }
+.display { font-weight: 700; letter-spacing: -.005em; line-height: .92; font-variation-settings: 'wdth' 125; }
+.h-xl { font-size: clamp(38px, 7.6vw, 124px); }
+.h-lg { font-size: clamp(32px, 4.8vw, 76px); }
+.h-md { font-size: clamp(26px, 2.7vw, 42px); line-height: .98; }
+.hero h1.h-xl { font-size: clamp(40px, 8.2vw, 132px); }
+.cx-hero h1 { font-size: clamp(40px, 7.8vw, 126px); }
+.camps-hero h1 { font-size: clamp(38px, 6.2vw, 104px); }
+.page-hero h1 { max-width: 16ch; }
+.label, .chapters a, .nav a, .disc-tabs button, .sched-tabs button, .cc-status, .pill, .news-label, .cc-cta, .book legend, .b-people > span,
+.incl h3, .foot-grid h3, .form-foot .btn, .field label, .field legend, .cc-meta dt, .mobile-menu .label {
+  font-weight: 600; letter-spacing: .06em; font-variation-settings: 'wdth' 120; }
+.label { font-size: 12px; }
+.nav a { font-size: 12px; }
+
+/* buttons: solid red primary, hairline ghost, square corners */
+.btn { border: 0; min-height: 54px; padding: 0 28px; font-size: 14px; font-weight: 600; letter-spacing: .03em; font-variation-settings: 'wdth' 112; }
+.btn.btn-primary, .dark .btn-primary, .light .btn-primary, .alt .btn-primary, .light .dark .btn-primary, .dark .dark .btn-primary {
+  background: var(--red); color: var(--chalk); border: 0; }
+.btn.btn-primary:hover, .dark .btn-primary:hover, .light .btn-primary:hover, .alt .btn-primary:hover, .light .dark .btn-primary:hover, .dark .dark .btn-primary:hover {
+  background: var(--red-dark); color: var(--chalk); }
+.btn-ghost { background: transparent; box-shadow: inset 0 0 0 1px rgba(242,241,236,.38); }
+.light .btn-ghost, .alt .btn-ghost, .adm .btn-ghost, .closing .btn-ghost { box-shadow: inset 0 0 0 1px rgba(32,32,32,.3); }
+.light .dark .btn-ghost { box-shadow: inset 0 0 0 1px rgba(242,241,236,.38); }
+.btn-ghost:hover { box-shadow: inset 0 0 0 1px currentColor; }
+.adm .btn-ghost.danger { box-shadow: inset 0 0 0 1px var(--red); }
+.news-row .btn { background: var(--red); color: var(--chalk); }
+.link { letter-spacing: .04em; font-variation-settings: 'wdth' 112; border-bottom-width: 2px; }
+.link:hover { border-color: var(--red); }
+
+/* numbers and strong display moments */
+.stat b, .details b, .facts b, .pillars b, .steps h3, .disc li, .marquee span, .art-num, .cc-price b, .kpis b, .ref b, .b-sum .tot b,
+.why-word .tr, .drop .big, .pkg-p b, .timeline time, .book-bar b, .formats h3, .levels h3, .unesco .yr {
+  font-weight: 800; letter-spacing: -.01em; font-variation-settings: 'wdth' 125; }
+.disc li { font-size: clamp(24px, 4vw, 60px); }
+.marquee span { font-size: clamp(30px, 4.2vw, 64px); }
+.details b { font-size: clamp(36px, 4.4vw, 76px); }
+.pillars b { font-size: clamp(32px, 3.6vw, 60px); }
+.steps h3 { font-size: clamp(26px, 2.6vw, 38px); }
+.camp-card h3 { font-size: clamp(20px, 1.8vw, 26px); font-weight: 700; text-transform: uppercase; line-height: 1; font-variation-settings: 'wdth' 120; }
+.camp-hero h1 { max-width: 20ch; }
+.scrub { font-weight: 600; letter-spacing: -.012em; font-variation-settings: 'wdth' 100; }
+.lead { font-weight: 400; }
+.why-word { font-size: clamp(64px, 13vw, 220px); }
+.ghost-word { font-weight: 600; }
+
+/* calmer surfaces: fewer hard lines */
+.camp-card { border-color: transparent; }
+.camp-card:hover { border-color: rgba(242,241,236,.3); }
+.camp-card.featured { border-color: transparent; box-shadow: inset 3px 0 0 var(--red); }
+.facts > div + div, .details > div + div, .stat + .stat { border-left-color: transparent; }
+.b-opt input:checked + span { box-shadow: inset 4px 0 0 var(--red); }
+.wa-float { border-radius: 0; font-variation-settings: 'wdth' 112; letter-spacing: .04em; }
+.pill-s { letter-spacing: .04em; }
+.mobile-menu nav a { font-weight: 700; letter-spacing: 0; font-variation-settings: 'wdth' 125; font-size: clamp(28px, 8vw, 46px); }
+.news, .news-row { max-width: 100%; min-width: 0; }
+.news-row .btn { padding: 0 18px; flex: none; }
+.foot-grid > div { min-width: 0; }

@@ -49,7 +49,7 @@ def head(title, desc, path):
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Noto+Sans+Georgian:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Noto+Sans+Georgian:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body>
@@ -118,7 +118,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "4"
+ASSET_V = "5"
 EXTRA_JS = {"/camps/": ["config", "data", "camps"], "/camps/camp/": ["config", "data", "camps"], "/admin/": ["config", "data", "admin"]}
 
 def page(path, title, desc, main):
@@ -475,7 +475,7 @@ def camps():
     </div>
     <div class="faq">{fq}</div>
     <div class="team-cta">
-      <div><p class="label"><span class="bar"></span>Clubs &amp; teams</p><h3 class="display h-md">Want a camp for your club<span class="dot">?</span></h3>
+      <div><p class="label"><span class="bar"></span>Clubs &amp; teams</p><h3 class="display h-md">Want a camp for your club?</h3>
       <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
       <a class="btn btn-primary" href="/contact/">Get in touch {arrow()}</a>
     </div>
