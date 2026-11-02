@@ -11,6 +11,7 @@
   if (live && sessionStorage.getItem('chd_demo') !== '1') demo = false;
   var demoOn = sessionStorage.getItem('chd_demo') === '1';
 
+  var NET = 'Can’t reach the database. Check your internet connection, turn off content blockers for this site, and make sure the Supabase project is active.';
   var DISC = { bjj: 'BJJ & Grappling', wrestling: 'Freestyle & Greco-Roman Wrestling', judo: 'Judo', chidaoba: 'Chidaoba', other: 'Other' };
   var ERR = {
     camp_not_open: 'Registration for this camp is not open.',
@@ -74,6 +75,7 @@
     h.Authorization = 'Bearer ' + (s ? s.access_token : C.SUPABASE_ANON_KEY);
     Object.keys(opt.headers || {}).forEach(function (k) { h[k] = opt.headers[k]; });
     return fetch(C.SUPABASE_URL.replace(/\/$/, '') + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined })
+      .catch(function () { throw new Error(NET); })
       .then(function (r) {
         if (r.status === 401 && auth && s && s.refresh_token && !opt._retried) {
           return refresh().then(function () { opt._retried = true; return req(path, opt, auth); });
@@ -113,7 +115,8 @@
       return fetch(C.SUPABASE_URL.replace(/\/$/, '') + '/auth/v1/token?grant_type=password', {
         method: 'POST', headers: { apikey: C.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, password: pw })
-      }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error_description || j.msg || 'Wrong email or password.'); setSession(j); return j; }); })
+      }).catch(function () { throw new Error(NET); })
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(/invalid/i.test(j.error_description || j.msg || '') ? 'Wrong email or password.' : (j.error_description || j.msg || 'Wrong email or password.')); setSession(j); return j; }); })
         .then(function () { return req('/rest/v1/admins?select=email', {}, true); })
         .then(function (rows) { if (!rows || !rows.length) { setSession(null); throw new Error('This account is not an admin.'); } return true; });
     },
