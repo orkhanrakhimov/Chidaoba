@@ -269,11 +269,160 @@ def culture():
                   "Photo &amp; video archive", "People and contributors", "Recognition &amp; preservation"],
                  ig_btn(), extra)
 
+WEB3FORMS_KEY = ""   # paste the Web3Forms access key here to switch the camp form on
+
+FORMATS = [
+    ("Training Camps", "Several days of focused training in Georgia — two sessions a day with local coaches, plus time to recover and explore."),
+    ("Chidaoba Workshops", "Learn Georgian traditional wrestling: its grips, throws and the music and ritual that surround a bout."),
+    ("Wrestling Seminars", "Technical sessions with Georgian wrestling coaches, built around specific positions and throws."),
+    ("BJJ / No-Gi Camps", "Grappling camps where Georgian wrestling meets Brazilian Jiu-Jitsu and no-gi — takedowns to the ground."),
+    ("Competitions", "Tournaments and challenge matches, from friendly club events to open competitions."),
+    ("Open Mats", "Drop-in sessions to roll, drill and meet local grapplers — no programme, just training."),
+    ("Cultural Experiences", "Time off the mat: Georgian food, landscapes, music and the places where the tradition lives."),
+    ("Other Events", "Talks, screenings, team trips and collaborations with clubs and academies."),
+]
+
 def camps():
-    return inner("Camps &amp; Events", "Train. Connect. Experience<span class=\"dot\">.</span>",
-                 "Discover training camps, workshops, competitions and experiences rooted in Georgian grappling culture.",
-                 "First camps and dates — announced soon<span class=\"dot\">.</span>", CATS + ["Other Events"],
-                 ig_btn("Follow for first dates"))
+    fmts = "".join(f'<div class="reveal"><span class="n">{i+1:02d}</span><h3>{t}</h3><p>{d}</p></div>' for i, (t, d) in enumerate(FORMATS))
+    sched = [("09:00", "Morning training", "Technique and drilling — the main session of the day."),
+             ("11:30", "Recovery &amp; lunch", "Rest, food, free time."),
+             ("14:00", "Cultural activity", "A visit, a walk, a meal together — the Georgia around the mat."),
+             ("18:00", "Evening training", "Live rounds, sparring and specific situations."),
+             ("20:30", "Dinner", "Together, Georgian style.")]
+    tl = "".join(f'<li><time>{a}</time><div><b>{b}</b><span>{c}</span></div></li>' for a, b, c in sched)
+    yes = [("Training sessions", "Every camp"), ("Coaches &amp; instructors", "Every camp"), ("Cultural activities", "Most camps")]
+    opt = [("Accommodation", "Optional — depends on the camp"), ("Meals", "Depends on the camp"), ("Transfers &amp; transport", "Depends on the camp"), ("Flights", "Not included")]
+    yl = "".join(f'<li class="yes"><i>✓</i>{a}<small>{b}</small></li>' for a, b in yes)
+    ol = "".join(f'<li><i>—</i>{a}<small>{b}</small></li>' for a, b in opt)
+    types = "".join(f'<label><input type="checkbox" name="camp_types" value="{t}"><span>{t}</span></label>' for t, _ in FORMATS[:7])
+    countries_hint = "e.g. Georgia, Germany, USA"
+    key = WEB3FORMS_KEY
+    disabled = "" if key else " disabled"
+    pending = "" if key else '<p class="form-msg">Registration opens very soon. Until then, message us on Instagram <a href="' + IG + '" rel="noopener">@chidaobaculture</a>.</p>'
+    faqs = [
+        ("Do I need experience?", "No. Camps will list their level — some are open to beginners, others are for experienced wrestlers and grapplers. Tell us your level in the form and we’ll point you to the right one."),
+        ("Do I need to speak Georgian?", "No. Sessions and communication for international guests will be in English. Learning a few Georgian words is welcome, of course."),
+        ("Which camps run, and when?", "The first dates are being finalised. Register your interest and you’ll hear about them before they are announced publicly."),
+        ("How do I get to Georgia?", "Georgia has international airports in Tbilisi, Kutaisi and Batumi. Each camp page will say which airport is closest and whether transfers are included. Please check the visa requirements for your passport before booking."),
+        ("What should I bring?", "Your usual training gear — for grappling camps, a gi and/or no-gi kit depending on the camp. A full packing list will be on each camp page."),
+        ("Is registering interest a booking?", "No. It’s free and doesn’t commit you to anything. When a camp opens, we’ll send you the details and you decide."),
+    ]
+    fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
+    return f"""
+<section class="page-hero dark">
+  {sym_svg("ghost")}
+  <div class="wrap" style="position:relative">
+    <p class="label muted"><span class="bar"></span>Camps &amp; Events</p>
+    <h1 class="display h-xl">Train. Connect. Experience<span class="dot">.</span></h1>
+    <p class="lead soft">Training camps, workshops, competitions and experiences rooted in Georgian grappling culture — in Georgia and abroad.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:36px">
+      <a class="btn btn-primary" href="#register">Register your interest {arrow()}</a>
+      <a class="btn btn-ghost" href="#what">What is a camp {arrow()}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section light" id="what">
+  <div class="wrap intro">
+    <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 — What is a camp</p>
+    <h2 class="display h-lg reveal">Train where the culture lives<span class="dot">.</span></h2>
+    <div class="text reveal">
+      <p class="lead">A CHIDAOBA CULTURE camp is a few days to a week in Georgia built around training — wrestling, Chidaoba and grappling sessions with local coaches.</p>
+      <p class="body muted">Between sessions you meet the people, food, landscapes and traditions that shaped Georgian wrestling. You leave with better technique, new training partners and a real sense of where it all comes from. Camps are small, organised end-to-end, and open to international guests.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section light" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:40px">
+      <p class="label"><span class="bar"></span>02 — Formats</p>
+      <h2 class="display h-md">Eight ways to train and take part<span class="dot">.</span></h2>
+    </div>
+    <div class="formats">{fmts}</div>
+  </div>
+</section>
+
+<section class="section dark">
+  <div class="wrap day">
+    <div class="reveal">
+      <p class="label muted"><span class="bar"></span>03 — A typical day</p>
+      <h2 class="display h-md">Two sessions. One country<span class="dot">.</span></h2>
+      <p class="body soft">An example of a training-camp day. Every camp publishes its own detailed daily schedule.</p>
+    </div>
+    <ol class="timeline reveal">{tl}</ol>
+  </div>
+</section>
+
+<section class="section light">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:40px">
+      <p class="label"><span class="bar"></span>04 — Who it’s for</p>
+      <h2 class="display h-md">Every level has a place on the mat<span class="dot">.</span></h2>
+    </div>
+    <div class="levels">
+      <div class="reveal"><p class="label" style="color:var(--red)">Beginners</p><h3>New to wrestling or grappling</h3><p>Fit and curious? Selected camps and workshops start from the basics — safely, with patient coaches.</p></div>
+      <div class="reveal"><p class="label" style="color:var(--red)">Experienced</p><h3>Wrestlers, judoka, grapplers</h3><p>Sharpen your stand-up and grips with Georgian coaches and hard training partners.</p></div>
+      <div class="reveal"><p class="label" style="color:var(--red)">Teams &amp; coaches</p><h3>Clubs and academies</h3><p>Bring your team. We can shape a camp around your club’s level, dates and goals.</p></div>
+    </div>
+    <div class="incl" style="margin-top:clamp(56px,7vw,96px)">
+      <div><h3>Included</h3><ul>{yl}</ul></div>
+      <div><h3>Optional / varies</h3><ul>{ol}</ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="section dark" id="register">
+  <div class="wrap reg">
+    <div class="reg-intro">
+      <p class="label muted"><span class="bar"></span>05 — Register your interest</p>
+      <h2 class="display h-md">Be first on the mat<span class="dot">.</span></h2>
+      <p class="body soft">Tell us who you are and what you’d like to train. We’ll contact you with dates, prices and details as soon as camps open — before they’re announced publicly. Free, and not a booking.</p>
+      <p class="label muted">Under 18? A parent or guardian should fill in this form.</p>
+    </div>
+    <form id="camp-form" data-key="{key}" novalidate>
+      <input type="hidden" name="subject" value="New camp interest — chidaoba.com">
+      <input type="hidden" name="from_name" value="chidaoba.com">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name" required></div>
+      <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="f-country">Country</label><input id="f-country" name="country" autocomplete="country-name" placeholder="{countries_hint}" required></div>
+      <div class="field"><label for="f-phone">Phone / WhatsApp <em>optional</em></label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
+      <div class="field"><label for="f-age">Age</label><input id="f-age" name="age" type="number" min="8" max="99" inputmode="numeric" required></div>
+      <div class="field"><label for="f-exp">Grappling experience</label>
+        <select id="f-exp" name="experience" required>
+          <option value="">Select…</option><option>None — complete beginner</option><option>Under 1 year</option>
+          <option>1–3 years</option><option>3–5 years</option><option>5+ years</option><option>Competitive athlete</option><option>Coach</option>
+        </select></div>
+      <div class="field"><label for="f-level">Belt or skill level <em>optional</em></label><input id="f-level" name="level" placeholder="e.g. BJJ blue belt, national-level wrestler"></div>
+      <div class="field"><label for="f-club">Club or academy <em>optional</em></label><input id="f-club" name="club" autocomplete="organization"></div>
+      <fieldset class="field full"><legend>What are you interested in? <em>choose any</em></legend><div class="checks">{types}</div></fieldset>
+      <div class="field"><label for="f-when">Preferred time</label>
+        <select id="f-when" name="preferred_time"><option>Flexible</option><option>Spring</option><option>Summer</option><option>Autumn</option><option>Winter</option></select></div>
+      <div class="field"><label for="f-acc">Accommodation</label>
+        <select id="f-acc" name="accommodation"><option>Need accommodation</option><option>Don’t need it</option><option>Not sure yet</option></select></div>
+      <div class="field full"><label for="f-msg">Anything else? <em>optional</em></label><textarea id="f-msg" name="message" placeholder="Group size, injuries we should know about, questions…"></textarea></div>
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA CULTURE may use these details to contact me about camps and events, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
+      <div class="form-foot"><button class="btn btn-primary" type="submit"{disabled}>Send {arrow()}</button>{pending if pending else '<p class="form-msg" aria-live="polite"></p>'}</div>
+    </form>
+    <div class="done" id="camp-done" role="status">
+      <p class="label muted"><span class="bar"></span>Received</p>
+      <h3 class="display h-md">You’re on the list<span class="dot">.</span></h3>
+      <p class="body soft">Thank you. We’ll be in touch as soon as camps open. In the meantime, follow <a href="{IG}" rel="noopener">@chidaobaculture</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section light">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:24px">
+      <p class="label"><span class="bar"></span>06 — Questions</p>
+      <h2 class="display h-md">Good to know<span class="dot">.</span></h2>
+    </div>
+    <div class="faq">{fq}</div>
+  </div>
+</section>
+"""
 
 def community():
     return inner("Community", "Built by people<span class=\"dot\">.</span>",
@@ -302,11 +451,14 @@ def privacy():
 <section class="section light"><div class="wrap prose">
 <p class="label muted">Last updated: November 2026</p>
 <h2>What this website collects</h2>
-<p>At the moment chidaoba.com does not collect personal data. There are no forms, accounts, analytics or advertising cookies on this site.</p>
+<p>The only personal data chidaoba.com collects is what you choose to send through the camp interest form on the Camps &amp; Events page: your name, email, country, age, training experience and the optional details you add (phone/WhatsApp, belt or skill level, club, accommodation needs and your message).</p>
+<p>We use these details only to contact you about camps and events. We don’t sell or share them, and there are no accounts, analytics or advertising cookies on this site.</p>
+<h2>How the form works</h2>
+<p>Form submissions are delivered to our email by Web3Forms, a form-processing service. We keep your details only as long as needed to organise camps and events. To see, correct or delete what we hold about you, message us and we’ll do it.</p>
 <h2>Third-party services</h2>
 <p>The site is hosted on GitHub Pages and loads its typefaces from Google Fonts. Like any web server, these services receive technical information such as your IP address when your browser requests a page or a font. Their own privacy policies apply.</p>
 <h2>Changes</h2>
-<p>When we add event registration, the newsletter or the shop, this page will be updated before any personal data is collected, explaining what we collect, why, and how to request access or deletion.</p>
+<p>When we add the newsletter, accounts or the shop, this page will be updated before any new personal data is collected.</p>
 <h2>Contact</h2>
 <p>Questions: message us on Instagram at <a href="{IG}" rel="noopener">{IG_HANDLE}</a>.</p>
 </div></section>"""

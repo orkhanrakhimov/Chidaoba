@@ -28,3 +28,37 @@
     els.forEach(function (el) { el.classList.add('in'); });
   }
 })();
+
+// Camp interest / registration form (Web3Forms)
+(function () {
+  var form = document.getElementById('camp-form');
+  if (!form) return;
+  var msg = form.querySelector('.form-msg');
+  var btn = form.querySelector('button[type="submit"]');
+  var done = document.getElementById('camp-done');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!form.dataset.key) return;
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    var data = new FormData(form);
+    var types = data.getAll('camp_types');
+    data.delete('camp_types');
+    data.append('camp_types', types.join(', ') || '—');
+    data.append('access_key', form.dataset.key);
+    btn.disabled = true; msg.className = 'form-msg'; msg.textContent = 'Sending…';
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Accept': 'application/json' }, body: data })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.success, j: j }; }); })
+      .then(function (res) {
+        if (res.ok) {
+          form.style.display = 'none';
+          done.classList.add('show');
+          done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else { throw new Error((res.j && res.j.message) || 'Failed'); }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        msg.className = 'form-msg err';
+        msg.textContent = 'Something went wrong. Please try again, or message us on Instagram @chidaobaculture.';
+      });
+  });
+})();
