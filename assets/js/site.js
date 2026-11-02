@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE — site behaviours
+// CHIDAOBA CULTURE, site behaviours
 (function () {
   var body = document.body;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -109,14 +109,14 @@
       form.querySelectorAll('input[type="checkbox"][name]').forEach(function (c) {
         if (c.name !== 'consent' && c.name !== 'botcheck') multi[c.name] = true;
       });
-      Object.keys(multi).forEach(function (n) { var v = data.getAll(n); data.delete(n); data.append(n, v.join(', ') || '—'); });
+      Object.keys(multi).forEach(function (n) { var v = data.getAll(n); data.delete(n); data.append(n, v.join(', ') || '-'); });
       var subject = data.get('subject') || 'Message from chidaoba.com';
       var key = form.dataset.key;
       if (!key) {
         var lines = [];
         data.forEach(function (v, k) { if (['subject', 'from_name', 'botcheck', 'access_key'].indexOf(k) < 0 && v) lines.push(k.replace(/_/g, ' ') + ': ' + v); });
         window.location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
-        say('Your email app should open with the message ready — just press send. If nothing happens, email us at ' + EMAIL + '.', 'ok');
+        say('Your email app should open with the message ready. Just press send. If nothing happens, email us at ' + EMAIL + '.', 'ok');
         return;
       }
       data.append('access_key', key);
@@ -126,7 +126,7 @@
         .then(function (ok) {
           if (!ok) throw new Error('failed');
           if (done) { form.style.display = 'none'; done.classList.add('show'); done.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-          else { form.reset(); btn.disabled = false; say(form.dataset.okText || 'Thank you — received.', 'ok'); }
+          else { form.reset(); btn.disabled = false; say(form.dataset.okText || 'Thank you. Received.', 'ok'); }
         })
         .catch(function () { btn.disabled = false; say('Something went wrong. Please try again, or email ' + EMAIL + '.', 'err'); });
     });

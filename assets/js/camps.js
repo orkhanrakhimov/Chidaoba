@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE — public camps: list, detail page, booking
+// CHIDAOBA CULTURE, public camps: list, detail page, booking
 (function () {
   var H = window.CHD; if (!H) return;
   var e = H.esc, $ = function (s, r) { return (r || document).querySelector(s); };
@@ -7,7 +7,7 @@
   if (H.mode === 'demo') {
     var b = document.createElement('div');
     b.className = 'demo-bar';
-    b.innerHTML = 'Demo mode — sample camps, saved only in this browser. <a href="?demo=0">Exit demo</a>';
+    b.innerHTML = 'Demo mode: sample camps, saved only in this browser. <a href="?demo=0">Exit demo</a>';
     document.body.prepend(b);
   }
 
@@ -18,10 +18,10 @@
   }
   function state(c) {
     if (c.status === 'completed') return { key: 'done', label: 'Completed' };
-    if (c.status === 'sold_out') return { key: 'full', label: 'Sold out — join waitlist' };
+    if (c.status === 'sold_out') return { key: 'full', label: 'Sold out, join waitlist' };
     if (c.registration_deadline && H.today() > H.d(c.registration_deadline)) return { key: 'closed', label: 'Registration closed' };
     var s = spots(c);
-    if (s && s.left === 0) return { key: 'full', label: 'Full — join waitlist' };
+    if (s && s.left === 0) return { key: 'full', label: 'Full, join waitlist' };
     if (s && s.left <= Math.max(3, Math.ceil(c.capacity * 0.2))) return { key: 'few', label: 'Only ' + s.left + ' spot' + (s.left === 1 ? '' : 's') + ' left' };
     return { key: 'open', label: 'Open for registration' };
   }
@@ -89,7 +89,7 @@
   function paras(t) { return (t || '').split(/\n\s*\n/).map(function (p) { return '<p>' + e(p).replace(/\n/g, '<br>') + '</p>'; }).join(''); }
 
   function renderCamp(c) {
-    document.title = c.title + ' — Camps | CHIDAOBA CULTURE';
+    document.title = c.title + ' | CHIDAOBA CULTURE';
     var st = state(c), s = spots(c), n = H.days(c.start_date, c.end_date), early = H.isEarly(c);
     var canBook = c.status === 'published' && st.key !== 'closed';
     var sched = (c.schedule || []).filter(function (d) { return d && (d.day || (d.items || []).length); });
@@ -102,7 +102,7 @@
       '<div class="facts-row">' +
       fact('Dates', H.dateRange(c.start_date, c.end_date)) + (n ? fact('Duration', n + ' days') : '') +
       fact('Where', [c.venue, c.city, c.country].filter(Boolean).join(', ') || 'TBA') + (c.level ? fact('Level', c.level) : '') +
-      (s ? fact('Spots', s.left ? s.left + ' of ' + c.capacity + ' left' : 'Full — waitlist') : '') +
+      (s ? fact('Spots', s.left ? s.left + ' of ' + c.capacity + ' left' : 'Full (waitlist open)') : '') +
       '</div><span class="cc-status hero-status st-' + st.key + '">' + e(st.label) + '</span></div></section>';
 
     html += '<section class="section light camp-body"><div class="wrap camp-grid"><div class="camp-main">';
@@ -125,7 +125,7 @@
       if (V) {
         vh += '<div class="incl v-list"><div><h3>Indoors</h3><ul>' + V.indoor.map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div>' +
           '<div><h3>Outdoors</h3><ul>' + V.outdoor.map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div></div>';
-        vh += '<details class="menu"><summary>What you’ll eat — the daily menu</summary><div class="menu-grid">' + V.menu.map(function (m) { return '<div><b>' + e(m.meal) + '</b><p>' + e(m.items) + '</p></div>'; }).join('') + '</div></details>';
+        vh += '<details class="menu"><summary>What you’ll eat: the daily menu</summary><div class="menu-grid">' + V.menu.map(function (m) { return '<div><b>' + e(m.meal) + '</b><p>' + e(m.items) + '</p></div>'; }).join('') + '</div></details>';
       }
       if (c.venue_info) vh += '<div class="prose camp-desc">' + paras(c.venue_info) + '</div>';
       if (loc) {
@@ -151,7 +151,7 @@
     }
     if ((c.included || []).length || (c.excluded || []).length) {
       html += block('What’s included', '<div class="incl"><div><h3>Included</h3><ul>' + (c.included || []).map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div>' +
-        '<div><h3>Not included</h3><ul>' + (c.excluded || []).map(function (t) { return '<li><i>—</i>' + e(t) + '</li>'; }).join('') + '</ul></div></div>');
+        '<div><h3>Not included</h3><ul>' + (c.excluded || []).map(function (t) { return '<li><i>×</i>' + e(t) + '</li>'; }).join('') + '</ul></div></div>');
     }
     if ((c.coaches || []).length) {
       html += block('Coaches', '<div class="coaches">' + c.coaches.map(function (k) {
@@ -213,7 +213,7 @@
     var lb = document.createElement('div'); lb.className = 'lb'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
     lb.innerHTML = '<button class="lb-x" aria-label="Close">×</button><button class="lb-p" aria-label="Previous">‹</button><figure><img alt=""><figcaption></figcaption></figure><button class="lb-n" aria-label="Next">›</button>';
     document.body.appendChild(lb); document.body.classList.add('modal-open');
-    function show() { var x = g[i]; lb.querySelector('img').src = x.url; lb.querySelector('img').alt = x.alt; lb.querySelector('figcaption').textContent = (i + 1) + ' / ' + g.length + (x.alt ? ' — ' + x.alt : ''); }
+    function show() { var x = g[i]; lb.querySelector('img').src = x.url; lb.querySelector('img').alt = x.alt; lb.querySelector('figcaption').textContent = (i + 1) + ' / ' + g.length + (x.alt ? ', ' + x.alt : ''); }
     function close() { lb.remove(); document.body.classList.remove('modal-open'); document.removeEventListener('keydown', key); }
     function key(ev) { if (ev.key === 'Escape') close(); if (ev.key === 'ArrowRight') { i = (i + 1) % g.length; show(); } if (ev.key === 'ArrowLeft') { i = (i - 1 + g.length) % g.length; show(); } }
     lb.addEventListener('click', function (ev) {
@@ -311,10 +311,10 @@
       '<h2 class="display h-md">' + (wait ? 'You’re on the waitlist' : 'Almost there, ' + e(p.full_name.split(' ')[0])) + '<span class="dot">.</span></h2>' +
       '<div class="ref"><span class="label muted">Your booking code</span><b>' + e(r.ref) + '</b></div>';
     if (wait) {
-      h += '<p class="body">The camp is full right now. If a spot opens, we’ll contact you at ' + e(p.email) + ' or on WhatsApp — first come, first served.</p>';
+      h += '<p class="body">The camp is full right now. If a spot opens, we’ll contact you at ' + e(p.email) + ' or on WhatsApp. First come, first served.</p>';
     } else {
       h += '<div class="b-sum"><div><span>Total</span><b>' + m(r.total) + '</b></div>' + (r.discount ? '<div class="disc"><span>Includes group discount</span><b>−' + m(r.discount) + '</b></div>' : '') +
-        '<div class="dep"><span>Deposit (' + r.deposit_pct + '%) — pay by ' + e(H.dateRange(r.pay_by)) + '</span><b>' + m(r.deposit) + '</b></div></div>' +
+        '<div class="dep"><span>Deposit (' + r.deposit_pct + '%), pay by ' + e(H.dateRange(r.pay_by)) + '</span><b>' + m(r.deposit) + '</b></div></div>' +
         '<p class="label" style="margin-top:28px">Bank transfer</p><pre class="bank">' + e(r.bank_details || 'We’ll send you payment details shortly.') + '</pre>' +
         '<p class="body">Use <b>' + e(r.ref) + '</b> as the payment reference. Your spot is confirmed once the deposit arrives. The rest is paid before the camp starts.</p>';
     }

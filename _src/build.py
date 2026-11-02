@@ -61,7 +61,7 @@ def header(path):
     mlinks = "".join(f'<a href="{h}"{" aria-current=\"page\"" if h == path else ""}>{t}</a>' for h, t in NAV)
     return f"""<header class="site-head">
   <div class="wrap">
-    <a class="brand" href="/" aria-label="CHIDAOBA CULTURE — home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA CULTURE" width="26" height="36"></a>
+    <a class="brand" href="/" aria-label="CHIDAOBA CULTURE home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA CULTURE" width="26" height="36"></a>
     <nav class="nav" aria-label="Main">{links}</nav>
     <div class="head-tools">
       <a class="bag" href="/shop/" aria-label="Shopping bag, 0 items">{BAG}<span aria-hidden="true">0</span></a>
@@ -71,7 +71,7 @@ def header(path):
 </header>
 <div class="mobile-menu" id="mobile-menu">
   <nav aria-label="Mobile">{mlinks}</nav>
-  <a class="label" href="{IG}" rel="noopener">Instagram — {IG_HANDLE}</a>
+  <a class="label" href="{IG}" rel="noopener">Instagram {IG_HANDLE}</a>
 </div>
 """
 
@@ -80,11 +80,11 @@ WA_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><
 def newsletter_form(where):
     big = where != "foot"
     return f"""<form class="js-form news{' news-big' if big else ''}" data-key="{WEB3FORMS_KEY}" data-ok-text="You’re on the list. Welcome to The Culture Letter." novalidate>
-      <input type="hidden" name="subject" value="Newsletter signup — The Culture Letter">
+      <input type="hidden" name="subject" value="Newsletter signup, The Culture Letter">
       <input type="hidden" name="from_name" value="chidaoba.com">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="news-label" for="nl-{where}">The Culture Letter</label>
-      <p class="news-sub">Camps, events, new releases and stories — a few times a year.</p>
+      <p class="news-sub">Camps, events, new releases and stories. A few times a year.</p>
       <div class="news-row"><input id="nl-{where}" name="email" type="email" autocomplete="email" placeholder="Your email" required>
       <button class="btn btn-primary" type="submit">Subscribe</button></div>
       <label class="news-consent"><input type="checkbox" name="consent" value="yes" required> I agree to receive emails and accept the <a href="/privacy/">privacy notice</a>.</label>
@@ -118,7 +118,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "6"
+ASSET_V = "7"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
@@ -142,17 +142,17 @@ def home():
 <section class="hero dark" aria-labelledby="hero-title">
   {sym_svg("hero-sym")}
   <div class="wrap">
-    <p class="label muted fade-load"><span class="bar"></span>Chidaoba Culture — Tbilisi, Georgia</p>
+    <p class="label muted fade-load"><span class="bar"></span>Chidaoba Culture, Tbilisi, Georgia</p>
     <div>
       <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
-      <p class="lead soft fade-load">A culture shaped by movement, discipline and the spirit of Georgian wrestling — and a home for everyone who wrestles and grapples today.</p>
+      <p class="lead soft fade-load">A culture shaped by movement, discipline and the spirit of Georgian wrestling, and a home for everyone who wrestles and grapples today.</p>
       <div class="ctas fade-load">
         <a class="btn btn-primary" href="/culture/">Explore culture {arrow()}</a>
         <a class="btn btn-ghost" href="/camps/">Discover camps {arrow()}</a>
       </div>
     </div>
     <div class="hero-foot label muted">
-      <span>Chidaoba — UNESCO Intangible Cultural Heritage, 2018</span>
+      <span>Chidaoba, UNESCO Intangible Cultural Heritage, 2018</span>
       <span class="scroll-cue"><i></i>Scroll</span>
     </div>
   </div>
@@ -161,29 +161,29 @@ def home():
 <section class="section light" aria-labelledby="intro-title">
   <div class="wrap">
     <div class="intro">
-      <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 — The culture</p>
+      <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 · The culture</p>
       <h2 id="intro-title" class="display h-lg reveal">More than a wrestling style<span class="dot">.</span></h2>
       <div class="text reveal">
-        <p class="scrub scrub-sm">Chidaoba is more than a traditional wrestling discipline. It is movement, discipline and heritage — a connection between generations, carried through the grip.</p>
-        <p class="body muted">For centuries it has combined wrestling with music, dance and its own garments. CHIDAOBA CULTURE exists to preserve, develop, modernise and share that culture — and to connect it with today’s wrestling, judo, Brazilian Jiu-Jitsu and grappling world.</p>
+        <p class="scrub scrub-sm">Chidaoba is more than a traditional wrestling discipline. It is movement, discipline and heritage, a connection between generations, carried through the grip.</p>
+        <p class="body muted">For centuries it has combined wrestling with music, dance and its own garments. CHIDAOBA CULTURE exists to preserve, develop, modernise and share that culture, and to connect it with today’s wrestling, judo, Brazilian Jiu-Jitsu and grappling world.</p>
         <a class="link" href="/culture/" style="align-self:start">What is Chidaoba</a>
       </div>
       <div class="stats stagger">
         <div class="stat"><b data-count="2018" data-from="1900">2018</b><span>Chidaoba, wrestling in Georgia, inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</span></div>
-        <div class="stat"><b data-count="200" data-pre="≈">≈200</b><span>Holds and counter-holds, by UNESCO’s estimate — and the creativity of combining them.</span></div>
+        <div class="stat"><b data-count="200" data-pre="≈">≈200</b><span>Holds and counter-holds by UNESCO’s estimate, and the creativity of combining them.</span></div>
         <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა. One letter carries the brand.</span></div>
       </div>
     </div>
-    <p class="src">Source: <a href="{UNESCO}" rel="noopener">UNESCO Intangible Cultural Heritage — Chidaoba, wrestling in Georgia</a></p>
+    <p class="src">Source: <a href="{UNESCO}" rel="noopener">UNESCO Intangible Cultural Heritage: Chidaoba, wrestling in Georgia</a></p>
   </div>
 </section>
 
 <section class="section dark" aria-labelledby="camps-title">
   <div class="wrap">
     <div class="sec-head">
-      <p class="label muted"><span class="bar"></span>02 — Camps &amp; Events</p>
+      <p class="label muted"><span class="bar"></span>02 · Camps &amp; Events</p>
       <h2 id="camps-title" class="display h-lg reveal">Train. Connect. Experience<span class="dot">.</span></h2>
-      <p class="body soft reveal">Training camps, workshops, competitions and cultural experiences rooted in Georgian grappling culture — in Georgia and abroad.</p>
+      <p class="body soft reveal">Training camps, workshops, competitions and cultural experiences rooted in Georgian grappling culture, in Georgia and abroad.</p>
     </div>
     <article class="feature reveal">
       <div class="feature-visual" aria-hidden="true">{sym_svg("")}<div class="ring"></div></div>
@@ -205,16 +205,16 @@ def home():
   <div class="wrap">
     <div class="duo">
       <article class="reveal">
-        <p class="label"><span class="bar"></span>03 — Community</p>
+        <p class="label"><span class="bar"></span>03 · Community</p>
         <h2 class="display h-md">Built by people<span class="dot">.</span></h2>
-        <p class="body muted">Athletes, coaches and clubs who carry the culture — in Georgia and around the world. Profiles are in preparation.</p>
+        <p class="body muted">Athletes, coaches and clubs who carry the culture, in Georgia and around the world. Profiles are in preparation.</p>
         <div class="cols3"><div><b>Athletes</b><span>Wrestlers and grapplers</span></div><div><b>Coaches</b><span>The people who teach</span></div><div><b>Clubs</b><span>Where to train</span></div></div>
         <a class="link" href="/contact/" style="align-self:start">Coach, athlete or club? Get in touch</a>
       </article>
       <article class="reveal">
-        <p class="label"><span class="bar"></span>04 — Journal</p>
+        <p class="label"><span class="bar"></span>04 · Journal</p>
         <h2 class="display h-md">Stories from the circle<span class="dot">.</span></h2>
-        <p class="body muted">An editorial home for Georgian wrestling and grappling — heritage, technique, training and the people behind it. First stories coming soon.</p>
+        <p class="body muted">An editorial home for Georgian wrestling and grappling: heritage, technique, training and the people behind it. First stories coming soon.</p>
         <ul class="chips">{jchips}</ul>
         <a class="link" href="/journal/" style="align-self:start">Visit the journal</a>
       </article>
@@ -227,9 +227,9 @@ def home():
   <div class="wrap">
     <div class="drop-grid">
       <div class="reveal">
-        <p class="label muted"><span class="bar"></span>05 — Apparel</p>
+        <p class="label muted"><span class="bar"></span>05 · Apparel</p>
         <h2 id="drop-title" class="display h-lg">Drop 01<span class="dot">.</span></h2>
-        <p class="lead soft">The first collection is in development: heavyweight tees, hoodies, shorts and rashguards — made to be trained in.</p>
+        <p class="lead soft">The first collection is in development: heavyweight tees, hoodies, shorts and rashguards, made to be trained in.</p>
         <a class="btn btn-primary" href="/shop/" style="align-self:start">Explore collection {arrow()}</a>
       </div>
     </div>
@@ -238,7 +238,7 @@ def home():
 
 <section class="section dark invite" aria-labelledby="invite-title" style="border-top:1px solid var(--carbon-line)">
   <div class="wrap">
-    <p class="label muted"><span class="bar"></span>06 — Join</p>
+    <p class="label muted"><span class="bar"></span>06 · Join</p>
     <h2 id="invite-title" class="display h-lg reveal" style="margin-top:24px">More than a sport. A culture we share<span class="dot">.</span></h2>
     <div class="invite-links reveal">
       <a href="{IG}" rel="noopener"><span class="label muted">Instagram</span><b>{IG_HANDLE} →</b></a>
@@ -285,11 +285,11 @@ AFP = "https://en.prothomalo.com/sports/Chidaoba-wrestling-gets-UNESCO-protected
 
 def culture():
     story = [
-        ("Long before it was a sport, Chidaoba was preparation for battle — a skill it kept until the late Middle Ages.", "UNESCO"),
+        ("Long before it was a sport, Chidaoba was preparation for battle, a skill it kept until the late Middle Ages.", "UNESCO"),
         ("Then the fight became a celebration. Tournaments moved into open-air arenas in villages and towns, surrounded by large crowds.", "UNESCO; AFP, 2018"),
-        ("Music opened every bout. The zurna and the doli set the rhythm, the crowd formed the circle — and sometimes the wrestlers left the arena dancing.", "UNESCO"),
+        ("Music opened every bout. The zurna and the doli set the rhythm, the crowd formed the circle, and sometimes the wrestlers left the arena dancing.", "UNESCO"),
         ("Its code was chivalric. Strength mattered, but so did respect: for the opponent, and for the people watching.", "UNESCO Decision 13.COM 10.b.15"),
-        ("It was passed from one generation to the next — in families, schools and village clubs. Children learned by watching, then practised outdoors from spring to autumn.", "UNESCO; AFP, 2018"),
+        ("It was passed from one generation to the next, in families, schools and village clubs. Children learned by watching, then practised outdoors from spring to autumn.", "UNESCO; AFP, 2018"),
         ("Today there is a wrestling section in almost every village and city in Georgia. The tradition is still alive.", "UNESCO"),
     ]
     st = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p><p class="scrub-src">Source: {src}</p></div>'
@@ -305,11 +305,11 @@ def culture():
 <section class="cx-hero dark" aria-labelledby="c-title">
   <div class="ghost-word" aria-hidden="true">ჭ</div>
   <div class="wrap">
-    <p class="label muted fade-load"><span class="bar"></span>Culture — <span class="ka">ჭიდაობა</span></p>
+    <p class="label muted fade-load"><span class="bar"></span>Culture · <span class="ka">ჭიდაობა</span></p>
     <h1 id="c-title" class="display"><span class="ln"><span>Rooted in</span></span><span class="ln"><span>heritage.</span></span><span class="ln"><span>Built for the</span></span><span class="ln"><span>future<span class="dot">.</span></span></span></h1>
     <p class="lead soft fade-load">CHIDAOBA is a Georgian-rooted sports culture brand inspired by the tradition of wrestling. We celebrate where grappling comes from, support where it is going, and bring its community closer together.</p>
     <div class="cx-hero-foot fade-load">
-      <span class="label muted">UNESCO Intangible Cultural Heritage of Humanity — 2018</span>
+      <span class="label muted">UNESCO Intangible Cultural Heritage of Humanity, 2018</span>
       <span class="label muted scroll-cue"><i></i>Scroll</span>
     </div>
   </div>
@@ -317,7 +317,7 @@ def culture():
 
 <section class="story dark" aria-labelledby="story-title">
   <div class="wrap">
-    <p class="label muted" id="story-title"><span class="bar"></span>01 — The story of Chidaoba</p>
+    <p class="label muted" id="story-title"><span class="bar"></span>01 · The story of Chidaoba</p>
     <div class="scrub-list">{st}</div>
   </div>
 </section>
@@ -325,16 +325,16 @@ def culture():
 <section class="section light" aria-labelledby="details-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>02 — Chidaoba in four details</p>
+      <p class="label"><span class="bar"></span>02 · Chidaoba in four details</p>
       <h2 id="details-title" class="display h-md">Four details<span class="dot">.</span></h2>
     </div>
     <div class="details stagger">
       <div><b data-count="2018" data-from="1900">2018</b><p>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</p></div>
-      <div><b data-count="200" data-pre="≈">≈200</b><p>Holds and counter-holds — UNESCO’s documented estimate.</p></div>
+      <div><b data-count="200" data-pre="≈">≈200</b><p>Holds and counter-holds, as documented by UNESCO.</p></div>
       <div><b>Open air</b><p>Tournaments in an outdoor arena, surrounded by a large audience.</p></div>
       <div><b>Zurna &amp; doli</b><p>Traditional wind and percussion instruments that accompany Chidaoba wrestling events.</p></div>
     </div>
-    <p class="src">Source: <a href="{UNESCO}" rel="noopener">UNESCO — Chidaoba, wrestling in Georgia</a></p>
+    <p class="src">Source: <a href="{UNESCO}" rel="noopener">UNESCO: Chidaoba, wrestling in Georgia</a></p>
   </div>
 </section>
 
@@ -344,9 +344,9 @@ def culture():
     <div class="why-grid">
       <h2 id="why-title" class="display h-lg stagger"><span>A word that carries our roots<span class="dot">.</span></span></h2>
       <div class="text stagger">
-        <p class="label muted"><span class="bar"></span>03 — Why Chidaoba?</p>
-        <p class="lead soft">In Georgian, ჭიდაობა — Chidaoba — means wrestling. It is a familiar, everyday word, and one that carries generations of Georgian life, identity and tradition.</p>
-        <p class="body soft">We chose it deliberately. CHIDAOBA takes that word beyond its traditional meaning and gives it a modern, international presence — so that a word every Georgian knows becomes a name the whole grappling world can recognise.</p>
+        <p class="label muted"><span class="bar"></span>03 · Why Chidaoba?</p>
+        <p class="lead soft">In Georgian, ჭიდაობა (Chidaoba) means wrestling. It is a familiar, everyday word, and one that carries generations of Georgian life, identity and tradition.</p>
+        <p class="body soft">We chose it deliberately. CHIDAOBA takes that word beyond its traditional meaning and gives it a modern, international presence, so that a word every Georgian knows becomes a name the whole grappling world can recognise.</p>
       </div>
     </div>
   </div>
@@ -355,7 +355,7 @@ def culture():
 <section class="section dark" aria-labelledby="disc-title" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px">
-      <p class="label muted"><span class="bar"></span>04 — More than one discipline</p>
+      <p class="label muted"><span class="bar"></span>04 · More than one discipline</p>
       <h2 id="disc-title" class="display h-md">Inspired by heritage. Open to every grappler<span class="dot">.</span></h2>
       <p class="body soft">CHIDAOBA is inspired by Georgian heritage, but it is not limited to one traditional discipline. We support the sports that share its grip, its discipline and its values.</p>
     </div>
@@ -366,14 +366,14 @@ def culture():
 <section class="section light" aria-labelledby="purpose-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:56px">
-      <p class="label"><span class="bar"></span>05 — What we do</p>
+      <p class="label"><span class="bar"></span>05 · What we do</p>
       <h2 id="purpose-title" class="display h-md">A brand and a community<span class="dot">.</span></h2>
       <p class="body muted">Built around these disciplines, their athletes, their culture and their shared values.</p>
     </div>
     <div class="pillars stagger">
-      <div><b>Promote</b><p>Wrestling and grappling sports — in Georgia and around the world.</p></div>
+      <div><b>Promote</b><p>Wrestling and grappling sports, in Georgia and around the world.</p></div>
       <div><b>Celebrate</b><p>Their culture: the heritage, the people and the stories behind every grip.</p></div>
-      <div><b>Connect</b><p>Athletes, coaches, clubs and communities — and help these sports grow.</p></div>
+      <div><b>Connect</b><p>Athletes, coaches, clubs and communities, and help these sports grow.</p></div>
     </div>
   </div>
 </section>
@@ -395,8 +395,8 @@ def culture():
   <div class="wrap">
     <p class="label"><span class="bar"></span>Sources</p>
     <ol style="margin-top:24px">
-      <li><a href="{UNESCO}" rel="noopener">UNESCO Intangible Cultural Heritage — “Chidaoba, wrestling in Georgia”</a>, Representative List, inscribed 2018 (13.COM).</li>
-      <li><a href="{UNESCO_DEC}" rel="noopener">UNESCO — Decision 13.COM 10.b.15</a> (chivalric nature, friendship and respect, identity).</li>
+      <li><a href="{UNESCO}" rel="noopener">UNESCO Intangible Cultural Heritage: “Chidaoba, wrestling in Georgia”</a>, Representative List, inscribed 2018 (13.COM).</li>
+      <li><a href="{UNESCO_DEC}" rel="noopener">UNESCO: Decision 13.COM 10.b.15</a> (chivalric nature, friendship and respect, identity).</li>
       <li><a href="{AFP}" rel="noopener">AFP, “Chidaoba wrestling gets UNESCO protected status”</a>, 29 November 2018 (festive tournaments, transmission in families and clubs).</li>
     </ol>
   </div>
@@ -407,12 +407,12 @@ def culture():
 WEB3FORMS_KEY = ""  # paste the Web3Forms access key here to switch the camp form on
 
 FORMATS = [
-    ("Training Camps", "Several days of focused training in Georgia — two sessions a day with local coaches, plus time to recover and explore."),
+    ("Training Camps", "Several days of focused training in Georgia, two sessions a day with local coaches, plus time to recover and explore."),
     ("Chidaoba Workshops", "Learn Georgian traditional wrestling: its grips, throws and the music and ritual that surround a bout."),
     ("Wrestling Seminars", "Technical sessions with Georgian wrestling coaches, built around specific positions and throws."),
-    ("BJJ / No-Gi Camps", "Grappling camps where Georgian wrestling meets Brazilian Jiu-Jitsu and no-gi — takedowns to the ground."),
+    ("BJJ / No-Gi Camps", "Grappling camps where Georgian wrestling meets Brazilian Jiu-Jitsu and no-gi, from takedowns to the ground."),
     ("Competitions", "Tournaments and challenge matches, from friendly club events to open competitions."),
-    ("Open Mats", "Drop-in sessions to roll, drill and meet local grapplers — no programme, just training."),
+    ("Open Mats", "Drop-in sessions to roll, drill and meet local grapplers. No programme, just training."),
     ("Cultural Experiences", "Time off the mat: Georgian food, landscapes, music and the places where the tradition lives."),
     ("Other Events", "Talks, screenings, team trips and collaborations with clubs and academies."),
 ]
@@ -420,12 +420,12 @@ FORMATS = [
 def camps():
     faqs = [
         ("How do I book?", "Choose a camp, pick your package and add-ons, and press Reserve. You get a booking code and bank details on screen. Your spot is confirmed when the deposit arrives."),
-        ("How much is the deposit, and when is the rest due?", "Each camp shows its deposit (usually 30%) and how many days you have to pay it. The rest is paid before the camp starts — we’ll confirm the exact date with you."),
+        ("How much is the deposit, and when is the rest due?", "Each camp shows its deposit (usually 30%) and how many days you have to pay it. The rest is paid before the camp starts. We’ll confirm the exact date with you."),
         ("What if the camp is full?", "Join the waitlist from the camp page. If a spot opens, we contact waitlisted people in order."),
         ("Do I need experience?", "Every camp shows its level. Many are open to all levels; tell us your experience when you book."),
         ("Do I need to speak Georgian?", "No. Sessions and communication for international guests are in English."),
         ("How do I get to Georgia?", "Georgia has international airports in Tbilisi, Kutaisi and Batumi. Each camp page says where it is and whether transfers are available as an add-on. Please check the visa rules for your passport."),
-        ("Can I bring my team?", "Yes — camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
+        ("Can I bring my team?", "Yes. Camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
     fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
     tabs = [("all", "All camps"), ("bjj", "BJJ &amp; Grappling"), ("wrestling", "Freestyle &amp; Greco-Roman"), ("judo", "Judo")]
@@ -436,7 +436,7 @@ def camps():
   <div class="wrap" style="position:relative">
     <p class="label muted fade-load"><span class="bar"></span>Camps &amp; Events</p>
     <h1 class="display h-xl"><span class="ln"><span>Train. Connect.</span></span><span class="ln"><span>Experience<span class="dot">.</span></span></span></h1>
-    <p class="lead soft fade-load">Training camps in Georgia for BJJ &amp; grappling, freestyle &amp; Greco-Roman wrestling and judo — with local coaches, and the culture around the mat.</p>
+    <p class="lead soft fade-load">Training camps in Georgia for BJJ &amp; grappling, freestyle &amp; Greco-Roman wrestling and judo, with local coaches, and the culture around the mat.</p>
   </div>
 </section>
 
@@ -454,7 +454,7 @@ def camps():
       <h2 class="display h-md">Three steps to the mat<span class="dot">.</span></h2>
     </div>
     <div class="steps stagger">
-      <div><span class="n">01</span><h3>Choose</h3><p>Pick a camp and the package that suits you — training only, with accommodation, or all-inclusive — plus any add-ons.</p></div>
+      <div><span class="n">01</span><h3>Choose</h3><p>Pick a camp and the package that suits you (training only, with accommodation, or all-inclusive), plus any add-ons.</p></div>
       <div><span class="n">02</span><h3>Reserve</h3><p>Fill in your details. You get a booking code and bank details instantly. Pay the deposit to confirm your spot.</p></div>
       <div><span class="n">03</span><h3>Train</h3><p>We confirm by email or WhatsApp and send everything you need before you arrive. Then: two sessions a day, and Georgia in between.</p></div>
     </div>
@@ -504,7 +504,7 @@ def journal():
 
 def shop():
     return inner("Shop", "Drop 01<span class=\"dot\">.</span>",
-                 "Premium training apparel and everyday sports culture pieces — made to be trained in.",
+                 "Premium training apparel and everyday sports culture pieces, made to be trained in.",
                  "The first collection is in development<span class=\"dot\">.</span>",
                  ["T-shirts", "Hoodies", "Rashguards", "Training shorts", "Accessories", "Limited collections"],
                  ig_btn("Get notified on Instagram"))
@@ -517,9 +517,9 @@ def privacy():
 <p class="label muted">Last updated: November 2026</p>
 <h2>What this website collects</h2>
 <p>We only collect what you choose to send us through the forms on this site:</p>
-<p><b>Camp interest form</b> — name, email, country, age, training experience and the optional details you add (phone/WhatsApp, belt or skill level, club, interests, accommodation needs, message). Used to contact you about camps and events.</p>
-<p><b>Contact form</b> — name, email, topic, message and optional phone. Used to reply to you.</p>
-<p><b>The Culture Letter</b> — your email address. Used to send our newsletter; you can unsubscribe at any time by replying “unsubscribe” or emailing us.</p>
+<p><b>Camp interest form</b>, name, email, country, age, training experience and the optional details you add (phone/WhatsApp, belt or skill level, club, interests, accommodation needs, message). Used to contact you about camps and events.</p>
+<p><b>Contact form</b>, name, email, topic, message and optional phone. Used to reply to you.</p>
+<p><b>The Culture Letter</b>, your email address. Used to send our newsletter; you can unsubscribe at any time by replying “unsubscribe” or emailing us.</p>
 <p>We don’t sell or share your details, and there are no accounts, analytics or advertising cookies on this site.</p>
 <h2>How the forms work</h2>
 <p>Form submissions are delivered to our inbox (chidaobaculture@gmail.com) by Web3Forms, a form-processing service. If the form opens your email app instead, your message is sent from your own email account. We keep your details only as long as needed. To see, correct or delete what we hold about you, email us and we’ll do it.</p>
@@ -537,7 +537,7 @@ def notfound():
 <section class="page-hero dark" style="min-height:70vh">{sym_svg("ghost")}<div class="wrap" style="position:relative">
 <p class="label muted"><span class="bar"></span>404</p>
 <h1 class="display h-xl">Off the mat<span class="dot">.</span></h1>
-<p class="lead soft">This page doesn’t exist — or not yet.</p>
+<p class="lead soft">This page doesn’t exist yet.</p>
 <div style="margin-top:36px"><a class="btn btn-primary" href="/">Back to home {arrow()}</a></div></div></section>"""
 
 def contact():
@@ -549,7 +549,7 @@ def contact():
   <div class="wrap" style="position:relative">
     <p class="label muted fade-load"><span class="bar"></span>Contact</p>
     <h1 class="display h-xl"><span class="ln"><span>Let’s talk<span class="dot">.</span></span></span></h1>
-    <p class="lead soft fade-load">Questions about camps, clubs, partnerships or the brand — write to us, or message us on WhatsApp.</p>
+    <p class="lead soft fade-load">Questions about camps, clubs, partnerships or the brand? Write to us, or message us on WhatsApp.</p>
   </div>
 </section>
 <section class="section dark" style="padding-top:0">
@@ -563,7 +563,7 @@ def contact():
       </div>
     </div>
     <form id="contact-form" class="js-form" data-key="{WEB3FORMS_KEY}" data-done="contact-done" novalidate>
-      <input type="hidden" name="subject" value="New message — chidaoba.com">
+      <input type="hidden" name="subject" value="New message, chidaoba.com">
       <input type="hidden" name="from_name" value="chidaoba.com">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="field"><label for="c-name">Name</label><input id="c-name" name="name" autocomplete="name" required></div>
@@ -577,30 +577,30 @@ def contact():
     <div class="done" id="contact-done" role="status">
       <p class="label muted"><span class="bar"></span>Sent</p>
       <h3 class="display h-md">Thank you<span class="dot">.</span></h3>
-      <p class="body soft">We’ll reply as soon as we can — usually within a few days. For anything urgent, message us on <a href="{WA}" rel="noopener">WhatsApp</a>.</p>
+      <p class="body soft">We’ll reply as soon as we can, usually within a few days. For anything urgent, message us on <a href="{WA}" rel="noopener">WhatsApp</a>.</p>
     </div>
   </div>
 </section>"""
 
 PAGES = [
-    ("/", "index.html", "CHIDAOBA CULTURE — Rooted in heritage. Built for the future.",
-     "Georgian wrestling heritage expressed through modern sports culture. Chidaoba, camps and events, community, journal and apparel — from Tbilisi, Georgia.", home),
-    ("/culture/", "culture/index.html", "Culture — Chidaoba and the CHIDAOBA brand",
+    ("/", "index.html", "CHIDAOBA CULTURE | Rooted in heritage. Built for the future.",
+     "Georgian wrestling heritage expressed through modern sports culture. Chidaoba, camps and events, community, journal and apparel, from Tbilisi, Georgia.", home),
+    ("/culture/", "culture/index.html", "Culture | Chidaoba and the CHIDAOBA brand",
      "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
-    ("/camps/", "camps/index.html", "Camps & Events — CHIDAOBA CULTURE",
+    ("/camps/", "camps/index.html", "Camps & Events | CHIDAOBA CULTURE",
      "Training camps, Chidaoba workshops, wrestling seminars, BJJ/No-Gi camps and cultural experiences in Georgia.", camps),
-    ("/camps/camp/", "camps/camp/index.html", "Camp — CHIDAOBA CULTURE",
-     "Camp details, packages, schedule and registration — CHIDAOBA CULTURE.", camp_detail),
-    ("/admin/", "admin/index.html", "Admin — CHIDAOBA CULTURE", "Admin.", admin),
-    ("/community/", "community/index.html", "Community — CHIDAOBA CULTURE",
+    ("/camps/camp/", "camps/camp/index.html", "Camp | CHIDAOBA CULTURE",
+     "Camp details, packages, schedule and registration | CHIDAOBA CULTURE.", camp_detail),
+    ("/admin/", "admin/index.html", "Admin | CHIDAOBA CULTURE", "Admin.", admin),
+    ("/community/", "community/index.html", "Community | CHIDAOBA CULTURE",
      "Athletes, coaches and clubs of Georgian wrestling and grappling.", community),
-    ("/journal/", "journal/index.html", "Journal — CHIDAOBA CULTURE",
+    ("/journal/", "journal/index.html", "Journal | CHIDAOBA CULTURE",
      "Stories on Georgian wrestling heritage, technique, training and the people behind it.", journal),
-    ("/shop/", "shop/index.html", "Shop — CHIDAOBA CULTURE", "Drop 01 — premium training apparel from CHIDAOBA CULTURE.", shop),
-    ("/contact/", "contact/index.html", "Contact — CHIDAOBA CULTURE",
-     "Contact CHIDAOBA CULTURE — email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
-    ("/privacy/", "privacy/index.html", "Privacy — CHIDAOBA CULTURE", "Privacy information for chidaoba.com.", privacy),
-    ("/404.html", "404.html", "Not found — CHIDAOBA CULTURE", "Page not found.", notfound),
+    ("/shop/", "shop/index.html", "Shop | CHIDAOBA CULTURE", "Drop 01: premium training apparel from CHIDAOBA CULTURE.", shop),
+    ("/contact/", "contact/index.html", "Contact | CHIDAOBA CULTURE",
+     "Contact CHIDAOBA CULTURE: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
+    ("/privacy/", "privacy/index.html", "Privacy | CHIDAOBA CULTURE", "Privacy information for chidaoba.com.", privacy),
+    ("/404.html", "404.html", "Not found | CHIDAOBA CULTURE", "Page not found.", notfound),
 ]
 
 if __name__ == "__main__":

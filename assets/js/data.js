@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE — data layer for camps.
+// CHIDAOBA CULTURE, data layer for camps.
 // Uses Supabase (REST, no library) when configured; otherwise a clearly labelled
 // demo mode stored in this browser only (enable with ?demo=1).
 (function () {
@@ -95,7 +95,7 @@
     return fetch(C.SUPABASE_URL.replace(/\/$/, '') + '/auth/v1/token?grant_type=refresh_token', {
       method: 'POST', headers: { apikey: C.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: s.refresh_token })
-    }).then(function (r) { return r.json().then(function (j) { if (!r.ok) { setSession(null); throw new Error('Session expired — please sign in again.'); } setSession(j); }); });
+    }).then(function (r) { return r.json().then(function (j) { if (!r.ok) { setSession(null); throw new Error('Session expired. Please sign in again.'); } setSession(j); }); });
   }
   var liveApi = {
     listCamps: function () {
@@ -158,10 +158,10 @@
   function seed() {
     return {
       camps: [{
-        id: uid(), slug: 'demo-bjj-camp-tbilisi', title: 'DEMO — BJJ & No-Gi Mountain Camp, Svaneti', venue_key: 'mulakhi', gallery: [], discipline: 'bjj', status: 'published', featured: true,
+        id: uid(), slug: 'demo-bjj-camp-tbilisi', title: 'DEMO: BJJ & No-Gi Mountain Camp, Svaneti', venue_key: 'mulakhi', gallery: [], discipline: 'bjj', status: 'published', featured: true,
         start_date: iso(60), end_date: iso(66), city: 'Mulakhi, Svaneti', country: 'Georgia', venue: 'Ilia Gabliani Sports Complex', level: 'All levels',
         summary: 'Sample camp to preview how camps look. Seven days of gi and no-gi training with Georgian wrestling coaches.',
-        description: 'This is sample content for demo mode only — it is not a real camp.\n\nTwo sessions a day: technique in the morning, live rounds in the evening. Between sessions: recovery, food and time to explore Svaneti.',
+        description: 'This is sample content for demo mode only, it is not a real camp.\n\nTwo sessions a day: technique in the morning, live rounds in the evening. Between sessions: recovery, food and time to explore Svaneti.',
         capacity: 20, currency: 'EUR', early_bird_deadline: iso(20), registration_deadline: iso(50), deposit_pct: 30, payment_days: 7,
         group_min: 4, group_discount_pct: 10, bank_details: '[Bank name]\n[Account holder]\nIBAN: [GE00 XX00 0000 0000 0000 00]\nReference: your booking code',
         packages: [
@@ -178,9 +178,9 @@
         included: ['Two training sessions a day', 'Coaches & instructors', 'Camp T-shirt', 'One cultural day'],
         excluded: ['Flights', 'Travel insurance'],
         coaches: [{ name: '[Coach name]', role: 'BJJ black belt', bio: 'Sample coach profile.' }, { name: '[Coach name]', role: 'Wrestling coach', bio: 'Sample coach profile.' }],
-        faq: [{ q: 'Is this a real camp?', a: 'No — this is demo content to preview the booking flow.' }]
+        faq: [{ q: 'Is this a real camp?', a: 'No. This is demo content to preview the booking flow.' }]
       }, {
-        id: uid(), slug: 'demo-wrestling-week', title: 'DEMO — Wrestling Week, Kutaisi', discipline: 'wrestling', status: 'published', featured: false,
+        id: uid(), slug: 'demo-wrestling-week', title: 'DEMO: Wrestling Week, Kutaisi', discipline: 'wrestling', status: 'published', featured: false,
         start_date: iso(95), end_date: iso(99), city: 'Kutaisi', country: 'Georgia', level: 'Intermediate+',
         summary: 'Sample camp: freestyle & Greco-Roman sessions with Georgian coaches.', description: 'Demo content.',
         capacity: 6, currency: 'EUR', early_bird_deadline: null, deposit_pct: 30, payment_days: 7, group_min: null, group_discount_pct: 0,

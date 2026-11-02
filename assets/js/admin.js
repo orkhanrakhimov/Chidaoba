@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE — admin panel (camps & registrations)
+// CHIDAOBA CULTURE, admin panel (camps & registrations)
 (function () {
   var H = window.CHD, app = document.getElementById('admin');
   if (!H || !app) return;
@@ -15,7 +15,7 @@
   }
   if (H.mode === 'demo') {
     var bar = document.createElement('div'); bar.className = 'demo-bar';
-    bar.innerHTML = 'Demo mode — sample data in this browser only. <a href="#" id="demo-reset">Reset demo</a> · <a href="?demo=0">Exit</a>';
+    bar.innerHTML = 'Demo mode: sample data in this browser only. <a href="#" id="demo-reset">Reset demo</a> · <a href="?demo=0">Exit</a>';
     document.body.prepend(bar);
     bar.querySelector('#demo-reset').addEventListener('click', function (ev) { ev.preventDefault(); H.api.reset().then(function () { location.reload(); }); });
   }
@@ -95,7 +95,7 @@
   // ---------------- registrations ----------------
   function regsView(campId) {
     var camps = state.camps, camp = camps.filter(function (c) { return c.id === campId; })[0];
-    var name = function (id) { var c = camps.filter(function (k) { return k.id === id; })[0]; return c ? c.title : '—'; };
+    var name = function (id) { var c = camps.filter(function (k) { return k.id === id; })[0]; return c ? c.title : '-'; };
     var cur = function (id) { var c = camps.filter(function (k) { return k.id === id; })[0]; return c ? c.currency : 'EUR'; };
     var list = state.regs.filter(function (r) { return (!camp || r.camp_id === campId) && (state.filter === 'all' || r.status === state.filter); })
       .filter(function (r) { var q = state.q.toLowerCase(); return !q || [r.full_name, r.email, r.ref, r.phone, r.country, r.club].join(' ').toLowerCase().indexOf(q) >= 0; });
@@ -232,13 +232,13 @@
     }
   }
   function venueOpts() {
-    var o = { '': '— None —' }, V = window.CHD_VENUES || {};
-    Object.keys(V).forEach(function (k) { o[k] = V[k].name + ' — ' + V[k].place; }); return o;
+    var o = { '': 'None' }, V = window.CHD_VENUES || {};
+    Object.keys(V).forEach(function (k) { o[k] = V[k].name + ', ' + V[k].place; }); return o;
   }
   function photosHtml(c) {
     var gal = (c.gallery || []);
     return '<div class="ph-wrap"><div class="ph-cover"><span class="rf-l">Cover photo</span><div class="ph-slot" id="ph-cover">' +
-      (c.cover_url ? '<img src="' + e(c.cover_url) + '" alt=""><button type="button" class="ph-x" data-cover aria-label="Remove cover">×</button>' : '<span>No cover — the venue’s photo is used</span>') +
+      (c.cover_url ? '<img src="' + e(c.cover_url) + '" alt=""><button type="button" class="ph-x" data-cover aria-label="Remove cover">×</button>' : '<span>No cover yet. The venue’s photo is used</span>') +
       '</div><label class="btn btn-ghost ph-btn">Upload cover<input type="file" accept="image/*" id="ph-cover-in" hidden></label></div>' +
       '<div class="ph-gal"><span class="rf-l">Gallery</span><div class="ph-grid" id="ph-grid">' +
       gal.map(function (g, i) { return '<figure data-i="' + i + '"><img src="' + e(g.url) + '" alt=""><button type="button" class="ph-x" aria-label="Remove photo">×</button></figure>'; }).join('') +
@@ -259,19 +259,19 @@
     var msg = $('#ph-msg');
     function up(file) { return shrink(file, H.mode === 'demo' ? 1100 : 2000).then(function (b) { return H.api.upload(b, (file.name || 'photo').replace(/[^a-z0-9.]+/gi, '-').replace(/\.[^.]+$/, '') + '.jpg'); }); }
     function redraw() {
-      $('#ph-cover').innerHTML = c.cover_url ? '<img src="' + e(c.cover_url) + '" alt=""><button type="button" class="ph-x" data-cover aria-label="Remove cover">×</button>' : '<span>No cover — the venue’s photo is used</span>';
+      $('#ph-cover').innerHTML = c.cover_url ? '<img src="' + e(c.cover_url) + '" alt=""><button type="button" class="ph-x" data-cover aria-label="Remove cover">×</button>' : '<span>No cover yet. The venue’s photo is used</span>';
       $('#ph-grid').innerHTML = (c.gallery || []).map(function (g, i) { return '<figure data-i="' + i + '"><img src="' + e(g.url) + '" alt=""><button type="button" class="ph-x" aria-label="Remove photo">×</button></figure>'; }).join('');
     }
     $('#ph-cover-in').addEventListener('change', function () {
       var f = this.files[0]; if (!f) return; msg.className = 'form-msg'; msg.textContent = 'Uploading…';
-      up(f).then(function (u) { c.cover_url = u; redraw(); msg.textContent = 'Cover uploaded — remember to save the camp.'; })
+      up(f).then(function (u) { c.cover_url = u; redraw(); msg.textContent = 'Cover uploaded. Remember to save the camp.'; })
         .catch(function (err) { msg.className = 'form-msg err'; msg.textContent = err.message; });
       this.value = '';
     });
     $('#ph-gal-in').addEventListener('change', function () {
       var fs = [].slice.call(this.files); if (!fs.length) return; var n = 0; msg.className = 'form-msg'; msg.textContent = 'Uploading 0 / ' + fs.length + '…';
       fs.reduce(function (p, f) { return p.then(function () { return up(f).then(function (u) { c.gallery = (c.gallery || []).concat([{ url: u, alt: '' }]); n++; msg.textContent = 'Uploading ' + n + ' / ' + fs.length + '…'; redraw(); }); }); }, Promise.resolve())
-        .then(function () { msg.textContent = fs.length + ' photo' + (fs.length > 1 ? 's' : '') + ' uploaded — remember to save the camp.'; })
+        .then(function () { msg.textContent = fs.length + ' photo' + (fs.length > 1 ? 's' : '') + ' uploaded. Remember to save the camp.'; })
         .catch(function (err) { msg.className = 'form-msg err'; msg.textContent = err.message; });
       this.value = '';
     });
