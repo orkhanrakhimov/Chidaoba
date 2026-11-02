@@ -187,10 +187,9 @@ def home():
         <p class="body muted">We connect this heritage with the sports people train today: wrestling, judo, Brazilian jiu-jitsu and grappling.</p>
         <a class="link" href="/culture/" style="align-self:start">What is Chidaoba</a>
       </div>
-      <div class="stats stagger">
+      <div class="stats stats-2 stagger">
         <div class="stat"><b data-count="2018" data-from="1900">2018</b><span>Chidaoba, wrestling in Georgia, inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</span></div>
-        <div class="stat"><b data-count="200" data-pre="≈">≈200</b><span>Holds and counter-holds by UNESCO’s estimate, and the creativity of combining them.</span></div>
-        <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა. One letter carries the brand.</span></div>
+        <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა, and the CHIDAOBA logo.</span></div>
       </div>
     </div>
   </div>
@@ -345,9 +344,8 @@ def culture():
       <p class="label"><span class="bar"></span>02 · Key facts</p>
       <h2 id="details-title" class="display h-md">Key facts</h2>
     </div>
-    <div class="details stagger">
+    <div class="details details-3 stagger">
       <div><b data-count="2018" data-from="1900">2018</b><p>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</p></div>
-      <div><b data-count="200" data-pre="≈">≈200</b><p>Holds and counter-holds, as documented by UNESCO.</p></div>
       <div><b>Open air</b><p>Tournaments in an outdoor arena, surrounded by a large audience.</p></div>
       <div><b>Zurna &amp; doli</b><p>Traditional wind and percussion instruments that accompany Chidaoba wrestling events.</p></div>
     </div>

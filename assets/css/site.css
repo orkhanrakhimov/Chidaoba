@@ -1051,3 +1051,4 @@ html, body { overflow-x: clip; }
 .sport-pick button[aria-pressed="true"] span,.sport-pick button[aria-pressed="true"] em{color:rgba(242,241,236,.85)}
 @media (max-width:800px){.sport-pick{grid-template-columns:1fr 1fr}.sport-pick button{min-height:112px;padding:18px 16px}}
 .b-sum .tot:first-child{border-top:0;margin-top:0;padding-top:0}
+.stats-2{grid-template-columns:repeat(2,1fr)}.details-3{grid-template-columns:repeat(3,1fr)}@media (max-width:1000px){.details-3{grid-template-columns:1fr 1fr}.stats-2{grid-template-columns:1fr}}@media (max-width:560px){.details-3{grid-template-columns:1fr}}
