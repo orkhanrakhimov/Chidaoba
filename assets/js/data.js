@@ -1,0 +1,232 @@
+// CHIDAOBA CULTURE — data layer for camps.
+// Uses Supabase (REST, no library) when configured; otherwise a clearly labelled
+// demo mode stored in this browser only (enable with ?demo=1).
+(function () {
+  var C = window.CHD_CONFIG || {};
+  var live = !!(C.SUPABASE_URL && C.SUPABASE_ANON_KEY);
+  var qs = new URLSearchParams(location.search);
+  if (qs.get('demo') === '1') sessionStorage.setItem('chd_demo', '1');
+  if (qs.get('demo') === '0') sessionStorage.removeItem('chd_demo');
+  var demo = !live || sessionStorage.getItem('chd_demo') === '1';
+  if (live && sessionStorage.getItem('chd_demo') !== '1') demo = false;
+  var demoOn = sessionStorage.getItem('chd_demo') === '1';
+
+  var DISC = { bjj: 'BJJ & Grappling', wrestling: 'Freestyle & Greco-Roman Wrestling', judo: 'Judo', chidaoba: 'Chidaoba', other: 'Other' };
+  var ERR = {
+    camp_not_open: 'Registration for this camp is not open.',
+    registration_closed: 'Registration for this camp has closed.',
+    package_required: 'Please choose a package.',
+    consent_required: 'Please accept the privacy notice.',
+    rejected: 'Your registration could not be accepted.'
+  };
+
+  // ---------------- helpers ----------------
+  function money(n, cur) {
+    try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: cur || 'EUR', maximumFractionDigits: (Math.round(n) === +n ? 0 : 2) }).format(+n || 0); }
+    catch (e) { return (cur || '') + ' ' + n; }
+  }
+  function d(s) { return s ? new Date(s + 'T00:00:00') : null; }
+  function dateRange(a, b) {
+    var A = d(a), B = d(b);
+    if (!A) return 'Dates to be announced';
+    var o = { day: 'numeric', month: 'short', year: 'numeric' };
+    if (!B || a === b) return A.toLocaleDateString('en-GB', o);
+    if (A.getFullYear() === B.getFullYear() && A.getMonth() === B.getMonth())
+      return A.getDate() + '–' + B.toLocaleDateString('en-GB', o);
+    if (A.getFullYear() === B.getFullYear())
+      return A.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' – ' + B.toLocaleDateString('en-GB', o);
+    return A.toLocaleDateString('en-GB', o) + ' – ' + B.toLocaleDateString('en-GB', o);
+  }
+  function days(a, b) { var A = d(a), B = d(b); return A && B ? Math.round((B - A) / 864e5) + 1 : null; }
+  function today() { var t = new Date(); t.setHours(0, 0, 0, 0); return t; }
+  function isEarly(c) { return c.early_bird_deadline && today() <= d(c.early_bird_deadline); }
+  function fromPrice(c) {
+    var early = isEarly(c), best = null;
+    (c.packages || []).forEach(function (p) {
+      var v = early && p.early_price !== '' && p.early_price != null ? +p.early_price : +p.price;
+      if (!isNaN(v) && (best === null || v < best)) best = v;
+    });
+    return best;
+  }
+  function quote(c, sel) {
+    var pkg = (c.packages || []).filter(function (p) { return p.id === sel.package; })[0];
+    if (!pkg) return null;
+    var early = isEarly(c) && pkg.early_price !== '' && pkg.early_price != null;
+    var unit = early ? +pkg.early_price : +pkg.price || 0;
+    var extras = 0, chosen = [];
+    (c.addons || []).forEach(function (a) { if ((sel.addons || []).indexOf(a.id) >= 0) { extras += +a.price || 0; chosen.push(a); } });
+    var people = Math.max(1, Math.min(30, +sel.people || 1));
+    var total = (unit + extras) * people, disc = 0;
+    if (c.group_min && people >= c.group_min && c.group_discount_pct > 0) { disc = Math.round(total * c.group_discount_pct) / 100; total -= disc; }
+    var dep = Math.round(total * (c.deposit_pct || 0)) / 100;
+    return { pkg: pkg, early: early, unit: unit, extras: extras, addons: chosen, people: people, discount: disc, total: total, deposit: dep };
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); }
+
+  // ---------------- Supabase REST ----------------
+  var SES = 'chd_session';
+  function session() { try { return JSON.parse(sessionStorage.getItem(SES) || 'null'); } catch (e) { return null; } }
+  function setSession(s) { if (s) sessionStorage.setItem(SES, JSON.stringify(s)); else sessionStorage.removeItem(SES); }
+  function req(path, opt, auth) {
+    opt = opt || {};
+    var h = { apikey: C.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' };
+    var s = auth && session();
+    h.Authorization = 'Bearer ' + (s ? s.access_token : C.SUPABASE_ANON_KEY);
+    Object.keys(opt.headers || {}).forEach(function (k) { h[k] = opt.headers[k]; });
+    return fetch(C.SUPABASE_URL.replace(/\/$/, '') + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined })
+      .then(function (r) {
+        if (r.status === 401 && auth && s && s.refresh_token && !opt._retried) {
+          return refresh().then(function () { opt._retried = true; return req(path, opt, auth); });
+        }
+        return r.text().then(function (t) {
+          var j = null; try { j = t ? JSON.parse(t) : null; } catch (e) { }
+          if (!r.ok) {
+            var m = (j && (j.message || j.error_description || j.msg)) || ('Error ' + r.status);
+            throw new Error(ERR[m] || m);
+          }
+          return j;
+        });
+      });
+  }
+  function refresh() {
+    var s = session();
+    return fetch(C.SUPABASE_URL.replace(/\/$/, '') + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST', headers: { apikey: C.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: s.refresh_token })
+    }).then(function (r) { return r.json().then(function (j) { if (!r.ok) { setSession(null); throw new Error('Session expired — please sign in again.'); } setSession(j); }); });
+  }
+  var liveApi = {
+    listCamps: function () {
+      return Promise.all([
+        req('/rest/v1/camps?select=*&status=in.(published,sold_out,completed)&order=start_date.asc.nullslast'),
+        req('/rest/v1/rpc/camp_counts', { method: 'POST', body: {} })
+      ]).then(function (r) { return attach(r[0], r[1]); });
+    },
+    getCamp: function (slug) {
+      return Promise.all([
+        req('/rest/v1/camps?select=*&slug=eq.' + encodeURIComponent(slug)),
+        req('/rest/v1/rpc/camp_counts', { method: 'POST', body: {} })
+      ]).then(function (r) { return attach(r[0], r[1])[0] || null; });
+    },
+    register: function (p) { return req('/rest/v1/rpc/register_for_camp', { method: 'POST', body: { p: p } }); },
+    signIn: function (email, pw) {
+      return fetch(C.SUPABASE_URL.replace(/\/$/, '') + '/auth/v1/token?grant_type=password', {
+        method: 'POST', headers: { apikey: C.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: pw })
+      }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error_description || j.msg || 'Wrong email or password.'); setSession(j); return j; }); })
+        .then(function () { return req('/rest/v1/admins?select=email', {}, true); })
+        .then(function (rows) { if (!rows || !rows.length) { setSession(null); throw new Error('This account is not an admin.'); } return true; });
+    },
+    signOut: function () { setSession(null); return Promise.resolve(); },
+    signedIn: function () { return !!session(); },
+    adminCamps: function () { return req('/rest/v1/camps?select=*&order=start_date.desc.nullsfirst', {}, true); },
+    saveCamp: function (c) {
+      var body = Object.assign({}, c); delete body.taken; delete body.waitlist; delete body.created_at; delete body.updated_at;
+      if (body.id) return req('/rest/v1/camps?id=eq.' + body.id, { method: 'PATCH', body: body, headers: { Prefer: 'return=representation' } }, true).then(function (r) { return r[0]; });
+      delete body.id;
+      return req('/rest/v1/camps', { method: 'POST', body: body, headers: { Prefer: 'return=representation' } }, true).then(function (r) { return r[0]; });
+    },
+    deleteCamp: function (id) { return req('/rest/v1/camps?id=eq.' + id, { method: 'DELETE' }, true); },
+    regs: function (campId) {
+      return req('/rest/v1/registrations?select=*' + (campId ? '&camp_id=eq.' + campId : '') + '&order=created_at.desc', {}, true);
+    },
+    updateReg: function (id, patch) { return req('/rest/v1/registrations?id=eq.' + id, { method: 'PATCH', body: patch, headers: { Prefer: 'return=representation' } }, true); }
+  };
+  function attach(camps, counts) {
+    var m = {}; (counts || []).forEach(function (c) { m[c.camp_id] = c; });
+    return (camps || []).map(function (c) { var k = m[c.id] || {}; c.taken = k.taken || 0; c.waitlist = k.waitlist || 0; return c; });
+  }
+
+  // ---------------- Demo (this browser only) ----------------
+  var DK = 'chd_demo_db';
+  function uid() { return 'x' + Math.random().toString(36).slice(2, 10); }
+  function iso(offset) { var t = today(); t.setDate(t.getDate() + offset); return t.toISOString().slice(0, 10); }
+  function seed() {
+    return {
+      camps: [{
+        id: uid(), slug: 'demo-bjj-camp-tbilisi', title: 'DEMO — BJJ & No-Gi Camp, Tbilisi', discipline: 'bjj', status: 'published', featured: true,
+        start_date: iso(60), end_date: iso(66), city: 'Tbilisi', country: 'Georgia', venue: '[Venue]', level: 'All levels',
+        summary: 'Sample camp to preview how camps look. Seven days of gi and no-gi training with Georgian wrestling coaches.',
+        description: 'This is sample content for demo mode only — it is not a real camp.\n\nTwo sessions a day: technique in the morning, live rounds in the evening. Between sessions: recovery, food and time to explore Tbilisi.',
+        capacity: 20, currency: 'EUR', early_bird_deadline: iso(20), registration_deadline: iso(50), deposit_pct: 30, payment_days: 7,
+        group_min: 4, group_discount_pct: 10, bank_details: '[Bank name]\n[Account holder]\nIBAN: [GE00 XX00 0000 0000 0000 00]\nReference: your booking code',
+        packages: [
+          { id: 'training', name: 'Training only', description: 'All sessions, camp T-shirt.', price: 390, early_price: 340 },
+          { id: 'stay', name: 'Training + stay', description: 'All sessions, 7 nights shared room, breakfast.', price: 690, early_price: 620 },
+          { id: 'all', name: 'All-inclusive', description: 'Training, private room, all meals, transfers, cultural day.', price: 990, early_price: 900 }
+        ],
+        addons: [{ id: 'transfer', name: 'Airport transfer (both ways)', price: 40 }, { id: 'private', name: 'Private lesson (1 hour)', price: 60 }, { id: 'merch', name: 'CHIDAOBA merch pack', price: 55 }],
+        schedule: [
+          { day: 'Day 1', items: [{ time: '15:00', title: 'Arrival & check-in' }, { time: '19:00', title: 'Welcome session & dinner' }] },
+          { day: 'Days 2–6', items: [{ time: '09:30', title: 'Morning technique' }, { time: '12:00', title: 'Lunch & recovery' }, { time: '15:00', title: 'Cultural activity / free time' }, { time: '18:30', title: 'Evening live rounds' }] },
+          { day: 'Day 7', items: [{ time: '10:00', title: 'Open mat & closing' }, { time: '13:00', title: 'Departure' }] }
+        ],
+        included: ['Two training sessions a day', 'Coaches & instructors', 'Camp T-shirt', 'One cultural day'],
+        excluded: ['Flights', 'Travel insurance'],
+        coaches: [{ name: '[Coach name]', role: 'BJJ black belt', bio: 'Sample coach profile.' }, { name: '[Coach name]', role: 'Wrestling coach', bio: 'Sample coach profile.' }],
+        faq: [{ q: 'Is this a real camp?', a: 'No — this is demo content to preview the booking flow.' }]
+      }, {
+        id: uid(), slug: 'demo-wrestling-week', title: 'DEMO — Wrestling Week, Kutaisi', discipline: 'wrestling', status: 'published', featured: false,
+        start_date: iso(95), end_date: iso(99), city: 'Kutaisi', country: 'Georgia', level: 'Intermediate+',
+        summary: 'Sample camp: freestyle & Greco-Roman sessions with Georgian coaches.', description: 'Demo content.',
+        capacity: 6, currency: 'EUR', early_bird_deadline: null, deposit_pct: 30, payment_days: 7, group_min: null, group_discount_pct: 0,
+        bank_details: '[Bank details]', packages: [{ id: 'training', name: 'Training only', price: 280 }], addons: [], schedule: [], included: ['Training sessions'], excluded: [], coaches: [], faq: []
+      }],
+      regs: []
+    };
+  }
+  function db() { try { var x = JSON.parse(localStorage.getItem(DK)); if (x && x.camps) return x; } catch (e) { } var s = seed(); localStorage.setItem(DK, JSON.stringify(s)); return s; }
+  function save(x) { localStorage.setItem(DK, JSON.stringify(x)); }
+  function counts(x, c) {
+    var t = 0, w = 0; x.regs.forEach(function (r) { if (r.camp_id === c.id) { if (['pending', 'deposit_paid', 'paid'].indexOf(r.status) >= 0) t += r.people; if (r.status === 'waitlist') w += r.people; } });
+    var o = JSON.parse(JSON.stringify(c)); o.taken = t; o.waitlist = w; return o;
+  }
+  var wait = function (v) { return new Promise(function (r) { setTimeout(function () { r(v); }, 250); }); };
+  var demoApi = {
+    listCamps: function () { var x = db(); return wait(x.camps.filter(function (c) { return ['published', 'sold_out', 'completed'].indexOf(c.status) >= 0; }).map(function (c) { return counts(x, c); })); },
+    getCamp: function (slug) { var x = db(); var c = x.camps.filter(function (c) { return c.slug === slug; })[0]; return wait(c ? counts(x, c) : null); },
+    register: function (p) {
+      var x = db(); var c = x.camps.filter(function (c) { return c.slug === p.camp && c.status === 'published'; })[0];
+      if (!c) return Promise.reject(new Error(ERR.camp_not_open));
+      if (!p.consent) return Promise.reject(new Error(ERR.consent_required));
+      var q = quote(c, p); if (!q) return Promise.reject(new Error(ERR.package_required));
+      var cc = counts(x, c), st = c.capacity && cc.taken + q.people > c.capacity ? 'waitlist' : 'pending';
+      var pay = new Date(); pay.setDate(pay.getDate() + (c.payment_days || 7));
+      var r = { id: uid(), ref: 'CHD-' + Math.random().toString(16).slice(2, 8).toUpperCase(), camp_id: c.id, created_at: new Date().toISOString(), status: st,
+        full_name: p.full_name, email: p.email, phone: p.phone, country: p.country, age: p.age, experience: p.experience, level: p.level, club: p.club,
+        package_id: q.pkg.id, package_name: q.pkg.name, addons: q.addons, people: q.people, accommodation: p.accommodation, notes: p.notes,
+        unit_price: q.unit, total: q.total, deposit: q.deposit, pay_by: st === 'waitlist' ? null : pay.toISOString().slice(0, 10), admin_note: '' };
+      x.regs.unshift(r); save(x);
+      return wait({ ref: r.ref, status: st, currency: c.currency, unit_price: q.unit, early: q.early, extras: q.extras, people: q.people, discount: q.discount,
+        total: q.total, deposit: q.deposit, deposit_pct: c.deposit_pct, pay_by: r.pay_by, bank_details: st === 'waitlist' ? null : c.bank_details, camp_title: c.title });
+    },
+    signIn: function () { sessionStorage.setItem('chd_demo_admin', '1'); return wait(true); },
+    signOut: function () { sessionStorage.removeItem('chd_demo_admin'); return wait(true); },
+    signedIn: function () { return sessionStorage.getItem('chd_demo_admin') === '1'; },
+    adminCamps: function () { var x = db(); return wait(x.camps.map(function (c) { return counts(x, c); })); },
+    saveCamp: function (c) {
+      var x = db(); var o = JSON.parse(JSON.stringify(c)); delete o.taken; delete o.waitlist;
+      if (o.id) { x.camps = x.camps.map(function (k) { return k.id === o.id ? o : k; }); } else { o.id = uid(); x.camps.unshift(o); }
+      save(x); return wait(o);
+    },
+    deleteCamp: function (id) { var x = db(); x.camps = x.camps.filter(function (c) { return c.id !== id; }); x.regs = x.regs.filter(function (r) { return r.camp_id !== id; }); save(x); return wait(true); },
+    regs: function (campId) { var x = db(); return wait(x.regs.filter(function (r) { return !campId || r.camp_id === campId; })); },
+    updateReg: function (id, patch) { var x = db(); x.regs.forEach(function (r) { if (r.id === id) Object.assign(r, patch); }); save(x); return wait(true); },
+    reset: function () { localStorage.removeItem(DK); return wait(true); }
+  };
+
+  var useDemo = demoOn || !live;
+  window.CHD = {
+    api: useDemo ? demoApi : liveApi,
+    mode: useDemo ? (demoOn ? 'demo' : 'empty') : 'live',
+    live: live, DISC: DISC, money: money, dateRange: dateRange, days: days, isEarly: isEarly, fromPrice: fromPrice, quote: quote, esc: esc, d: d, today: today
+  };
+  // Without Supabase and without ?demo=1, the public site shows no camps (never sample data).
+  if (!live && !demoOn) {
+    window.CHD.api = Object.assign({}, demoApi, {
+      listCamps: function () { return Promise.resolve([]); },
+      getCamp: function () { return Promise.resolve(null); },
+      register: function () { return Promise.reject(new Error('Registration is not available yet.')); }
+    });
+  }
+})();

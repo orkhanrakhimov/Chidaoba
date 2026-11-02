@@ -118,8 +118,14 @@ def footer(path=""):
 </html>
 """
 
+EXTRA_JS = {"/camps/": ["config", "data", "camps"], "/camps/camp/": ["config", "data", "camps"], "/admin/": ["config", "data", "admin"]}
+
 def page(path, title, desc, main):
-    return head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
+    js = "".join(f'<script src="/assets/js/{n}.js" defer></script>' for n in EXTRA_JS.get(path, []))
+    out = head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
+    if path == "/admin/":
+        out = head(title, desc, path).replace('<meta name="viewport"', '<meta name="robots" content="noindex,nofollow">\n<meta name="viewport"') + f'<main id="admin" class="adm"></main>' + '<script src="/assets/js/site.js" defer></script></body></html>'
+    return out.replace('<script src="/assets/js/site.js" defer></script>', js + '<script src="/assets/js/site.js" defer></script>')
 
 def arrow(): return '<span class="arr" aria-hidden="true">→</span>'
 
@@ -397,7 +403,7 @@ def culture():
 </div>
 """
 
-WEB3FORMS_KEY = ""   # paste the Web3Forms access key here to switch the camp form on
+WEB3FORMS_KEY = ""  # paste the Web3Forms access key here to switch the camp form on
 
 FORMATS = [
     ("Training Camps", "Several days of focused training in Georgia — two sessions a day with local coaches, plus time to recover and explore."),
@@ -411,144 +417,76 @@ FORMATS = [
 ]
 
 def camps():
-    fmts = "".join(f'<div class="reveal"><span class="n">{i+1:02d}</span><h3>{t}</h3><p>{d}</p></div>' for i, (t, d) in enumerate(FORMATS))
-    sched = [("09:00", "Morning training", "Technique and drilling — the main session of the day."),
-             ("11:30", "Recovery &amp; lunch", "Rest, food, free time."),
-             ("14:00", "Cultural activity", "A visit, a walk, a meal together — the Georgia around the mat."),
-             ("18:00", "Evening training", "Live rounds, sparring and specific situations."),
-             ("20:30", "Dinner", "Together, Georgian style.")]
-    tl = "".join(f'<li><time>{a}</time><div><b>{b}</b><span>{c}</span></div></li>' for a, b, c in sched)
-    yes = [("Training sessions", "Every camp"), ("Coaches &amp; instructors", "Every camp"), ("Cultural activities", "Most camps")]
-    opt = [("Accommodation", "Optional — depends on the camp"), ("Meals", "Depends on the camp"), ("Transfers &amp; transport", "Depends on the camp"), ("Flights", "Not included")]
-    yl = "".join(f'<li class="yes"><i>✓</i>{a}<small>{b}</small></li>' for a, b in yes)
-    ol = "".join(f'<li><i>—</i>{a}<small>{b}</small></li>' for a, b in opt)
-    types = "".join(f'<label><input type="checkbox" name="camp_types" value="{t}"><span>{t}</span></label>' for t, _ in FORMATS[:7])
-    countries_hint = "e.g. Georgia, Germany, USA"
-    key = WEB3FORMS_KEY
     faqs = [
-        ("Do I need experience?", "No. Camps will list their level — some are open to beginners, others are for experienced wrestlers and grapplers. Tell us your level in the form and we’ll point you to the right one."),
-        ("Do I need to speak Georgian?", "No. Sessions and communication for international guests will be in English. Learning a few Georgian words is welcome, of course."),
-        ("Which camps run, and when?", "The first dates are being finalised. Register your interest and you’ll hear about them before they are announced publicly."),
-        ("How do I get to Georgia?", "Georgia has international airports in Tbilisi, Kutaisi and Batumi. Each camp page will say which airport is closest and whether transfers are included. Please check the visa requirements for your passport before booking."),
-        ("What should I bring?", "Your usual training gear — for grappling camps, a gi and/or no-gi kit depending on the camp. A full packing list will be on each camp page."),
-        ("Is registering interest a booking?", "No. It’s free and doesn’t commit you to anything. When a camp opens, we’ll send you the details and you decide."),
+        ("How do I book?", "Choose a camp, pick your package and add-ons, and press Reserve. You get a booking code and bank details on screen. Your spot is confirmed when the deposit arrives."),
+        ("How much is the deposit, and when is the rest due?", "Each camp shows its deposit (usually 30%) and how many days you have to pay it. The rest is paid before the camp starts — we’ll confirm the exact date with you."),
+        ("What if the camp is full?", "Join the waitlist from the camp page. If a spot opens, we contact waitlisted people in order."),
+        ("Do I need experience?", "Every camp shows its level. Many are open to all levels; tell us your experience when you book."),
+        ("Do I need to speak Georgian?", "No. Sessions and communication for international guests are in English."),
+        ("How do I get to Georgia?", "Georgia has international airports in Tbilisi, Kutaisi and Batumi. Each camp page says where it is and whether transfers are available as an add-on. Please check the visa rules for your passport."),
+        ("Can I bring my team?", "Yes — camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
     fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
+    tabs = [("all", "All camps"), ("bjj", "BJJ &amp; Grappling"), ("wrestling", "Freestyle &amp; Greco-Roman"), ("judo", "Judo")]
+    tb = "".join(f'<button type="button" data-f="{k}" aria-pressed="{"true" if k == "all" else "false"}">{t}</button>' for k, t in tabs)
     return f"""
-<section class="page-hero dark">
+<section class="page-hero dark camps-hero">
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
-    <p class="label muted"><span class="bar"></span>Camps &amp; Events</p>
+    <p class="label muted fade-load"><span class="bar"></span>Camps &amp; Events</p>
     <h1 class="display h-xl"><span class="ln"><span>Train. Connect.</span></span><span class="ln"><span>Experience<span class="dot">.</span></span></span></h1>
-    <p class="lead soft fade-load">Training camps, workshops, competitions and experiences rooted in Georgian grappling culture — in Georgia and abroad.</p>
-    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:36px">
-      <a class="btn btn-primary" href="#register">Register your interest {arrow()}</a>
-      <a class="btn btn-ghost" href="#what">What is a camp {arrow()}</a>
-    </div>
+    <p class="lead soft fade-load">Training camps in Georgia for BJJ &amp; grappling, freestyle &amp; Greco-Roman wrestling and judo — with local coaches, and the culture around the mat.</p>
   </div>
 </section>
 
-<section class="section light" id="what">
-  <div class="wrap intro">
-    <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 — What is a camp</p>
-    <h2 class="display h-lg reveal">Train where the culture lives<span class="dot">.</span></h2>
-    <div class="text reveal">
-      <p class="scrub scrub-sm">A CHIDAOBA CULTURE camp is a few days to a week in Georgia built around training — wrestling, Chidaoba and grappling sessions with local coaches.</p>
-      <p class="body muted">Between sessions you meet the people, food, landscapes and traditions that shaped Georgian wrestling. You leave with better technique, new training partners and a real sense of where it all comes from. Camps are small, organised end-to-end, and open to international guests.</p>
+<section class="section dark camps-list-sec" id="camps" style="padding-top:0">
+  <div class="wrap">
+    <div class="disc-tabs" role="group" aria-label="Filter by discipline">{tb}</div>
+    <div id="camp-list" class="camp-list" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="section light">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:48px">
+      <p class="label"><span class="bar"></span>How booking works</p>
+      <h2 class="display h-md">Three steps to the mat<span class="dot">.</span></h2>
+    </div>
+    <div class="steps stagger">
+      <div><span class="n">01</span><h3>Choose</h3><p>Pick a camp and the package that suits you — training only, with accommodation, or all-inclusive — plus any add-ons.</p></div>
+      <div><span class="n">02</span><h3>Reserve</h3><p>Fill in your details. You get a booking code and bank details instantly. Pay the deposit to confirm your spot.</p></div>
+      <div><span class="n">03</span><h3>Train</h3><p>We confirm by email or WhatsApp and send everything you need before you arrive. Then: two sessions a day, and Georgia in between.</p></div>
+    </div>
+    <div class="perks stagger">
+      <div><b>Early-bird prices</b><span>Book early, pay less.</span></div>
+      <div><b>Group discounts</b><span>Bring your team and save.</span></div>
+      <div><b>Waitlist</b><span>Full? Get the next free spot.</span></div>
+      <div><b>No card needed</b><span>Deposit by bank transfer.</span></div>
     </div>
   </div>
 </section>
 
 <section class="section light" style="padding-top:0">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:40px">
-      <p class="label"><span class="bar"></span>02 — Formats</p>
-      <h2 class="display h-md">Eight ways to train and take part<span class="dot">.</span></h2>
-    </div>
-    <div class="formats">{fmts}</div>
-  </div>
-</section>
-
-<section class="section dark">
-  <div class="wrap day">
-    <div class="reveal">
-      <p class="label muted"><span class="bar"></span>03 — A typical day</p>
-      <h2 class="display h-md">Two sessions. One country<span class="dot">.</span></h2>
-      <p class="body soft">An example of a training-camp day. Every camp publishes its own detailed daily schedule.</p>
-    </div>
-    <ol class="timeline reveal">{tl}</ol>
-  </div>
-</section>
-
-<section class="section light">
-  <div class="wrap">
-    <div class="sec-head" style="margin-bottom:40px">
-      <p class="label"><span class="bar"></span>04 — Who it’s for</p>
-      <h2 class="display h-md">Every level has a place on the mat<span class="dot">.</span></h2>
-    </div>
-    <div class="levels">
-      <div class="reveal"><p class="label" style="color:var(--red)">Beginners</p><h3>New to wrestling or grappling</h3><p>Fit and curious? Selected camps and workshops start from the basics — safely, with patient coaches.</p></div>
-      <div class="reveal"><p class="label" style="color:var(--red)">Experienced</p><h3>Wrestlers, judoka, grapplers</h3><p>Sharpen your stand-up and grips with Georgian coaches and hard training partners.</p></div>
-      <div class="reveal"><p class="label" style="color:var(--red)">Teams &amp; coaches</p><h3>Clubs and academies</h3><p>Bring your team. We can shape a camp around your club’s level, dates and goals.</p></div>
-    </div>
-    <div class="incl" style="margin-top:clamp(56px,7vw,96px)">
-      <div><h3>Included</h3><ul>{yl}</ul></div>
-      <div><h3>Optional / varies</h3><ul>{ol}</ul></div>
-    </div>
-  </div>
-</section>
-
-<section class="section dark" id="register">
-  <div class="wrap reg">
-    <div class="reg-intro">
-      <p class="label muted"><span class="bar"></span>05 — Register your interest</p>
-      <h2 class="display h-md">Be first on the mat<span class="dot">.</span></h2>
-      <p class="body soft">Tell us who you are and what you’d like to train. We’ll contact you with dates, prices and details as soon as camps open — before they’re announced publicly. Free, and not a booking.</p>
-      <p class="label muted">Under 18? A parent or guardian should fill in this form.</p>
-    </div>
-    <form id="camp-form" class="js-form" data-key="{key}" data-done="camp-done" novalidate>
-      <input type="hidden" name="subject" value="New camp interest — chidaoba.com">
-      <input type="hidden" name="from_name" value="chidaoba.com">
-      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name" required></div>
-      <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
-      <div class="field"><label for="f-country">Country</label><input id="f-country" name="country" autocomplete="country-name" placeholder="{countries_hint}" required></div>
-      <div class="field"><label for="f-phone">Phone / WhatsApp <em>optional</em></label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
-      <div class="field"><label for="f-age">Age</label><input id="f-age" name="age" type="number" min="8" max="99" inputmode="numeric" required></div>
-      <div class="field"><label for="f-exp">Grappling experience</label>
-        <select id="f-exp" name="experience" required>
-          <option value="">Select…</option><option>None — complete beginner</option><option>Under 1 year</option>
-          <option>1–3 years</option><option>3–5 years</option><option>5+ years</option><option>Competitive athlete</option><option>Coach</option>
-        </select></div>
-      <div class="field"><label for="f-level">Belt or skill level <em>optional</em></label><input id="f-level" name="level" placeholder="e.g. BJJ blue belt, national-level wrestler"></div>
-      <div class="field"><label for="f-club">Club or academy <em>optional</em></label><input id="f-club" name="club" autocomplete="organization"></div>
-      <fieldset class="field full"><legend>What are you interested in? <em>choose any</em></legend><div class="checks">{types}</div></fieldset>
-      <div class="field"><label for="f-when">Preferred time</label>
-        <select id="f-when" name="preferred_time"><option>Flexible</option><option>Spring</option><option>Summer</option><option>Autumn</option><option>Winter</option></select></div>
-      <div class="field"><label for="f-acc">Accommodation</label>
-        <select id="f-acc" name="accommodation"><option>Need accommodation</option><option>Don’t need it</option><option>Not sure yet</option></select></div>
-      <div class="field full"><label for="f-msg">Anything else? <em>optional</em></label><textarea id="f-msg" name="message" placeholder="Group size, injuries we should know about, questions…"></textarea></div>
-      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA CULTURE may use these details to contact me about camps and events, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
-      <div class="form-foot"><button class="btn btn-primary" type="submit">Send {arrow()}</button><p class="form-msg" aria-live="polite"></p></div>
-    </form>
-    <div class="done" id="camp-done" role="status">
-      <p class="label muted"><span class="bar"></span>Received</p>
-      <h3 class="display h-md">You’re on the list<span class="dot">.</span></h3>
-      <p class="body soft">Thank you. We’ll be in touch as soon as camps open. In the meantime, follow <a href="{IG}" rel="noopener">@chidaobaculture</a>.</p>
-    </div>
-  </div>
-</section>
-
-<section class="section light">
-  <div class="wrap">
     <div class="sec-head" style="margin-bottom:24px">
-      <p class="label"><span class="bar"></span>06 — Questions</p>
+      <p class="label"><span class="bar"></span>Questions</p>
       <h2 class="display h-md">Good to know<span class="dot">.</span></h2>
     </div>
     <div class="faq">{fq}</div>
+    <div class="team-cta">
+      <div><p class="label"><span class="bar"></span>Clubs &amp; teams</p><h3 class="display h-md">Want a camp for your club<span class="dot">?</span></h3>
+      <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
+      <a class="btn btn-primary" href="/contact/">Get in touch {arrow()}</a>
+    </div>
   </div>
 </section>
 """
+
+def camp_detail():
+    return '<div id="camp-root"><section class="page-hero dark"><div class="wrap"><p class="body soft">Loading camp…</p></div></section></div>'
+
+def admin():
+    return ""
 
 def community():
     return inner("Community", "Built by people<span class=\"dot\">.</span>",
@@ -650,6 +588,9 @@ PAGES = [
      "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
     ("/camps/", "camps/index.html", "Camps & Events — CHIDAOBA CULTURE",
      "Training camps, Chidaoba workshops, wrestling seminars, BJJ/No-Gi camps and cultural experiences in Georgia.", camps),
+    ("/camps/camp/", "camps/camp/index.html", "Camp — CHIDAOBA CULTURE",
+     "Camp details, packages, schedule and registration — CHIDAOBA CULTURE.", camp_detail),
+    ("/admin/", "admin/index.html", "Admin — CHIDAOBA CULTURE", "Admin.", admin),
     ("/community/", "community/index.html", "Community — CHIDAOBA CULTURE",
      "Athletes, coaches and clubs of Georgian wrestling and grappling.", community),
     ("/journal/", "journal/index.html", "Journal — CHIDAOBA CULTURE",
@@ -668,8 +609,8 @@ if __name__ == "__main__":
         with open(full, "w") as f:
             f.write(page(path, html.escape(title, quote=False), html.escape(desc), fn()))
         print("wrote", out)
-    sm = "".join(f"<url><loc>https://chidaoba.com{p}</loc></url>" for p, o, *_ in PAGES if not o.startswith("404"))
+    sm = "".join(f"<url><loc>https://chidaoba.com{p}</loc></url>" for p, o, *_ in PAGES if not o.startswith("404") and p not in ("/admin/", "/camps/camp/"))
     open(os.path.join(ROOT, "sitemap.xml"), "w").write(
         f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>\n')
-    open(os.path.join(ROOT, "robots.txt"), "w").write("User-agent: *\nAllow: /\nSitemap: https://chidaoba.com/sitemap.xml\n")
+    open(os.path.join(ROOT, "robots.txt"), "w").write("User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: https://chidaoba.com/sitemap.xml\n")
     print("wrote sitemap.xml, robots.txt")
