@@ -11,6 +11,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SYM = open(os.path.join(ROOT, "_src", "symbol_path.txt")).read().strip()
 IG = "https://www.instagram.com/chidaobaculture/"
 IG_HANDLE = "@chidaobaculture"
+FB = "https://www.facebook.com/chidaoba"
 EMAIL = "chidaobaculture@gmail.com"
 WA_NUM = "995595606670"
 WA_SHOW = "+995 595 606 670"
@@ -71,11 +72,23 @@ def header(path):
 </header>
 <div class="mobile-menu" id="mobile-menu">
   <nav aria-label="Mobile">{mlinks}</nav>
-  <a class="label" href="{IG}" rel="noopener">Instagram {IG_HANDLE}</a>
+  {socials("socials socials-menu")}
 </div>
 """
 
 WA_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg>')
+
+IG_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">'
+           '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>')
+FB_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path fill="currentColor" '
+           'd="M13.5 21.5v-8h2.7l.4-3.2h-3.1V8.3c0-.9.3-1.5 1.6-1.5h1.7V4a22 22 0 0 0-2.5-.1c-2.5 0-4.2 1.5-4.2 4.3v2.1H7.4v3.2h2.7v8Z"/></svg>')
+MAIL_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">'
+             '<rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>')
+
+def socials(cls="socials"):
+    items = [(WA, "WhatsApp", WA_ICON), (IG, "Instagram", IG_ICON), (FB, "Facebook", FB_ICON), (f"mailto:{EMAIL}", "Email", MAIL_ICON)]
+    return f'<div class="{cls}">' + "".join(
+        f'<a href="{u}"{"" if u.startswith("mailto") else " rel=\"noopener\""} aria-label="{n}" title="{n}">{i}</a>' for u, n, i in items) + "</div>"
 
 def newsletter_form(where):
     big = where != "foot"
@@ -108,9 +121,7 @@ def footer(path=""):
       <nav class="foot-col" aria-label="Explore"><h3>Explore</h3><ul>
         <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
         <li><a href="/georgia/">Why Georgia</a></li><li><a href="/community/">Community</a></li><li><a href="/journal/">Journal</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
-      <div class="foot-col"><h3>Connect</h3><ul>
-        <li><a href="{WA}" rel="noopener">WhatsApp</a></li><li><a href="{IG}" rel="noopener">Instagram</a></li>
-        <li><a href="/contact/">Contact</a></li><li><a href="mailto:{EMAIL}">Email us</a></li></ul></div>
+      <div class="foot-col"><h3>Connect</h3>{socials()}<ul style="margin-top:22px"><li><a href="/contact/">Contact</a></li></ul></div>
       <div class="foot-col"><h3>Based in</h3><p class="foot-addr">Tbilisi, Georgia<br><span class="foot-time" data-tbilisi-time>GMT+4</span></p>
         <h3 style="margin-top:28px">Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
     </div>
@@ -126,7 +137,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "11"
+ASSET_V = "12"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
@@ -803,7 +814,7 @@ def privacy():
 <p>We don’t sell or share your details, and there are no accounts, analytics or advertising cookies on this site.</p>
 <h2>How the forms work</h2>
 <p>Form submissions are delivered to our inbox (chidaobaculture@gmail.com) by Web3Forms, a form-processing service. If the form opens your email app instead, your message is sent from your own email account. We keep your details only as long as needed. To see, correct or delete what we hold about you, email us and we’ll do it.</p>
-<p>WhatsApp and Instagram links open those services; their own privacy policies apply when you use them.</p>
+<p>WhatsApp, Instagram and Facebook links open those services; their own privacy policies apply when you use them.</p>
 <h2>Third-party services</h2>
 <p>The site is hosted on GitHub Pages and loads its typefaces from Google Fonts. Like any web server, these services receive technical information such as your IP address when your browser requests a page or a font. Their own privacy policies apply.</p>
 <h2>Changes</h2>
@@ -839,6 +850,7 @@ def contact():
         <a href="mailto:{EMAIL}"><span class="label muted">Email</span><b>{EMAIL}</b></a>
         <a href="{WA}" rel="noopener"><span class="label muted">WhatsApp</span><b>{WA_SHOW}</b></a>
         <a href="{IG}" rel="noopener"><span class="label muted">Instagram</span><b>{IG_HANDLE}</b></a>
+        <a href="{FB}" rel="noopener"><span class="label muted">Facebook</span><b>fb.com/chidaoba</b></a>
         <div><span class="label muted">Based in</span><b>Tbilisi, Georgia</b></div>
       </div>
     </div>

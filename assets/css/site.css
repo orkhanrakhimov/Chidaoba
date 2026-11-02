@@ -1030,3 +1030,11 @@ html, body { overflow-x: clip; }
 @media (max-width:1000px){.foot-grid{grid-template-columns:1fr 1fr 1fr}.foot-news{grid-column:1/-1}}
 @media (max-width:600px){.foot-grid,.foot-grid:not(:has(.foot-news)){grid-template-columns:1fr 1fr}.foot-col:last-child{grid-column:1/-1}.foot-cta{align-items:flex-start}.foot-bottom{flex-direction:column;align-items:flex-start;gap:10px}}
 @media (min-width:601px){.foot-bottom{padding-right:190px}}
+/* social icons */
+.socials{display:flex;gap:10px;flex-wrap:wrap}
+.socials a{width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--carbon-line);color:var(--chalk);transition:background .2s,border-color .2s,color .2s,transform .2s}
+.socials a::after{display:none}
+.socials a:hover{background:var(--red);border-color:var(--red);transform:translateY(-2px)}
+.socials svg{width:20px;height:20px}
+.socials-menu{margin-top:28px}
+.foot-col .socials{gap:6px;flex-wrap:nowrap}.foot-col .socials a{width:40px;height:40px}.foot-col .socials svg{width:18px;height:18px}
