@@ -11,7 +11,7 @@
       place: 'Mulakhi, Svaneti',
       address: 'Mulakhi, Mestia Municipality, Svaneti, Georgia',
       map_query: 'Mulakhi, Mestia, Georgia',
-      intro: 'A mountain sports complex in Mulakhi, Upper Svaneti, training, accommodation and meals under one roof, with the Caucasus all around.',
+      intro: 'A mountain sports complex in Mulakhi, Upper Svaneti. Training, accommodation and meals under one roof, with the Caucasus all around.',
       cover: g('summer-pitch', 'The complex’s mini stadium with the mountains of Svaneti behind it'),
       facts: [['11', 'guest rooms'], ['40', 'beds'], ['800 m²', 'training hall'], ['3', 'meals a day']],
       indoor: ['Training hall, 800 m²', 'Tatami', 'Boxing ring & heavy bags', 'Gym equipment', 'Climbing wall', 'Sauna', 'Dining hall', 'Lounge', '11 guest rooms for 40 people'],

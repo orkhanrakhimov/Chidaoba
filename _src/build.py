@@ -118,8 +118,8 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "7"
-EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
+ASSET_V = "8"
+EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
     js = "".join(f'<script src="/assets/js/{n}.js?v={ASSET_V}" defer></script>' for n in EXTRA_JS.get(path, []))
@@ -447,7 +447,18 @@ def camps():
   </div>
 </section>
 
-<section class="section light">
+<section class="section light venues-sec">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:40px">
+      <p class="label"><span class="bar"></span>Where we train</p>
+      <h2 class="display h-md">Our venues</h2>
+      <p class="body muted">Training halls, rooms and meals in one place, chosen for camps that feel like more than a trip.</p>
+    </div>
+    <div id="venue-list" class="venue-list"></div>
+  </div>
+</section>
+
+<section class="section light" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
       <p class="label"><span class="bar"></span>How booking works</p>
@@ -485,6 +496,9 @@ def camps():
 
 def camp_detail():
     return '<div id="camp-root"><section class="page-hero dark"><div class="wrap"><p class="body soft">Loading camp…</p></div></section></div>'
+
+def venue_page():
+    return '<div id="venue-root"><section class="page-hero dark"><div class="wrap"><p class="body soft">Loading venue…</p></div></section></div>'
 
 def admin():
     return ""
@@ -591,6 +605,8 @@ PAGES = [
      "Training camps, Chidaoba workshops, wrestling seminars, BJJ/No-Gi camps and cultural experiences in Georgia.", camps),
     ("/camps/camp/", "camps/camp/index.html", "Camp | CHIDAOBA CULTURE",
      "Camp details, packages, schedule and registration | CHIDAOBA CULTURE.", camp_detail),
+    ("/camps/venue/", "camps/venue/index.html", "Venue | CHIDAOBA CULTURE",
+     "Where we train: Ilia Gabliani Sports Complex in Mulakhi, Svaneti. Training hall, rooms for 40, meals, pool and mountain views.", venue_page),
     ("/admin/", "admin/index.html", "Admin | CHIDAOBA CULTURE", "Admin.", admin),
     ("/community/", "community/index.html", "Community | CHIDAOBA CULTURE",
      "Athletes, coaches and clubs of Georgian wrestling and grappling.", community),

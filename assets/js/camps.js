@@ -72,6 +72,35 @@
     });
   }
 
+  // ================= VENUES (list + page) =================
+  var vlist = $('#venue-list'), V_ALL = window.CHD_VENUES || {};
+  if (vlist) {
+    vlist.innerHTML = Object.keys(V_ALL).map(function (k) {
+      var v = V_ALL[k];
+      return '<a class="venue-card" href="/camps/venue/?v=' + encodeURIComponent(k) + '"><div class="vc-img"><img src="' + e(v.cover.url) + '" alt="' + e(v.cover.alt) + '" loading="lazy"></div>' +
+        '<div class="vc-body"><span class="label">' + e(v.place) + '</span><h3>' + e(v.name) + '</h3><p>' + e(v.intro) + '</p>' +
+        '<div class="vc-facts">' + v.facts.map(function (f) { return '<span><b>' + e(f[0]) + '</b> ' + e(f[1]) + '</span>'; }).join('') + '</div>' +
+        '<span class="cc-cta">See the venue <span class="arr">→</span></span></div></a>';
+    }).join('');
+  }
+  var vroot = $('#venue-root');
+  if (vroot) {
+    var vk = new URLSearchParams(location.search).get('v'), V1 = V_ALL[vk];
+    if (!V1) { vroot.innerHTML = '<section class="page-hero dark"><div class="wrap"><h1 class="display h-lg">Venue not found</h1><div style="margin-top:28px"><a class="btn btn-primary" href="/camps/">All camps <span class="arr">→</span></a></div></div></section>'; }
+    else {
+      document.title = V1.name + ', ' + V1.place + ' | CHIDAOBA CULTURE';
+      galleryData = V1.gallery;
+      vroot.innerHTML = '<section class="camp-hero dark has-img"><img class="camp-hero-img" src="' + e(V1.cover.url) + '" alt="' + e(V1.cover.alt) + '"><div class="wrap">' +
+        '<a class="back label muted" href="/camps/">← All camps</a><p class="label muted" style="margin-top:28px">Venue · ' + e(V1.place) + '</p>' +
+        '<h1 class="display h-lg">' + e(V1.name) + '</h1><p class="lead soft" style="margin-top:20px;max-width:34em">' + e(V1.intro) + '</p></div></section>' +
+        '<section class="section light"><div class="wrap venue-page"><div class="camp-block">' + venueHtml(V1, {}, V1.gallery) + '</div>' +
+        '<div class="team-cta"><div><p class="label">Camps here</p><h3 class="display h-md">Train in the mountains of Svaneti</h3>' +
+        '<p class="body muted">Our first camps at this venue are planned for spring and summer. Dates and prices are published on the Camps page first.</p></div>' +
+        '<div class="row-btns"><a class="btn btn-primary" href="/camps/">See camps <span class="arr">→</span></a><a class="btn btn-ghost" href="' + WA + '?text=' + encodeURIComponent('Hi CHIDAOBA, I’m interested in a camp at ' + V1.name + ', ' + V1.place + '.') + '" rel="noopener">Ask on WhatsApp</a></div></div></div></section>';
+      wireMedia(vroot);
+    }
+  }
+
   // ================= DETAIL =================
   var root = $('#camp-root');
   if (!root) return;
@@ -110,31 +139,7 @@
     if (c.description) html += '<div class="prose camp-desc">' + paras(c.description) + '</div>';
     var gal = (c.gallery || []).map(function (g) { return { url: g.url, thumb: g.url, alt: g.alt || c.title }; }).concat(V ? V.gallery : []);
     if (V || c.address || c.venue_info || gal.length) {
-      var loc = c.address || (V && V.address) || [c.venue, c.city, c.country].filter(Boolean).join(', ');
-      var q = (V && !c.address) ? V.map_query : loc;
-      var vh = '';
-      if (V) {
-        vh += '<p class="lead">' + e(V.intro) + '</p><div class="v-facts">' + V.facts.map(function (f) { return '<div><b>' + e(f[0]) + '</b><span>' + e(f[1]) + '</span></div>'; }).join('') + '</div>';
-      }
-      if (gal.length) {
-        vh += '<div class="gal" data-n="' + gal.length + '">' + gal.slice(0, 5).map(function (g, i) {
-          return '<button type="button" class="gal-i' + (i === 0 ? ' big' : '') + '" data-i="' + i + '" aria-label="View photo: ' + e(g.alt) + '"><img src="' + e(i === 0 ? g.url : g.thumb) + '" alt="' + e(g.alt) + '" loading="lazy">' +
-            (i === 4 && gal.length > 5 ? '<span class="gal-more">+' + (gal.length - 5) + ' photos</span>' : '') + '</button>';
-        }).join('') + '</div>';
-      }
-      if (V) {
-        vh += '<div class="incl v-list"><div><h3>Indoors</h3><ul>' + V.indoor.map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div>' +
-          '<div><h3>Outdoors</h3><ul>' + V.outdoor.map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div></div>';
-        vh += '<details class="menu"><summary>What you’ll eat: the daily menu</summary><div class="menu-grid">' + V.menu.map(function (m) { return '<div><b>' + e(m.meal) + '</b><p>' + e(m.items) + '</p></div>'; }).join('') + '</div></details>';
-      }
-      if (c.venue_info) vh += '<div class="prose camp-desc">' + paras(c.venue_info) + '</div>';
-      if (loc) {
-        var mq = encodeURIComponent(q || loc), open = c.map_url || ('https://www.google.com/maps/search/?api=1&query=' + mq);
-        vh += '<div class="map"><div class="map-top"><div><span class="label">Where</span><b>' + e(V ? V.name : (c.venue || loc)) + '</b><span>' + e(loc) + '</span></div>' +
-          '<a class="btn btn-ghost" href="' + e(open) + '" target="_blank" rel="noopener">Open in Google Maps <span class="arr">→</span></a></div>' +
-          '<button type="button" class="map-load" data-q="' + e(mq) + '">Show map</button></div>';
-      }
-      html += block('Where you’ll train &amp; stay', vh);
+      html += block('Where you’ll train &amp; stay', venueHtml(V, c, gal));
       galleryData = gal;
     }
     if ((c.packages || []).length) {
@@ -190,13 +195,7 @@
     html += modal(c, st);
     root.innerHTML = html;
 
-    root.querySelectorAll('.gal-i').forEach(function (b) { b.addEventListener('click', function () { lightbox(+b.dataset.i); }); });
-    var ml = root.querySelector('.map-load');
-    if (ml) ml.addEventListener('click', function () {
-      var f = document.createElement('iframe'); f.className = 'map-frame'; f.loading = 'lazy'; f.title = 'Map';
-      f.referrerPolicy = 'no-referrer-when-downgrade'; f.src = 'https://www.google.com/maps?q=' + ml.dataset.q + '&z=12&output=embed';
-      ml.replaceWith(f);
-    });
+    wireMedia(root);
     // schedule tabs
     root.querySelectorAll('.sched-tabs button').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -208,6 +207,40 @@
     if (canBook && (c.packages || []).length) wireBooking(c, st);
   }
   var galleryData = [];
+  function venueHtml(V, c, gal) {
+    c = c || {};
+    var loc = c.address || (V && V.address) || [c.venue, c.city, c.country].filter(Boolean).join(', ');
+    var q = (V && !c.address) ? V.map_query : loc, vh = '';
+    if (V) vh += '<p class="lead">' + e(V.intro) + '</p><div class="v-facts">' + V.facts.map(function (f) { return '<div><b>' + e(f[0]) + '</b><span>' + e(f[1]) + '</span></div>'; }).join('') + '</div>';
+    if (gal.length) {
+      vh += '<div class="gal">' + gal.slice(0, 5).map(function (g, i) {
+        return '<button type="button" class="gal-i' + (i === 0 ? ' big' : '') + '" data-i="' + i + '" aria-label="View photo: ' + e(g.alt) + '"><img src="' + e(i === 0 ? g.url : g.thumb) + '" alt="' + e(g.alt) + '" loading="lazy">' +
+          (i === 4 && gal.length > 5 ? '<span class="gal-more">+' + (gal.length - 5) + ' photos</span>' : '') + '</button>';
+      }).join('') + '</div>';
+    }
+    if (V) {
+      vh += '<div class="incl v-list"><div><h3>Indoors</h3><ul>' + V.indoor.map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div>' +
+        '<div><h3>Outdoors</h3><ul>' + V.outdoor.map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div></div>';
+      vh += '<details class="menu"><summary>What you’ll eat: the daily menu</summary><div class="menu-grid">' + V.menu.map(function (m) { return '<div><b>' + e(m.meal) + '</b><p>' + e(m.items) + '</p></div>'; }).join('') + '</div></details>';
+    }
+    if (c.venue_info) vh += '<div class="prose camp-desc">' + paras(c.venue_info) + '</div>';
+    if (loc) {
+      var mq = encodeURIComponent(q || loc), open = c.map_url || ('https://www.google.com/maps/search/?api=1&query=' + mq);
+      vh += '<div class="map"><div class="map-top"><div><span class="label">Where</span><b>' + e(V ? V.name : (c.venue || loc)) + '</b><span>' + e(loc) + '</span></div>' +
+        '<a class="btn btn-ghost" href="' + e(open) + '" target="_blank" rel="noopener">Open in Google Maps <span class="arr">→</span></a></div>' +
+        '<button type="button" class="map-load" data-q="' + e(mq) + '">Show map</button></div>';
+    }
+    return vh;
+  }
+  function wireMedia(scope) {
+    scope.querySelectorAll('.gal-i').forEach(function (b) { b.addEventListener('click', function () { lightbox(+b.dataset.i); }); });
+    var ml = scope.querySelector('.map-load');
+    if (ml) ml.addEventListener('click', function () {
+      var f = document.createElement('iframe'); f.className = 'map-frame'; f.loading = 'lazy'; f.title = 'Map';
+      f.referrerPolicy = 'no-referrer-when-downgrade'; f.src = 'https://www.google.com/maps?q=' + ml.dataset.q + '&z=12&output=embed';
+      ml.replaceWith(f);
+    });
+  }
   function lightbox(i) {
     var g = galleryData; if (!g.length) return;
     var lb = document.createElement('div'); lb.className = 'lb'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
