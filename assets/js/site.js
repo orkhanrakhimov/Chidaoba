@@ -147,3 +147,11 @@
   }
   tick(); setInterval(tick, 30000);
 })();
+
+// header bag count (shop bag is stored in this browser)
+(function () {
+  try {
+    var b = JSON.parse(localStorage.getItem('chd_bag') || '[]'), n = b.reduce(function (s, i) { return s + (i.q || 0); }, 0);
+    document.querySelectorAll('[data-bag-n]').forEach(function (x) { x.textContent = n; x.hidden = !n; });
+  } catch (e) { }
+})();

@@ -65,7 +65,7 @@ def header(path):
     <a class="brand" href="/" aria-label="CHIDAOBA CULTURE home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA CULTURE" width="26" height="36"></a>
     <nav class="nav" aria-label="Main">{links}</nav>
     <div class="head-tools">
-      <a class="bag" href="/shop/" aria-label="Shop">{BAG}</a>
+      <a class="bag" href="/shop/#bag" aria-label="Bag">{BAG}<b class="bag-n" data-bag-n hidden>0</b></a>
       <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -141,8 +141,8 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "16"
-EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
+ASSET_V = "20"
+EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"], "/shop/": ["shop"]}
 
 def page(path, title, desc, main):
     js = "".join(f'<script src="/assets/js/{n}.js?v={ASSET_V}" defer></script>' for n in EXTRA_JS.get(path, []))
@@ -345,14 +345,11 @@ def culture():
 <section class="section light" aria-labelledby="details-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>02 · Key facts</p>
-      <h2 id="details-title" class="display h-md">Key facts</h2>
+      <p class="label"><span class="bar"></span>02 · At a glance</p>
+      <h2 id="details-title" class="display h-lg">How Chidaoba works</h2>
     </div>
-    <div class="details details-3 stagger">
-      <div><b data-count="2018" data-from="1900">2018</b><p>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</p></div>
-      <div><b>Open air</b><p>Tournaments in an outdoor arena, surrounded by a large audience.</p></div>
-      <div><b>Zurna &amp; doli</b><p>Traditional wind and percussion instruments that accompany Chidaoba wrestling events.</p></div>
-    </div>
+    <div class="cf-top reveal"><b>2018</b><p>Chidaoba was added to UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</p></div>
+    <div class="cf-grid stagger"><div><span class="label">Uniform</span><b>The chokha</b><p>A short, sleeveless wrestling jacket tied with a belt. Wrestlers compete barefoot.</p></div><div><span class="label">Grips</span><b>Jacket and belt</b><p>Wrestlers grip the chokha and the belt. Grabbing the trousers is not allowed.</p></div><div><span class="label">Winning</span><b>A clean throw</b><p>Bouts are fought standing. Throwing the opponent flat onto his back wins the bout.</p></div><div><span class="label">Arena</span><b>Open air</b><p>Held outdoors on grass, hay or sawdust, with spectators standing in a circle around the wrestlers.</p></div><div><span class="label">Music</span><b>Zurna and doli</b><p>A wind instrument and a drum open the contest and keep the rhythm during the bouts.</p></div><div><span class="label">Code</span><b>Respect</b><p>Fairness and respect for the opponent are part of the rules. Dishonest techniques are not accepted.</p></div><div><span class="label">Regions</span><b>Many styles</b><p>Kartli, Kakheti, Svaneti, Racha, Imereti and Guria each developed their own way of wrestling.</p></div><div><span class="label">Legacy</span><b>Roots of sambo</b><p>Chidaoba is one of the regional wrestling styles that shaped sambo in the 20th century.</p></div></div>
   </div>
 </section>
 
@@ -567,16 +564,19 @@ def georgia():
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
       <p class="label"><span class="bar"></span>02 · Champions</p>
-      <h2 id="champ-title" class="display h-lg">Results on the international stage</h2>
-      <p class="body muted">Georgia has about 3.5 million people, but it is one of the most successful countries in the world in judo and wrestling.</p>
+      <h2 id="champ-title" class="display h-lg">A small country with many champions</h2>
+      <p class="body muted">Most of Georgia's Olympic medals come from judo and wrestling.</p>
     </div>
-    <div class="details stagger">
-      <div><b data-count="7">7</b><p>Olympic medals at Paris 2024, Georgia's best Games as an independent country. Judo and wrestling led the way.</p></div>
-      <div><b data-count="2025" data-from="1990">2025</b><p>World mixed team judo champions for the first time, ending Japan's run of seven straight titles.</p></div>
-      <div><b data-count="23">23</b><p>World wrestling medals per million people, second only to Bulgaria in the all-time per capita ranking.</p></div>
-      <div><b>×2</b><p>Lasha Bekauri, Olympic judo champion in Tokyo and again in Paris. Geno Petriashvili took freestyle gold at 125 kg in Paris.</p></div>
+    <div class="ch-stats stagger">
+      <div><b>3.9M</b><span>People living in Georgia</span></div>
+      <div><b data-count="48">48</b><span>Olympic medals since 1996, 36 of them in judo and wrestling</span></div>
+      <div><b data-count="9">9</b><span>Olympic gold medals in judo and wrestling</span></div>
+      <div><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
     </div>
-    <p class="body muted gx-note">Even in the Soviet years, Georgian judoka won more medals for the USSR than any other republic. In 2026 Tbilisi hosted the European Judo Championships, and Georgia topped the table with four golds.</p>
+    <div class="ch-lists">
+      <div><h3>Olympic champions</h3><p class="body muted">Judo and wrestling</p><ul><li><b>Zurab Zviadauri</b><span>Judo, 90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>Judo, 90 kg</span><em>2008</em></li><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 66 kg</span><em>2012</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Lasha Bekauri</b><span>Judo, 90 kg</span><em>2020, 2024</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
+      <div><h3>World champions</h3><p class="body muted">Recent titles</p><ul><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2025</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2025</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>3 world titles</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>3 world titles</em></li></ul></div>
+    </div>
   </div>
 </section>
 
@@ -658,93 +658,116 @@ def georgia():
 """
 
 
+APPAREL = ["XS", "S", "M", "L", "XL", "XXL"]
+GI = ["A0", "A1", "A2", "A3", "A4"]
+ONE = ["One size"]
+# (name, description, sports, sizes, colours)
 SHOP = [
   ("fightwear", "Fight wear", "Rashguards, shorts, spats and singlets.", [
-    ("Rashguards", "Long and short sleeve, tight fit.", "BJJ · Grappling"),
-    ("Fight shorts", "Stretch fabric, no pockets, secure waistband.", "BJJ · Grappling"),
-    ("Spats", "Compression leggings for no-gi and wrestling.", "No-gi · Wrestling"),
-    ("Wrestling singlets", "Competition cut, in red and black.", "Freestyle · Greco-Roman"),
+    ("Rashguard, long sleeve", "Tight fit, flatlock seams, sublimated print that does not crack.", ["bjj", "wrestling"], APPAREL, ["Black", "White", "Red"]),
+    ("Rashguard, short sleeve", "Same fabric and fit, for warm gyms and summer camps.", ["bjj", "wrestling"], APPAREL, ["Black", "White", "Red"]),
+    ("Fight shorts", "Stretch fabric, no pockets, secure waistband with drawcord.", ["bjj", "wrestling"], ["28", "30", "32", "34", "36", "38"], ["Black", "Red"]),
+    ("Spats", "Compression leggings for no-gi and wrestling training.", ["bjj", "wrestling"], APPAREL, ["Black"]),
+    ("Wrestling singlet", "Competition cut for freestyle and Greco-Roman.", ["wrestling"], APPAREL, ["Red", "Blue", "Black"]),
   ]),
   ("gis", "Gis &amp; kimonos", "Gis, kimonos and belts.", [
-    ("BJJ gi", "Pearl weave jacket and ripstop pants.", "BJJ"),
-    ("Judo kimono", "Double weave judogi for training.", "Judo"),
-    ("Belts", "Rank belts for BJJ and judo.", "BJJ · Judo"),
+    ("BJJ gi", "Pearl weave jacket, ripstop pants, reinforced collar.", ["bjj"], GI, ["White", "Black", "Blue"]),
+    ("Judo kimono", "Double weave judogi for training.", ["judo"], ["150 cm", "160 cm", "170 cm", "180 cm", "190 cm", "200 cm"], ["White", "Blue"]),
+    ("BJJ belt", "Cotton rank belt.", ["bjj"], ["A1", "A2", "A3", "A4"], ["White", "Blue", "Purple", "Brown", "Black"]),
+    ("Judo belt", "Cotton rank belt.", ["judo"], ["240 cm", "260 cm", "280 cm", "300 cm"], ["White", "Yellow", "Orange", "Green", "Blue", "Brown", "Black"]),
   ]),
-  ("gear", "Gear", "Bags and protective gear.", [
-    ("Gear bags", "Duffel bags and backpacks with a separate wet compartment.", "All disciplines"),
-    ("Headgear", "Ear guards for wrestling and grappling.", "Wrestling · Grappling"),
-    ("Mouthguards", "Boil and bite, with a case.", "All disciplines"),
-    ("Knee pads", "Low profile knee pads.", "Wrestling"),
-    ("Wrestling shoes", "Lightweight, with ankle support.", "Wrestling"),
-    ("Tape", "Finger and joint tape.", "All disciplines"),
+  ("gear", "Gear", "Bags, protection and training essentials.", [
+    ("Gear bag", "Large duffel with a separate wet compartment for your gi and shoes.", ["bjj", "wrestling", "judo"], ONE, ["Black"]),
+    ("Backpack", "Daily training backpack with laptop sleeve and shoe pocket.", ["bjj", "wrestling", "judo"], ONE, ["Black"]),
+    ("Headgear", "Ear guards for wrestling and grappling. Adjustable straps.", ["wrestling", "bjj"], ONE, ["Black", "Red"]),
+    ("Mouthguard", "Boil and bite fit, with a ventilated case.", ["bjj", "wrestling", "judo"], ["Junior", "Adult"], ["Black", "Clear"]),
+    ("Knee pads", "Low profile pads for shots and scrambles. Sold as a pair.", ["wrestling"], ["S", "M", "L"], ["Black"]),
+    ("Wrestling shoes", "Lightweight, split sole, ankle support.", ["wrestling"], ["EU 38", "EU 39", "EU 40", "EU 41", "EU 42", "EU 43", "EU 44", "EU 45", "EU 46"], ["Black", "Red"]),
+    ("Finger tape", "Cotton tape for fingers and joints. Pack of 4 rolls.", ["bjj", "judo", "wrestling"], ["0.8 cm", "1.3 cm", "2.5 cm"], ["White"]),
+    ("Gym towel", "Quick dry microfibre towel.", ["bjj", "wrestling", "judo"], ONE, ["Black", "Red"]),
+    ("Slides", "For walking off the mat. Keep the mat clean.", ["bjj", "wrestling", "judo"], ["EU 38-39", "EU 40-41", "EU 42-43", "EU 44-45", "EU 46-47"], ["Black"]),
+    ("Water bottle", "Stainless steel, 750 ml, keeps water cold.", ["bjj", "wrestling", "judo"], ONE, ["Black", "White"]),
   ]),
   ("lifestyle", "Lifestyle", "Everyday clothing and accessories.", [
-    ("Hoodies", "Heavy cotton, relaxed fit.", "Everyday"),
-    ("T-shirts", "Heavyweight T-shirts in black, white and red.", "Everyday"),
-    ("Sweatshirts", "Crewneck sweatshirts.", "Everyday"),
-    ("Track pants", "Tapered joggers.", "Everyday"),
-    ("Caps &amp; beanies", "With embroidered logo.", "Everyday"),
-    ("Tote bags", "Heavy canvas tote bags.", "Everyday"),
+    ("Hoodie", "Heavy cotton, relaxed fit.", [], APPAREL, ["Black", "White", "Red"]),
+    ("T-shirt", "Heavyweight cotton T-shirt.", [], APPAREL, ["Black", "White", "Red"]),
+    ("Sweatshirt", "Crewneck sweatshirt.", [], APPAREL, ["Black", "Grey"]),
+    ("Track pants", "Tapered joggers with zip pockets.", [], APPAREL, ["Black", "Grey"]),
+    ("Cap", "Cotton cap with embroidered logo.", [], ONE, ["Black", "White"]),
+    ("Beanie", "Knitted beanie with embroidered logo.", [], ONE, ["Black", "Red"]),
+    ("Tote bag", "Heavy canvas tote bag.", [], ONE, ["Natural", "Black"]),
   ]),
 ]
+SPORT_NAMES = {"bjj": "BJJ", "wrestling": "Wrestling", "judo": "Judo"}
 
 def slugify(n):
     return re.sub(r"[^a-z0-9]+", "-", n.replace("&amp;", "and").lower()).strip("-")
 
-def wa_order(n):
-    from urllib.parse import quote
-    name = n.replace("&amp;", "&")
-    msg = f"Hi CHIDAOBA! I want to order: {name}\nhttps://chidaoba.com/shop/#{slugify(n)}\nSize: \nColour: "
-    return f"https://wa.me/{WA_NUM}?text={quote(msg)}"
-
 def shop():
-    nav = "".join(f'<a href="#{k}"><b>0{i+1}</b>{t}</a>' for i,(k,t,_,_) in enumerate(SHOP))
-    depts = ""
-    for i,(k,t,sub,items) in enumerate(SHOP):
-        tiles = "".join(f"""<article class="ptile" id="{slugify(n)}">
-          <div class="ptile-art" aria-hidden="true">{sym_svg("")}<span>0{i+1}.{j+1}</span></div>
-          <div class="ptile-body"><p class="ptile-tag">{tag}</p><h3>{n}</h3><p>{d}</p>
-          <a class="ptile-wa" href="{wa_order(n)}" rel="noopener">{WA_ICON}Order<span class="wa-long"> on WhatsApp</span></a></div></article>""" for j,(n,d,tag) in enumerate(items))
-        depts += f"""<section class="dept section {'light' if i%2==0 else 'alt'}" id="{k}"><div class="wrap">
-      <div class="dept-head reveal"><span class="dept-num">0{i+1}</span><div><h2 class="display h-lg">{t}</h2><p class="lead">{sub}</p></div></div>
-      <div class="pgrid stagger">{tiles}</div></div></section>"""
-    cats = "".join(f'<label><input type="checkbox" name="wants" value="{n}"><span>{n}</span></label>' for _,_,_,items in SHOP for n,_,_ in items)
-    sizes = "".join(f'<label><input type="checkbox" name="sizes" value="{z}"><span>{z}</span></label>' for z in ["XS","S","M","L","XL","XXL","A0","A1","A2","A3","A4"])
+    import json
+    cats = "".join(f'<button type="button" data-cat="{k}"><span>{t}</span><em>{len(items)}</em></button>' for k, t, _, items in SHOP)
+    total = sum(len(i[3]) for i in SHOP)
+    data, depts = {}, ""
+    for i, (k, t, sub, items) in enumerate(SHOP):
+        tiles = ""
+        for j, (n, d, sp, sizes, cols) in enumerate(items):
+            pid = slugify(n)
+            data[pid] = {"name": n.replace("&amp;", "&"), "desc": d, "cat": t.replace("&amp;", "&"), "sizes": sizes, "colours": cols}
+            tags = " · ".join(SPORT_NAMES[x] for x in sp) if sp else "Everyday"
+            tiles += f"""<article class="ptile" id="{pid}" data-id="{pid}" data-cat="{k}" data-sports="{' '.join(sp) or 'all'}">
+          <button type="button" class="ptile-open" aria-label="Choose size and colour: {n}">
+            <div class="ptile-art" aria-hidden="true">{sym_svg("")}<span class="ptile-badge">Pre-order</span></div>
+            <div class="ptile-body"><p class="ptile-tag">{tags}</p><h3>{n}</h3><p>{d}</p>
+            <p class="ptile-opts">{len(sizes) if sizes != ONE else 'One'} size{'s' if len(sizes) > 1 else ''} · {len(cols)} colour{'s' if len(cols) > 1 else ''}</p></div>
+          </button>
+          <button type="button" class="ptile-add" data-id="{pid}">Choose options</button></article>"""
+        depts += f"""<section class="dept" id="{k}" data-cat="{k}"><div class="dept-head"><span class="dept-num">0{i+1}</span><div><h2 class="display h-md">{t}</h2><p class="lead">{sub}</p></div></div>
+      <div class="pgrid">{tiles}</div></section>"""
+    sports = "".join(f'<button type="button" data-sport="{k}" aria-pressed="false">{v}</button>' for k, v in SPORT_NAMES.items())
     return f"""
-<section class="page-hero dark">
-  {sym_svg("ghost")}
+<section class="page-hero dark shop-hero">
   <div class="wrap" style="position:relative">
     <p class="label muted fade-load"><span class="bar"></span>Shop</p>
     <h1 class="display h-xl"><span class="ln"><span>Shop</span></span></h1>
-    <p class="lead soft fade-load">Fight wear, gis, gear and everyday clothing for wrestling, judo and grappling. To order, tap the button on any item and message us on WhatsApp.</p>
-    <nav class="shop-nav fade-load" aria-label="Shop sections">{nav}</nav>
+    <p class="lead soft fade-load">Fight wear, gis, gear and everyday clothing for wrestling, judo and grappling. Choose your size and colour, add items to your bag and send the order to us on WhatsApp. No online payment.</p>
+    <ol class="shop-how fade-load"><li><b>1</b>Choose items</li><li><b>2</b>Send your bag on WhatsApp</li><li><b>3</b>We confirm price and delivery</li></ol>
   </div>
 </section>
-{depts}
-<section class="section dark" id="request"><div class="wrap reg">
-  <div class="reg-intro">
-    <p class="label muted"><span class="bar"></span>Pre-order list</p>
-    <h2 class="display h-lg">Tell us what you want</h2>
-    <p class="body soft">Pick what you would buy and your size. The most wanted pieces get made first, and everyone on this list gets early access and launch pricing.</p>
+<div class="shop-bar" id="shop-bar"><div class="wrap">
+  <div class="shop-cats" role="group" aria-label="Category"><button type="button" data-cat="all" aria-pressed="true"><span>All</span><em>{total}</em></button>{cats}</div>
+  <div class="shop-tools">
+    <div class="shop-sports" role="group" aria-label="Sport">{sports}</div>
+    <label class="shop-search"><span class="sr-only">Search</span><input type="search" id="shop-q" placeholder="Search"></label>
+    <button type="button" class="shop-bag-btn" id="bag-open" aria-label="Open bag">{BAG}<span>Bag</span><b id="bag-n">0</b></button>
   </div>
-  <form class="js-form" data-key="{WEB3FORMS_KEY}" data-done="shop-done" data-multi="wants,sizes" novalidate>
-    <input type="hidden" name="subject" value="Shop interest, chidaoba.com">
-    <input type="hidden" name="from_name" value="chidaoba.com">
-    <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <fieldset class="field full"><legend>I would buy</legend><div class="checks">{cats}</div></fieldset>
-    <fieldset class="field full"><legend>My size <em>gi sizes A0 to A4</em></legend><div class="checks">{sizes}</div></fieldset>
-    <div class="field"><label for="s-name">Name</label><input id="s-name" name="name" autocomplete="name" required></div>
-    <div class="field"><label for="s-email">Email</label><input id="s-email" name="email" type="email" autocomplete="email" required></div>
-    <div class="field full"><label for="s-msg">Anything else <em>optional</em></label><textarea id="s-msg" name="message" placeholder="Colours, fits, a piece we missed..."></textarea></div>
-    <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>Email me when Drop 01 is ready. See the <a href="/privacy/">privacy notice</a>.</span></label>
-    <div class="form-foot"><button class="btn btn-primary" type="submit">Join the drop list {arrow()}</button><p class="form-msg" aria-live="polite"></p></div>
-  </form>
-  <div class="done" id="shop-done" role="status">
-    <p class="label muted"><span class="bar"></span>You are on the list</p>
-    <h3 class="display h-md">Thank you</h3>
-    <p class="body soft">We will email you before Drop 01 goes live. Follow <a href="{IG}" rel="noopener">{IG_HANDLE}</a> for first looks.</p>
-  </div>
+</div></div>
+<section class="section light shop-main"><div class="wrap">
+  <p class="shop-count" id="shop-count" aria-live="polite"></p>
+  {depts}
+  <div class="shop-empty" id="shop-empty" hidden><h3>No items found</h3><p>Try another category or sport.</p></div>
+  <div class="shop-note"><h3>Need something else?</h3><p>Team orders, custom prints for your club or a product we do not list yet. Message us and we will help.</p>
+    <a class="btn btn-primary" href="{WA}" rel="noopener">Message us on WhatsApp {arrow()}</a></div>
 </div></section>
+<div class="pv" id="pv" hidden role="dialog" aria-modal="true" aria-labelledby="pv-name"><div class="pv-box">
+  <button type="button" class="pv-x" aria-label="Close">×</button>
+  <div class="pv-art" aria-hidden="true">{sym_svg("")}</div>
+  <div class="pv-body"><p class="label" id="pv-cat"></p><h2 class="display h-md" id="pv-name"></h2><p class="body muted" id="pv-desc"></p>
+    <div class="pv-group"><p class="pv-l">Size <button type="button" class="pv-guide" id="pv-guide">Size guide</button></p><div class="pv-opts" id="pv-sizes"></div></div>
+    <div class="pv-sg" id="pv-sg" hidden></div>
+    <div class="pv-group"><p class="pv-l">Colour <span id="pv-col-name"></span></p><div class="pv-opts" id="pv-cols"></div></div>
+    <div class="pv-group pv-qty"><p class="pv-l">Quantity</p><div class="stepper"><button type="button" data-q="-1" aria-label="Less">−</button><output id="pv-q">1</output><button type="button" data-q="1" aria-label="More">+</button></div></div>
+    <div class="pv-act"><button type="button" class="btn btn-primary" id="pv-add">Add to bag</button><a class="btn btn-ghost" id="pv-wa" href="#" rel="noopener">Order this on WhatsApp</a></div>
+    <p class="note" id="pv-msg" aria-live="polite"></p>
+  </div>
+</div></div>
+<aside class="bagd" id="bagd" hidden aria-label="Bag"><div class="bagd-box">
+  <div class="bagd-top"><h2 class="display h-md">Your bag</h2><button type="button" class="pv-x" id="bag-x" aria-label="Close">×</button></div>
+  <div class="bagd-list" id="bag-list"></div>
+  <div class="bagd-foot"><p class="note">We will reply on WhatsApp with prices, delivery options and payment details.</p>
+    <a class="btn btn-primary" id="bag-send" href="#" rel="noopener">Send order on WhatsApp {arrow()}</a>
+    <button type="button" class="bagd-clear" id="bag-clear">Clear bag</button></div>
+</div></aside>
+<script id="shop-data" type="application/json">{json.dumps(data)}</script>
 """
 
 def privacy():

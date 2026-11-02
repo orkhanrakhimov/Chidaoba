@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Noto+Sans+Georgian:wght@400;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/site.css?v=16">
+<link rel="stylesheet" href="/assets/css/site.css?v=20">
 </head>
 <body id="top">
 <a class="skip" href="#main">Skip to content</a>
@@ -29,7 +29,7 @@
     <a class="brand" href="/" aria-label="CHIDAOBA CULTURE home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA CULTURE" width="26" height="36"></a>
     <nav class="nav" aria-label="Main"><a href="/culture/">Culture</a><a href="/camps/">Camps &amp; Events</a><a href="/georgia/" aria-current="page">Why Georgia</a><a href="/community/">Community</a><a href="/journal/">Journal</a><a href="/shop/">Shop</a></nav>
     <div class="head-tools">
-      <a class="bag" href="/shop/" aria-label="Shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></a>
+      <a class="bag" href="/shop/#bag" aria-label="Bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><b class="bag-n" data-bag-n hidden>0</b></a>
       <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -62,16 +62,19 @@
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
       <p class="label"><span class="bar"></span>02 · Champions</p>
-      <h2 id="champ-title" class="display h-lg">Results on the international stage</h2>
-      <p class="body muted">Georgia has about 3.5 million people, but it is one of the most successful countries in the world in judo and wrestling.</p>
+      <h2 id="champ-title" class="display h-lg">A small country with many champions</h2>
+      <p class="body muted">Most of Georgia's Olympic medals come from judo and wrestling.</p>
     </div>
-    <div class="details stagger">
-      <div><b data-count="7">7</b><p>Olympic medals at Paris 2024, Georgia's best Games as an independent country. Judo and wrestling led the way.</p></div>
-      <div><b data-count="2025" data-from="1990">2025</b><p>World mixed team judo champions for the first time, ending Japan's run of seven straight titles.</p></div>
-      <div><b data-count="23">23</b><p>World wrestling medals per million people, second only to Bulgaria in the all-time per capita ranking.</p></div>
-      <div><b>×2</b><p>Lasha Bekauri, Olympic judo champion in Tokyo and again in Paris. Geno Petriashvili took freestyle gold at 125 kg in Paris.</p></div>
+    <div class="ch-stats stagger">
+      <div><b>3.9M</b><span>People living in Georgia</span></div>
+      <div><b data-count="48">48</b><span>Olympic medals since 1996, 36 of them in judo and wrestling</span></div>
+      <div><b data-count="9">9</b><span>Olympic gold medals in judo and wrestling</span></div>
+      <div><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
     </div>
-    <p class="body muted gx-note">Even in the Soviet years, Georgian judoka won more medals for the USSR than any other republic. In 2026 Tbilisi hosted the European Judo Championships, and Georgia topped the table with four golds.</p>
+    <div class="ch-lists">
+      <div><h3>Olympic champions</h3><p class="body muted">Judo and wrestling</p><ul><li><b>Zurab Zviadauri</b><span>Judo, 90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>Judo, 90 kg</span><em>2008</em></li><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 66 kg</span><em>2012</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Lasha Bekauri</b><span>Judo, 90 kg</span><em>2020, 2024</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
+      <div><h3>World champions</h3><p class="body muted">Recent titles</p><ul><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2025</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2025</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>3 world titles</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>3 world titles</em></li></ul></div>
+    </div>
   </div>
 </section>
 
@@ -185,6 +188,6 @@
   </div>
 </footer>
 <a class="wa-float" href="https://wa.me/995595606670?text=Hi%20CHIDAOBA%2C%20" rel="noopener" aria-label="Message us on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg><span>WhatsApp</span></a>
-<script src="/assets/js/site.js?v=16" defer></script>
+<script src="/assets/js/site.js?v=20" defer></script>
 </body>
 </html>
