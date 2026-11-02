@@ -142,13 +142,13 @@ def home():
 <section class="hero dark" aria-labelledby="hero-title">
   {sym_svg("hero-sym")}
   <div class="wrap">
-    <p class="label muted fade-load"><span class="bar"></span>Chidaoba Culture, Tbilisi, Georgia</p>
+    <p class="label muted fade-load hero-top"><span><span class="bar"></span>Chidaoba Culture, Tbilisi, Georgia</span><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
     <div>
       <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
       <p class="lead soft fade-load">A culture shaped by movement, discipline and the spirit of Georgian wrestling, and a home for everyone who wrestles and grapples today.</p>
       <div class="ctas fade-load">
-        <a class="btn btn-primary" href="/culture/">Explore culture {arrow()}</a>
-        <a class="btn btn-ghost" href="/camps/">Discover camps {arrow()}</a>
+        <a class="btn btn-primary" href="/camps/">Explore camps {arrow()}</a>
+        <a class="btn btn-ghost" href="/shop/">Shop {arrow()}</a>
       </div>
     </div>
     <div class="hero-foot label muted">

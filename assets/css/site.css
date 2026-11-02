@@ -912,3 +912,9 @@ html, body { overflow-x: clip; }
 .vc-body .cc-cta { margin-top: auto; }
 @media (max-width: 800px) { .venue-card { grid-template-columns: 1fr; } .vc-img { min-height: 0; aspect-ratio: 16/9; } }
 .venue-page { display: grid; gap: 40px; }
+
+/* hero: small culture link */
+.hero-top{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.hero-story{display:inline-flex;align-items:center;gap:6px;color:var(--chalk,#F2F1EC);text-decoration:none;border-bottom:1px solid rgba(242,241,236,.35);padding-bottom:2px;opacity:.85;transition:opacity .2s,border-color .2s}
+.hero-story:hover{opacity:1;border-color:#B32632}
+.hero-story svg{width:12px;height:12px}
