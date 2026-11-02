@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Style preview — CHIDAOBA</title>
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=Archivo:wdth,wght@62..125,300..800&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Noto+Serif+Georgian:wght@400;600&family=Noto+Sans+Georgian:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --carbon:#202020; --chalk:#F2F1EC; --red:#B32632; --grey:#777C80; --sand:#B7A995; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; color: var(--chalk); -webkit-font-smoothing: antialiased; }
+  .switch { position: sticky; top: 0; z-index: 10; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; padding: 12px; background: rgba(17,17,17,.92); backdrop-filter: blur(8px); font: 500 13px/1 system-ui, sans-serif; }
+  .switch a { color: var(--chalk); text-decoration: none; padding: 10px 14px; border-radius: 999px; background: #2a2a2a; }
+  .switch a:hover { background: var(--chalk); color: var(--carbon); }
+  .dir { border-top: 1px solid #333; }
+  .tag { padding: 14px clamp(20px,5vw,80px); font: 500 12px/1.4 system-ui, sans-serif; letter-spacing: .08em; color: var(--sand); background: #111; }
+  .tag b { color: var(--chalk); letter-spacing: 0; font-size: 15px; margin-right: 10px; }
+  .hero { background: var(--carbon); padding: clamp(72px,12vw,150px) clamp(20px,5vw,80px) clamp(56px,8vw,96px); position: relative; overflow: hidden; }
+  .light { background: var(--chalk); color: var(--carbon); padding: clamp(64px,9vw,120px) clamp(20px,5vw,80px); }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 40px; }
+  .grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px,6vw,96px); align-items: start; }
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 32px; margin-top: 64px; }
+  .card { margin-top: 64px; background: var(--carbon); color: var(--chalk); padding: 32px; max-width: 520px; }
+  .card .row { display: flex; justify-content: space-between; align-items: baseline; margin-top: 28px; }
+  @media (max-width: 800px) { .grid, .stats { grid-template-columns: 1fr; } }
+  .ka { margin-top: 18px; }
+
+  /* ---------- A: Editorial ---------- */
+  .A { font-family: 'Inter Tight', system-ui, sans-serif; }
+  .A .eyebrow { font: 500 11px/1 'Geist Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--sand); }
+  .A h1 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(64px,10vw,168px); line-height: .92; letter-spacing: -.02em; margin-top: 28px; }
+  .A h1 em { font-style: italic; color: var(--sand); }
+  .A .lead { font-size: clamp(18px,1.5vw,21px); font-weight: 300; line-height: 1.6; max-width: 32em; margin-top: 32px; color: #D8D6CF; }
+  .A .btn { font-size: 15px; font-weight: 500; padding: 15px 26px; border-radius: 999px; text-decoration: none; }
+  .A .btn.p { background: var(--chalk); color: var(--carbon); } .A .btn.g { color: var(--chalk); background: rgba(242,241,236,.08); }
+  .A h2 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(44px,5.4vw,84px); line-height: 1; letter-spacing: -.015em; }
+  .A h2 em { font-style: italic; }
+  .A p.body { font-size: 18px; line-height: 1.7; font-weight: 400; color: #4A4A48; }
+  .A .stat b { display: block; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 72px; line-height: 1; }
+  .A .stat span { display: block; margin-top: 10px; font-size: 14px; line-height: 1.5; color: #4A4A48; }
+  .A .card { border-radius: 4px; } .A .card h3 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 40px; line-height: 1.05; margin-top: 14px; }
+  .A .card .price { font-size: 28px; font-weight: 500; } .A .card .s { font-size: 14px; color: #CFCCC4; }
+  .A .ka { font-family: 'Noto Serif Georgian', serif; font-size: 22px; color: var(--sand); }
+
+  /* ---------- B: Athletic ---------- */
+  .B { font-family: 'Archivo', system-ui, sans-serif; font-variation-settings: 'wdth' 100; }
+  .B .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--sand); font-variation-settings: 'wdth' 125; }
+  .B h1 { font-weight: 700; font-size: clamp(52px,8.4vw,140px); line-height: .9; letter-spacing: -.01em; text-transform: uppercase; font-variation-settings: 'wdth' 125; margin-top: 28px; }
+  .B .lead { font-size: clamp(17px,1.4vw,20px); line-height: 1.6; max-width: 34em; margin-top: 32px; color: #D8D6CF; }
+  .B .btn { font-size: 14px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; padding: 17px 28px; text-decoration: none; font-variation-settings: 'wdth' 112; }
+  .B .btn.p { background: var(--red); color: var(--chalk); } .B .btn.g { color: var(--chalk); box-shadow: inset 0 0 0 1px rgba(242,241,236,.35); }
+  .B h2 { font-weight: 700; font-size: clamp(36px,4.6vw,72px); line-height: .95; text-transform: uppercase; font-variation-settings: 'wdth' 125; }
+  .B p.body { font-size: 17px; line-height: 1.7; color: #4A4A48; }
+  .B .stat b { display: block; font-weight: 800; font-size: 64px; line-height: 1; font-variation-settings: 'wdth' 125; }
+  .B .stat span { display: block; margin-top: 10px; font-size: 14px; line-height: 1.5; color: #4A4A48; }
+  .B .card h3 { font-weight: 700; font-size: 30px; line-height: 1; text-transform: uppercase; margin-top: 14px; font-variation-settings: 'wdth' 120; }
+  .B .card .price { font-size: 28px; font-weight: 800; font-variation-settings: 'wdth' 120; } .B .card .s { font-size: 14px; color: #CFCCC4; }
+  .B .ka { font-family: 'Noto Sans Georgian', sans-serif; font-weight: 600; font-size: 22px; color: var(--sand); }
+
+  /* ---------- C: Modern minimal ---------- */
+  .C { font-family: 'Geist', system-ui, sans-serif; }
+  .C .eyebrow { font: 400 12px/1 'Geist Mono', monospace; letter-spacing: .04em; color: var(--sand); }
+  .C h1 { font-weight: 500; font-size: clamp(56px,8.6vw,144px); line-height: .95; letter-spacing: -.05em; margin-top: 28px; }
+  .C h1 span { color: var(--grey); }
+  .C .lead { font-size: clamp(18px,1.5vw,21px); line-height: 1.55; max-width: 32em; margin-top: 32px; color: #C9C7C0; letter-spacing: -.01em; }
+  .C .btn { font-size: 15px; font-weight: 500; padding: 14px 22px; border-radius: 10px; text-decoration: none; }
+  .C .btn.p { background: var(--chalk); color: var(--carbon); } .C .btn.g { color: var(--chalk); background: #2C2C2C; }
+  .C h2 { font-weight: 500; font-size: clamp(38px,4.8vw,72px); line-height: 1; letter-spacing: -.045em; }
+  .C h2 span { color: var(--grey); }
+  .C p.body { font-size: 18px; line-height: 1.65; color: #4A4A48; letter-spacing: -.005em; }
+  .C .stat b { display: block; font-weight: 500; font-size: 64px; line-height: 1; letter-spacing: -.05em; }
+  .C .stat span { display: block; margin-top: 10px; font-size: 14px; line-height: 1.5; color: #4A4A48; }
+  .C .card { border-radius: 16px; } .C .card h3 { font-weight: 500; font-size: 30px; letter-spacing: -.03em; margin-top: 14px; }
+  .C .card .price { font-size: 28px; font-weight: 500; letter-spacing: -.03em; } .C .card .s { font-size: 14px; color: #A9A69E; }
+  .C .ka { font-family: 'Noto Sans Georgian', sans-serif; font-size: 22px; color: var(--grey); }
+</style>
+</head>
+<body>
+<nav class="switch"><a href="#a">A — Editorial</a><a href="#b">B — Athletic</a><a href="#c">C — Modern minimal</a><a href="/">Back to site</a></nav>
+
+<section class="dir A" id="a">
+  <p class="tag"><b>A — Editorial</b>Instrument Serif + Inter Tight. Fashion-magazine feel: elegant serif headlines, light body, rounded buttons.</p>
+  <div class="hero"><div class="wrap">
+    <p class="eyebrow">Chidaoba Culture — Tbilisi</p>
+    <h1>A culture <em>that moves</em></h1>
+    <p class="ka">ჭიდაობა</p>
+    <p class="lead">A culture shaped by movement, discipline and the spirit of Georgian wrestling — and a home for everyone who wrestles and grapples today.</p>
+    <div class="ctas"><a class="btn p" href="#a">Explore culture</a><a class="btn g" href="#a">Discover camps</a></div>
+  </div></div>
+  <div class="light"><div class="wrap">
+    <div class="grid"><h2>More than a <em>wrestling style</em></h2>
+      <p class="body">Chidaoba is Georgia’s traditional jacket wrestling — a contest of grip and balance, fought in an open-air circle to the sound of zurna and doli. We carry that culture into today’s world of wrestling, judo and grappling.</p></div>
+    <div class="stats"><div class="stat"><b>2018</b><span>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity</span></div>
+      <div class="stat"><b>≈200</b><span>Holds and counter-holds — UNESCO’s documented estimate</span></div>
+      <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა</span></div></div>
+    <div class="card"><p class="eyebrow">BJJ &amp; Grappling · 7 days</p><h3>BJJ &amp; No-Gi Camp, Tbilisi</h3>
+      <div class="row"><span class="s">From</span><span class="price">€340</span></div></div>
+  </div></div>
+</section>
+
+<section class="dir B" id="b">
+  <p class="tag"><b>B — Athletic</b>Archivo Expanded. Sportswear feel: wide, confident uppercase headlines, red action buttons, sharp corners.</p>
+  <div class="hero"><div class="wrap">
+    <p class="eyebrow">Chidaoba Culture — Tbilisi</p>
+    <h1>A culture<br>that moves</h1>
+    <p class="ka">ჭიდაობა</p>
+    <p class="lead">A culture shaped by movement, discipline and the spirit of Georgian wrestling — and a home for everyone who wrestles and grapples today.</p>
+    <div class="ctas"><a class="btn p" href="#b">Explore culture</a><a class="btn g" href="#b">Discover camps</a></div>
+  </div></div>
+  <div class="light"><div class="wrap">
+    <div class="grid"><h2>More than a wrestling style</h2>
+      <p class="body">Chidaoba is Georgia’s traditional jacket wrestling — a contest of grip and balance, fought in an open-air circle to the sound of zurna and doli. We carry that culture into today’s world of wrestling, judo and grappling.</p></div>
+    <div class="stats"><div class="stat"><b>2018</b><span>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity</span></div>
+      <div class="stat"><b>≈200</b><span>Holds and counter-holds — UNESCO’s documented estimate</span></div>
+      <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა</span></div></div>
+    <div class="card"><p class="eyebrow">BJJ &amp; Grappling · 7 days</p><h3>BJJ &amp; No-Gi Camp, Tbilisi</h3>
+      <div class="row"><span class="s">From</span><span class="price">€340</span></div></div>
+  </div></div>
+</section>
+
+<section class="dir C" id="c">
+  <p class="tag"><b>C — Modern minimal</b>Geist + Geist Mono. Quiet luxury: mixed-case, tight medium-weight type, grey accents, soft rounded corners.</p>
+  <div class="hero"><div class="wrap">
+    <p class="eyebrow">Chidaoba Culture — Tbilisi</p>
+    <h1>A culture<br><span>that moves.</span></h1>
+    <p class="ka">ჭიდაობა</p>
+    <p class="lead">A culture shaped by movement, discipline and the spirit of Georgian wrestling — and a home for everyone who wrestles and grapples today.</p>
+    <div class="ctas"><a class="btn p" href="#c">Explore culture</a><a class="btn g" href="#c">Discover camps</a></div>
+  </div></div>
+  <div class="light"><div class="wrap">
+    <div class="grid"><h2>More than a <span>wrestling style.</span></h2>
+      <p class="body">Chidaoba is Georgia’s traditional jacket wrestling — a contest of grip and balance, fought in an open-air circle to the sound of zurna and doli. We carry that culture into today’s world of wrestling, judo and grappling.</p></div>
+    <div class="stats"><div class="stat"><b>2018</b><span>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity</span></div>
+      <div class="stat"><b>≈200</b><span>Holds and counter-holds — UNESCO’s documented estimate</span></div>
+      <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა</span></div></div>
+    <div class="card"><p class="eyebrow">BJJ &amp; Grappling · 7 days</p><h3>BJJ &amp; No-Gi Camp, Tbilisi</h3>
+      <div class="row"><span class="s">From</span><span class="price">€340</span></div></div>
+  </div></div>
+</section>
+</body>
+</html>
