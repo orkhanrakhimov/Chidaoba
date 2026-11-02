@@ -1,5 +1,5 @@
 -- =====================================================================
--- CHIDAOBA CULTURE — camps database (Supabase / PostgreSQL)
+-- CHIDAOBA CULTURE: camps database (Supabase / PostgreSQL)
 -- Paste this whole file into Supabase → SQL Editor → New query → Run.
 -- Safe to run again: it only creates what is missing and replaces functions.
 -- =====================================================================
@@ -213,7 +213,7 @@ drop trigger if exists camps_touch on public.camps;
 create trigger camps_touch before update on public.camps for each row execute function public.touch();
 
 -- =====================================================================
--- Update 002 — camp photos, venue details and map
+-- Update 002: camp photos, venue details and map
 -- =====================================================================
 alter table public.camps add column if not exists cover_url  text;
 alter table public.camps add column if not exists gallery    jsonb not null default '[]'::jsonb;  -- [{url, alt}]
@@ -235,3 +235,164 @@ drop policy if exists camp_images_update on storage.objects;
 create policy camp_images_update on storage.objects for update to authenticated using (bucket_id = 'camp-images' and public.is_admin());
 drop policy if exists camp_images_delete on storage.objects;
 create policy camp_images_delete on storage.objects for delete to authenticated using (bucket_id = 'camp-images' and public.is_admin());
+
+-- =====================================================================
+-- Update 003: our own admin login (does not use Supabase Auth)
+-- The password is stored only as a bcrypt hash. Sessions last 12 hours.
+-- =====================================================================
+create table if not exists public.admin_users (
+  email      text primary key,
+  pass_hash  text not null,
+  updated_at timestamptz not null default now()
+);
+create table if not exists public.admin_sessions (
+  token      text primary key,
+  email      text not null,
+  expires_at timestamptz not null
+);
+create table if not exists public.admin_attempts (
+  email text not null,
+  at    timestamptz not null default now()
+);
+create table if not exists public.upload_tickets (
+  folder     text primary key,
+  expires_at timestamptz not null
+);
+alter table public.admin_users    enable row level security;
+alter table public.admin_sessions enable row level security;
+alter table public.admin_attempts enable row level security;
+alter table public.upload_tickets enable row level security;
+revoke all on public.admin_users, public.admin_sessions, public.admin_attempts, public.upload_tickets from anon, authenticated;
+
+-- set or change the admin password (run in the SQL Editor only, never from the website)
+create or replace function public.admin_set_password(p_email text, p_password text) returns text
+language plpgsql security definer set search_path = public, extensions as $$
+begin
+  if p_password is null or length(p_password) < 8 or p_password = 'CHANGE-ME' then
+    raise exception 'Pick a password with at least 8 characters.';
+  end if;
+  insert into public.admins (email) values (lower(trim(p_email))) on conflict do nothing;
+  insert into public.admin_users (email, pass_hash, updated_at)
+  values (lower(trim(p_email)), extensions.crypt(p_password, extensions.gen_salt('bf', 10)), now())
+  on conflict (email) do update set pass_hash = excluded.pass_hash, updated_at = now();
+  delete from public.admin_sessions where email = lower(trim(p_email));
+  delete from public.admin_attempts where email = lower(trim(p_email));
+  return 'Password set for ' || lower(trim(p_email)) || '. You can sign in at chidaoba.com/admin now.';
+end; $$;
+revoke all on function public.admin_set_password(text, text) from public, anon, authenticated;
+
+create or replace function public.admin_login(p_email text, p_password text) returns jsonb
+language plpgsql security definer set search_path = public, extensions as $$
+declare v_email text := lower(trim(coalesce(p_email, ''))); v_hash text; v_tok text; v_exp timestamptz;
+begin
+  delete from public.admin_attempts where at < now() - interval '15 minutes';
+  if (select count(*) from public.admin_attempts where email = v_email) >= 8 then
+    return jsonb_build_object('error', 'Too many tries. Wait 15 minutes and try again.');
+  end if;
+  select pass_hash into v_hash from public.admin_users where email = v_email;
+  if v_hash is null or extensions.crypt(coalesce(p_password, ''), v_hash) <> v_hash then
+    insert into public.admin_attempts (email) values (v_email);
+    perform pg_sleep(0.7);
+    return jsonb_build_object('error', 'Wrong email or password.');
+  end if;
+  delete from public.admin_sessions where expires_at < now();
+  v_tok := encode(extensions.gen_random_bytes(32), 'hex');
+  v_exp := now() + interval '12 hours';
+  insert into public.admin_sessions values (v_tok, v_email, v_exp);
+  delete from public.admin_attempts where email = v_email;
+  return jsonb_build_object('token', v_tok, 'email', v_email, 'expires_at', v_exp);
+end; $$;
+
+create or replace function public.admin_check(p_token text) returns text
+language plpgsql stable security definer set search_path = public as $$
+declare v text;
+begin
+  select s.email into v from public.admin_sessions s join public.admins a on lower(a.email) = s.email
+   where s.token = p_token and s.expires_at > now();
+  if v is null then raise exception 'Session expired. Please sign in again.'; end if;
+  return v;
+end; $$;
+
+create or replace function public.admin_logout(p_token text) returns boolean
+language sql security definer set search_path = public as $$
+  delete from public.admin_sessions where token = p_token; select true;
+$$;
+
+create or replace function public.admin_camps(p_token text) returns setof public.camps
+language plpgsql stable security definer set search_path = public as $$
+begin
+  perform public.admin_check(p_token);
+  return query select * from public.camps order by start_date desc nulls first;
+end; $$;
+
+create or replace function public.admin_save_camp(p_token text, p jsonb) returns public.camps
+language plpgsql security definer set search_path = public as $$
+declare v_id uuid; v_cols text; r public.camps;
+begin
+  perform public.admin_check(p_token);
+  p := p - 'created_at' - 'updated_at' - 'taken' - 'waitlist';
+  v_id := nullif(p->>'id', '')::uuid;
+  if v_id is null or not exists (select 1 from public.camps where id = v_id) then
+    insert into public.camps (slug, title) values (p->>'slug', p->>'title') returning id into v_id;
+  end if;
+  select string_agg(quote_ident(column_name), ', ' order by ordinal_position) into v_cols
+    from information_schema.columns
+   where table_schema = 'public' and table_name = 'camps' and column_name not in ('id', 'created_at', 'updated_at');
+  execute format('update public.camps t set (%s) = (select %s from jsonb_populate_record(t, $1) x) where t.id = $2 returning t.*',
+                 v_cols, regexp_replace(v_cols, '("?[a-z_]+"?)', 'x.\1', 'g'))
+    into r using (p - 'id'), v_id;
+  return r;
+end; $$;
+
+create or replace function public.admin_delete_camp(p_token text, p_id uuid) returns boolean
+language plpgsql security definer set search_path = public as $$
+begin
+  perform public.admin_check(p_token);
+  delete from public.camps where id = p_id;
+  return true;
+end; $$;
+
+create or replace function public.admin_regs(p_token text, p_camp uuid default null) returns setof public.registrations
+language plpgsql stable security definer set search_path = public as $$
+begin
+  perform public.admin_check(p_token);
+  return query select * from public.registrations where p_camp is null or camp_id = p_camp order by created_at desc;
+end; $$;
+
+create or replace function public.admin_update_reg(p_token text, p_id uuid, p jsonb) returns boolean
+language plpgsql security definer set search_path = public as $$
+begin
+  perform public.admin_check(p_token);
+  update public.registrations
+     set status     = coalesce(p->>'status', status),
+         admin_note = case when p ? 'admin_note' then p->>'admin_note' else admin_note end
+   where id = p_id;
+  return true;
+end; $$;
+
+-- photo uploads: the admin gets a one-off folder name that works for 15 minutes
+create or replace function public.admin_upload_ticket(p_token text) returns text
+language plpgsql security definer set search_path = public, extensions as $$
+declare f text := 'u' || encode(extensions.gen_random_bytes(12), 'hex');
+begin
+  perform public.admin_check(p_token);
+  delete from public.upload_tickets where expires_at < now();
+  insert into public.upload_tickets values (f, now() + interval '15 minutes');
+  return f;
+end; $$;
+
+create or replace function public.upload_ok(p_name text) returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.upload_tickets
+                  where folder = split_part(p_name, '/', 1) and expires_at > now());
+$$;
+
+drop policy if exists camp_images_ticket_insert on storage.objects;
+create policy camp_images_ticket_insert on storage.objects for insert to anon, authenticated
+  with check (bucket_id = 'camp-images' and public.upload_ok(name));
+
+grant execute on function public.admin_login(text, text), public.admin_logout(text), public.admin_camps(text),
+  public.admin_save_camp(text, jsonb), public.admin_delete_camp(text, uuid), public.admin_regs(text, uuid),
+  public.admin_update_reg(text, uuid, jsonb), public.admin_upload_ticket(text), public.upload_ok(text)
+  to anon, authenticated;
+revoke execute on function public.admin_check(text) from public, anon, authenticated;

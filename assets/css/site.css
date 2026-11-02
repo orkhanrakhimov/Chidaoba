@@ -943,3 +943,9 @@ html, body { overflow-x: clip; }
 .ptile-soon{margin-top:auto;padding-top:14px;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
 @media (max-width:600px){.dept-head{grid-template-columns:1fr;gap:10px}.pgrid{grid-template-columns:1fr 1fr;gap:12px}.ptile-body{padding:14px}.ptile h3{font-size:16px}.ptile-body p:not(.ptile-tag){font-size:13px}.shop-nav a{padding:10px 12px;font-size:11px}}
 .ptile-art svg path{fill:currentColor}
+.ptile-wa{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:11px 14px;background:var(--carbon);color:var(--chalk);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;transition:background .2s}
+.ptile-wa svg{width:16px;height:16px;flex:none}
+.ptile-wa:hover{background:var(--red)}
+.ptile-body p:last-of-type{margin-bottom:12px}
+@media (max-width:600px){.ptile-wa{padding:10px;font-size:10px;letter-spacing:.06em;gap:6px}.ptile-wa svg{width:14px;height:14px}}
+@media (max-width:600px){.ptile-wa{align-self:stretch;justify-content:center;font-size:11px;letter-spacing:.12em}.wa-long{display:none}}

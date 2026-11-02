@@ -5,7 +5,7 @@ Run from the repo root:  python3 _src/build.py
 Writes index.html, culture/, camps/, community/, journal/, shop/, privacy/ and 404.html.
 Folders starting with "_" are not published by GitHub Pages (Jekyll), so this source stays private to the repo.
 """
-import os, html
+import os, html, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SYM = open(os.path.join(ROOT, "_src", "symbol_path.txt")).read().strip()
@@ -50,7 +50,7 @@ def head(title, desc, path):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Noto+Sans+Georgian:wght@400;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -64,7 +64,7 @@ def header(path):
     <a class="brand" href="/" aria-label="CHIDAOBA CULTURE home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA CULTURE" width="26" height="36"></a>
     <nav class="nav" aria-label="Main">{links}</nav>
     <div class="head-tools">
-      <a class="bag" href="/shop/" aria-label="Shopping bag, 0 items">{BAG}<span aria-hidden="true">0</span></a>
+      <a class="bag" href="/shop/" aria-label="Shop">{BAG}</a>
       <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -113,20 +113,21 @@ def footer(path=""):
   </div>
 </footer>
 <a class="wa-float" href="{WA}" rel="noopener" aria-label="Message us on WhatsApp">{WA_ICON}<span>WhatsApp</span></a>
-<script src="/assets/js/site.js" defer></script>
+<script src="/assets/js/site.js?v={ASSET_V}" defer></script>
 </body>
 </html>
 """
 
-ASSET_V = "8"
+ASSET_V = "9"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
     js = "".join(f'<script src="/assets/js/{n}.js?v={ASSET_V}" defer></script>' for n in EXTRA_JS.get(path, []))
     out = head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
     if path == "/admin/":
-        out = head(title, desc, path).replace('<meta name="viewport"', '<meta name="robots" content="noindex,nofollow">\n<meta name="viewport"') + f'<main id="admin" class="adm"></main>' + '<script src="/assets/js/site.js" defer></script></body></html>'
-    return out.replace('<script src="/assets/js/site.js" defer></script>', js + '<script src="/assets/js/site.js" defer></script>')
+        out = head(title, desc, path).replace('<meta name="viewport"', '<meta name="robots" content="noindex,nofollow">\n<meta name="viewport"') + f'<main id="admin" class="adm"></main>' + f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script></body></html>'
+    tag = f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script>'
+    return out.replace(tag, js + tag)
 
 def arrow(): return '<span class="arr" aria-hidden="true">→</span>'
 
@@ -546,14 +547,23 @@ SHOP = [
   ]),
 ]
 
+def slugify(n):
+    return re.sub(r"[^a-z0-9]+", "-", n.replace("&amp;", "and").lower()).strip("-")
+
+def wa_order(n):
+    from urllib.parse import quote
+    name = n.replace("&amp;", "&")
+    msg = f"Hi CHIDAOBA! I want to order: {name}\nhttps://chidaoba.com/shop/#{slugify(n)}\nSize: \nColour: "
+    return f"https://wa.me/{WA_NUM}?text={quote(msg)}"
+
 def shop():
     nav = "".join(f'<a href="#{k}"><b>0{i+1}</b>{t}</a>' for i,(k,t,_,_) in enumerate(SHOP))
     depts = ""
     for i,(k,t,sub,items) in enumerate(SHOP):
-        tiles = "".join(f"""<article class="ptile">
+        tiles = "".join(f"""<article class="ptile" id="{slugify(n)}">
           <div class="ptile-art" aria-hidden="true">{sym_svg("")}<span>0{i+1}.{j+1}</span></div>
           <div class="ptile-body"><p class="ptile-tag">{tag}</p><h3>{n}</h3><p>{d}</p>
-          <span class="ptile-soon">Coming soon</span></div></article>""" for j,(n,d,tag) in enumerate(items))
+          <a class="ptile-wa" href="{wa_order(n)}" rel="noopener">{WA_ICON}Order<span class="wa-long"> on WhatsApp</span></a></div></article>""" for j,(n,d,tag) in enumerate(items))
         depts += f"""<section class="dept section {'light' if i%2==0 else 'alt'}" id="{k}"><div class="wrap">
       <div class="dept-head reveal"><span class="dept-num">0{i+1}</span><div><h2 class="display h-lg">{t}</h2><p class="lead">{sub}</p></div></div>
       <div class="pgrid stagger">{tiles}</div></div></section>"""
@@ -565,7 +575,7 @@ def shop():
   <div class="wrap" style="position:relative">
     <p class="label muted fade-load"><span class="bar"></span>Shop · Drop 01 in development</p>
     <h1 class="display h-xl"><span class="ln"><span>Built for</span></span><span class="ln"><span>the mat</span></span></h1>
-    <p class="lead soft fade-load">Fight wear, gis, gear and everyday pieces for wrestlers, grapplers and judoka. Designed in Tbilisi.</p>
+    <p class="lead soft fade-load">Fight wear, gis, gear and everyday pieces for wrestlers, grapplers and judoka. Designed in Tbilisi. See something you want? Tap order and message us on WhatsApp.</p>
     <nav class="shop-nav fade-load" aria-label="Shop sections">{nav}</nav>
   </div>
 </section>

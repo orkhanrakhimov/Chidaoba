@@ -97,6 +97,11 @@
       body: JSON.stringify({ refresh_token: s.refresh_token })
     }).then(function (r) { return r.json().then(function (j) { if (!r.ok) { setSession(null); throw new Error('Session expired. Please sign in again.'); } setSession(j); }); });
   }
+  function rpcA(fn, args) {
+    var s = session();
+    if (!s || !s.token) return Promise.reject(new Error('Session expired. Please sign in again.'));
+    return req('/rest/v1/rpc/' + fn, { method: 'POST', body: Object.assign({ p_token: s.token }, args) });
+  }
   var liveApi = {
     listCamps: function () {
       return Promise.all([
@@ -112,34 +117,33 @@
     },
     register: function (p) { return req('/rest/v1/rpc/register_for_camp', { method: 'POST', body: { p: p } }); },
     signIn: function (email, pw) {
-      return fetch(C.SUPABASE_URL.replace(/\/$/, '') + '/auth/v1/token?grant_type=password', {
-        method: 'POST', headers: { apikey: C.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: pw })
-      }).catch(function () { throw new Error(NET); })
-        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(/invalid/i.test(j.error_description || j.msg || '') ? 'Wrong email or password.' : (j.error_description || j.msg || 'Wrong email or password.')); setSession(j); return j; }); })
-        .then(function () { return req('/rest/v1/admins?select=email', {}, true); })
-        .then(function (rows) { if (!rows || !rows.length) { setSession(null); throw new Error('This account is not an admin.'); } return true; });
+      return req('/rest/v1/rpc/admin_login', { method: 'POST', body: { p_email: email, p_password: pw } })
+        .then(function (j) {
+          if (!j || j.error || !j.token) throw new Error((j && j.error) || 'Wrong email or password.');
+          setSession(j); return true;
+        }, function (err) {
+          if (/admin_login|schema cache|Could not find/i.test(err.message)) throw new Error('The database update is not installed yet. Run admin-login.sql in Supabase.');
+          throw err;
+        });
     },
-    signOut: function () { setSession(null); return Promise.resolve(); },
-    signedIn: function () { return !!session(); },
-    adminCamps: function () { return req('/rest/v1/camps?select=*&order=start_date.desc.nullsfirst', {}, true); },
+    signOut: function () { var s = session(); setSession(null); if (s && s.token) req('/rest/v1/rpc/admin_logout', { method: 'POST', body: { p_token: s.token } }).catch(function () { }); return Promise.resolve(); },
+    signedIn: function () { var s = session(); return !!(s && s.token && new Date(s.expires_at) > new Date()); },
+    adminCamps: function () { return rpcA('admin_camps', {}); },
     saveCamp: function (c) {
       var body = Object.assign({}, c); delete body.taken; delete body.waitlist; delete body.created_at; delete body.updated_at;
-      if (body.id) return req('/rest/v1/camps?id=eq.' + body.id, { method: 'PATCH', body: body, headers: { Prefer: 'return=representation' } }, true).then(function (r) { return r[0]; });
-      delete body.id;
-      return req('/rest/v1/camps', { method: 'POST', body: body, headers: { Prefer: 'return=representation' } }, true).then(function (r) { return r[0]; });
+      return rpcA('admin_save_camp', { p: body });
     },
-    deleteCamp: function (id) { return req('/rest/v1/camps?id=eq.' + id, { method: 'DELETE' }, true); },
-    regs: function (campId) {
-      return req('/rest/v1/registrations?select=*' + (campId ? '&camp_id=eq.' + campId : '') + '&order=created_at.desc', {}, true);
-    },
-    updateReg: function (id, patch) { return req('/rest/v1/registrations?id=eq.' + id, { method: 'PATCH', body: patch, headers: { Prefer: 'return=representation' } }, true); },
+    deleteCamp: function (id) { return rpcA('admin_delete_camp', { p_id: id }); },
+    regs: function (campId) { return rpcA('admin_regs', { p_camp: campId || null }); },
+    updateReg: function (id, patch) { return rpcA('admin_update_reg', { p_id: id, p: patch }); },
     upload: function (blob, name) {
-      var s = session(), path = 'camps/' + Date.now() + '-' + Math.random().toString(36).slice(2, 7) + '-' + name;
-      var base = C.SUPABASE_URL.replace(/\/$/, '');
-      return fetch(base + '/storage/v1/object/camp-images/' + path, {
-        method: 'POST', body: blob,
-        headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + (s ? s.access_token : ''), 'Content-Type': blob.type || 'image/jpeg', 'x-upsert': 'false' }
+      var base = C.SUPABASE_URL.replace(/\/$/, ''), path;
+      return rpcA('admin_upload_ticket', {}).then(function (folder) {
+        path = folder + '/' + Date.now() + '-' + name;
+        return fetch(base + '/storage/v1/object/camp-images/' + path, {
+          method: 'POST', body: blob,
+          headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY, 'Content-Type': blob.type || 'image/jpeg', 'x-upsert': 'false' }
+        });
       }).catch(function () { throw new Error(NET); }).then(function (r) {
         if (!r.ok) return r.text().then(function (t) { throw new Error('Upload failed (' + r.status + '). ' + (/bucket/i.test(t) ? 'Run the latest database update.' : '')); });
         return base + '/storage/v1/object/public/camp-images/' + path;
