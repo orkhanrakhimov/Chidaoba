@@ -23,7 +23,7 @@
     var s = spots(c);
     if (s && s.left === 0) return { key: 'full', label: 'Full, join waitlist' };
     if (s && s.left <= Math.max(3, Math.ceil(c.capacity * 0.2))) return { key: 'few', label: 'Only ' + s.left + ' spot' + (s.left === 1 ? '' : 's') + ' left' };
-    return { key: 'open', label: 'Open for registration' };
+    return { key: 'open', label: 'Open for requests' };
   }
 
   // ================= LIST =================
@@ -59,15 +59,28 @@
         (c.summary ? '<p class="cc-sum">' + e(c.summary) + '</p>' : '') +
         '<div class="cc-foot"><div class="cc-price">' + (from != null ? '<span>From</span><b>' + H.money(from, c.currency) + '</b>' + (early ? '<em>Early-bird</em>' : '') : '<b>Price TBA</b>') + '</div>' +
         (s && c.status !== 'completed' ? '<div class="cc-spots"><span>' + (s.left ? s.left + ' of ' + c.capacity + ' spots left' : 'Waitlist open') + '</span><i><b style="width:' + s.pct + '%"></b></i></div>' : '') +
-        '<span class="cc-cta">View camp <span class="arr">→</span></span></div></div></a>';
+        '<span class="cc-cta">' + (st.key === 'open' || st.key === 'few' ? 'See camp &amp; request' : 'View camp') + ' <span class="arr">→</span></span></div></div></a>';
     }
     list.innerHTML = '<p class="body soft loading">Loading camps…</p>';
-    H.api.listCamps().then(function (c) { all = c || []; render('all'); })
+    function counts() {
+      document.querySelectorAll('[data-n]').forEach(function (el) {
+        var k = el.dataset.n, n = all.filter(function (c) { return c.status !== 'completed' && (k === 'all' || c.discipline === k); }).length;
+        el.textContent = n ? n + ' camp' + (n === 1 ? '' : 's') + ' open' : 'Coming soon';
+      });
+    }
+    var start = new URLSearchParams(location.search).get('sport');
+    function pick(k) {
+      tabs.forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.f === k ? 'true' : 'false'); });
+      render(k);
+    }
+    H.api.listCamps().then(function (c) { all = c || []; counts(); pick(start && document.querySelector('.disc-tabs [data-f="' + start + '"]') ? start : 'all'); })
       .catch(function () { list.innerHTML = '<p class="body soft">Camps could not be loaded. Please refresh, or message us on WhatsApp.</p>'; });
     tabs.forEach(function (t) {
       t.addEventListener('click', function () {
-        tabs.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
-        t.setAttribute('aria-pressed', 'true'); render(t.dataset.f);
+        pick(t.dataset.f);
+        try { history.replaceState(null, '', t.dataset.f === 'all' ? location.pathname : '?sport=' + t.dataset.f); } catch (x) { }
+        var top = list.getBoundingClientRect().top + window.scrollY - 140;
+        if (window.scrollY < top - 200 || window.scrollY > top + 200) window.scrollTo({ top: top, behavior: 'smooth' });
       });
     });
   }
@@ -170,7 +183,7 @@
     // booking panel
     html += '<aside class="book" id="book"><div class="book-in dark">';
     if (canBook && (c.packages || []).length) {
-      html += '<p class="label"><span class="bar"></span>' + (st.key === 'full' ? 'Join the waitlist' : 'Reserve your spot') + '</p>' +
+      html += '<p class="label"><span class="bar"></span>' + (st.key === 'full' ? 'Join the waitlist' : 'Request a spot') + '</p>' +
         '<fieldset class="b-pk"><legend>Package</legend>' + c.packages.map(function (p, i) {
           var ep = early && p.early_price !== '' && p.early_price != null;
           return '<label class="b-opt"><input type="radio" name="package" value="' + e(p.id) + '"' + (i === 0 ? ' checked' : '') + '>' +
@@ -182,8 +195,8 @@
         '<div class="b-people"><span>People</span><div class="stepper"><button type="button" data-d="-1" aria-label="Fewer people">−</button><output id="b-n">1</output><button type="button" data-d="1" aria-label="More people">+</button></div></div>' +
         (c.group_min && c.group_discount_pct ? '<p class="note">' + c.group_min + '+ people: −' + c.group_discount_pct + '% group discount</p>' : '') +
         '<div class="b-sum" id="b-sum"></div>' +
-        '<button class="btn btn-primary b-go" type="button" id="b-go">' + (st.key === 'full' ? 'Join waitlist' : 'Continue') + ' <span class="arr">→</span></button>' +
-        '<p class="note">No payment now. ' + (st.key === 'full' ? 'We’ll contact you if a spot opens.' : 'Secure your spot with a ' + c.deposit_pct + '% deposit by bank transfer within ' + c.payment_days + ' days.') + '</p>';
+        '<button class="btn btn-primary b-go" type="button" id="b-go">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + ' <span class="arr">→</span></button>' +
+        '<p class="note">Free and takes a minute. No payment now. ' + (st.key === 'full' ? 'We’ll contact you if a spot opens.' : 'We confirm your spot on WhatsApp or email within 24 hours.') + '</p>';
     } else {
       html += '<p class="label"><span class="bar"></span>' + e(st.label) + '</p><p class="body">' +
         (c.status === 'completed' ? 'This camp has finished. See upcoming camps.' : 'Registration is not open for this camp right now.') + '</p>' +
@@ -191,7 +204,7 @@
     }
     html += '<a class="book-wa" href="' + WA + '?text=' + encodeURIComponent('Hi CHIDAOBA, a question about ' + c.title + ': ') + '" rel="noopener">Questions? WhatsApp us</a></div></aside>';
     html += '</div></section>';
-    if (canBook) html += '<div class="book-bar dark" id="book-bar"><div><span>From</span><b>' + H.money(H.fromPrice(c), c.currency) + '</b></div><a class="btn btn-primary" href="#book">' + (st.key === 'full' ? 'Join waitlist' : 'Reserve') + '</a></div>';
+    if (canBook) html += '<div class="book-bar dark" id="book-bar"><div><span>From</span><b>' + H.money(H.fromPrice(c), c.currency) + '</b></div><a class="btn btn-primary" href="#book">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + '</a></div>';
     html += modal(c, st);
     root.innerHTML = html;
 
@@ -264,18 +277,17 @@
     return '<div class="modal" id="b-modal" hidden role="dialog" aria-modal="true" aria-labelledby="b-title"><div class="modal-box dark">' +
       '<button class="modal-x" type="button" aria-label="Close">×</button>' +
       '<form id="b-form" novalidate><p class="label muted"><span class="bar"></span>' + e(c.title) + '</p>' +
-      '<h2 id="b-title" class="display h-md">' + (st.key === 'full' ? 'Join the waitlist' : 'Your details') + '<span class="dot">.</span></h2>' +
+      '<h2 id="b-title" class="display h-md">' + (st.key === 'full' ? 'Join the waitlist' : 'Send your request') + '<span class="dot">.</span></h2>' +
       '<div class="b-recap" id="b-recap"></div>' +
       '<div class="b-fields">' +
       f('full_name', 'Full name', 'text', true, 'name') + f('email', 'Email', 'email', true, 'email') +
       f('phone', 'Phone / WhatsApp', 'tel', true, 'tel') + f('country', 'Country', 'text', true, 'country-name') +
-      f('age', 'Age', 'number', true) +
-      '<div class="field"><label for="b-experience">Experience</label><select id="b-experience" name="experience" required><option value="">Select…</option><option>Beginner</option><option>Under 1 year</option><option>1–3 years</option><option>3–5 years</option><option>5+ years</option><option>Competitive athlete</option><option>Coach</option></select></div>' +
-      f('level', 'Belt / level', 'text', false) + f('club', 'Club or academy', 'text', false, 'organization') +
-      '<div class="field full"><label for="b-notes">Notes <em>optional</em></label><textarea id="b-notes" name="notes" placeholder="Names of others in your group, injuries, dietary needs, questions…"></textarea></div>' +
+      '<div class="field"><label for="b-experience">Experience</label><select id="b-experience" name="experience" required><option value="">Select…</option><option>Beginner</option><option>Under 1 year</option><option>1 to 3 years</option><option>3 to 5 years</option><option>5+ years</option><option>Competitive athlete</option><option>Coach</option></select></div>' +
+      f('age', 'Age', 'number', false) + f('level', 'Belt / level', 'text', false) +
+      '<div class="field full"><label for="b-notes">Message <em>optional</em></label><textarea id="b-notes" name="notes" placeholder="Questions, people in your group, dietary needs…"></textarea></div>' +
       '<input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<label class="consent"><input type="checkbox" name="consent" required><span>I agree that CHIDAOBA CULTURE stores these details to organise this camp and contact me, as described in the <a href="/privacy/" target="_blank">privacy notice</a>.</span></label>' +
-      '</div><div class="form-foot"><button class="btn btn-primary" type="submit" id="b-submit">' + (st.key === 'full' ? 'Join waitlist' : 'Reserve my spot') + ' <span class="arr">→</span></button><p class="form-msg" aria-live="polite"></p></div></form>' +
+      '</div><div class="form-foot"><button class="btn btn-primary" type="submit" id="b-submit">' + (st.key === 'full' ? 'Join waitlist' : 'Send request') + ' <span class="arr">→</span></button><p class="form-msg" aria-live="polite"></p></div></form>' +
       '<div id="b-done" hidden></div></div></div>';
   }
   function f(n, l, t, req, ac) {
@@ -296,8 +308,7 @@
       q.addons.forEach(function (a) { rows += '<div><span>' + e(a.name) + '</span><b>' + m(a.price) + '</b></div>'; });
       if (q.people > 1) rows += '<div><span>× ' + q.people + ' people</span><b>' + m((q.unit + q.extras) * q.people) + '</b></div>';
       if (q.discount) rows += '<div class="disc"><span>Group discount −' + c.group_discount_pct + '%</span><b>−' + m(q.discount) + '</b></div>';
-      rows += '<div class="tot"><span>Total</span><b>' + m(q.total) + '</b></div>';
-      if (st.key !== 'full') rows += '<div class="dep"><span>Deposit to reserve (' + c.deposit_pct + '%)</span><b>' + m(q.deposit) + '</b></div>';
+      rows += '<div class="tot"><span>Estimated total</span><b>' + m(q.total) + '</b></div>';
       $('#b-sum').innerHTML = rows;
       return q;
     }
@@ -329,8 +340,8 @@
       if (!form.checkValidity()) { form.reportValidity(); return; }
       var fd = new FormData(form), s = sel(), btn = $('#b-submit');
       var p = { camp: c.slug, package: s.package, addons: s.addons, people: s.people, consent: !!fd.get('consent'), website: fd.get('website') || '' };
-      ['full_name', 'email', 'phone', 'country', 'age', 'experience', 'level', 'club', 'notes'].forEach(function (k) { p[k] = (fd.get(k) || '').toString().trim(); });
-      btn.disabled = true; msg.className = 'form-msg'; msg.textContent = 'Reserving…';
+      ['full_name', 'email', 'phone', 'country', 'age', 'experience', 'level', 'notes'].forEach(function (k) { p[k] = (fd.get(k) || '').toString().trim(); });
+      btn.disabled = true; msg.className = 'form-msg'; msg.textContent = 'Sending…';
       H.api.register(p).then(function (r) { done(c, r, p); })
         .catch(function (err) { btn.disabled = false; msg.className = 'form-msg err'; msg.textContent = (err && err.message) || 'Something went wrong. Please try again.'; });
     });
@@ -339,19 +350,14 @@
   function done(c, r, p) {
     var m = function (v) { return H.money(v, r.currency); };
     var wait = r.status === 'waitlist';
-    var waMsg = 'Hi CHIDAOBA, I just registered for ' + c.title + '. Booking code: ' + r.ref;
-    var h = '<p class="label muted"><span class="bar"></span>' + (wait ? 'On the waitlist' : 'Spot reserved') + '</p>' +
-      '<h2 class="display h-md">' + (wait ? 'You’re on the waitlist' : 'Almost there, ' + e(p.full_name.split(' ')[0])) + '<span class="dot">.</span></h2>' +
-      '<div class="ref"><span class="label muted">Your booking code</span><b>' + e(r.ref) + '</b></div>';
-    if (wait) {
-      h += '<p class="body">The camp is full right now. If a spot opens, we’ll contact you at ' + e(p.email) + ' or on WhatsApp. First come, first served.</p>';
-    } else {
-      h += '<div class="b-sum"><div><span>Total</span><b>' + m(r.total) + '</b></div>' + (r.discount ? '<div class="disc"><span>Includes group discount</span><b>−' + m(r.discount) + '</b></div>' : '') +
-        '<div class="dep"><span>Deposit (' + r.deposit_pct + '%), pay by ' + e(H.dateRange(r.pay_by)) + '</span><b>' + m(r.deposit) + '</b></div></div>' +
-        '<p class="label" style="margin-top:28px">Bank transfer</p><pre class="bank">' + e(r.bank_details || 'We’ll send you payment details shortly.') + '</pre>' +
-        '<p class="body">Use <b>' + e(r.ref) + '</b> as the payment reference. Your spot is confirmed once the deposit arrives. The rest is paid before the camp starts.</p>';
-    }
-    h += '<p class="note">Save or screenshot this page.</p><div class="row-btns"><a class="btn btn-primary" href="' + WA + '?text=' + encodeURIComponent(waMsg) + '" rel="noopener">Send code on WhatsApp <span class="arr">→</span></a>' +
+    var waMsg = 'Hi CHIDAOBA, I just sent a request for ' + c.title + '. My code: ' + r.ref;
+    var h = '<p class="label muted"><span class="bar"></span>' + (wait ? 'On the waitlist' : 'Request sent') + '</p>' +
+      '<h2 class="display h-md">' + (wait ? 'You’re on the waitlist' : 'Thank you, ' + e(p.full_name.split(' ')[0])) + '<span class="dot">.</span></h2>' +
+      (wait ? '<p class="body">The camp is full right now. If a spot opens, we’ll contact you at ' + e(p.email) + ' or on WhatsApp. First come, first served.</p>'
+            : '<p class="body">We got your request for <b>' + e(c.title) + '</b>. We’ll contact you within 24 hours on WhatsApp or at ' + e(p.email) + ' to confirm your spot and the details.</p>') +
+      '<div class="ref"><span class="label muted">Your request code</span><b>' + e(r.ref) + '</b></div>' +
+      (r.total ? '<div class="b-sum"><div class="tot"><span>Estimated total</span><b>' + m(r.total) + '</b></div></div>' : '') +
+      '<p class="note">Want a faster reply? Send us your code on WhatsApp.</p><div class="row-btns"><a class="btn btn-primary" href="' + WA + '?text=' + encodeURIComponent(waMsg) + '" rel="noopener">Message us on WhatsApp <span class="arr">→</span></a>' +
       '<a class="btn btn-ghost" href="/camps/">Back to camps</a></div>';
     $('#b-form').hidden = true; var d = $('#b-done'); d.innerHTML = h; d.hidden = false;
     $('.modal-box').scrollTop = 0;

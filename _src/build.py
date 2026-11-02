@@ -137,7 +137,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "12"
+ASSET_V = "13"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
@@ -150,7 +150,7 @@ def page(path, title, desc, main):
 
 def arrow(): return '<span class="arr" aria-hidden="true">→</span>'
 
-CATS = ["Training Camps", "Chidaoba Workshops", "Wrestling Seminars", "BJJ / No-Gi Camps",
+CATS = ["Training Camps", "Wrestling Seminars", "BJJ / No-Gi Camps",
         "Competitions", "Open Mats", "Cultural Experiences"]
 JCATS = ["Heritage", "Wrestling", "Grappling", "Training", "Athletes", "Culture", "Interviews"]
 
@@ -194,7 +194,6 @@ def home():
         <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა. One letter carries the brand.</span></div>
       </div>
     </div>
-    <p class="src">Source: <a href="{UNESCO}" rel="noopener">UNESCO Intangible Cultural Heritage: Chidaoba, wrestling in Georgia</a></p>
   </div>
 </section>
 
@@ -312,7 +311,7 @@ def culture():
         ("It was passed from one generation to the next, in families, schools and village clubs. Children learned by watching, then practised outdoors from spring to autumn.", "UNESCO; AFP, 2018"),
         ("Today there is a wrestling section in almost every village and city in Georgia. The tradition is still alive.", "UNESCO"),
     ]
-    st = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p><p class="scrub-src">Source: {src}</p></div>'
+    st = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p></div>'
                  for i, (t, src) in enumerate(story))
     disc = [("Traditional Georgian Chidaoba", "The root", True), ("Wrestling", "", False), ("Grappling", "", False),
             ("Brazilian Jiu-Jitsu", "", False), ("Judo", "", False), ("Related combat &amp; grappling sports", "", False)]
@@ -354,7 +353,6 @@ def culture():
       <div><b>Open air</b><p>Tournaments in an outdoor arena, surrounded by a large audience.</p></div>
       <div><b>Zurna &amp; doli</b><p>Traditional wind and percussion instruments that accompany Chidaoba wrestling events.</p></div>
     </div>
-    <p class="src">Source: <a href="{UNESCO}" rel="noopener">UNESCO: Chidaoba, wrestling in Georgia</a></p>
   </div>
 </section>
 
@@ -411,16 +409,6 @@ def culture():
   </div>
 </section>
 
-<section class="section light sources" style="padding:64px 0">
-  <div class="wrap">
-    <p class="label"><span class="bar"></span>Sources</p>
-    <ol style="margin-top:24px">
-      <li><a href="{UNESCO}" rel="noopener">UNESCO Intangible Cultural Heritage: “Chidaoba, wrestling in Georgia”</a>, Representative List, inscribed 2018 (13.COM).</li>
-      <li><a href="{UNESCO_DEC}" rel="noopener">UNESCO: Decision 13.COM 10.b.15</a> (chivalric nature, friendship and respect, identity).</li>
-      <li><a href="{AFP}" rel="noopener">AFP, “Chidaoba wrestling gets UNESCO protected status”</a>, 29 November 2018 (festive tournaments, transmission in families and clubs).</li>
-    </ol>
-  </div>
-</section>
 </div>
 """
 
@@ -428,7 +416,6 @@ WEB3FORMS_KEY = ""  # paste the Web3Forms access key here to switch the camp for
 
 FORMATS = [
     ("Training Camps", "Several days of focused training in Georgia, two sessions a day with local coaches, plus time to recover and explore."),
-    ("Chidaoba Workshops", "Learn Georgian traditional wrestling: its grips, throws and the music and ritual that surround a bout."),
     ("Wrestling Seminars", "Technical sessions with Georgian wrestling coaches, built around specific positions and throws."),
     ("BJJ / No-Gi Camps", "Grappling camps where Georgian wrestling meets Brazilian Jiu-Jitsu and no-gi, from takedowns to the ground."),
     ("Competitions", "Tournaments and challenge matches, from friendly club events to open competitions."),
@@ -439,8 +426,8 @@ FORMATS = [
 
 def camps():
     faqs = [
-        ("How do I book?", "Choose a camp, pick your package and add-ons, and press Reserve. You get a booking code and bank details on screen. Your spot is confirmed when the deposit arrives."),
-        ("How much is the deposit, and when is the rest due?", "Each camp shows its deposit (usually 30%) and how many days you have to pay it. The rest is paid before the camp starts. We’ll confirm the exact date with you."),
+        ("How do I sign up?", "Choose your sport, open a camp, pick a package and press Request a spot. Fill in a short form and send it. We reply within 24 hours by WhatsApp or email to confirm your place."),
+        ("Do I pay anything when I send a request?", "No. Sending a request is free and does not commit you to anything. We confirm your spot and the payment details with you personally."),
         ("What if the camp is full?", "Join the waitlist from the camp page. If a spot opens, we contact waitlisted people in order."),
         ("Do I need experience?", "Every camp shows its level. Many are open to all levels; tell us your experience when you book."),
         ("Do I need to speak Georgian?", "No. Sessions and communication for international guests are in English."),
@@ -448,8 +435,8 @@ def camps():
         ("Can I bring my team?", "Yes. Camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
     fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
-    tabs = [("all", "All camps"), ("bjj", "BJJ &amp; Grappling"), ("wrestling", "Freestyle &amp; Greco-Roman"), ("judo", "Judo")]
-    tb = "".join(f'<button type="button" data-f="{k}" aria-pressed="{"true" if k == "all" else "false"}">{t}</button>' for k, t in tabs)
+    tabs = [("all", "All camps", "Every sport"), ("bjj", "BJJ &amp; Grappling", "Gi and no-gi"), ("wrestling", "Wrestling", "Freestyle &amp; Greco-Roman"), ("judo", "Judo", "Throws and groundwork")]
+    tb = "".join(f'<button type="button" data-f="{k}" aria-pressed="{"true" if k == "all" else "false"}"><b>{t}</b><span>{sub}</span><em data-n="{k}"></em></button>' for k, t, sub in tabs)
     return f"""
 <section class="page-hero dark camps-hero">
   {sym_svg("ghost")}
@@ -463,7 +450,8 @@ def camps():
 
 <section class="section dark camps-list-sec" id="camps" style="padding-top:0">
   <div class="wrap">
-    <div class="disc-tabs" role="group" aria-label="Filter by discipline">{tb}</div>
+    <div class="pick-head"><p class="label muted"><span class="bar"></span>Step 1</p><h2 class="display h-md">Choose your sport</h2></div>
+    <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport">{tb}</div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
   </div>
 </section>
@@ -482,19 +470,19 @@ def camps():
 <section class="section light" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>How booking works</p>
+      <p class="label"><span class="bar"></span>How it works</p>
       <h2 class="display h-md">Three steps to the mat<span class="dot">.</span></h2>
     </div>
     <div class="steps stagger">
-      <div><span class="n">01</span><h3>Choose</h3><p>Pick a camp and the package that suits you (training only, with accommodation, or all-inclusive), plus any add-ons.</p></div>
-      <div><span class="n">02</span><h3>Reserve</h3><p>Fill in your details. You get a booking code and bank details instantly. Pay the deposit to confirm your spot.</p></div>
-      <div><span class="n">03</span><h3>Train</h3><p>We confirm by email or WhatsApp and send everything you need before you arrive. Then: two sessions a day, and Georgia in between.</p></div>
+      <div><span class="n">01</span><h3>Choose</h3><p>Pick your sport, then the camp and package that suit you: training only, with accommodation, or all-inclusive.</p></div>
+      <div><span class="n">02</span><h3>Request</h3><p>Fill in a short form and send it. It takes a minute and there is no payment.</p></div>
+      <div><span class="n">03</span><h3>Train</h3><p>We confirm your spot on WhatsApp or email within 24 hours and send everything you need before you arrive.</p></div>
     </div>
     <div class="perks stagger">
       <div><b>Early-bird prices</b><span>Book early, pay less.</span></div>
       <div><b>Group discounts</b><span>Bring your team and save.</span></div>
       <div><b>Waitlist</b><span>Full? Get the next free spot.</span></div>
-      <div><b>No card needed</b><span>Deposit by bank transfer.</span></div>
+      <div><b>No payment now</b><span>Requests are free.</span></div>
     </div>
   </div>
 </section>
@@ -616,7 +604,7 @@ def georgia():
     <div class="stagger">
       <p class="lead soft">Brazilian jiu-jitsu and no-gi grappling are spreading fast in Georgia. New academies keep opening across Tbilisi, international tournaments now come to the city, and the mats are full of people who grew up wrestling or doing judo.</p>
       <p class="body soft">That mix is what makes training here special. Your partner might be a BJJ blue belt, a former Greco-Roman wrestler or a judoka with a national medal. Expect strong grips, real takedowns and rounds that test you.</p>
-      <ul class="chips gx-chips"><li>BJJ</li><li>No-gi</li><li>Freestyle</li><li>Greco-Roman</li><li>Judo</li><li>Chidaoba</li></ul>
+      <ul class="chips gx-chips"><li>BJJ</li><li>No-gi</li><li>Freestyle</li><li>Greco-Roman</li><li>Judo</li></ul>
     </div>
   </div>
 </section>
@@ -692,21 +680,6 @@ def georgia():
   </div>
 </section>
 
-<section class="section light sources" style="padding:64px 0">
-  <div class="wrap">
-    <p class="label"><span class="bar"></span>Sources</p>
-    <ol style="margin-top:24px">
-      <li><a href="{UNESCO}" rel="noopener">UNESCO: Chidaoba, wrestling in Georgia</a> (history, village sections).</li>
-      <li><a href="https://civil.ge/?p=620006" rel="noopener">Civil.ge: Georgia finishes Paris 2024 with seven medals</a>.</li>
-      <li><a href="https://1tv.ge/lang/en/news/judo-georgias-team-becomes-world-champion/" rel="noopener">1TV: Georgia's team becomes judo world champion</a> (Budapest 2025).</li>
-      <li><a href="https://www.mappr.co/?p=94596" rel="noopener">Mappr: World wrestling medals per capita</a> (UWW data, 1951 to 2025).</li>
-      <li><a href="https://www.olympedia.org/countries/GEO" rel="noopener">Olympedia: Georgia</a> (Soviet era judo medals).</li>
-      <li><a href="https://georgiatoday.ge/georgia-wins-4-golds-at-european-judo-championships/" rel="noopener">Georgia Today: Georgia wins 4 golds at the 2026 European Judo Championships</a>.</li>
-      <li><a href="https://www.rferl.org/a/earliest-evidence-grape-winemaking-found-ancient-jars-georgia-8000-years-ago/28852538.html" rel="noopener">RFE/RL: Earliest evidence of winemaking found in Georgia</a>.</li>
-      <li><a href="https://www.decanter.com/wine-news/georgian-winemaking-method-joins-unesco-heritage-list-30889" rel="noopener">Decanter: Qvevri winemaking joins the UNESCO list</a>.</li>
-    </ol>
-  </div>
-</section>
 </div>
 """
 
@@ -882,7 +855,7 @@ PAGES = [
     ("/culture/", "culture/index.html", "Culture | Chidaoba and the CHIDAOBA brand",
      "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
     ("/camps/", "camps/index.html", "Camps & Events | CHIDAOBA CULTURE",
-     "Training camps, Chidaoba workshops, wrestling seminars, BJJ/No-Gi camps and cultural experiences in Georgia.", camps),
+     "Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo. Choose your sport and send a request in a minute.", camps),
     ("/camps/camp/", "camps/camp/index.html", "Camp | CHIDAOBA CULTURE",
      "Camp details, packages, schedule and registration | CHIDAOBA CULTURE.", camp_detail),
     ("/camps/venue/", "camps/venue/index.html", "Venue | CHIDAOBA CULTURE",

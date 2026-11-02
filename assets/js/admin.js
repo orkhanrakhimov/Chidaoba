@@ -4,7 +4,7 @@
   if (!H || !app) return;
   var e = H.esc, $ = function (s, r) { return (r || app).querySelector(s); }, $$ = function (s, r) { return [].slice.call((r || app).querySelectorAll(s)); };
   var STATUS = { draft: 'Draft', published: 'Published', sold_out: 'Sold out', cancelled: 'Cancelled', completed: 'Completed' };
-  var RSTATUS = { pending: 'Pending deposit', deposit_paid: 'Deposit paid', paid: 'Paid in full', waitlist: 'Waitlist', cancelled: 'Cancelled' };
+  var RSTATUS = { pending: 'New request', deposit_paid: 'Confirmed', paid: 'Paid', waitlist: 'Waitlist', cancelled: 'Cancelled' };
   var state = { camps: [], regs: [], view: 'dash', camp: null, filter: 'all', q: '' };
 
   if (H.mode === 'empty') {
@@ -43,7 +43,7 @@
   }
   function shell(inner, tab) {
     return '<header class="adm-head"><a class="adm-brand" href="#dash"><img src="/assets/img/symbol-chalk.svg" alt="" width="20" height="28"> Admin</a>' +
-      '<nav><a href="#dash"' + (tab === 'dash' ? ' class="on"' : '') + '>Camps</a><a href="#regs"' + (tab === 'regs' ? ' class="on"' : '') + '>Registrations</a><a href="/camps/" target="_blank">View site ↗</a></nav>' +
+      '<nav><a href="#dash"' + (tab === 'dash' ? ' class="on"' : '') + '>Camps</a><a href="#regs"' + (tab === 'regs' ? ' class="on"' : '') + '>Requests</a><a href="/camps/" target="_blank">View site ↗</a></nav>' +
       '<button type="button" class="adm-out">Sign out</button></header><main class="adm-main">' + inner + '</main>';
   }
   function route() {
@@ -65,7 +65,7 @@
     var people = act.reduce(function (s, r) { return s + (r.people || 1); }, 0);
     var wl = rs.filter(function (r) { return r.status === 'waitlist'; }).reduce(function (s, r) { return s + (r.people || 1); }, 0);
     var booked = act.reduce(function (s, r) { return s + +r.total; }, 0);
-    var received = rs.reduce(function (s, r) { return s + (r.status === 'paid' ? +r.total : r.status === 'deposit_paid' ? +r.deposit : 0); }, 0);
+    var received = rs.reduce(function (s, r) { return s + (r.status === 'paid' ? +r.total : 0); }, 0);
     var unpaid = rs.filter(function (r) { return r.status === 'pending'; }).length;
     return { people: people, wl: wl, booked: booked, received: received, unpaid: unpaid, count: rs.length };
   }
@@ -80,14 +80,14 @@
       return '<tr><td class="cam-td">' + (cv ? '<img class="cam-th" src="' + e(cv.thumb) + '" alt="">' : '<span class="cam-th"></span>') + '<div><a href="#edit/' + c.id + '"><b>' + e(c.title) + '</b></a><span class="sub">' + e(H.DISC[c.discipline] || '') + ' · ' + e(H.dateRange(c.start_date, c.end_date)) + '</span></div></td>' +
         '<td><span class="pill-s s-' + c.status + '">' + STATUS[c.status] + '</span></td>' +
         '<td><b>' + s.people + (c.capacity ? ' / ' + c.capacity : '') + '</b>' + (c.capacity ? '<i class="bar"><b style="width:' + pct + '%"></b></i>' : '') + (s.wl ? '<span class="sub">+' + s.wl + ' waitlist</span>' : '') + '</td>' +
-        '<td>' + money(s.booked, c.currency) + '</td><td>' + money(s.received, c.currency) + (s.unpaid ? '<span class="sub warn">' + s.unpaid + ' awaiting deposit</span>' : '') + '</td>' +
-        '<td class="act"><a href="#regs/' + c.id + '">Registrations</a><a href="#edit/' + c.id + '">Edit</a>' + (c.status !== 'draft' ? '<a href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '" target="_blank">View ↗</a>' : '') + '</td></tr>';
+        '<td>' + money(s.booked, c.currency) + '</td><td>' + money(s.received, c.currency) + (s.unpaid ? '<span class="sub warn">' + s.unpaid + ' new request' + (s.unpaid > 1 ? 's' : '') + '</span>' : '') + '</td>' +
+        '<td class="act"><a href="#regs/' + c.id + '">Requests</a><a href="#edit/' + c.id + '">Edit</a>' + (c.status !== 'draft' ? '<a href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '" target="_blank">View ↗</a>' : '') + '</td></tr>';
     }).join('');
     app.innerHTML = shell(
       '<div class="adm-top"><h1 class="display h-md">Camps<span class="dot">.</span></h1><a class="btn btn-primary" href="#new">New camp +</a></div>' +
-      '<div class="kpis"><div><span>People booked</span><b>' + tot.people + '</b></div><div><span>Booked value</span><b>' + money(tot.booked, cur) + '</b></div>' +
-      '<div><span>Received</span><b>' + money(tot.received, cur) + '</b></div><div><span>Awaiting deposit</span><b>' + tot.unpaid + '</b></div></div>' +
-      (state.camps.length ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Camp</th><th>Status</th><th>Booked</th><th>Value</th><th>Received</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+      '<div class="kpis"><div><span>People signed up</span><b>' + tot.people + '</b></div><div><span>Expected value</span><b>' + money(tot.booked, cur) + '</b></div>' +
+      '<div><span>Paid</span><b>' + money(tot.received, cur) + '</b></div><div><span>New requests</span><b>' + tot.unpaid + '</b></div></div>' +
+      (state.camps.length ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Camp</th><th>Status</th><th>Signed up</th><th>Value</th><th>Paid</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
         : '<p class="body">No camps yet. <a href="#new">Create your first camp →</a></p>') +
       '<p class="note">Totals are per currency of each camp; the summary uses ' + cur + '.</p>', 'dash');
   }
@@ -102,17 +102,17 @@
     var opts = '<option value="all">All camps</option>' + camps.map(function (c) { return '<option value="' + c.id + '"' + (c.id === campId ? ' selected' : '') + '>' + e(c.title) + '</option>'; }).join('');
     var fopts = '<option value="all">Any status</option>' + Object.keys(RSTATUS).map(function (k) { return '<option value="' + k + '"' + (state.filter === k ? ' selected' : '') + '>' + RSTATUS[k] + '</option>'; }).join('');
     var rows = list.map(function (r) {
-      var wa = r.phone ? 'https://wa.me/' + r.phone.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent('Hi ' + (r.full_name || '').split(' ')[0] + ', this is CHIDAOBA about your booking ' + r.ref + '.') : null;
+      var wa = r.phone ? 'https://wa.me/' + r.phone.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent('Hi ' + (r.full_name || '').split(' ')[0] + ', this is CHIDAOBA about your camp request ' + r.ref + '.') : null;
       return '<tr data-id="' + r.id + '"><td><b>' + e(r.full_name) + '</b><span class="sub">' + e(r.ref) + ' · ' + new Date(r.created_at).toLocaleDateString('en-GB') + '</span>' + (camp ? '' : '<span class="sub">' + e(name(r.camp_id)) + '</span>') + '</td>' +
-        '<td><a href="mailto:' + e(r.email) + '?subject=' + encodeURIComponent('Your booking ' + r.ref) + '">' + e(r.email) + '</a>' + (wa ? '<span class="sub"><a href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + e(r.phone) + '</a></span>' : '') + '<span class="sub">' + e([r.country, r.age ? r.age + ' y' : '', r.experience, r.level, r.club].filter(Boolean).join(' · ')) + '</span></td>' +
+        '<td><a href="mailto:' + e(r.email) + '?subject=' + encodeURIComponent('Your camp request ' + r.ref) + '">' + e(r.email) + '</a>' + (wa ? '<span class="sub"><a href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + e(r.phone) + '</a></span>' : '') + '<span class="sub">' + e([r.country, r.age ? r.age + ' y' : '', r.experience, r.level, r.club].filter(Boolean).join(' · ')) + '</span></td>' +
         '<td>' + e(r.package_name) + (r.addons && r.addons.length ? '<span class="sub">+ ' + r.addons.map(function (a) { return e(a.name); }).join(', ') + '</span>' : '') + '<span class="sub">' + r.people + ' ' + (r.people > 1 ? 'people' : 'person') + '</span></td>' +
-        '<td><b>' + money(r.total, cur(r.camp_id)) + '</b><span class="sub">Deposit ' + money(r.deposit, cur(r.camp_id)) + (r.pay_by ? ' by ' + new Date(r.pay_by + 'T00:00').toLocaleDateString('en-GB') : '') + '</span></td>' +
+        '<td><b>' + money(r.total, cur(r.camp_id)) + '</b></td>' +
         '<td><select class="rs s-' + r.status + '">' + Object.keys(RSTATUS).map(function (k) { return '<option value="' + k + '"' + (r.status === k ? ' selected' : '') + '>' + RSTATUS[k] + '</option>'; }).join('') + '</select>' +
         '<input class="rn" placeholder="Note…" value="' + e(r.admin_note || '') + '">' + (r.notes ? '<span class="sub">“' + e(r.notes) + '”</span>' : '') + '</td></tr>';
     }).join('');
-    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Registrations<span class="dot">.</span></h1><button class="btn btn-ghost" type="button" id="csv">Export CSV</button></div>' +
+    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Requests<span class="dot">.</span></h1><button class="btn btn-ghost" type="button" id="csv">Export CSV</button></div>' +
       '<div class="adm-filters"><select id="fc">' + opts + '</select><select id="fs">' + fopts + '</select><input id="fq" type="search" placeholder="Search name, email, code…" value="' + e(state.q) + '"><span class="sub">' + list.length + ' shown</span></div>' +
-      (list.length ? '<div class="tbl-wrap"><table class="tbl regs"><thead><tr><th>Name</th><th>Contact</th><th>Package</th><th>Amount</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="body">No registrations match.</p>'), 'regs');
+      (list.length ? '<div class="tbl-wrap"><table class="tbl regs"><thead><tr><th>Name</th><th>Contact</th><th>Package</th><th>Amount</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="body">No requests yet.</p>'), 'regs');
     $('#fc').addEventListener('change', function () { location.hash = 'regs/' + this.value; });
     $('#fs').addEventListener('change', function () { state.filter = this.value; regsView(campId); });
     $('#fq').addEventListener('input', function () { state.q = this.value; clearTimeout(this._t); var me = this; this._t = setTimeout(function () { regsView(campId); var i = $('#fq'); i.focus(); i.setSelectionRange(me.value.length, me.value.length); }, 250); });
@@ -132,7 +132,7 @@
     $('#csv').addEventListener('click', function () { csv(list, name); });
   }
   function csv(list, name) {
-    var cols = ['ref', 'created_at', 'camp', 'status', 'full_name', 'email', 'phone', 'country', 'age', 'experience', 'level', 'club', 'package_name', 'addons', 'people', 'total', 'deposit', 'pay_by', 'notes', 'admin_note'];
+    var cols = ['ref', 'created_at', 'camp', 'status', 'full_name', 'email', 'phone', 'country', 'age', 'experience', 'level', 'club', 'package_name', 'addons', 'people', 'total', 'notes', 'admin_note'];
     var q = function (v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
     var out = [cols.join(',')].concat(list.map(function (r) {
       return cols.map(function (k) { return q(k === 'camp' ? name(r.camp_id) : k === 'addons' ? (r.addons || []).map(function (a) { return a.name; }).join('; ') : r[k]); }).join(',');
@@ -196,13 +196,12 @@
         '<p class="note">Choosing a venue adds its photos, facilities, meals and map to the camp page. Your own photos above appear first.</p>') +
 
       sec('Spots & pricing', '<div class="g3">' + inp('capacity', 'Capacity (people)', c.capacity, 'number', ' min="1"') +
-        sel('currency', 'Currency', c.currency, { EUR: 'EUR €', GEL: 'GEL ₾', USD: 'USD $' }) + inp('deposit_pct', 'Deposit %', c.deposit_pct, 'number', ' min="0" max="100"') +
-        inp('payment_days', 'Days to pay deposit', c.payment_days, 'number', ' min="1" max="60"') + inp('early_bird_deadline', 'Early-bird ends', c.early_bird_deadline, 'date') +
+        sel('currency', 'Currency', c.currency, { EUR: 'EUR €', GEL: 'GEL ₾', USD: 'USD $' }) +
+        inp('early_bird_deadline', 'Early-bird ends', c.early_bird_deadline, 'date') +
         inp('registration_deadline', 'Registration closes', c.registration_deadline, 'date') +
         inp('group_min', 'Group discount from (people)', c.group_min, 'number', ' min="2"') + inp('group_discount_pct', 'Group discount %', c.group_discount_pct, 'number', ' min="0" max="50"') + '</div>' +
         '<h3 class="sub-h">Packages</h3>' + rep('packages', c.packages || [], F.packages, 'Add package +') +
-        '<h3 class="sub-h">Add-ons</h3>' + rep('addons', c.addons || [], F.addons, 'Add add-on +') +
-        area('bank_details', 'Bank transfer details (shown after registering)', c.bank_details, 'Bank, account holder, IBAN, SWIFT…')) +
+        '<h3 class="sub-h">Add-ons</h3>' + rep('addons', c.addons || [], F.addons, 'Add add-on +') ) +
 
       sec('Programme', '<h3 class="sub-h">Schedule</h3>' + rep('schedule', sched, F.schedule, 'Add day +') +
         '<div class="g2">' + area('included', 'Included (one per line)', (c.included || []).join('\n')) + area('excluded', 'Not included (one per line)', (c.excluded || []).join('\n')) + '</div>' +
@@ -293,10 +292,10 @@
     var num = function (v) { return v === '' || v == null ? null : +v; };
     var lines = function (v) { return v.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); };
     var o = { id: c.id };
-    ['title', 'slug', 'discipline', 'status', 'city', 'country', 'venue', 'level', 'summary', 'description', 'currency', 'bank_details', 'address', 'map_url', 'venue_info'].forEach(function (k) { o[k] = E[k].value.trim(); });
+    ['title', 'slug', 'discipline', 'status', 'city', 'country', 'venue', 'level', 'summary', 'description', 'currency', 'address', 'map_url', 'venue_info'].forEach(function (k) { o[k] = E[k].value.trim(); });
     o.venue_key = E.venue_key.value || null; o.cover_url = c.cover_url || null; o.gallery = c.gallery || [];
     ['start_date', 'end_date', 'early_bird_deadline', 'registration_deadline'].forEach(function (k) { o[k] = E[k].value || null; });
-    o.capacity = num(E.capacity.value); o.deposit_pct = num(E.deposit_pct.value) || 0; o.payment_days = num(E.payment_days.value) || 7;
+    o.capacity = num(E.capacity.value); o.deposit_pct = 0;
     o.group_min = num(E.group_min.value); o.group_discount_pct = num(E.group_discount_pct.value) || 0; o.featured = E.featured.checked;
     o.slug = o.slug || slugify(o.title);
     var used = {};
@@ -319,7 +318,6 @@
     if (o.status === 'published') {
       if (!o.start_date) errs.push('Published camps need a start date.');
       if (!o.packages.length || o.packages.some(function (p) { return p.price == null; })) errs.push('Published camps need at least one package with a price.');
-      if (!o.bank_details) errs.push('Add bank details so people know how to pay the deposit.');
     }
     if (o.end_date && o.start_date && o.end_date < o.start_date) errs.push('End date is before start date.');
     if (errs.length) { msg.className = 'form-msg err'; msg.textContent = errs.join(' '); toast(errs[0], true); return; }

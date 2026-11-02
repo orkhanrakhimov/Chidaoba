@@ -1038,3 +1038,16 @@ html, body { overflow-x: clip; }
 .socials svg{width:20px;height:20px}
 .socials-menu{margin-top:28px}
 .foot-col .socials{gap:6px;flex-wrap:nowrap}.foot-col .socials a{width:40px;height:40px}.foot-col .socials svg{width:18px;height:18px}
+/* sport picker */
+.pick-head{margin:8px 0 20px}
+.pick-head h2{margin-top:12px}
+.sport-pick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 0 40px}
+.sport-pick button{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;padding:22px 20px;min-height:132px;border:1px solid var(--carbon-line);background:var(--carbon-2);letter-spacing:0;text-transform:none;cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.sport-pick button:hover{border-color:var(--chalk);transform:translateY(-2px)}
+.sport-pick button b{font-size:clamp(17px,1.5vw,22px);font-weight:700;text-transform:uppercase;letter-spacing:.01em;font-variation-settings:'wdth' 118;line-height:1.05}
+.sport-pick button span{font-size:13px;color:#A9A69E;letter-spacing:0;text-transform:none}
+.sport-pick button em{margin-top:auto;font-style:normal;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--sand)}
+.sport-pick button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--chalk)}
+.sport-pick button[aria-pressed="true"] span,.sport-pick button[aria-pressed="true"] em{color:rgba(242,241,236,.85)}
+@media (max-width:800px){.sport-pick{grid-template-columns:1fr 1fr}.sport-pick button{min-height:112px;padding:18px 16px}}
+.b-sum .tot:first-child{border-top:0;margin-top:0;padding-top:0}

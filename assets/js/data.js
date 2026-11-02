@@ -12,7 +12,7 @@
   var demoOn = sessionStorage.getItem('chd_demo') === '1';
 
   var NET = 'Can’t reach the database. Check your internet connection, turn off content blockers for this site, and make sure the Supabase project is active.';
-  var DISC = { bjj: 'BJJ & Grappling', wrestling: 'Freestyle & Greco-Roman Wrestling', judo: 'Judo', chidaoba: 'Chidaoba', other: 'Other' };
+  var DISC = { bjj: 'BJJ & Grappling', wrestling: 'Freestyle & Greco-Roman Wrestling', judo: 'Judo', other: 'Other' };
   var ERR = {
     camp_not_open: 'Registration for this camp is not open.',
     registration_closed: 'Registration for this camp has closed.',
