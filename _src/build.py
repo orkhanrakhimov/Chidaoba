@@ -5,9 +5,7 @@ Run from the repo root:  python3 _src/build.py
 Writes index.html, culture/, camps/, community/, journal/, shop/, privacy/ and 404.html.
 Folders starting with "_" are not published by GitHub Pages (Jekyll), so this source stays private to the repo.
 """
-import os, html, sys
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import art
+import os, html
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SYM = open(os.path.join(ROOT, "_src", "symbol_path.txt")).read().strip()
@@ -251,192 +249,128 @@ def inner(label, title, lead, what, what_items, cta_html, extra=""):
 def ig_btn(text="Follow on Instagram"):
     return f'<a class="btn btn-primary" href="{IG}" rel="noopener">{text} {arrow()}</a>'
 
-WM = "https://upload.wikimedia.org/wikipedia/commons/"
-IMG = {
-    "gadaev": WM + "4/47/Gadaev._158._%D0%93%D1%80%D1%83%D0%B7%D0%B8%D0%BD%D1%8B-%D0%B1%D0%BE%D1%80%D1%86%D1%8B.jpg",
-    "ermakov": WM + "b/b5/Ermakov._%E2%84%96_14664._Georgian_wrestlers.jpg",
-    "gabashvili": WM + "8/86/Gabashvili._Wrestling.jpg",
-    "artwork": WM + "c/c1/GeorgianWrestling.jpg",
-    "modern": WM + "4/48/Chidaoba.jpg",
-}
-CW = "https://commons.wikimedia.org/wiki/File:"
-PAGE = {
-    "gadaev": CW + "Gadaev._158._%D0%93%D1%80%D1%83%D0%B7%D0%B8%D0%BD%D1%8B-%D0%B1%D0%BE%D1%80%D1%86%D1%8B.jpg",
-    "ermakov": CW + "Ermakov._%E2%84%96_14664._Georgian_wrestlers.jpg",
-    "gabashvili": CW + "Gabashvili._Wrestling.jpg",
-    "artwork": CW + "GeorgianWrestling.jpg",
-    "modern": CW + "Chidaoba.jpg",
-}
 UNESCO_DEC = "https://ich.unesco.org/en/Decisions/13.COM/10.b.15"
 AFP = "https://en.prothomalo.com/sports/Chidaoba-wrestling-gets-UNESCO-protected-status"
-UNESCO_VIDEO = "iaIxFpin8dQ"
 
 def culture():
-    chap = [("what", "What is Chidaoba"), ("history", "History"), ("art", "The art"), ("music", "Music"),
-            ("chokha", "The chokha"), ("today", "Today"), ("sources", "Sources")]
-    nav = "".join(f'<a href="#{i}"><span>{n+1:02d}</span>{t}</a>' for n, (i, t) in enumerate(chap))
+    story = [
+        ("Long before it was a sport, Chidaoba was preparation for battle — a skill it kept until the late Middle Ages.", "UNESCO"),
+        ("Then the fight became a celebration. Tournaments moved into open-air arenas in villages and towns, surrounded by large crowds.", "UNESCO; AFP, 2018"),
+        ("Music opened every bout. The zurna and the doli set the rhythm, the crowd formed the circle — and sometimes the wrestlers left the arena dancing.", "UNESCO"),
+        ("Its code was chivalric. Strength mattered, but so did respect: for the opponent, and for the people watching.", "UNESCO Decision 13.COM 10.b.15"),
+        ("It was passed from one generation to the next — in families, schools and village clubs. Children learned by watching, then practised outdoors from spring to autumn.", "UNESCO; AFP, 2018"),
+        ("Today there is a wrestling section in almost every village and city in Georgia. The tradition is still alive.", "UNESCO"),
+    ]
+    st = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p><p class="scrub-src">Source: {src}</p></div>'
+                 for i, (t, src) in enumerate(story))
+    disc = [("Traditional Georgian Chidaoba", "The root", True), ("Wrestling", "", False), ("Grappling", "", False),
+            ("Brazilian Jiu-Jitsu", "", False), ("Judo", "", False), ("Related combat &amp; grappling sports", "", False)]
+    dl = "".join(f'<li{" class=\"root\"" if r else ""}><span>{t}</span>{f"<small>{tag}</small>" if tag else ""}</li>' for t, tag, r in disc)
+    mq_items = ['<span class="k">ჭიდაობა</span>', '<span>Wrestling</span>', '<span class="d">·</span>', '<span>Grappling</span>',
+                '<span class="d">·</span>', '<span>Jiu-Jitsu</span>', '<span class="d">·</span>', '<span>Judo</span>', '<span class="d">·</span>']
+    mq = "".join(mq_items) * 2
     return f"""
-<section class="c-hero" aria-labelledby="c-title">
-  {art.hero()}
+<div class="cx">
+<section class="cx-hero dark" aria-labelledby="c-title">
+  <div class="ghost-word" aria-hidden="true">ჭ</div>
   <div class="wrap">
-    <p class="label" style="color:var(--sand)"><span class="bar"></span>Culture — <span class="ka">ჭიდაობა</span></p>
-    <h1 id="c-title" class="display h-xl">More than wrestling. A way of life<span class="dot">.</span></h1>
-    <p class="lead" style="color:#E4E2DB">Chidaoba is Georgia’s traditional jacket wrestling — a contest of grip and balance, fought in an open-air circle to the sound of zurna and doli.</p>
-    <div class="c-hero-foot">
-      <span class="label" style="color:var(--chalk)">UNESCO Intangible Cultural Heritage of Humanity — inscribed 2018</span>
-      <span class="label" style="color:var(--sand)">The circle, from above</span>
+    <p class="label muted fade-load"><span class="bar"></span>Culture — <span class="ka">ჭიდაობა</span></p>
+    <h1 id="c-title" class="display"><span class="ln"><span>Rooted in</span></span><span class="ln"><span>heritage.</span></span><span class="ln"><span>Built for the</span></span><span class="ln"><span>future<span class="dot">.</span></span></span></h1>
+    <p class="lead soft fade-load">CHIDAOBA is a Georgian-rooted sports culture brand inspired by the tradition of wrestling. We celebrate where grappling comes from, support where it is going, and bring its community closer together.</p>
+    <div class="cx-hero-foot fade-load">
+      <span class="label muted">UNESCO Intangible Cultural Heritage of Humanity — 2018</span>
+      <span class="label muted scroll-cue"><i></i>Scroll</span>
     </div>
   </div>
 </section>
 
-<nav class="chapters" aria-label="Chapters"><div class="wrap">{nav}</div></nav>
-
-<section class="section light ch" id="what">
-  <div class="wrap intro">
-    <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 — What is Chidaoba</p>
-    <h2 class="display h-lg reveal">Georgian jacket wrestling<span class="dot">.</span></h2>
-    <div class="text reveal">
-      <p class="lead">Two wrestlers, each wearing a chokha — the traditional Georgian coat. Each tries to unbalance and throw the other, and the jacket itself is what they grip.</p>
-      <p class="body muted">But Chidaoba is not only a contest. UNESCO describes it as a complex practice that combines wrestling, music, dance and special garments, carried on in every region of Georgia — by village youth, city residents, sports clubs and schools.</p>
-      <p class="body muted">Its code of conduct is chivalric. Georgians recognise it as a symbol of their identity, and it runs through the country’s folklore, art, literature and cinema.</p>
-    </div>
-    <div class="facts reveal" style="grid-column:1/-1">
-      <div><b>2018</b><span>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity</span></div>
-      <div><b>≈200</b><span>Holds and counter-holds — UNESCO’s documented estimate</span></div>
-      <div><b>Open air</b><span>Tournaments in an outdoor arena, surrounded by a large audience</span></div>
-      <div><b>Zurna &amp; doli</b><span>Wind instrument and drum — their music marks the start of the bout</span></div>
-    </div>
-    <a class="unesco reveal" href="{UNESCO}" rel="noopener" style="grid-column:1/-1">
-      <span class="yr">2018</span>
-      <span><b>UNESCO Intangible Cultural Heritage of Humanity</b><span>“Chidaoba, wrestling in Georgia” — inscribed in 2018 (13.COM). Read the official listing →</span></span>
-    </a>
+<section class="story dark" aria-labelledby="story-title">
+  <div class="wrap">
+    <p class="label muted" id="story-title"><span class="bar"></span>01 — The story of Chidaoba</p>
+    <div class="scrub-list">{st}</div>
   </div>
 </section>
 
-<section class="section dark ch" id="history">
+<section class="section light" aria-labelledby="details-title">
   <div class="wrap">
-    <div class="era">
-      <div class="era-head reveal">
-        <p class="label muted"><span class="bar"></span>02 — History &amp; heritage</p>
-        <h2 class="display h-lg">From combat to celebration<span class="dot">.</span></h2>
-        <p class="body soft">How a fighting skill became one of Georgia’s most loved traditions — and kept its place between generations.</p>
-      </div>
-      <ol class="era-list">
-        <li class="reveal"><span class="n">{art.era_icon("combat")}01</span><div><h3>A combat skill</h3><p>Chidaoba began as preparation for fighting. UNESCO records that it kept a combat function until the late Middle Ages. Contemporary reporting describes it as part of the training of Georgia’s army in the 13th century.</p><small>Sources: UNESCO; AFP (2018)</small></div></li>
-        <li class="reveal"><span class="n">{art.era_icon("circle")}02</span><div><h3>A spectacle for the community</h3><p>Gradually it became a spectacular sport. Tournaments turned into festive events in villages and towns — an open-air arena, a large audience around it, and music to open the bout.</p><small>Source: UNESCO</small></div></li>
-        <li class="reveal"><span class="n">{art.era_icon("code")}03</span><div><h3>A code of chivalry</h3><p>Chidaoba carries a chivalric code of conduct. Descriptions of its techniques, and of codes of chivalry for champions, are reported to appear in old Georgian manuscripts.</p><small>Sources: UNESCO; AFP (2018)</small></div></li>
-        <li class="reveal"><span class="n">{art.era_icon("hands")}04</span><div><h3>Passed from hand to hand</h3><p>Skills pass from generation to generation — within families, in specialised schools and in village clubs. Young people learn by watching matches, then practise outdoors from early spring to autumn.</p><small>Sources: UNESCO; AFP (2018)</small></div></li>
-        <li class="reveal"><span class="n">{art.era_icon("mark")}05</span><div><h3>Recognised</h3><p>Chidaoba has been on Georgia’s Intangible Cultural Heritage State Register since 2011. In 2018 UNESCO inscribed it on the Representative List of the Intangible Cultural Heritage of Humanity.</p><small>Source: UNESCO Decision 13.COM 10.b.15</small></div></li>
-      </ol>
+    <div class="sec-head" style="margin-bottom:48px">
+      <p class="label"><span class="bar"></span>02 — Chidaoba in four details</p>
+      <h2 id="details-title" class="display h-md">Four details<span class="dot">.</span></h2>
     </div>
-</div>
+    <div class="details stagger">
+      <div><b data-count="2018" data-from="1900">2018</b><p>Inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</p></div>
+      <div><b data-count="200" data-pre="≈">≈200</b><p>Holds and counter-holds — UNESCO’s documented estimate.</p></div>
+      <div><b>Open air</b><p>Tournaments in an outdoor arena, surrounded by a large audience.</p></div>
+      <div><b>Zurna &amp; doli</b><p>Traditional wind and percussion instruments that accompany Chidaoba wrestling events.</p></div>
+    </div>
+    <p class="src">Source: <a href="{UNESCO}" rel="noopener">UNESCO — Chidaoba, wrestling in Georgia</a></p>
+  </div>
 </section>
 
-<section class="section light ch" id="art">
+<section class="section dark why" aria-labelledby="why-title">
+  <div class="why-word" aria-hidden="true">ჭიდაობა<span class="eq">=</span><span class="tr">Wrestling</span></div>
   <div class="wrap">
-    <p class="label"><span class="bar"></span>03 — The art of wrestling</p>
-    <div class="art" style="margin-top:28px">
-      <div class="art-num reveal">≈200<small>Holds and counter-holds<br>UNESCO’s documented estimate</small></div>
-      <div class="art-text reveal">
-        <h2 class="display h-md">Grip. Balance. Timing<span class="dot">.</span></h2>
-        <p class="lead">In Chidaoba the jacket is the handle. Wrestlers fight for a grip on the chokha, break their opponent’s balance and throw.</p>
-        <p class="body muted">What makes it an art is the combining. With an estimated 200 holds and counter-holds, a wrestler has to read the opponent, choose a combination and commit in an instant. UNESCO’s committee singles this out: how resourceful wrestlers must be in combining different holds and making quick decisions.</p>
+    <div class="why-grid">
+      <h2 id="why-title" class="display h-lg stagger"><span>A word that carries our roots<span class="dot">.</span></span></h2>
+      <div class="text stagger">
+        <p class="label muted"><span class="bar"></span>03 — Why Chidaoba?</p>
+        <p class="lead soft">In Georgian, ჭიდაობა — Chidaoba — means wrestling. It is a familiar, everyday word, and one that carries generations of Georgian life, identity and tradition.</p>
+        <p class="body soft">We chose it deliberately. CHIDAOBA takes that word beyond its traditional meaning and gives it a modern, international presence — so that a word every Georgian knows becomes a name the whole grappling world can recognise.</p>
       </div>
     </div>
-    <div class="principles">
-      <div class="reveal"><span class="label" style="color:var(--red)">01</span><h3>Grip</h3><p>Everything starts with the jacket. Whoever controls the grip controls the exchange.</p></div>
-      <div class="reveal"><span class="label" style="color:var(--red)">02</span><h3>Balance</h3><p>Standing wrestling: the aim is to take the opponent off their base and down.</p></div>
-      <div class="reveal"><span class="label" style="color:var(--red)">03</span><h3>Timing</h3><p>A hold works in one moment and fails a second later. Counter-holds punish the wrong moment.</p></div>
-      <div class="reveal"><span class="label" style="color:var(--red)">04</span><h3>Creativity</h3><p>Combining holds into something the opponent hasn’t seen — the quality UNESCO highlights.</p></div>
+  </div>
+</section>
+
+<section class="section dark" aria-labelledby="disc-title" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:40px">
+      <p class="label muted"><span class="bar"></span>04 — More than one discipline</p>
+      <h2 id="disc-title" class="display h-md">Inspired by heritage. Open to every grappler<span class="dot">.</span></h2>
+      <p class="body soft">CHIDAOBA is inspired by Georgian heritage, but it is not limited to one traditional discipline. We support the sports that share its grip, its discipline and its values.</p>
     </div>
-    <figure class="wide-fig reveal art-fig">{art.holds()}<figcaption><span>Two hundred points — one for each hold and counter-hold. The art is in the combinations.</span><span>Illustration: CHIDAOBA CULTURE</span></figcaption></figure>
-    <div class="rules reveal">
-      <div><p class="label">Modern rules</p><p style="margin-top:10px">As reported in 2018 — today’s competition rules, not historical ones.</p></div>
-      <ul>
-        <li>A match lasts five minutes.</li>
-        <li>Intentional kicks and offensive blows are forbidden.</li>
-        <li>No holds on an opponent who has been brought down.</li>
-        <li>No creeping up on an opponent kneeling in a defensive position.</li>
-      </ul>
+    <ul class="disc">{dl}</ul>
+  </div>
+</section>
+
+<section class="section light" aria-labelledby="purpose-title">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:56px">
+      <p class="label"><span class="bar"></span>05 — What we do</p>
+      <h2 id="purpose-title" class="display h-md">A brand and a community<span class="dot">.</span></h2>
+      <p class="body muted">Built around these disciplines, their athletes, their culture and their shared values.</p>
+    </div>
+    <div class="pillars stagger">
+      <div><b>Promote</b><p>Wrestling and grappling sports — in Georgia and around the world.</p></div>
+      <div><b>Celebrate</b><p>Their culture: the heritage, the people and the stories behind every grip.</p></div>
+      <div><b>Connect</b><p>Athletes, coaches, clubs and communities — and help these sports grow.</p></div>
     </div>
   </div>
 </section>
 
-<section class="section dark ch" id="music">
-  <div class="wrap music">
-    <div class="music-text reveal">
-      <p class="label muted"><span class="bar"></span>04 — Music &amp; movement</p>
-      <h2 class="display h-lg">The music starts the bout<span class="dot">.</span></h2>
-      <p class="lead soft">A Chidaoba match is never silent. The zurna and the doli mark its beginning, and their music drives the contest on.</p>
-      <p class="body soft">The audience stands in a ring around the open-air arena. Wrestlers compete through special holds while the music lifts the dynamics of the fight — and when it’s over, they sometimes leave the arena with a Georgian folk dance.</p>
-      <div class="instr">
-        <div><b>Zurna</b><span class="ka">ზურნა</span><span>A wind instrument with a piercing, carrying sound.</span></div>
-        <div><b>Doli</b><span class="ka">დოლი</span><span>The Georgian drum that sets the rhythm.</span></div>
-      </div>
-    </div>
-    <div class="music-media reveal"><figure class="art-fig" style="margin:0">{art.instruments()}<figcaption class="video-cap">Zurna and doli. Illustration: CHIDAOBA CULTURE</figcaption></figure>
-</div>
-  </div>
-</section>
+<section class="dark" aria-hidden="true"><div class="marquee"><div class="marquee-track">{mq}</div></div></section>
 
-<section class="section light ch" id="chokha">
-  <div class="wrap chokha">
-    <figure class="chokha-art reveal art-fig">{art.chokha()}</figure>
-    <div class="chokha-text reveal">
-      <p class="label"><span class="bar"></span>05 — Traditional clothing</p>
-      <p class="chokha-word" lang="ka">ჩოხა</p>
-      <h2 class="display h-md">The jacket is the point<span class="dot">.</span></h2>
-      <p class="lead">UNESCO lists special garments — the chokha — among the core elements of Chidaoba, alongside the wrestling, music and dance.</p>
-      <p class="body muted">In the bout, wrestlers wear high-necked woollen coats. The garment is what makes Chidaoba jacket wrestling: it is there to be gripped, and the fight for the grip on it decides the exchange.</p>
-      <p class="body muted">Costume-making is one of the accompanying traditions that Georgia’s safeguarding plan for Chidaoba sets out to promote, together with its music and dance.</p>
-    </div>
-  </div>
-</section>
-
-<section class="section dark ch" id="today">
-  <div class="wrap today">
-    <p class="label muted" style="grid-column:1/-1"><span class="bar"></span>06 — The culture today</p>
-    <h2 class="display h-lg reveal">A living tradition<span class="dot">.</span></h2>
-    <div class="text reveal">
-      <p class="lead soft">Chidaoba is not a museum piece. There are wrestling sections in almost every village and city in Georgia.</p>
-      <p class="body soft">From early spring to autumn, young people practise outdoors, putting into practice what they have learned by watching matches. The tradition is carried by youth, city residents, sports clubs, schools and amateur organisations.</p>
-    </div>
-    <figure class="art-fig reveal" style="grid-column:1/-1;margin:clamp(48px,7vw,96px) 0 0">{art.villages()}</figure>
-    <div class="today-grid">
-      <div class="reveal"><b>In every community</b><span>Wrestling sections in almost every village and city — and, as reported, a Chidaoba club in almost every small village.</span></div>
-      <div class="reveal"><b>Into the schools</b><span>Georgia’s safeguarding plan includes integrating wrestling into education and providing coaching within communities.</span></div>
-      <div class="reveal"><b>For the future</b><span>Planned measures also include better infrastructure for tournaments and a specialised museum devoted to Chidaoba.</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="closing light">
-  {sym_svg("")}
-  <div class="wrap reveal">
-    <p class="label"><span class="bar"></span>ჭიდაობა</p>
-    <h2 class="display h-lg" style="margin-top:24px">Worth knowing. Worth keeping alive<span class="dot">.</span></h2>
+<section class="cx-close dark" aria-labelledby="close-title">
+  <div class="wrap stagger">
+    <p class="label muted"><span class="bar"></span>ჭიდაობა</p>
+    <h2 id="close-title" class="display h-lg" style="margin-top:24px">A culture that moves<span class="dot">.</span></h2>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:40px">
-      <a class="btn btn-primary" href="/camps/">Train where the culture lives {arrow()}</a>
-      <a class="btn btn-ghost" href="{IG}" rel="noopener" style="color:var(--carbon)">Follow {IG_HANDLE} {arrow()}</a>
+      <a class="btn btn-primary" href="/camps/">Camps &amp; events {arrow()}</a>
+      <a class="btn btn-ghost" href="{IG}" rel="noopener">Follow {IG_HANDLE} {arrow()}</a>
     </div>
   </div>
 </section>
 
-<section class="section light sources ch" id="sources" style="border-top:1px solid var(--chalk-line);padding-top:72px">
+<section class="section light sources" style="padding:64px 0">
   <div class="wrap">
-    <p class="label"><span class="bar"></span>07 — Sources &amp; credits</p>
-    <h3>Sources</h3>
-    <ol>
+    <p class="label"><span class="bar"></span>Sources</p>
+    <ol style="margin-top:24px">
       <li><a href="{UNESCO}" rel="noopener">UNESCO Intangible Cultural Heritage — “Chidaoba, wrestling in Georgia”</a>, Representative List, inscribed 2018 (13.COM).</li>
-      <li><a href="{UNESCO_DEC}" rel="noopener">UNESCO — Decision of the Intergovernmental Committee 13.COM 10.b.15</a> (identity, folklore and arts, chivalric nature, safeguarding measures, national register since 2011).</li>
-      <li><a href="{AFP}" rel="noopener">AFP, “Chidaoba wrestling gets UNESCO protected status”</a>, 29 November 2018 (13th-century army training, manuscripts, modern rules, transmission in families and clubs).</li>
-    </ol>
-    <h3>Artwork</h3>
-    <ol>
-      <li>All illustrations on this page are original artwork by CHIDAOBA CULTURE, drawn from the descriptions in the sources above. They are interpretations, not historical records.</li>
+      <li><a href="{UNESCO_DEC}" rel="noopener">UNESCO — Decision 13.COM 10.b.15</a> (chivalric nature, friendship and respect, identity).</li>
+      <li><a href="{AFP}" rel="noopener">AFP, “Chidaoba wrestling gets UNESCO protected status”</a>, 29 November 2018 (festive tournaments, transmission in families and clubs).</li>
     </ol>
   </div>
 </section>
+</div>
 """
 
 WEB3FORMS_KEY = ""   # paste the Web3Forms access key here to switch the camp form on
@@ -644,8 +578,8 @@ def notfound():
 PAGES = [
     ("/", "index.html", "CHIDAOBA CULTURE — Rooted in heritage. Built for the future.",
      "Georgian wrestling heritage expressed through modern sports culture. Chidaoba, camps and events, community, journal and apparel — from Tbilisi, Georgia.", home),
-    ("/culture/", "culture/index.html", "Chidaoba — Georgian jacket wrestling | CHIDAOBA CULTURE",
-     "What is Chidaoba? Georgia’s traditional jacket wrestling: its history, about 200 holds and counter-holds, zurna and doli music, the chokha, and the living tradition. UNESCO Intangible Cultural Heritage, 2018.", culture),
+    ("/culture/", "culture/index.html", "Culture — Chidaoba and the CHIDAOBA brand",
+     "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
     ("/camps/", "camps/index.html", "Camps & Events — CHIDAOBA CULTURE",
      "Training camps, Chidaoba workshops, wrestling seminars, BJJ/No-Gi camps and cultural experiences in Georgia.", camps),
     ("/community/", "community/index.html", "Community — CHIDAOBA CULTURE",
