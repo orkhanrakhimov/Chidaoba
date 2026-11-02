@@ -11,6 +11,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SYM = open(os.path.join(ROOT, "_src", "symbol_path.txt")).read().strip()
 IG = "https://www.instagram.com/chidaobaculture/"
 IG_HANDLE = "@chidaobaculture"
+EMAIL = "chidaobaculture@gmail.com"
+WA_NUM = "995595606670"
+WA_SHOW = "+995 595 606 670"
+WA = "https://wa.me/" + WA_NUM + "?text=" + "Hi%20CHIDAOBA%2C%20"
 UNESCO = "https://ich.unesco.org/en/RL/chidaoba-wrestling-in-georgia-01371"
 
 NAV = [("/", "Home"), ("/culture/", "Culture"), ("/camps/", "Camps &amp; Events"),
@@ -41,6 +45,8 @@ def head(title, desc, path):
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#202020">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Noto+Sans+Georgian:wght@400;700&amp;display=swap" rel="stylesheet">
@@ -69,33 +75,51 @@ def header(path):
 </div>
 """
 
-def footer():
+WA_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg>')
+
+def newsletter_form(where):
+    big = where != "foot"
+    return f"""<form class="js-form news{' news-big' if big else ''}" data-key="{WEB3FORMS_KEY}" data-ok-text="You’re on the list. Welcome to The Culture Letter." novalidate>
+      <input type="hidden" name="subject" value="Newsletter signup — The Culture Letter">
+      <input type="hidden" name="from_name" value="chidaoba.com">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="news-label" for="nl-{where}">The Culture Letter</label>
+      <p class="news-sub">Camps, events, new releases and stories — a few times a year.</p>
+      <div class="news-row"><input id="nl-{where}" name="email" type="email" autocomplete="email" placeholder="Your email" required>
+      <button class="btn btn-primary" type="submit">Subscribe</button></div>
+      <label class="news-consent"><input type="checkbox" name="consent" value="yes" required> I agree to receive emails and accept the <a href="/privacy/">privacy notice</a>.</label>
+      <p class="form-msg" aria-live="polite"></p>
+    </form>"""
+
+def footer(path=""):
     return f"""<footer class="site-foot">
   <div class="wrap">
     <div class="foot-grid">
       <div>
         <img src="/assets/img/lockup-chalk.svg" alt="CHIDAOBA CULTURE" width="400" height="40">
         <p class="body soft" style="margin-top:24px;max-width:26em">Georgian wrestling heritage, expressed through modern sports culture. Tbilisi, Georgia.</p>
-        <p class="label muted" style="margin-top:28px">The Culture Letter — launching soon</p>
+        {'' if path == '/' else newsletter_form('foot')}
       </div>
       <div><h3>Explore</h3><ul>
         <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
         <li><a href="/community/">Community</a></li><li><a href="/journal/">Journal</a></li><li><a href="/shop/">Shop</a></li></ul></div>
       <div><h3>Brand</h3><ul>
-        <li><a href="/culture/">About</a></li><li><a href="{IG}" rel="noopener">Contact (Instagram DM)</a></li>
+        <li><a href="/culture/">About</a></li><li><a href="/contact/">Contact</a></li>
+        <li><a href="mailto:{EMAIL}">{EMAIL}</a></li><li><a href="{WA}" rel="noopener">WhatsApp</a></li>
         <li><a href="{IG}" rel="noopener">Instagram</a></li></ul></div>
       <div><h3>Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
     </div>
     <div class="foot-bottom label"><span>© <span data-year>2026</span> Chidaoba Culture</span><span>A culture that moves<span class="dot">.</span></span></div>
   </div>
 </footer>
+<a class="wa-float" href="{WA}" rel="noopener" aria-label="Message us on WhatsApp">{WA_ICON}<span>WhatsApp</span></a>
 <script src="/assets/js/site.js" defer></script>
 </body>
 </html>
 """
 
 def page(path, title, desc, main):
-    return head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer()
+    return head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
 
 def arrow(): return '<span class="arr" aria-hidden="true">→</span>'
 
@@ -109,21 +133,20 @@ def home():
     jchips = "".join(f"<li>{c}</li>" for c in JCATS)
     return f"""
 <section class="hero dark" aria-labelledby="hero-title">
-  <div class="hero-rule" aria-hidden="true"></div>
   {sym_svg("hero-sym")}
   <div class="wrap">
-    <p class="label muted"><span class="bar"></span>Chidaoba Culture — Tbilisi, Georgia</p>
+    <p class="label muted fade-load"><span class="bar"></span>Chidaoba Culture — Tbilisi, Georgia</p>
     <div>
-      <h1 id="hero-title" class="display h-xl">Rooted in heritage.<br>Built for the future<span class="dot">.</span></h1>
-      <p class="lead soft">A culture shaped by movement, discipline and the spirit of Georgian wrestling.</p>
-      <div class="ctas">
+      <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
+      <p class="lead soft fade-load">A culture shaped by movement, discipline and the spirit of Georgian wrestling — and a home for everyone who wrestles and grapples today.</p>
+      <div class="ctas fade-load">
         <a class="btn btn-primary" href="/culture/">Explore culture {arrow()}</a>
         <a class="btn btn-ghost" href="/camps/">Discover camps {arrow()}</a>
       </div>
     </div>
     <div class="hero-foot label muted">
       <span>Chidaoba — UNESCO Intangible Cultural Heritage, 2018</span>
-      <span>A culture that moves<span class="dot">.</span></span>
+      <span class="scroll-cue"><i></i>Scroll</span>
     </div>
   </div>
 </section>
@@ -132,15 +155,15 @@ def home():
   <div class="wrap">
     <div class="intro">
       <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 — The culture</p>
-      <h2 id="intro-title" class="display h-lg reveal">A culture that moves<span class="dot">.</span></h2>
+      <h2 id="intro-title" class="display h-lg reveal">More than a wrestling style<span class="dot">.</span></h2>
       <div class="text reveal">
-        <p class="lead">Chidaoba is more than a traditional wrestling discipline. It is movement, discipline and heritage — a connection between generations, carried through the grip.</p>
+        <p class="scrub scrub-sm">Chidaoba is more than a traditional wrestling discipline. It is movement, discipline and heritage — a connection between generations, carried through the grip.</p>
         <p class="body muted">For centuries it has combined wrestling with music, dance and its own garments. CHIDAOBA CULTURE exists to preserve, develop, modernise and share that culture — and to connect it with today’s wrestling, judo, Brazilian Jiu-Jitsu and grappling world.</p>
         <a class="link" href="/culture/" style="align-self:start">What is Chidaoba</a>
       </div>
-      <div class="stats reveal">
-        <div class="stat"><b>2018</b><span>Chidaoba, wrestling in Georgia, inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</span></div>
-        <div class="stat"><b>≈200</b><span>Holds and counter-holds, by UNESCO’s estimate — and the creativity of combining them.</span></div>
+      <div class="stats stagger">
+        <div class="stat"><b data-count="2018" data-from="1900">2018</b><span>Chidaoba, wrestling in Georgia, inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</span></div>
+        <div class="stat"><b data-count="200" data-pre="≈">≈200</b><span>Holds and counter-holds, by UNESCO’s estimate — and the creativity of combining them.</span></div>
         <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა. One letter carries the brand.</span></div>
       </div>
     </div>
@@ -179,7 +202,7 @@ def home():
         <h2 class="display h-md">Built by people<span class="dot">.</span></h2>
         <p class="body muted">Athletes, coaches and clubs who carry the culture — in Georgia and around the world. Profiles are in preparation.</p>
         <div class="cols3"><div><b>Athletes</b><span>Wrestlers and grapplers</span></div><div><b>Coaches</b><span>The people who teach</span></div><div><b>Clubs</b><span>Where to train</span></div></div>
-        <a class="link" href="{IG}" rel="noopener" style="align-self:start">Coach, athlete or club? Get in touch</a>
+        <a class="link" href="/contact/" style="align-self:start">Coach, athlete or club? Get in touch</a>
       </article>
       <article class="reveal">
         <p class="label"><span class="bar"></span>04 — Journal</p>
@@ -213,8 +236,9 @@ def home():
     <div class="invite-links reveal">
       <a href="{IG}" rel="noopener"><span class="label muted">Instagram</span><b>{IG_HANDLE} →</b></a>
       <a href="/camps/"><span class="label muted">Upcoming</span><b>Camps &amp; events →</b></a>
-      <div><span class="label muted">Newsletter</span><b>The Culture Letter</b><span class="body soft">Launching soon.</span></div>
+      <a href="{WA}" rel="noopener"><span class="label muted">WhatsApp</span><b>{WA_SHOW} →</b></a>
     </div>
+    <div class="news-wrap reveal">{newsletter_form("home")}</div>
   </div>
 </section>
 """
@@ -401,8 +425,6 @@ def camps():
     types = "".join(f'<label><input type="checkbox" name="camp_types" value="{t}"><span>{t}</span></label>' for t, _ in FORMATS[:7])
     countries_hint = "e.g. Georgia, Germany, USA"
     key = WEB3FORMS_KEY
-    disabled = "" if key else " disabled"
-    pending = "" if key else '<p class="form-msg">Registration opens very soon. Until then, message us on Instagram <a href="' + IG + '" rel="noopener">@chidaobaculture</a>.</p>'
     faqs = [
         ("Do I need experience?", "No. Camps will list their level — some are open to beginners, others are for experienced wrestlers and grapplers. Tell us your level in the form and we’ll point you to the right one."),
         ("Do I need to speak Georgian?", "No. Sessions and communication for international guests will be in English. Learning a few Georgian words is welcome, of course."),
@@ -417,8 +439,8 @@ def camps():
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
     <p class="label muted"><span class="bar"></span>Camps &amp; Events</p>
-    <h1 class="display h-xl">Train. Connect. Experience<span class="dot">.</span></h1>
-    <p class="lead soft">Training camps, workshops, competitions and experiences rooted in Georgian grappling culture — in Georgia and abroad.</p>
+    <h1 class="display h-xl"><span class="ln"><span>Train. Connect.</span></span><span class="ln"><span>Experience<span class="dot">.</span></span></span></h1>
+    <p class="lead soft fade-load">Training camps, workshops, competitions and experiences rooted in Georgian grappling culture — in Georgia and abroad.</p>
     <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:36px">
       <a class="btn btn-primary" href="#register">Register your interest {arrow()}</a>
       <a class="btn btn-ghost" href="#what">What is a camp {arrow()}</a>
@@ -431,7 +453,7 @@ def camps():
     <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 — What is a camp</p>
     <h2 class="display h-lg reveal">Train where the culture lives<span class="dot">.</span></h2>
     <div class="text reveal">
-      <p class="lead">A CHIDAOBA CULTURE camp is a few days to a week in Georgia built around training — wrestling, Chidaoba and grappling sessions with local coaches.</p>
+      <p class="scrub scrub-sm">A CHIDAOBA CULTURE camp is a few days to a week in Georgia built around training — wrestling, Chidaoba and grappling sessions with local coaches.</p>
       <p class="body muted">Between sessions you meet the people, food, landscapes and traditions that shaped Georgian wrestling. You leave with better technique, new training partners and a real sense of where it all comes from. Camps are small, organised end-to-end, and open to international guests.</p>
     </div>
   </div>
@@ -484,7 +506,7 @@ def camps():
       <p class="body soft">Tell us who you are and what you’d like to train. We’ll contact you with dates, prices and details as soon as camps open — before they’re announced publicly. Free, and not a booking.</p>
       <p class="label muted">Under 18? A parent or guardian should fill in this form.</p>
     </div>
-    <form id="camp-form" data-key="{key}" novalidate>
+    <form id="camp-form" class="js-form" data-key="{key}" data-done="camp-done" novalidate>
       <input type="hidden" name="subject" value="New camp interest — chidaoba.com">
       <input type="hidden" name="from_name" value="chidaoba.com">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -507,7 +529,7 @@ def camps():
         <select id="f-acc" name="accommodation"><option>Need accommodation</option><option>Don’t need it</option><option>Not sure yet</option></select></div>
       <div class="field full"><label for="f-msg">Anything else? <em>optional</em></label><textarea id="f-msg" name="message" placeholder="Group size, injuries we should know about, questions…"></textarea></div>
       <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA CULTURE may use these details to contact me about camps and events, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
-      <div class="form-foot"><button class="btn btn-primary" type="submit"{disabled}>Send {arrow()}</button>{pending if pending else '<p class="form-msg" aria-live="polite"></p>'}</div>
+      <div class="form-foot"><button class="btn btn-primary" type="submit">Send {arrow()}</button><p class="form-msg" aria-live="polite"></p></div>
     </form>
     <div class="done" id="camp-done" role="status">
       <p class="label muted"><span class="bar"></span>Received</p>
@@ -555,16 +577,20 @@ def privacy():
 <section class="section light"><div class="wrap prose">
 <p class="label muted">Last updated: November 2026</p>
 <h2>What this website collects</h2>
-<p>The only personal data chidaoba.com collects is what you choose to send through the camp interest form on the Camps &amp; Events page: your name, email, country, age, training experience and the optional details you add (phone/WhatsApp, belt or skill level, club, accommodation needs and your message).</p>
-<p>We use these details only to contact you about camps and events. We don’t sell or share them, and there are no accounts, analytics or advertising cookies on this site.</p>
-<h2>How the form works</h2>
-<p>Form submissions are delivered to our email by Web3Forms, a form-processing service. We keep your details only as long as needed to organise camps and events. To see, correct or delete what we hold about you, message us and we’ll do it.</p>
+<p>We only collect what you choose to send us through the forms on this site:</p>
+<p><b>Camp interest form</b> — name, email, country, age, training experience and the optional details you add (phone/WhatsApp, belt or skill level, club, interests, accommodation needs, message). Used to contact you about camps and events.</p>
+<p><b>Contact form</b> — name, email, topic, message and optional phone. Used to reply to you.</p>
+<p><b>The Culture Letter</b> — your email address. Used to send our newsletter; you can unsubscribe at any time by replying “unsubscribe” or emailing us.</p>
+<p>We don’t sell or share your details, and there are no accounts, analytics or advertising cookies on this site.</p>
+<h2>How the forms work</h2>
+<p>Form submissions are delivered to our inbox (chidaobaculture@gmail.com) by Web3Forms, a form-processing service. If the form opens your email app instead, your message is sent from your own email account. We keep your details only as long as needed. To see, correct or delete what we hold about you, email us and we’ll do it.</p>
+<p>WhatsApp and Instagram links open those services; their own privacy policies apply when you use them.</p>
 <h2>Third-party services</h2>
 <p>The site is hosted on GitHub Pages and loads its typefaces from Google Fonts. Like any web server, these services receive technical information such as your IP address when your browser requests a page or a font. Their own privacy policies apply.</p>
 <h2>Changes</h2>
-<p>When we add the newsletter, accounts or the shop, this page will be updated before any new personal data is collected.</p>
+<p>When we add accounts or the shop, this page will be updated before any new personal data is collected.</p>
 <h2>Contact</h2>
-<p>Questions: message us on Instagram at <a href="{IG}" rel="noopener">{IG_HANDLE}</a>.</p>
+<p>Questions: email <a href="mailto:{EMAIL}">{EMAIL}</a> or message us on Instagram at <a href="{IG}" rel="noopener">{IG_HANDLE}</a>.</p>
 </div></section>"""
 
 def notfound():
@@ -574,6 +600,48 @@ def notfound():
 <h1 class="display h-xl">Off the mat<span class="dot">.</span></h1>
 <p class="lead soft">This page doesn’t exist — or not yet.</p>
 <div style="margin-top:36px"><a class="btn btn-primary" href="/">Back to home {arrow()}</a></div></div></section>"""
+
+def contact():
+    topics = ["General question", "Camps &amp; events", "Coach / athlete / club", "Partnership or collaboration", "Press", "Shop &amp; apparel"]
+    opts = "".join(f"<option>{t}</option>" for t in topics)
+    return f"""
+<section class="page-hero dark">
+  {sym_svg("ghost")}
+  <div class="wrap" style="position:relative">
+    <p class="label muted fade-load"><span class="bar"></span>Contact</p>
+    <h1 class="display h-xl"><span class="ln"><span>Let’s talk<span class="dot">.</span></span></span></h1>
+    <p class="lead soft fade-load">Questions about camps, clubs, partnerships or the brand — write to us, or message us on WhatsApp.</p>
+  </div>
+</section>
+<section class="section dark" style="padding-top:0">
+  <div class="wrap reg">
+    <div class="reg-intro">
+      <div class="contact-list stagger">
+        <a href="mailto:{EMAIL}"><span class="label muted">Email</span><b>{EMAIL}</b></a>
+        <a href="{WA}" rel="noopener"><span class="label muted">WhatsApp</span><b>{WA_SHOW}</b></a>
+        <a href="{IG}" rel="noopener"><span class="label muted">Instagram</span><b>{IG_HANDLE}</b></a>
+        <div><span class="label muted">Based in</span><b>Tbilisi, Georgia</b></div>
+      </div>
+    </div>
+    <form id="contact-form" class="js-form" data-key="{WEB3FORMS_KEY}" data-done="contact-done" novalidate>
+      <input type="hidden" name="subject" value="New message — chidaoba.com">
+      <input type="hidden" name="from_name" value="chidaoba.com">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="field"><label for="c-name">Name</label><input id="c-name" name="name" autocomplete="name" required></div>
+      <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="c-topic">Topic</label><select id="c-topic" name="topic">{opts}</select></div>
+      <div class="field"><label for="c-phone">Phone / WhatsApp <em>optional</em></label><input id="c-phone" name="phone" type="tel" autocomplete="tel"></div>
+      <div class="field full"><label for="c-msg">Message</label><textarea id="c-msg" name="message" required></textarea></div>
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA CULTURE may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
+      <div class="form-foot"><button class="btn btn-primary" type="submit">Send message {arrow()}</button><p class="form-msg" aria-live="polite"></p></div>
+    </form>
+    <div class="done" id="contact-done" role="status">
+      <p class="label muted"><span class="bar"></span>Sent</p>
+      <h3 class="display h-md">Thank you<span class="dot">.</span></h3>
+      <p class="body soft">We’ll reply as soon as we can — usually within a few days. For anything urgent, message us on <a href="{WA}" rel="noopener">WhatsApp</a>.</p>
+    </div>
+  </div>
+</section>"""
 
 PAGES = [
     ("/", "index.html", "CHIDAOBA CULTURE — Rooted in heritage. Built for the future.",
@@ -587,6 +655,8 @@ PAGES = [
     ("/journal/", "journal/index.html", "Journal — CHIDAOBA CULTURE",
      "Stories on Georgian wrestling heritage, technique, training and the people behind it.", journal),
     ("/shop/", "shop/index.html", "Shop — CHIDAOBA CULTURE", "Drop 01 — premium training apparel from CHIDAOBA CULTURE.", shop),
+    ("/contact/", "contact/index.html", "Contact — CHIDAOBA CULTURE",
+     "Contact CHIDAOBA CULTURE — email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
     ("/privacy/", "privacy/index.html", "Privacy — CHIDAOBA CULTURE", "Privacy information for chidaoba.com.", privacy),
     ("/404.html", "404.html", "Not found — CHIDAOBA CULTURE", "Page not found.", notfound),
 ]

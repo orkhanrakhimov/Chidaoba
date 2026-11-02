@@ -1,6 +1,10 @@
-// CHIDAOBA CULTURE — small site behaviours
+// CHIDAOBA CULTURE — site behaviours
 (function () {
   var body = document.body;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var EMAIL = 'chidaobaculture@gmail.com';
+
+  // ---------- mobile menu ----------
   var burger = document.querySelector('.burger');
   if (burger) {
     burger.addEventListener('click', function () {
@@ -9,146 +13,122 @@
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && body.classList.contains('menu-open')) {
-        body.classList.remove('menu-open');
-        burger.setAttribute('aria-expanded', 'false');
-        burger.focus();
+        body.classList.remove('menu-open'); burger.setAttribute('aria-expanded', 'false'); burger.focus();
       }
     });
   }
-  var y = document.querySelectorAll('[data-year]');
-  for (var i = 0; i < y.length; i++) y[i].textContent = new Date().getFullYear();
+  document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
-  var els = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
-    }, { rootMargin: '0px 0px -10% 0px' });
-    els.forEach(function (el) { io.observe(el); });
-  } else {
-    els.forEach(function (el) { el.classList.add('in'); });
-  }
-})();
+  // ---------- load reveal ----------
+  requestAnimationFrame(function () { body.classList.add('loaded'); });
 
-// Camp interest / registration form (Web3Forms)
-(function () {
-  var form = document.getElementById('camp-form');
-  if (!form) return;
-  var msg = form.querySelector('.form-msg');
-  var btn = form.querySelector('button[type="submit"]');
-  var done = document.getElementById('camp-done');
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!form.dataset.key) return;
-    if (!form.checkValidity()) { form.reportValidity(); return; }
-    var data = new FormData(form);
-    var types = data.getAll('camp_types');
-    data.delete('camp_types');
-    data.append('camp_types', types.join(', ') || '—');
-    data.append('access_key', form.dataset.key);
-    btn.disabled = true; msg.className = 'form-msg'; msg.textContent = 'Sending…';
-    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Accept': 'application/json' }, body: data })
-      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.success, j: j }; }); })
-      .then(function (res) {
-        if (res.ok) {
-          form.style.display = 'none';
-          done.classList.add('show');
-          done.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else { throw new Error((res.j && res.j.message) || 'Failed'); }
-      })
-      .catch(function () {
-        btn.disabled = false;
-        msg.className = 'form-msg err';
-        msg.textContent = 'Something went wrong. Please try again, or message us on Instagram @chidaobaculture.';
-      });
-  });
-})();
-
-// Culture page: chapter highlight + click-to-load video
-(function () {
-  var links = document.querySelectorAll('.chapters a');
-  if (links.length && 'IntersectionObserver' in window) {
-    var map = {};
-    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) {
-          links.forEach(function (a) { a.classList.remove('on'); });
-          var a = map[en.target.id]; if (a) { a.classList.add('on'); var w = a.parentNode; w.scrollTo({ left: a.offsetLeft - 40, behavior: 'smooth' }); }
-        }
-      });
-    }, { rootMargin: '-40% 0px -55% 0px' });
-    Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
-  }
-  document.querySelectorAll('.video button[data-yt]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var f = document.createElement('iframe');
-      f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.yt + '?autoplay=1&rel=0';
-      f.title = b.getAttribute('aria-label') || 'Video';
-      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-      f.allowFullscreen = true;
-      b.parentNode.replaceChild(f, b);
-    });
-  });
-})();
-
-// Culture v3 motion: load reveal, word scrub, staggers, parallax, counters
-(function () {
-  var root = document.querySelector('.cx');
-  if (!root) return;
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  requestAnimationFrame(function () { document.body.classList.add('loaded'); });
-
-  // split scrub paragraphs into words
+  // ---------- word scrub (split into words) ----------
   var scrubs = [].slice.call(document.querySelectorAll('.scrub'));
   scrubs.forEach(function (el) {
-    var words = el.textContent.trim().split(/\s+/);
-    el.setAttribute('aria-label', el.textContent.trim());
-    el.innerHTML = words.map(function (w) { return '<span class="w" aria-hidden="true">' + w + '</span>'; }).join(' ');
+    var text = el.textContent.trim();
+    el.setAttribute('aria-label', text);
+    el.innerHTML = text.split(/\s+/).map(function (w) { return '<span class="w" aria-hidden="true">' + w + '</span>'; }).join(' ');
   });
 
-  // stagger groups & discipline list use IntersectionObserver
-  var groups = document.querySelectorAll('.stagger, .disc');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); count(e.target); } });
-    }, { rootMargin: '0px 0px -12% 0px' });
-    groups.forEach(function (g) { io.observe(g); });
-  } else { groups.forEach(function (g) { g.classList.add('in'); }); }
-
+  // ---------- reveal / stagger / counters ----------
   function count(scope) {
     scope.querySelectorAll('[data-count]').forEach(function (el) {
       var end = +el.dataset.count, pre = el.dataset.pre || '', start = +(el.dataset.from || 0);
       if (reduce) { el.textContent = pre + end; return; }
-      var t0 = null, dur = 1400;
-      function step(t) { if (!t0) t0 = t; var p = Math.min(1, (t - t0) / dur); p = 1 - Math.pow(1 - p, 3);
+      var t0 = null;
+      function step(t) { if (!t0) t0 = t; var p = Math.min(1, (t - t0) / 1400); p = 1 - Math.pow(1 - p, 3);
         el.textContent = pre + Math.round(start + (end - start) * p); if (p < 1) requestAnimationFrame(step); }
       requestAnimationFrame(step);
     });
   }
-
-  if (reduce) { document.querySelectorAll('.scrub .w').forEach(function (w) { w.classList.add('on'); }); return; }
-
-  var ghost = document.querySelector('.ghost-word'), why = document.querySelector('.why-word');
-  var ticking = false;
-  function frame() {
-    ticking = false;
-    var vh = window.innerHeight;
-    scrubs.forEach(function (el) {
-      var r = el.getBoundingClientRect();
-      var p = (vh * 0.82 - r.top) / (r.height + vh * 0.3);
-      p = Math.max(0, Math.min(1, p));
-      var ws = el.children, n = Math.round(p * ws.length);
-      for (var i = 0; i < ws.length; i++) ws[i].classList.toggle('on', i < n);
-    });
-    if (ghost) ghost.style.transform = 'translateY(' + (window.scrollY * 0.18) + 'px)';
-    if (why) {
-      var r2 = why.getBoundingClientRect();
-      var q = (vh - r2.top) / (vh + r2.height);
-      why.style.transform = 'translateX(' + ((0.5 - q) * 30) + '%)';
-    }
+  var watch = document.querySelectorAll('.reveal, .stagger, .disc');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); count(e.target); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    watch.forEach(function (el) { io.observe(el); });
+  } else {
+    watch.forEach(function (el) { el.classList.add('in'); count(el); });
   }
-  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  frame();
+
+  // ---------- scroll-linked: scrub words, parallax ----------
+  var ghost = document.querySelector('.ghost-word'), why = document.querySelector('.why-word');
+  if (reduce) {
+    document.querySelectorAll('.scrub .w').forEach(function (w) { w.classList.add('on'); });
+  } else {
+    var ticking = false;
+    var frame = function () {
+      ticking = false;
+      var vh = window.innerHeight;
+      scrubs.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        var p = Math.max(0, Math.min(1, (vh * 0.82 - r.top) / (r.height + vh * 0.3)));
+        var ws = el.children, n = Math.round(p * ws.length);
+        for (var i = 0; i < ws.length; i++) ws[i].classList.toggle('on', i < n);
+      });
+      if (ghost) ghost.style.transform = 'translateY(' + (window.scrollY * 0.18) + 'px)';
+      if (why) {
+        var r2 = why.getBoundingClientRect();
+        why.style.transform = 'translateX(' + ((0.5 - (vh - r2.top) / (vh + r2.height)) * 30) + '%)';
+      }
+    };
+    var onScroll = function () { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    frame();
+  }
+
+  // ---------- culture chapters (if present) ----------
+  var links = document.querySelectorAll('.chapters a');
+  if (links.length && 'IntersectionObserver' in window) {
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var cio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        links.forEach(function (a) { a.classList.remove('on'); });
+        var a = map[en.target.id]; if (a) { a.classList.add('on'); a.parentNode.scrollTo({ left: a.offsetLeft - 40, behavior: 'smooth' }); }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (el) cio.observe(el); });
+  }
+
+  // ---------- forms: Web3Forms when a key is set, otherwise open the visitor's email app ----------
+  document.querySelectorAll('form.js-form').forEach(function (form) {
+    var msg = form.querySelector('.form-msg');
+    var btn = form.querySelector('button[type="submit"]');
+    var done = form.dataset.done ? document.getElementById(form.dataset.done) : null;
+    function say(t, cls) { if (msg) { msg.className = 'form-msg' + (cls ? ' ' + cls : ''); msg.textContent = t; } }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      var data = new FormData(form);
+      if (data.get('botcheck')) return;
+      // join multi-value fields
+      var multi = {};
+      form.querySelectorAll('input[type="checkbox"][name]').forEach(function (c) {
+        if (c.name !== 'consent' && c.name !== 'botcheck') multi[c.name] = true;
+      });
+      Object.keys(multi).forEach(function (n) { var v = data.getAll(n); data.delete(n); data.append(n, v.join(', ') || '—'); });
+      var subject = data.get('subject') || 'Message from chidaoba.com';
+      var key = form.dataset.key;
+      if (!key) {
+        var lines = [];
+        data.forEach(function (v, k) { if (['subject', 'from_name', 'botcheck', 'access_key'].indexOf(k) < 0 && v) lines.push(k.replace(/_/g, ' ') + ': ' + v); });
+        window.location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
+        say('Your email app should open with the message ready — just press send. If nothing happens, email us at ' + EMAIL + '.', 'ok');
+        return;
+      }
+      data.append('access_key', key);
+      btn.disabled = true; say('Sending…');
+      fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Accept': 'application/json' }, body: data })
+        .then(function (r) { return r.json().then(function (j) { return r.ok && j.success; }); })
+        .then(function (ok) {
+          if (!ok) throw new Error('failed');
+          if (done) { form.style.display = 'none'; done.classList.add('show'); done.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+          else { form.reset(); btn.disabled = false; say(form.dataset.okText || 'Thank you — received.', 'ok'); }
+        })
+        .catch(function () { btn.disabled = false; say('Something went wrong. Please try again, or email ' + EMAIL + '.', 'err'); });
+    });
+  });
 })();
