@@ -62,3 +62,31 @@
       });
   });
 })();
+
+// Culture page: chapter highlight + click-to-load video
+(function () {
+  var links = document.querySelectorAll('.chapters a');
+  if (links.length && 'IntersectionObserver' in window) {
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          links.forEach(function (a) { a.classList.remove('on'); });
+          var a = map[en.target.id]; if (a) { a.classList.add('on'); var w = a.parentNode; w.scrollTo({ left: a.offsetLeft - 40, behavior: 'smooth' }); }
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
+  }
+  document.querySelectorAll('.video button[data-yt]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.yt + '?autoplay=1&rel=0';
+      f.title = b.getAttribute('aria-label') || 'Video';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      b.parentNode.replaceChild(f, b);
+    });
+  });
+})();
