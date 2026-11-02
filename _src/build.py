@@ -229,7 +229,7 @@ def home():
       <div class="reveal">
         <p class="label muted"><span class="bar"></span>05 · Apparel</p>
         <h2 id="drop-title" class="display h-lg">Drop 01<span class="dot">.</span></h2>
-        <p class="lead soft">The first collection is in development: heavyweight tees, hoodies, shorts and rashguards, made to be trained in.</p>
+        <p class="lead soft">Fight wear, gis and kimonos, gear and everyday pieces. The first collection is in development. Tell us what you want first.</p>
         <a class="btn btn-primary" href="/shop/" style="align-self:start">Explore collection {arrow()}</a>
       </div>
     </div>
@@ -516,12 +516,85 @@ def journal():
                  "The first stories are being written<span class=\"dot\">.</span>",
                  ["Heritage", "Technique", "Training", "Interviews", "Athletes", "Events", "Culture", "News"], ig_btn())
 
+SHOP = [
+  ("fightwear", "Fight wear", "Made for rolling, scrambling and hard rounds.", [
+    ("Rashguards", "Long and short sleeve. Tight fit, flatlock seams, colours that last.", "BJJ · Grappling"),
+    ("Fight shorts", "Stretch panels, no pockets, a waistband that stays put.", "BJJ · Grappling"),
+    ("Spats", "Compression leggings for no-gi and wrestling.", "No-gi · Wrestling"),
+    ("Wrestling singlets", "Classic cut, competition ready, in red and carbon.", "Freestyle · Greco-Roman"),
+  ]),
+  ("gis", "Gis &amp; kimonos", "Heavyweight cloth, reinforced where it counts.", [
+    ("BJJ gi", "Pearl weave jacket, ripstop pants, clean CHIDAOBA marks.", "BJJ"),
+    ("Judo kimono", "Double weave judogi for training and randori.", "Judo"),
+    ("Belts", "Rank belts for BJJ and judo.", "BJJ · Judo"),
+  ]),
+  ("gear", "Gear", "Everything that goes in the bag, and the bag.", [
+    ("Gear bags", "Duffels and backpacks with a separate wet compartment.", "All disciplines"),
+    ("Headgear", "Ear guards to save your ears from the mat.", "Wrestling · Grappling"),
+    ("Mouthguards", "Boil and bite, with a case.", "All disciplines"),
+    ("Knee pads", "Low profile pads for shots and scrambles.", "Wrestling"),
+    ("Wrestling shoes", "Light, grippy, ankle support.", "Wrestling"),
+    ("Tape", "Finger and joint tape for the grip fighters.", "All disciplines"),
+  ]),
+  ("lifestyle", "Lifestyle", "The culture off the mat.", [
+    ("Hoodies", "Heavy cotton, relaxed fit, ჭ on the chest.", "Everyday"),
+    ("T-shirts", "Heavyweight tees in carbon, chalk and red.", "Everyday"),
+    ("Sweatshirts", "Crewnecks for travel days and cold gyms.", "Everyday"),
+    ("Track pants", "Tapered joggers to wear to and from training.", "Everyday"),
+    ("Caps &amp; beanies", "Embroidered ჭ, nothing loud.", "Everyday"),
+    ("Tote bags", "Heavy canvas for the gym or the market.", "Everyday"),
+  ]),
+]
+
 def shop():
-    return inner("Shop", "Drop 01<span class=\"dot\">.</span>",
-                 "Premium training apparel and everyday sports culture pieces, made to be trained in.",
-                 "The first collection is in development<span class=\"dot\">.</span>",
-                 ["T-shirts", "Hoodies", "Rashguards", "Training shorts", "Accessories", "Limited collections"],
-                 ig_btn("Get notified on Instagram"))
+    nav = "".join(f'<a href="#{k}"><b>0{i+1}</b>{t}</a>' for i,(k,t,_,_) in enumerate(SHOP))
+    depts = ""
+    for i,(k,t,sub,items) in enumerate(SHOP):
+        tiles = "".join(f"""<article class="ptile">
+          <div class="ptile-art" aria-hidden="true">{sym_svg("")}<span>0{i+1}.{j+1}</span></div>
+          <div class="ptile-body"><p class="ptile-tag">{tag}</p><h3>{n}</h3><p>{d}</p>
+          <span class="ptile-soon">Coming soon</span></div></article>""" for j,(n,d,tag) in enumerate(items))
+        depts += f"""<section class="dept section {'light' if i%2==0 else 'alt'}" id="{k}"><div class="wrap">
+      <div class="dept-head reveal"><span class="dept-num">0{i+1}</span><div><h2 class="display h-lg">{t}</h2><p class="lead">{sub}</p></div></div>
+      <div class="pgrid stagger">{tiles}</div></div></section>"""
+    cats = "".join(f'<label><input type="checkbox" name="wants" value="{n}"><span>{n}</span></label>' for _,_,_,items in SHOP for n,_,_ in items)
+    sizes = "".join(f'<label><input type="checkbox" name="sizes" value="{z}"><span>{z}</span></label>' for z in ["XS","S","M","L","XL","XXL","A0","A1","A2","A3","A4"])
+    return f"""
+<section class="page-hero dark">
+  {sym_svg("ghost")}
+  <div class="wrap" style="position:relative">
+    <p class="label muted fade-load"><span class="bar"></span>Shop · Drop 01 in development</p>
+    <h1 class="display h-xl"><span class="ln"><span>Built for</span></span><span class="ln"><span>the mat</span></span></h1>
+    <p class="lead soft fade-load">Fight wear, gis, gear and everyday pieces for wrestlers, grapplers and judoka. Designed in Tbilisi.</p>
+    <nav class="shop-nav fade-load" aria-label="Shop sections">{nav}</nav>
+  </div>
+</section>
+{depts}
+<section class="section dark" id="request"><div class="wrap reg">
+  <div class="reg-intro">
+    <p class="label muted"><span class="bar"></span>Shape Drop 01</p>
+    <h2 class="display h-lg">Tell us what you want first</h2>
+    <p class="body soft">Pick what you would buy and your size. The most wanted pieces get made first, and everyone on this list gets early access and launch pricing.</p>
+  </div>
+  <form class="js-form" data-key="{WEB3FORMS_KEY}" data-done="shop-done" data-multi="wants,sizes" novalidate>
+    <input type="hidden" name="subject" value="Shop interest, chidaoba.com">
+    <input type="hidden" name="from_name" value="chidaoba.com">
+    <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <fieldset class="field full"><legend>I would buy</legend><div class="checks">{cats}</div></fieldset>
+    <fieldset class="field full"><legend>My size <em>gi sizes A0 to A4</em></legend><div class="checks">{sizes}</div></fieldset>
+    <div class="field"><label for="s-name">Name</label><input id="s-name" name="name" autocomplete="name" required></div>
+    <div class="field"><label for="s-email">Email</label><input id="s-email" name="email" type="email" autocomplete="email" required></div>
+    <div class="field full"><label for="s-msg">Anything else <em>optional</em></label><textarea id="s-msg" name="message" placeholder="Colours, fits, a piece we missed..."></textarea></div>
+    <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>Email me when Drop 01 is ready. See the <a href="/privacy/">privacy notice</a>.</span></label>
+    <div class="form-foot"><button class="btn btn-primary" type="submit">Join the drop list {arrow()}</button><p class="form-msg" aria-live="polite"></p></div>
+  </form>
+  <div class="done" id="shop-done" role="status">
+    <p class="label muted"><span class="bar"></span>You are on the list</p>
+    <h3 class="display h-md">Thank you</h3>
+    <p class="body soft">We will email you before Drop 01 goes live. Follow <a href="{IG}" rel="noopener">{IG_HANDLE}</a> for first looks.</p>
+  </div>
+</div></section>
+"""
 
 def privacy():
     return f"""
@@ -612,7 +685,7 @@ PAGES = [
      "Athletes, coaches and clubs of Georgian wrestling and grappling.", community),
     ("/journal/", "journal/index.html", "Journal | CHIDAOBA CULTURE",
      "Stories on Georgian wrestling heritage, technique, training and the people behind it.", journal),
-    ("/shop/", "shop/index.html", "Shop | CHIDAOBA CULTURE", "Drop 01: premium training apparel from CHIDAOBA CULTURE.", shop),
+    ("/shop/", "shop/index.html", "Shop | CHIDAOBA CULTURE", "Rashguards, fight shorts, singlets, BJJ gis, judo kimonos, gear and lifestyle pieces from CHIDAOBA CULTURE.", shop),
     ("/contact/", "contact/index.html", "Contact | CHIDAOBA CULTURE",
      "Contact CHIDAOBA CULTURE: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
     ("/privacy/", "privacy/index.html", "Privacy | CHIDAOBA CULTURE", "Privacy information for chidaoba.com.", privacy),
