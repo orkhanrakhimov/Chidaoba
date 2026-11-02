@@ -138,3 +138,12 @@
     });
   });
 })();
+
+// footer: live Tbilisi time
+(function () {
+  var el = document.querySelector('[data-tbilisi-time]'); if (!el) return;
+  function tick() {
+    try { el.textContent = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tbilisi' }).format(new Date()) + ' local time, GMT+4'; } catch (e) { }
+  }
+  tick(); setInterval(tick, 30000);
+})();

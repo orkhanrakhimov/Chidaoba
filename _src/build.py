@@ -52,7 +52,7 @@ def head(title, desc, path):
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Noto+Sans+Georgian:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
 </head>
-<body>
+<body id="top">
 <a class="skip" href="#main">Skip to content</a>
 """
 
@@ -87,29 +87,37 @@ def newsletter_form(where):
       <p class="news-sub">Camps, events, new releases and stories. A few times a year.</p>
       <div class="news-row"><input id="nl-{where}" name="email" type="email" autocomplete="email" placeholder="Your email" required>
       <button class="btn btn-primary" type="submit">Subscribe</button></div>
-      <label class="news-consent"><input type="checkbox" name="consent" value="yes" required> I agree to receive emails and accept the <a href="/privacy/">privacy notice</a>.</label>
+      <label class="news-consent"><input type="checkbox" name="consent" value="yes" required><span>I agree to receive emails and accept the <a href="/privacy/">privacy notice</a>.</span></label>
       <p class="form-msg" aria-live="polite"></p>
     </form>"""
 
 def footer(path=""):
-    return f"""<footer class="site-foot">
-  <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <img src="/assets/img/lockup-chalk.svg" alt="CHIDAOBA CULTURE" width="400" height="40">
-        <p class="body soft" style="margin-top:24px;max-width:26em">Georgian wrestling heritage, expressed through modern sports culture. Tbilisi, Georgia.</p>
-        {'' if path == '/' else newsletter_form('foot')}
+    cta = "" if path in ("/camps/", "/admin/") else f"""
+    <div class="foot-cta">
+      <h2 class="display">Train with us<br>in Georgia</h2>
+      <div class="foot-cta-btns">
+        <a class="btn btn-primary" href="/camps/">See camps {arrow()}</a>
+        <a class="btn btn-ghost" href="{WA}" rel="noopener">WhatsApp us {arrow()}</a>
       </div>
-      <div><h3>Explore</h3><ul>
+    </div>"""
+    news = "" if path == "/" else f'<div class="foot-news">{newsletter_form("foot")}</div>'
+    return f"""<footer class="site-foot">
+  <div class="wrap">{cta}
+    <div class="foot-grid">
+      {news}
+      <nav class="foot-col" aria-label="Explore"><h3>Explore</h3><ul>
         <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
-        <li><a href="/georgia/">Why Georgia</a></li><li><a href="/community/">Community</a></li><li><a href="/journal/">Journal</a></li><li><a href="/shop/">Shop</a></li></ul></div>
-      <div><h3>Brand</h3><ul>
-        <li><a href="/culture/">About</a></li><li><a href="/contact/">Contact</a></li>
-        <li><a href="mailto:{EMAIL}">{EMAIL}</a></li><li><a href="{WA}" rel="noopener">WhatsApp</a></li>
-        <li><a href="{IG}" rel="noopener">Instagram</a></li></ul></div>
-      <div><h3>Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
+        <li><a href="/georgia/">Why Georgia</a></li><li><a href="/community/">Community</a></li><li><a href="/journal/">Journal</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
+      <div class="foot-col"><h3>Connect</h3><ul>
+        <li><a href="{WA}" rel="noopener">WhatsApp</a></li><li><a href="{IG}" rel="noopener">Instagram</a></li>
+        <li><a href="/contact/">Contact</a></li><li><a href="mailto:{EMAIL}">Email us</a></li></ul></div>
+      <div class="foot-col"><h3>Based in</h3><p class="foot-addr">Tbilisi, Georgia<br><span class="foot-time" data-tbilisi-time>GMT+4</span></p>
+        <h3 style="margin-top:28px">Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
     </div>
-    <div class="foot-bottom label"><span>© <span data-year>2026</span> Chidaoba Culture</span><span>A culture that moves<span class="dot">.</span></span></div>
+  </div>
+  <div class="foot-mark" aria-hidden="true"><svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet"><text x="0" y="128" textLength="1000" lengthAdjust="spacingAndGlyphs">CHIDAOBA</text></svg></div>
+  <div class="wrap">
+    <div class="foot-bottom label"><span>© <span data-year>2026</span> Chidaoba Culture</span><span class="ka">ჭიდაობა · A culture that moves</span><a class="foot-top" href="#top">Back to top ↑</a></div>
   </div>
 </footer>
 <a class="wa-float" href="{WA}" rel="noopener" aria-label="Message us on WhatsApp">{WA_ICON}<span>WhatsApp</span></a>
@@ -118,7 +126,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "10"
+ASSET_V = "11"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
