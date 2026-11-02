@@ -118,10 +118,11 @@ def footer(path=""):
 </html>
 """
 
+ASSET_V = "3"
 EXTRA_JS = {"/camps/": ["config", "data", "camps"], "/camps/camp/": ["config", "data", "camps"], "/admin/": ["config", "data", "admin"]}
 
 def page(path, title, desc, main):
-    js = "".join(f'<script src="/assets/js/{n}.js" defer></script>' for n in EXTRA_JS.get(path, []))
+    js = "".join(f'<script src="/assets/js/{n}.js?v={ASSET_V}" defer></script>' for n in EXTRA_JS.get(path, []))
     out = head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
     if path == "/admin/":
         out = head(title, desc, path).replace('<meta name="viewport"', '<meta name="robots" content="noindex,nofollow">\n<meta name="viewport"') + f'<main id="admin" class="adm"></main>' + '<script src="/assets/js/site.js" defer></script></body></html>'
