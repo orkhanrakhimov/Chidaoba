@@ -52,6 +52,7 @@
   }
 
   // ---------- scroll-linked: scrub words, parallax ----------
+  var pars = [].slice.call(document.querySelectorAll('[data-par]'));
   var ghost = document.querySelector('.ghost-word'), why = document.querySelector('.why-word');
   if (reduce) {
     document.querySelectorAll('.scrub .w').forEach(function (w) { w.classList.add('on'); });
@@ -65,6 +66,11 @@
         var p = Math.max(0, Math.min(1, (vh * 0.82 - r.top) / (r.height + vh * 0.3)));
         var ws = el.children, n = Math.round(p * ws.length);
         for (var i = 0; i < ws.length; i++) ws[i].classList.toggle('on', i < n);
+      });
+      pars.forEach(function (im) {
+        var r3 = im.parentNode.getBoundingClientRect();
+        if (r3.bottom < 0 || r3.top > vh) return;
+        im.style.transform = 'translateY(' + (((r3.top + r3.height / 2) - vh / 2) / vh * -10) + '%)';
       });
       if (ghost) ghost.style.transform = 'translateY(' + (window.scrollY * 0.18) + 'px)';
       if (why) {

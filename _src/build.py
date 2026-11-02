@@ -18,7 +18,7 @@ WA = "https://wa.me/" + WA_NUM + "?text=" + "Hi%20CHIDAOBA%2C%20"
 UNESCO = "https://ich.unesco.org/en/RL/chidaoba-wrestling-in-georgia-01371"
 
 NAV = [("/", "Home"), ("/culture/", "Culture"), ("/camps/", "Camps &amp; Events"),
-       ("/community/", "Community"), ("/journal/", "Journal"), ("/shop/", "Shop")]
+       ("/georgia/", "Why Georgia"), ("/community/", "Community"), ("/journal/", "Journal"), ("/shop/", "Shop")]
 
 def sym_svg(cls, extra=""):
     return f'<svg class="{cls}" viewBox="130 10 670 940" aria-hidden="true" focusable="false"{extra}><path d="{SYM}" fill-rule="evenodd"/></svg>'
@@ -102,7 +102,7 @@ def footer(path=""):
       </div>
       <div><h3>Explore</h3><ul>
         <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
-        <li><a href="/community/">Community</a></li><li><a href="/journal/">Journal</a></li><li><a href="/shop/">Shop</a></li></ul></div>
+        <li><a href="/georgia/">Why Georgia</a></li><li><a href="/community/">Community</a></li><li><a href="/journal/">Journal</a></li><li><a href="/shop/">Shop</a></li></ul></div>
       <div><h3>Brand</h3><ul>
         <li><a href="/culture/">About</a></li><li><a href="/contact/">Contact</a></li>
         <li><a href="mailto:{EMAIL}">{EMAIL}</a></li><li><a href="{WA}" rel="noopener">WhatsApp</a></li>
@@ -118,7 +118,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "9"
+ASSET_V = "10"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"]}
 
 def page(path, title, desc, main):
@@ -438,6 +438,7 @@ def camps():
     <p class="label muted fade-load"><span class="bar"></span>Camps &amp; Events</p>
     <h1 class="display h-xl"><span class="ln"><span>Train. Connect.</span></span><span class="ln"><span>Experience<span class="dot">.</span></span></span></h1>
     <p class="lead soft fade-load">Training camps in Georgia for BJJ &amp; grappling, freestyle &amp; Greco-Roman wrestling and judo, with local coaches, and the culture around the mat.</p>
+    <a class="hero-story fade-load" href="/georgia/" style="margin-top:22px">Why train in Georgia {arrow()}</a>
   </div>
 </section>
 
@@ -516,6 +517,182 @@ def journal():
                  "Heritage, technique, training, interviews and the people behind Georgian wrestling and grappling.",
                  "The first stories are being written<span class=\"dot\">.</span>",
                  ["Heritage", "Technique", "Training", "Interviews", "Athletes", "Events", "Culture", "News"], ig_btn())
+
+def georgia():
+    roots = [
+        "In Georgia, wrestling is not a hobby. It is part of who people are.",
+        "For centuries, Chidaoba prepared men for battle. Later it moved into village squares, with music, big crowds and a code of honour.",
+        "Today there is a wrestling section in almost every village and city. Kids grow up on the mat, and the whole street knows who won on Sunday.",
+        "You are not visiting a sport here. You are stepping into a culture that has been training for generations.",
+    ]
+    rt = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p></div>' for i, t in enumerate(roots))
+    chapters = [("roots", "Roots"), ("champions", "Champions"), ("newwave", "New wave"), ("land", "The land"),
+                ("table", "The table"), ("people", "The people"), ("know", "Good to know")]
+    ch = "".join(f'<a href="#{k}"><b>{i+1:02d}</b> {t}</a>' for i, (k, t) in enumerate(chapters))
+    day = [("07:30", "Breakfast with a view of the Caucasus"), ("09:00", "Morning session: technique and drilling"),
+           ("12:30", "Long Georgian lunch"), ("14:00", "Rest, swim, or walk to the old towers"),
+           ("17:30", "Evening session: sparring and live rounds"), ("20:30", "Supra: dinner, toasts and stories")]
+    dl = "".join(f'<li><span>{t}</span><b>{x}</b></li>' for t, x in day)
+    food = [("Khinkali", "Twisted dumplings full of spiced meat and broth. Hold the top, bite, sip, eat. Never use a fork."),
+            ("Khachapuri", "Bread and melted cheese, in a different shape in every region. The Adjarian one comes with an egg and butter on top."),
+            ("Mtsvadi", "Meat grilled over vine branches. Simple, smoky, and exactly what you want after two sessions."),
+            ("Pkhali &amp; badrijani", "Vegetables with walnut paste and herbs, and fried aubergine rolls. Georgian food is not only meat."),
+            ("Lobio", "Slow cooked beans in a clay pot, served with cornbread and pickles."),
+            ("Churchkhela", "Walnuts dipped in thickened grape juice and dried. Georgia's original energy bar.")]
+    fd = "".join(f'<div class="food"><h3>{n}</h3><p>{d}</p></div>' for n, d in food)
+    know = [("Visa", "Citizens of many countries, including the EU, UK and US, can stay without a visa for up to a year. Check the rules for your passport before you book."),
+            ("Flights", "International airports in Tbilisi, Kutaisi and Batumi, with direct routes from across Europe and the Middle East."),
+            ("Money", "The Georgian lari (GEL). Cards work almost everywhere in cities. Bring some cash for villages and markets."),
+            ("Language", "Georgian, with its own alphabet. Many young people speak English, and our team is with you the whole camp."),
+            ("Best time", "Late spring to early autumn for mountain camps. Tbilisi works all year."),
+            ("Time zone", "GMT+4, all year round.")]
+    kn = "".join(f'<div><b>{t}</b><p>{d}</p></div>' for t, d in know)
+    return f"""
+<div class="cx gx">
+<section class="cx-hero dark" aria-labelledby="g-title">
+  <div class="ghost-word" aria-hidden="true">ჭ</div>
+  <div class="wrap">
+    <p class="label muted fade-load"><span class="bar"></span>Why Georgia · <span class="ka">საქართველო</span></p>
+    <h1 id="g-title" class="display"><span class="ln"><span>Come train</span></span><span class="ln"><span>where it</span></span><span class="ln"><span>runs deep</span></span></h1>
+    <p class="lead soft fade-load">Mountains above the mat, the Black Sea a few hours away, a table that never ends, and a country where everyone knows somebody who wrestles. This is what a camp in Georgia feels like.</p>
+    <div class="cx-hero-foot fade-load">
+      <span class="label muted">A small country with a very big grip</span>
+      <span class="label muted scroll-cue"><i></i>Scroll</span>
+    </div>
+  </div>
+</section>
+
+<nav class="chapters" aria-label="Chapters"><div class="wrap">{ch}</div></nav>
+
+<section class="story dark" id="roots" aria-labelledby="roots-title">
+  <div class="wrap">
+    <p class="label muted" id="roots-title"><span class="bar"></span>01 · Roots</p>
+    <div class="scrub-list">{rt}</div>
+  </div>
+</section>
+
+<section class="section light" id="champions" aria-labelledby="champ-title">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:48px">
+      <p class="label"><span class="bar"></span>02 · Champions</p>
+      <h2 id="champ-title" class="display h-lg">Pound for pound, a grappling superpower</h2>
+      <p class="body muted">Around 3.5 million people live in Georgia, fewer than in many single cities. Their results on the mat look like those of a country ten times bigger.</p>
+    </div>
+    <div class="details stagger">
+      <div><b data-count="7">7</b><p>Olympic medals at Paris 2024, Georgia's best Games as an independent country. Judo and wrestling led the way.</p></div>
+      <div><b data-count="2025" data-from="1990">2025</b><p>World mixed team judo champions for the first time, ending Japan's run of seven straight titles.</p></div>
+      <div><b data-count="23">23</b><p>World wrestling medals per million people, second only to Bulgaria in the all-time per capita ranking.</p></div>
+      <div><b>×2</b><p>Lasha Bekauri, Olympic judo champion in Tokyo and again in Paris. Geno Petriashvili took freestyle gold at 125 kg in Paris.</p></div>
+    </div>
+    <p class="body muted gx-note">Even in the Soviet years, Georgian judoka won more medals for the USSR than any other republic. In 2026 Tbilisi hosted the European Judo Championships, and Georgia topped the table with four golds.</p>
+  </div>
+</section>
+
+<section class="section dark" id="newwave" aria-labelledby="nw-title">
+  <div class="wrap gx-split">
+    <div class="stagger">
+      <p class="label muted"><span class="bar"></span>03 · The new wave</p>
+      <h2 id="nw-title" class="display h-lg">And now, everybody rolls</h2>
+    </div>
+    <div class="stagger">
+      <p class="lead soft">Brazilian jiu-jitsu and no-gi grappling are spreading fast in Georgia. New academies keep opening across Tbilisi, international tournaments now come to the city, and the mats are full of people who grew up wrestling or doing judo.</p>
+      <p class="body soft">That mix is what makes training here special. Your partner might be a BJJ blue belt, a former Greco-Roman wrestler or a judoka with a national medal. Expect strong grips, real takedowns and rounds that test you.</p>
+      <ul class="chips gx-chips"><li>BJJ</li><li>No-gi</li><li>Freestyle</li><li>Greco-Roman</li><li>Judo</li><li>Chidaoba</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="gx-band" aria-hidden="true"><img src="/assets/venues/mulakhi/summer-terrace-pool.jpg" alt="" loading="lazy" data-par></section>
+
+<section class="section light" id="land" aria-labelledby="land-title">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:48px">
+      <p class="label"><span class="bar"></span>04 · The land</p>
+      <h2 id="land-title" class="display h-lg">The perfect place to sweat</h2>
+      <p class="body muted">Georgia packs a whole continent into a small map. You can train in the mountains in the morning and be near the sea a day later.</p>
+    </div>
+    <div class="pillars stagger gx-land">
+      <div><b>The mountains</b><p>The Greater Caucasus runs along the north, with peaks above 5,000 m. In Svaneti, medieval stone towers stand over villages, and the air is cool even in July. It is altitude training without trying.</p></div>
+      <div><b>The sea</b><p>The Black Sea coast around Batumi brings warm water, beaches and subtropical green. Perfect for a recovery day, or for staying on after camp.</p></div>
+      <div><b>The seasons</b><p>Hot, sunny summers in the lowlands, mild springs and golden autumns, and real snow in the mountains in winter. Camps run when the weather is at its best.</p></div>
+    </div>
+    <div class="gx-day reveal">
+      <p class="label"><span class="bar"></span>A camp day in the mountains</p>
+      <ol>{dl}</ol>
+    </div>
+  </div>
+</section>
+
+<section class="section dark why" id="table" aria-labelledby="table-title">
+  <div class="why-word" aria-hidden="true">სუფრა<span class="eq">=</span><span class="tr">Supra</span></div>
+  <div class="wrap">
+    <div class="why-grid">
+      <h2 id="table-title" class="display h-lg stagger"><span>A table that never ends</span></h2>
+      <div class="text stagger">
+        <p class="label muted"><span class="bar"></span>05 · The table</p>
+        <p class="lead soft">A Georgian feast is called a supra. Plates are stacked on plates, a tamada leads the toasts, and dinner can last longer than your sparring session.</p>
+        <p class="body soft">Georgia is also where wine began. Archaeologists found traces of winemaking around 8,000 years old near Tbilisi, and families still make it in clay qvevri buried in the ground, a method UNESCO lists as heritage of humanity.</p>
+      </div>
+    </div>
+    <div class="foods stagger">{fd}</div>
+  </div>
+</section>
+
+<section class="section light" id="people" aria-labelledby="people-title">
+  <div class="wrap gx-split">
+    <div class="stagger">
+      <p class="label"><span class="bar"></span>06 · The people</p>
+      <h2 id="people-title" class="display h-lg">A guest is a gift</h2>
+    </div>
+    <div class="stagger">
+      <p class="lead">There is an old Georgian saying: a guest is a gift from God. You will feel it at the table, in the gym and on the street.</p>
+      <p class="body muted">People are proud of their country and love to share it. Someone will invite you home, someone will pour you one more glass, and someone will start singing. Georgian polyphonic singing is on UNESCO's heritage list too, and you might hear it at your own supra.</p>
+      <p class="body muted">At CHIDAOBA camps you train together, eat together and travel together. Most people arrive as strangers and leave with a team.</p>
+    </div>
+  </div>
+</section>
+
+<section class="gx-band" aria-hidden="true"><img src="/assets/venues/mulakhi/summer-pitch.jpg" alt="" loading="lazy" data-par></section>
+
+<section class="section alt" id="know" aria-labelledby="know-title">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:40px">
+      <p class="label"><span class="bar"></span>07 · Good to know</p>
+      <h2 id="know-title" class="display h-md">Easy to get to, hard to leave</h2>
+    </div>
+    <div class="details gx-know stagger">{kn}</div>
+  </div>
+</section>
+
+<section class="cx-close dark" aria-labelledby="gclose-title">
+  <div class="wrap stagger">
+    <p class="label muted"><span class="bar"></span>გელოდებით · We are waiting for you</p>
+    <h2 id="gclose-title" class="display h-lg" style="margin-top:24px">Your camp starts here</h2>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:40px">
+      <a class="btn btn-primary" href="/camps/">See camps {arrow()}</a>
+      <a class="btn btn-ghost" href="{WA}" rel="noopener">Ask us on WhatsApp {arrow()}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section light sources" style="padding:64px 0">
+  <div class="wrap">
+    <p class="label"><span class="bar"></span>Sources</p>
+    <ol style="margin-top:24px">
+      <li><a href="{UNESCO}" rel="noopener">UNESCO: Chidaoba, wrestling in Georgia</a> (history, village sections).</li>
+      <li><a href="https://civil.ge/?p=620006" rel="noopener">Civil.ge: Georgia finishes Paris 2024 with seven medals</a>.</li>
+      <li><a href="https://1tv.ge/lang/en/news/judo-georgias-team-becomes-world-champion/" rel="noopener">1TV: Georgia's team becomes judo world champion</a> (Budapest 2025).</li>
+      <li><a href="https://www.mappr.co/?p=94596" rel="noopener">Mappr: World wrestling medals per capita</a> (UWW data, 1951 to 2025).</li>
+      <li><a href="https://www.olympedia.org/countries/GEO" rel="noopener">Olympedia: Georgia</a> (Soviet era judo medals).</li>
+      <li><a href="https://georgiatoday.ge/georgia-wins-4-golds-at-european-judo-championships/" rel="noopener">Georgia Today: Georgia wins 4 golds at the 2026 European Judo Championships</a>.</li>
+      <li><a href="https://www.rferl.org/a/earliest-evidence-grape-winemaking-found-ancient-jars-georgia-8000-years-ago/28852538.html" rel="noopener">RFE/RL: Earliest evidence of winemaking found in Georgia</a>.</li>
+      <li><a href="https://www.decanter.com/wine-news/georgian-winemaking-method-joins-unesco-heritage-list-30889" rel="noopener">Decanter: Qvevri winemaking joins the UNESCO list</a>.</li>
+    </ol>
+  </div>
+</section>
+</div>
+"""
+
 
 SHOP = [
   ("fightwear", "Fight wear", "Made for rolling, scrambling and hard rounds.", [
@@ -682,6 +859,8 @@ def contact():
 PAGES = [
     ("/", "index.html", "CHIDAOBA CULTURE | Rooted in heritage. Built for the future.",
      "Georgian wrestling heritage expressed through modern sports culture. Chidaoba, camps and events, community, journal and apparel, from Tbilisi, Georgia.", home),
+    ("/georgia/", "georgia/index.html", "Why Georgia | Train where grappling runs deep, CHIDAOBA CULTURE",
+     "Why train in Georgia: a wrestling culture centuries old, Olympic and world champions, booming BJJ, the Caucasus mountains, the Black Sea and the Georgian table.", georgia),
     ("/culture/", "culture/index.html", "Culture | Chidaoba and the CHIDAOBA brand",
      "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
     ("/camps/", "camps/index.html", "Camps & Events | CHIDAOBA CULTURE",
