@@ -645,3 +645,107 @@ insert into public.products (id, name, name_ka, description, description_ka, spo
   ('beanie', 'Beanie', 'ქუდი', 'Knitted beanie with embroidered logo.', 'ნაქსოვი ქუდი ნაქარგი ლოგოთი.', 'lifestyle', 'acc', 'all', array['One size']::text[], array['Black','Red']::text[], null, 'beanie', 400),
   ('tote-bag', 'Tote bag', 'ტილოს ჩანთა', 'Heavy canvas tote bag.', 'სქელი ტილოს ჩანთა.', 'lifestyle', 'acc', 'all', array['One size']::text[], array['Natural','Black']::text[], null, 'tote', 410)
 on conflict (id) do nothing;
+
+-- =====================================================================
+-- Update 006: instant "thank you" email for new email signups
+-- Sends through Resend (resend.com). Nothing is sent until you add your
+-- Resend key (step at the bottom). Safe to run again.
+-- =====================================================================
+create extension if not exists pg_net;
+
+-- who the email comes from (change if you like; the domain must be verified in Resend)
+create table if not exists public.mail_settings (
+  id        int primary key default 1 check (id = 1),
+  from_addr text not null default 'CHIDAOBA <hello@chidaoba.com>',
+  reply_to  text not null default 'chidaobaculture@gmail.com',
+  enabled   boolean not null default true
+);
+insert into public.mail_settings (id) values (1) on conflict (id) do nothing;
+alter table public.mail_settings enable row level security;
+revoke all on public.mail_settings from anon, authenticated;
+
+alter table public.subscribers add column if not exists welcomed_at timestamptz;
+
+-- the email text, in English or Georgian, based on what the person chose
+create or replace function public.welcome_email(s public.subscribers) returns jsonb
+language plpgsql stable set search_path = public as $$
+declare ka boolean := coalesce(s.lang, 'en') = 'ka';
+        i text[] := coalesce(s.interests, '{}');
+        sports text[] := '{}';
+        items text := '';
+        subj text; intro text; outro text; html text;
+begin
+  if 'bjj' = any(i) then sports := sports || (case when ka then 'BJJ' else 'BJJ' end); end if;
+  if 'wrestling' = any(i) then sports := sports || (case when ka then 'ჭიდაობა' else 'wrestling' end); end if;
+  if 'judo' = any(i) then sports := sports || (case when ka then 'ძიუდო' else 'judo' end); end if;
+
+  if 'camps' = any(i) or array_length(sports, 1) > 0 then
+    items := items || '<li>' || case when ka
+      then 'ახალი ბანაკების თარიღები' || coalesce(' (' || array_to_string(sports, ', ') || ')', '') || ', რეგისტრაციის გახსნამდე'
+      else 'New camp dates' || coalesce(' for ' || array_to_string(sports, ', '), '') || ', before registration opens to everyone' end || '</li>';
+  end if;
+  if 'shop' = any(i) then
+    items := items || '<li>' || case when ka then 'ახალი პროდუქცია და CHIDAOBA-ს მერჩი, სანამ საიტზე გამოჩნდება' else 'New products and CHIDAOBA merch, before they go on the site' end || '</li>';
+  end if;
+  if 'news' = any(i) or items = '' then
+    items := items || '<li>' || case when ka then 'ისტორიები ქართული ჭიდაობისა და მისი ადამიანების შესახებ' else 'Stories about Georgian wrestling and the people behind it' end || '</li>';
+  end if;
+
+  if ka then
+    subj  := 'მადლობა, რომ შემოგვიერთდით | CHIDAOBA';
+    intro := '<p>გამარჯობა,</p><p>მადლობა გამოწერისთვის. ახლა თქვენ CHIDAOBA-ს სიაში ხართ და პირველი გაიგებთ:</p>';
+    outro := '<p>წელიწადში მხოლოდ რამდენიმე წერილს ვგზავნით. კითხვა თუ გაქვთ, უბრალოდ უპასუხეთ ამ წერილს.</p>'
+          || '<p>გამოგვყევით Instagram-ზე: <a href="https://www.instagram.com/chidaobaculture/">@chidaobaculture</a></p>'
+          || '<p>CHIDAOBA-ს გუნდი</p>'
+          || '<p style="color:#8a8a85;font-size:12px">გამოწერის გასაუქმებლად უპასუხეთ სიტყვით „unsubscribe“.</p>';
+  else
+    subj  := 'Thanks for joining CHIDAOBA';
+    intro := '<p>Hi,</p><p>Thank you for signing up. You are now on the CHIDAOBA list, and you will be the first to hear about:</p>';
+    outro := '<p>We only write a few times a year. If you have a question, just reply to this email.</p>'
+          || '<p>Follow us on Instagram: <a href="https://www.instagram.com/chidaobaculture/">@chidaobaculture</a></p>'
+          || '<p>The CHIDAOBA team</p>'
+          || '<p style="color:#8a8a85;font-size:12px">To unsubscribe, reply with “unsubscribe”.</p>';
+  end if;
+
+  html := '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1e1e1e;max-width:560px">'
+       || '<p style="font-weight:700;letter-spacing:.12em">CHIDAOBA</p>' || intro
+       || '<ul style="padding-left:20px">' || items || '</ul>' || outro
+       || '<p><a href="https://chidaoba.com' || case when ka then '/ka/' else '/' end || '" style="color:#b5212f">chidaoba.com</a></p></div>';
+  return jsonb_build_object('subject', subj, 'html', html);
+end; $$;
+
+-- send it right after a new signup is saved
+create or replace function public.send_welcome() returns trigger
+language plpgsql security definer set search_path = public, extensions as $$
+declare k text; m public.mail_settings; e jsonb;
+begin
+  select * into m from public.mail_settings where id = 1;
+  if m is null or not m.enabled then return new; end if;
+  select decrypted_secret into k from vault.decrypted_secrets where name = 'resend_api_key' limit 1;
+  if k is null then return new; end if;                       -- no key yet: do nothing
+  -- simple protection against abuse: at most 60 welcome emails an hour
+  if (select count(*) from public.subscribers where welcomed_at > now() - interval '1 hour') >= 60 then return new; end if;
+  e := public.welcome_email(new);
+  perform net.http_post(
+    url := 'https://api.resend.com/emails',
+    headers := jsonb_build_object('Authorization', 'Bearer ' || k, 'Content-Type', 'application/json'),
+    body := jsonb_build_object('from', m.from_addr, 'to', jsonb_build_array(new.email), 'reply_to', m.reply_to,
+                               'subject', e->>'subject', 'html', e->>'html'));
+  update public.subscribers set welcomed_at = now() where id = new.id;
+  return new;
+exception when others then
+  return new;                                                  -- never block a signup because of email
+end; $$;
+
+drop trigger if exists subscribers_welcome on public.subscribers;
+create trigger subscribers_welcome after insert on public.subscribers for each row execute function public.send_welcome();
+
+-- =====================================================================
+-- LAST STEP (only once, after you have your Resend key):
+-- replace re_XXXX with your key, select just the line below and press Run.
+--
+--   select vault.create_secret('re_XXXX', 'resend_api_key');
+--
+-- To turn the email off later:  update public.mail_settings set enabled = false;
+-- To change the sender:          update public.mail_settings set from_addr = 'CHIDAOBA <hello@chidaoba.com>';
+-- =====================================================================
