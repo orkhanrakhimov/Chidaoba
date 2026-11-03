@@ -1645,3 +1645,5 @@ html[lang="ka"] .hero h1.h-xl{font-size:clamp(34px,5.4vw,84px);max-width:none}@m
 .vb-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .vb-b{height:10px;border-radius:999px;background:#eeebe4;overflow:hidden}.vb-b i{display:block;height:100%;background:var(--carbon);border-radius:999px}
 .vbars b{text-align:right}.vbars em{font-style:normal;color:var(--grey);font-size:12px;text-align:right}
+.camp-main,.camp-side{min-width:0}.cmp-wrap{max-width:100%;overflow-x:auto}
+@media (max-width:1000px){.camp-grid{grid-template-columns:minmax(0,1fr)!important}}.camp-main{grid-template-columns:minmax(0,1fr)}
