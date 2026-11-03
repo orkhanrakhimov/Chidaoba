@@ -410,3 +410,238 @@ alter table public.camps add column if not exists bring        jsonb not null de
 alter table public.camps add column if not exists reviews      jsonb not null default '[]'::jsonb;  -- [{name, from, text, text_ka, rating}]
 alter table public.camps add column if not exists ka           jsonb not null default '{}'::jsonb;  -- Georgian: {title, summary, description, level, venue_info, fit_for, included, excluded}
 alter table public.camps add column if not exists show_urgency boolean not null default true;
+
+-- =====================================================================
+-- Update 005: email signups, contact messages and shop products
+-- Run once in Supabase → SQL Editor → New query → Run. Safe to run again.
+-- =====================================================================
+
+-- ---------- email signups (newsletter + "tell me about camps") ----------
+create table if not exists public.subscribers (
+  id         uuid primary key default gen_random_uuid(),
+  email      text not null unique,
+  name       text,
+  interests  text[] not null default '{}',     -- camps, bjj, wrestling, judo, shop, news
+  source     text,                              -- which form: footer, home, camps, camp page
+  lang       text,
+  status     text not null default 'active' check (status in ('active', 'unsubscribed')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- contact form messages ----------
+create table if not exists public.messages (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  email      text not null,
+  phone      text,
+  topic      text,
+  message    text not null,
+  lang       text,
+  status     text not null default 'new' check (status in ('new', 'replied', 'closed')),
+  admin_note text,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- shop products ----------
+create table if not exists public.products (
+  id             text primary key,                 -- web address, e.g. bjj-gi
+  name           text not null,
+  name_ka        text,
+  description    text,
+  description_ka text,
+  sport          text not null,                    -- bjj, wrestling, judo, train, gear, lifestyle
+  category       text not null,                    -- gis, belts, rash, shorts, ...
+  audience       text not null default 'adult' check (audience in ('men', 'women', 'adult', 'kids', 'all')),
+  sizes          text[] not null default '{}',
+  colours        text[] not null default '{}',
+  size_guide     text,
+  drawing        text,
+  price          numeric check (price is null or price >= 0),
+  currency       text not null default 'GEL',
+  photo_url      text,
+  status         text not null default 'active' check (status in ('active', 'sold_out', 'hidden')),
+  sort           integer not null default 0,
+  created_at     timestamptz not null default now(),
+  updated_at     timestamptz not null default now()
+);
+
+alter table public.subscribers enable row level security;
+alter table public.messages    enable row level security;
+alter table public.products    enable row level security;
+
+-- visitors can read products that are not hidden; signups and messages are never readable from the website
+drop policy if exists products_public_read on public.products;
+create policy products_public_read on public.products for select using (status <> 'hidden');
+grant select on public.products to anon, authenticated;
+revoke all on public.subscribers, public.messages from anon, authenticated;
+
+drop trigger if exists products_touch on public.products;
+create trigger products_touch before update on public.products for each row execute function public.touch();
+drop trigger if exists subscribers_touch on public.subscribers;
+create trigger subscribers_touch before update on public.subscribers for each row execute function public.touch();
+
+-- ---------- public: sign up for emails ----------
+create or replace function public.subscribe(p jsonb) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare v_email text := lower(trim(p->>'email'));
+        v_int text[];
+begin
+  if v_email is null or length(v_email) > 200 or v_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then
+    return jsonb_build_object('error', 'Please enter a valid email address.');
+  end if;
+  if coalesce(p->>'consent', '') not in ('true', 'yes', '1') then
+    return jsonb_build_object('error', 'Please accept the privacy notice.');
+  end if;
+  select coalesce(array_agg(distinct x), '{}') into v_int
+    from jsonb_array_elements_text(coalesce(p->'interests', '[]'::jsonb)) x
+   where x in ('camps', 'bjj', 'wrestling', 'judo', 'shop', 'news');
+  insert into public.subscribers (email, name, interests, source, lang)
+  values (v_email, nullif(left(trim(p->>'name'), 120), ''), v_int, left(p->>'source', 40), left(p->>'lang', 5))
+  on conflict (email) do update
+     set interests = (select coalesce(array_agg(distinct i), '{}') from unnest(public.subscribers.interests || excluded.interests) i),
+         name      = coalesce(excluded.name, public.subscribers.name),
+         status    = 'active';
+  return jsonb_build_object('ok', true);
+end; $$;
+
+-- ---------- public: send a contact message ----------
+create or replace function public.send_message(p jsonb) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare v_email text := lower(trim(p->>'email'));
+begin
+  if coalesce(trim(p->>'name'), '') = '' or coalesce(trim(p->>'message'), '') = '' then
+    return jsonb_build_object('error', 'Please fill in your name and message.');
+  end if;
+  if v_email is null or v_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then
+    return jsonb_build_object('error', 'Please enter a valid email address.');
+  end if;
+  if coalesce(p->>'consent', '') not in ('true', 'yes', '1') then
+    return jsonb_build_object('error', 'Please accept the privacy notice.');
+  end if;
+  if (select count(*) from public.messages where email = v_email and created_at > now() - interval '1 hour') >= 5 then
+    return jsonb_build_object('error', 'Too many messages. Please try again later or write to us on WhatsApp.');
+  end if;
+  insert into public.messages (name, email, phone, topic, message, lang)
+  values (left(trim(p->>'name'), 120), v_email, left(p->>'phone', 40), left(p->>'topic', 60), left(p->>'message', 5000), left(p->>'lang', 5));
+  return jsonb_build_object('ok', true);
+end; $$;
+
+-- ---------- admin: signups ----------
+create or replace function public.admin_subscribers(p_token text) returns setof public.subscribers
+language plpgsql stable security definer set search_path = public as $$
+begin perform public.admin_check(p_token); return query select * from public.subscribers order by created_at desc; end; $$;
+
+create or replace function public.admin_update_subscriber(p_token text, p_id uuid, p jsonb) returns boolean
+language plpgsql security definer set search_path = public as $$
+begin
+  perform public.admin_check(p_token);
+  if p ? 'delete' then delete from public.subscribers where id = p_id; return true; end if;
+  update public.subscribers set status = coalesce(p->>'status', status) where id = p_id;
+  return true;
+end; $$;
+
+-- ---------- admin: messages ----------
+create or replace function public.admin_messages(p_token text) returns setof public.messages
+language plpgsql stable security definer set search_path = public as $$
+begin perform public.admin_check(p_token); return query select * from public.messages order by created_at desc; end; $$;
+
+create or replace function public.admin_update_message(p_token text, p_id uuid, p jsonb) returns boolean
+language plpgsql security definer set search_path = public as $$
+begin
+  perform public.admin_check(p_token);
+  if p ? 'delete' then delete from public.messages where id = p_id; return true; end if;
+  update public.messages
+     set status     = coalesce(p->>'status', status),
+         admin_note = case when p ? 'admin_note' then p->>'admin_note' else admin_note end
+   where id = p_id;
+  return true;
+end; $$;
+
+-- ---------- admin: products ----------
+create or replace function public.admin_products(p_token text) returns setof public.products
+language plpgsql stable security definer set search_path = public as $$
+begin perform public.admin_check(p_token); return query select * from public.products order by sport, category, sort, name; end; $$;
+
+create or replace function public.admin_save_product(p_token text, p jsonb) returns public.products
+language plpgsql security definer set search_path = public as $$
+declare v_old text := nullif(p->>'old_id', ''); v_id text := p->>'id'; r public.products;
+begin
+  perform public.admin_check(p_token);
+  if v_id is null or v_id !~ '^[a-z0-9-]{2,80}$' then raise exception 'Web address: lowercase letters, numbers and dashes only.'; end if;
+  if v_old is not null and v_old <> v_id then
+    update public.products set id = v_id where id = v_old;
+  end if;
+  insert into public.products as t (id, name, name_ka, description, description_ka, sport, category, audience, sizes, colours,
+                                    size_guide, drawing, price, currency, photo_url, status, sort)
+  values (v_id, p->>'name', nullif(p->>'name_ka', ''), nullif(p->>'description', ''), nullif(p->>'description_ka', ''),
+          p->>'sport', p->>'category', coalesce(nullif(p->>'audience', ''), 'adult'),
+          coalesce((select array_agg(x) from jsonb_array_elements_text(p->'sizes') x), '{}'),
+          coalesce((select array_agg(x) from jsonb_array_elements_text(p->'colours') x), '{}'),
+          nullif(p->>'size_guide', ''), nullif(p->>'drawing', ''), nullif(p->>'price', '')::numeric,
+          coalesce(nullif(p->>'currency', ''), 'GEL'), nullif(p->>'photo_url', ''), coalesce(nullif(p->>'status', ''), 'active'),
+          coalesce(nullif(p->>'sort', '')::int, 0))
+  on conflict (id) do update set
+    name = excluded.name, name_ka = excluded.name_ka, description = excluded.description, description_ka = excluded.description_ka,
+    sport = excluded.sport, category = excluded.category, audience = excluded.audience, sizes = excluded.sizes, colours = excluded.colours,
+    size_guide = excluded.size_guide, drawing = excluded.drawing, price = excluded.price, currency = excluded.currency,
+    photo_url = excluded.photo_url, status = excluded.status, sort = excluded.sort
+  returning t.* into r;
+  return r;
+end; $$;
+
+create or replace function public.admin_delete_product(p_token text, p_id text) returns boolean
+language plpgsql security definer set search_path = public as $$
+begin perform public.admin_check(p_token); delete from public.products where id = p_id; return true; end; $$;
+
+grant execute on function public.subscribe(jsonb), public.send_message(jsonb),
+  public.admin_subscribers(text), public.admin_update_subscriber(text, uuid, jsonb),
+  public.admin_messages(text), public.admin_update_message(text, uuid, jsonb),
+  public.admin_products(text), public.admin_save_product(text, jsonb), public.admin_delete_product(text, text)
+  to anon, authenticated;
+
+-- ---------- the current shop catalogue (only added if missing, your edits are kept) ----------
+insert into public.products (id, name, name_ka, description, description_ka, sport, category, audience, sizes, colours, size_guide, drawing, sort) values
+  ('bjj-gi', 'BJJ gi', 'BJJ კიმონო', 'Pearl weave jacket, ripstop pants, reinforced collar. Men''s cut.', 'Pearl weave ქურთუკი, ripstop შარვალი, გამაგრებული საყელო. მამაკაცის თარგი.', 'bjj', 'gis', 'men', array['A0','A1','A2','A3','A4','A5']::text[], array['White','Blue','Black']::text[], 'gi', 'gi', 0),
+  ('women-s-bjj-gi', 'Women''s BJJ gi', 'ქალის BJJ კიმონო', 'Cut for women: shorter jacket, tapered sleeves and pants.', 'ქალებისთვის: უფრო მოკლე ქურთუკი, დავიწროებული სახელოები და შარვალი.', 'bjj', 'gis', 'women', array['F1','F2','F3','F4']::text[], array['White','Blue','Black']::text[], 'gi_w', 'gi', 10),
+  ('kids-bjj-gi', 'Kids BJJ gi', 'საბავშვო BJJ კიმონო', 'Light, tough gi for kids, easy to wash.', 'მსუბუქი და გამძლე კიმონო ბავშვებისთვის, ადვილად ირეცხება.', 'bjj', 'gis', 'kids', array['M000','M00','M0','M1','M2','M3','M4']::text[], array['White','Blue']::text[], 'gi_k', 'gi', 20),
+  ('bjj-belt', 'BJJ belt', 'BJJ ქამარი', 'Cotton rank belt for adults.', 'ბამბის ქამარი ზრდასრულებისთვის.', 'bjj', 'belts', 'adult', array['A1','A2','A3','A4']::text[], array['White','Blue','Purple','Brown','Black']::text[], 'belt', 'belt', 30),
+  ('kids-bjj-belt', 'Kids BJJ belt', 'საბავშვო BJJ ქამარი', 'Cotton rank belt in kids'' colours.', 'ბამბის ქამარი საბავშვო ფერებში.', 'bjj', 'belts', 'kids', array['M0','M1','M2','M3','M4']::text[], array['White','Grey','Yellow','Orange','Green']::text[], 'belt_k', 'belt', 40),
+  ('rashguard-long-sleeve', 'Rashguard, long sleeve', 'რაშგარდი, გრძელი სახელოთი', 'Tight fit, flatlock seams, print that does not crack.', 'მჭიდრო მორგება, ბრტყელი ნაკერები, ბეჭდვა, რომელიც არ სკდება.', 'train', 'rash', 'men', array['XS','S','M','L','XL','XXL']::text[], array['Black','White','Red']::text[], 'top', 'rash', 50),
+  ('rashguard-short-sleeve', 'Rashguard, short sleeve', 'რაშგარდი, მოკლე სახელოთი', 'Same fabric and fit, for warm gyms and summer camps.', 'იგივე ქსოვილი და ჭრილი, თბილი დარბაზებისა და ზაფხულის ბანაკებისთვის.', 'train', 'rash', 'men', array['XS','S','M','L','XL','XXL']::text[], array['Black','White','Red']::text[], 'top', 'rash_ss', 60),
+  ('women-s-rashguard', 'Women''s rashguard', 'ქალის რაშგარდი', 'Long sleeve, cut for women, slightly longer body.', 'გრძელი სახელო, ქალებისთვის შეკერილი, ოდნავ გრძელი ტანით.', 'train', 'rash', 'women', array['XS','S','M','L','XL']::text[], array['Black','White','Red']::text[], 'top_w', 'rash', 70),
+  ('kids-rashguard', 'Kids rashguard', 'საბავშვო რაშგარდი', 'Long sleeve rashguard sized for kids.', 'გრძელსახელოიანი რაშგარდი ბავშვებისთვის.', 'train', 'rash', 'kids', array['4-5 y','6-7 y','8-9 y','10-11 y','12-13 y']::text[], array['Black','Red']::text[], 'kids', 'rash', 80),
+  ('fight-shorts', 'Fight shorts', 'საჭიდაო შორტები', 'Stretch fabric, no pockets, secure waistband with drawcord.', 'ელასტიური ქსოვილი, ჯიბეების გარეშე, მყარი სარტყელი თასმით.', 'train', 'shorts', 'men', array['28','30','32','34','36','38']::text[], array['Black','Red']::text[], 'shorts', 'shorts', 90),
+  ('spats', 'Spats', 'სპატსები', 'Full length compression leggings for no-gi, wrestling and MMA.', 'სრული სიგრძის კომპრესიული ლეგინსი no-gi-სთვის, ჭიდაობისა და MMA-სთვის.', 'train', 'compress', 'men', array['XS','S','M','L','XL','XXL']::text[], array['Black']::text[], 'top', 'spats', 100),
+  ('compression-shorts', 'Compression shorts', 'კომპრესიული შორტები', 'Base layer shorts worn under fight shorts, singlets or a gi.', 'ქვედა ფენის შორტები, რომლებიც იცმევა შორტების, ტრიკოს ან კიმონოს ქვეშ.', 'train', 'compress', 'adult', array['XS','S','M','L','XL','XXL']::text[], array['Black']::text[], 'top', 'cshorts', 110),
+  ('women-s-fight-shorts', 'Women''s fight shorts', 'ქალის შორტები', 'Shorter leg, stretch fabric, wide waistband.', 'მოკლე ტოტი, ელასტიური ქსოვილი, განიერი სარტყელი.', 'train', 'shorts', 'women', array['XS','S','M','L','XL']::text[], array['Black']::text[], 'top_w', 'shorts', 120),
+  ('women-s-leggings', 'Women''s leggings', 'ქალის ლეგინსი', 'High waist compression leggings for training.', 'მაღალწელიანი კომპრესიული ლეგინსი ვარჯიშისთვის.', 'train', 'compress', 'women', array['XS','S','M','L','XL']::text[], array['Black']::text[], 'top_w', 'spats', 130),
+  ('kids-fight-shorts', 'Kids fight shorts', 'საბავშვო შორტები', 'Stretch shorts with an elastic waist.', 'ელასტიური შორტები რეზინიანი წელით.', 'train', 'shorts', 'kids', array['4-5 y','6-7 y','8-9 y','10-11 y','12-13 y']::text[], array['Black']::text[], 'kids', 'shorts', 140),
+  ('wrestling-singlet', 'Wrestling singlet', 'საჭიდაო ტრიკო', 'Competition cut for freestyle and Greco-Roman.', 'საშეჯიბრო ჭრილი თავისუფალი და ბერძნულ-რომაული ჭიდაობისთვის.', 'wrestling', 'singlets', 'adult', array['XS','S','M','L','XL','XXL']::text[], array['Red','Blue','Black']::text[], 'top', 'singlet', 150),
+  ('kids-wrestling-singlet', 'Kids wrestling singlet', 'საბავშვო საჭიდაო ტრიკო', 'Competition singlet sized for kids.', 'საშეჯიბრო ტრიკო ბავშვებისთვის.', 'wrestling', 'singlets', 'kids', array['4-5 y','6-7 y','8-9 y','10-11 y','12-13 y']::text[], array['Red','Blue']::text[], 'kids', 'singlet', 160),
+  ('wrestling-shoes', 'Wrestling shoes', 'საჭიდაო ფეხსაცმელი', 'Lightweight, split sole, ankle support.', 'მსუბუქი, გაყოფილი ძირით, კოჭის მხარდაჭერით.', 'wrestling', 'shoes', 'adult', array['EU 38','EU 39','EU 40','EU 41','EU 42','EU 43','EU 44','EU 45','EU 46','EU 47']::text[], array['Black','Red']::text[], 'shoes', 'shoe', 170),
+  ('kids-wrestling-shoes', 'Kids wrestling shoes', 'საბავშვო საჭიდაო ფეხსაცმელი', 'Light shoes with good grip for young wrestlers.', 'მსუბუქი ფეხსაცმელი კარგი მოჭიდებით ახალგაზრდა მოჭიდავეებისთვის.', 'wrestling', 'shoes', 'kids', array['EU 30','EU 31','EU 32','EU 33','EU 34','EU 35','EU 36','EU 37']::text[], array['Black','Red']::text[], 'shoes', 'shoe', 180),
+  ('headgear', 'Headgear', 'ყურის დამცავი', 'Ear guards for wrestling and grappling. Adjustable straps.', 'ყურის დამცავი ჭიდაობისა და გრეპლინგისთვის. რეგულირებადი თასმებით.', 'wrestling', 'protect', 'all', array['Youth','Adult']::text[], array['Black','Red']::text[], null, 'headgear', 190),
+  ('knee-pads', 'Knee pads', 'მუხლის დამცავები', 'Low profile pads for shots and scrambles. Sold as a pair.', 'თხელი დამცავები გასვლებისა და ბრძოლისთვის. იყიდება წყვილად.', 'wrestling', 'protect', 'all', array['XS','S','M','L']::text[], array['Black']::text[], null, 'knee', 200),
+  ('judogi', 'Judogi', 'ძიუდოს კიმონო', 'Double weave judogi for training and grading.', 'ორმაგი ქსოვის კიმონო ვარჯიშისა და საატესტაციოდ.', 'judo', 'judogi', 'adult', array['160 cm','170 cm','180 cm','190 cm','200 cm']::text[], array['White','Blue']::text[], 'judogi', 'gi', 210),
+  ('kids-judogi', 'Kids judogi', 'საბავშვო ძიუდოს კიმონო', 'Single weave judogi for kids, light and durable.', 'ერთმაგი ქსოვის კიმონო ბავშვებისთვის, მსუბუქი და გამძლე.', 'judo', 'judogi', 'kids', array['110 cm','120 cm','130 cm','140 cm','150 cm']::text[], array['White']::text[], 'judogi', 'gi', 220),
+  ('judo-belt', 'Judo belt', 'ძიუდოს ქამარი', 'Cotton rank belt for adults.', 'ბამბის ქამარი ზრდასრულებისთვის.', 'judo', 'jbelts', 'adult', array['240 cm','260 cm','280 cm','300 cm']::text[], array['White','Yellow','Orange','Green','Blue','Brown','Black']::text[], 'jbelt', 'belt', 230),
+  ('kids-judo-belt', 'Kids judo belt', 'საბავშვო ძიუდოს ქამარი', 'Cotton rank belt for kids.', 'ბამბის ქამარი ბავშვებისთვის.', 'judo', 'jbelts', 'kids', array['180 cm','200 cm','220 cm']::text[], array['White','Yellow','Orange','Green','Blue']::text[], 'jbelt', 'belt', 240),
+  ('gear-bag', 'Gear bag', 'სპორტული ჩანთა', 'Large duffel with a separate wet compartment for your gi and shoes.', 'დიდი სპორტული ჩანთა სველი ნივთებისთვის ცალკე განყოფილებით, კიმონოსა და ფეხსაცმლისთვის.', 'gear', 'bags', 'all', array['One size']::text[], array['Black']::text[], null, 'bag', 250),
+  ('backpack', 'Backpack', 'ზურგჩანთა', 'Daily training backpack with laptop sleeve and shoe pocket.', 'ყოველდღიური სავარჯიშო ზურგჩანთა ლეპტოპისა და ფეხსაცმლის განყოფილებით.', 'gear', 'bags', 'all', array['One size']::text[], array['Black']::text[], null, 'backpack', 260),
+  ('mouthguard', 'Mouthguard', 'კაპა', 'Boil and bite fit, with a ventilated case.', 'ადუღება-მორგების ტიპის, ვენტილირებადი ქეისით.', 'gear', 'protection', 'all', array['Junior','Adult']::text[], array['Black','Clear']::text[], null, 'mouth', 270),
+  ('finger-tape', 'Finger tape', 'თითების ტეიპი', 'Cotton tape for fingers and joints. Pack of 4 rolls.', 'ბამბის ტეიპი თითებისა და სახსრებისთვის. 4 რულონი შეკვრაში.', 'gear', 'training', 'all', array['0.8 cm','1.3 cm','2.5 cm']::text[], array['White']::text[], null, 'tape', 280),
+  ('gym-towel', 'Gym towel', 'სპორტული პირსახოცი', 'Quick dry microfibre towel.', 'სწრაფად შრობადი მიკროფიბრის პირსახოცი.', 'gear', 'training', 'all', array['One size']::text[], array['Black','Red']::text[], null, 'towel', 290),
+  ('slides', 'Slides', 'ჩუსტები', 'For walking off the mat. Keep the mat clean.', 'ხალიჩიდან გასასვლელად. ხალიჩა სუფთა დარჩება.', 'gear', 'training', 'all', array['EU 38-39','EU 40-41','EU 42-43','EU 44-45','EU 46-47']::text[], array['Black']::text[], null, 'slides', 300),
+  ('water-bottle', 'Water bottle', 'წყლის ბოთლი', 'Stainless steel, 750 ml, keeps water cold.', 'უჟანგავი ფოლადი, 750 მლ, წყალს ცივად ინახავს.', 'gear', 'training', 'all', array['One size']::text[], array['Black','White']::text[], null, 'bottle', 310),
+  ('hoodie', 'Hoodie', 'ჰუდი', 'Heavy cotton, relaxed fit.', 'სქელი ბამბა, თავისუფალი ჭრილი.', 'lifestyle', 'tops', 'adult', array['XS','S','M','L','XL','XXL']::text[], array['Black','White','Red']::text[], 'top', 'hoodie', 320),
+  ('t-shirt', 'T-shirt', 'მაისური', 'Heavyweight cotton T-shirt.', 'სქელი ბამბის მაისური.', 'lifestyle', 'tops', 'adult', array['XS','S','M','L','XL','XXL']::text[], array['Black','White','Red']::text[], 'top', 'tshirt', 330),
+  ('sweatshirt', 'Sweatshirt', 'სვიტშოტი', 'Crewneck sweatshirt.', 'მრგვალყელიანი სვიტერი.', 'lifestyle', 'tops', 'adult', array['XS','S','M','L','XL','XXL']::text[], array['Black','Grey']::text[], 'top', 'sweat', 340),
+  ('women-s-t-shirt', 'Women''s T-shirt', 'ქალის მაისური', 'Fitted cotton T-shirt, cut for women.', 'მორგებული ბამბის მაისური ქალებისთვის.', 'lifestyle', 'tops', 'women', array['XS','S','M','L','XL']::text[], array['Black','White']::text[], 'top_w', 'tshirt', 350),
+  ('kids-hoodie', 'Kids hoodie', 'საბავშვო ჰუდი', 'Soft heavy cotton hoodie for kids.', 'რბილი, მძიმე ბამბის ჰუდი ბავშვებისთვის.', 'lifestyle', 'tops', 'kids', array['4-5 y','6-7 y','8-9 y','10-11 y','12-13 y']::text[], array['Black','Red']::text[], 'kids', 'hoodie', 360),
+  ('kids-t-shirt', 'Kids T-shirt', 'საბავშვო მაისური', 'Cotton T-shirt with the CHIDAOBA logo.', 'ბამბის მაისური CHIDAOBA-ს ლოგოთი.', 'lifestyle', 'tops', 'kids', array['4-5 y','6-7 y','8-9 y','10-11 y','12-13 y']::text[], array['Black','White']::text[], 'kids', 'tshirt', 370),
+  ('track-pants', 'Track pants', 'სპორტული შარვალი', 'Tapered joggers with zip pockets.', 'ვიწროვდება ქვემოთ, ელვაშესაკრავიანი ჯიბეებით.', 'lifestyle', 'bottoms', 'adult', array['XS','S','M','L','XL','XXL']::text[], array['Black','Grey']::text[], 'top', 'pants', 380),
+  ('cap', 'Cap', 'კეპი', 'Cotton cap with embroidered logo.', 'ბამბის კეპი ნაქარგი ლოგოთი.', 'lifestyle', 'acc', 'all', array['One size']::text[], array['Black','White']::text[], null, 'cap', 390),
+  ('beanie', 'Beanie', 'ქუდი', 'Knitted beanie with embroidered logo.', 'ნაქსოვი ქუდი ნაქარგი ლოგოთი.', 'lifestyle', 'acc', 'all', array['One size']::text[], array['Black','Red']::text[], null, 'beanie', 400),
+  ('tote-bag', 'Tote bag', 'ტილოს ჩანთა', 'Heavy canvas tote bag.', 'სქელი ტილოს ჩანთა.', 'lifestyle', 'acc', 'all', array['One size']::text[], array['Natural','Black']::text[], null, 'tote', 410)
+on conflict (id) do nothing;

@@ -99,42 +99,62 @@
     Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (el) cio.observe(el); });
   }
 
-  // ---------- forms: Web3Forms when a key is set, otherwise open the visitor's email app ----------
+  // ---------- forms: saved in our database; if that is not possible, open the visitor's email app ----------
+  var CFG = window.CHD_CONFIG || {};
+  var KA = document.documentElement.lang === 'ka';
+  var TT = function (en, ka) { return KA ? ka : en; };
+  var KA_ERR = { 'Please enter a valid email address.': 'შეიყვანეთ სწორი ელფოსტა.', 'Please accept the privacy notice.': 'დაეთანხმეთ კონფიდენციალურობის პოლიტიკას.',
+    'Please fill in your name and message.': 'შეავსეთ სახელი და შეტყობინება.', 'Too many messages. Please try again later or write to us on WhatsApp.': 'ძალიან ბევრი შეტყობინებაა. სცადეთ მოგვიანებით ან მოგვწერეთ WhatsApp-ზე.' };
+  function rpc(fn, body) {
+    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) return Promise.reject(new Error('offline'));
+    return fetch(CFG.SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/rpc/' + fn, {
+      method: 'POST', headers: { apikey: CFG.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + CFG.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p: body })
+    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error('offline'); return j || {}; }); });
+  }
+  window.CHD_RPC = rpc;
+  function mailto(data, subject) {
+    var lines = [];
+    data.forEach(function (v, k) { if (['subject', 'from_name', 'botcheck', 'access_key'].indexOf(k) < 0 && v) lines.push(k.replace(/_/g, ' ') + ': ' + v); });
+    window.location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
+  }
   document.querySelectorAll('form.js-form').forEach(function (form) {
     var msg = form.querySelector('.form-msg');
     var btn = form.querySelector('button[type="submit"]');
     var done = form.dataset.done ? document.getElementById(form.dataset.done) : null;
     function say(t, cls) { if (msg) { msg.className = 'form-msg' + (cls ? ' ' + cls : ''); msg.textContent = t; } }
+    function ok() {
+      if (done) { form.style.display = 'none'; done.classList.add('show'); done.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      else { form.reset(); form.querySelectorAll('input[name="interest"]').forEach(function (c) { c.checked = true; }); btn.disabled = false; say(TT(form.dataset.okText || 'Thank you.', 'გმადლობთ. თქვენ სიაში ხართ.'), 'ok'); }
+    }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
       var data = new FormData(form);
       if (data.get('botcheck')) return;
-      // join multi-value fields
-      var multi = {};
-      form.querySelectorAll('input[type="checkbox"][name]').forEach(function (c) {
-        if (c.name !== 'consent' && c.name !== 'botcheck') multi[c.name] = true;
-      });
-      Object.keys(multi).forEach(function (n) { var v = data.getAll(n); data.delete(n); data.append(n, v.join(', ') || '-'); });
       var subject = data.get('subject') || 'Message from chidaoba.com';
-      var key = form.dataset.key;
-      if (!key) {
-        var lines = [];
-        data.forEach(function (v, k) { if (['subject', 'from_name', 'botcheck', 'access_key'].indexOf(k) < 0 && v) lines.push(k.replace(/_/g, ' ') + ': ' + v); });
-        window.location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
-        say('Your email app should open with the message ready. Just press send. If nothing happens, email us at ' + EMAIL + '.', 'ok');
+      var kind = form.dataset.db;
+      if (kind) {
+        var body = { consent: data.get('consent') ? 'yes' : '', lang: document.documentElement.lang || 'en' };
+        if (kind === 'subscribe') {
+          body.email = data.get('email'); body.name = data.get('name') || ''; body.source = form.dataset.source || '';
+          body.interests = data.getAll('interest').concat(data.getAll('sport'));
+          if (!body.interests.length) body.interests = ['news'];
+        } else {
+          ['name', 'email', 'phone', 'topic', 'message'].forEach(function (k) { body[k] = data.get(k) || ''; });
+        }
+        btn.disabled = true; say(TT('Sending…', 'იგზავნება…'));
+        rpc(kind === 'subscribe' ? 'subscribe' : 'send_message', body).then(function (j) {
+          if (j.error) { btn.disabled = false; say(KA ? (KA_ERR[j.error] || j.error) : j.error, 'err'); return; }
+          ok();
+        }).catch(function () {
+          btn.disabled = false; mailto(data, subject);
+          say(TT('Your email app should open with the message ready. Just press send.', 'გაიხსნება თქვენი ელფოსტის აპი მზა შეტყობინებით. უბრალოდ დააჭირეთ გაგზავნას.'), 'ok');
+        });
         return;
       }
-      data.append('access_key', key);
-      btn.disabled = true; say('Sending…');
-      fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Accept': 'application/json' }, body: data })
-        .then(function (r) { return r.json().then(function (j) { return r.ok && j.success; }); })
-        .then(function (ok) {
-          if (!ok) throw new Error('failed');
-          if (done) { form.style.display = 'none'; done.classList.add('show'); done.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-          else { form.reset(); btn.disabled = false; say(form.dataset.okText || 'Thank you. Received.', 'ok'); }
-        })
-        .catch(function () { btn.disabled = false; say('Something went wrong. Please try again, or email ' + EMAIL + '.', 'err'); });
+      mailto(data, subject);
+      say(TT('Your email app should open with the message ready. Just press send.', 'გაიხსნება თქვენი ელფოსტის აპი მზა შეტყობინებით. უბრალოდ დააჭირეთ გაგზავნას.'), 'ok');
     });
   });
 })();

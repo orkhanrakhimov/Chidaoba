@@ -103,6 +103,10 @@
     if (!s || !s.token) return Promise.reject(new Error('Session expired. Please sign in again.'));
     return req('/rest/v1/rpc/' + fn, { method: 'POST', body: Object.assign({ p_token: s.token }, args) });
   }
+  function u5(err) {
+    if (/Could not find|schema cache|does not exist|404/i.test(err.message)) throw new Error('NEEDS_UPDATE_005');
+    throw err;
+  }
   var liveApi = {
     listCamps: function () {
       return Promise.all([
@@ -137,6 +141,15 @@
     deleteCamp: function (id) { return rpcA('admin_delete_camp', { p_id: id }); },
     regs: function (campId) { return rpcA('admin_regs', { p_camp: campId || null }); },
     updateReg: function (id, patch) { return rpcA('admin_update_reg', { p_id: id, p: patch }); },
+    // shop, email signups, contact messages (Update 005)
+    products: function () { return req('/rest/v1/products?select=*&status=neq.hidden&order=sort.asc'); },
+    adminProducts: function () { return rpcA('admin_products', {}).catch(u5); },
+    saveProduct: function (p) { return rpcA('admin_save_product', { p: p }).catch(u5); },
+    deleteProduct: function (id) { return rpcA('admin_delete_product', { p_id: id }).catch(u5); },
+    subscribers: function () { return rpcA('admin_subscribers', {}).catch(u5); },
+    updateSubscriber: function (id, patch) { return rpcA('admin_update_subscriber', { p_id: id, p: patch }).catch(u5); },
+    messages: function () { return rpcA('admin_messages', {}).catch(u5); },
+    updateMessage: function (id, patch) { return rpcA('admin_update_message', { p_id: id, p: patch }).catch(u5); },
     upload: function (blob, name) {
       var base = C.SUPABASE_URL.replace(/\/$/, ''), path;
       return rpcA('admin_upload_ticket', {}).then(function (folder) {
@@ -199,11 +212,20 @@
       regs: []
     };
   }
-  function db() { try { var x = JSON.parse(localStorage.getItem(DK)); if (x && x.camps) return x; } catch (e) { } var s = seed(); localStorage.setItem(DK, JSON.stringify(s)); return s; }
+  function db() { var x = null; try { x = JSON.parse(localStorage.getItem(DK)); } catch (e) { } if (!x || !x.camps) x = seed(); demoPeople(x); localStorage.setItem(DK, JSON.stringify(x)); return x; }
   function save(x) { localStorage.setItem(DK, JSON.stringify(x)); }
   function counts(x, c) {
     var t = 0, w = 0; x.regs.forEach(function (r) { if (r.camp_id === c.id) { if (['pending', 'deposit_paid', 'paid'].indexOf(r.status) >= 0) t += r.people; if (r.status === 'waitlist') w += r.people; } });
     var o = JSON.parse(JSON.stringify(c)); o.taken = t; o.waitlist = w; return o;
+  }
+  function prods(x) { if (!x.products) x.products = JSON.parse(JSON.stringify(window.CHD_PRODUCTS || [])); return x.products; }
+  function demoPeople(x) {
+    if (x.subs) return;
+    var now = Date.now();
+    x.subs = [{ id: uid(), email: 'anna@example.com', name: '', interests: ['camps', 'bjj'], source: 'camps', lang: 'en', status: 'active', created_at: new Date(now - 864e5).toISOString() },
+      { id: uid(), email: 'giorgi@example.com', name: '', interests: ['camps', 'wrestling', 'news'], source: 'foot', lang: 'ka', status: 'active', created_at: new Date(now - 3 * 864e5).toISOString() },
+      { id: uid(), email: 'sam@example.com', name: '', interests: ['shop', 'news'], source: 'home', lang: 'en', status: 'active', created_at: new Date(now - 6 * 864e5).toISOString() }];
+    x.msgs = [{ id: uid(), name: 'Demo person', email: 'demo@example.com', phone: '+995 555 00 00 00', topic: 'Camps & events', message: 'Sample message: do you run camps for teams of 10?', lang: 'en', status: 'new', admin_note: '', created_at: new Date(now - 2 * 36e5).toISOString() }];
   }
   var wait = function (v) { return new Promise(function (r) { setTimeout(function () { r(v); }, 250); }); };
   var demoApi = {
@@ -236,6 +258,19 @@
     deleteCamp: function (id) { var x = db(); x.camps = x.camps.filter(function (c) { return c.id !== id; }); x.regs = x.regs.filter(function (r) { return r.camp_id !== id; }); save(x); return wait(true); },
     regs: function (campId) { var x = db(); return wait(x.regs.filter(function (r) { return !campId || r.camp_id === campId; })); },
     updateReg: function (id, patch) { var x = db(); x.regs.forEach(function (r) { if (r.id === id) Object.assign(r, patch); }); save(x); return wait(true); },
+    products: function () { var x = db(); return wait(prods(x).filter(function (p) { return p.status !== 'hidden'; })); },
+    adminProducts: function () { return wait(prods(db())); },
+    saveProduct: function (p) {
+      var x = db(), list = prods(x), o = JSON.parse(JSON.stringify(p)), old = o.old_id || o.id; delete o.old_id;
+      var i = list.map(function (k) { return k.id; }).indexOf(old);
+      if (i >= 0) list[i] = Object.assign({}, list[i], o); else list.push(o);
+      x.products = list; save(x); return wait(o);
+    },
+    deleteProduct: function (id) { var x = db(); x.products = prods(x).filter(function (p) { return p.id !== id; }); save(x); return wait(true); },
+    subscribers: function () { return wait(db().subs || []); },
+    updateSubscriber: function (id, patch) { var x = db(); x.subs = (x.subs || []).filter(function (r) { return !(patch.delete && r.id === id); }); x.subs.forEach(function (r) { if (r.id === id && patch.status) r.status = patch.status; }); save(x); return wait(true); },
+    messages: function () { return wait(db().msgs || []); },
+    updateMessage: function (id, patch) { var x = db(); x.msgs = (x.msgs || []).filter(function (r) { return !(patch.delete && r.id === id); }); x.msgs.forEach(function (r) { if (r.id === id) Object.assign(r, patch); }); save(x); return wait(true); },
     reset: function () { localStorage.removeItem(DK); return wait(true); },
     upload: function (blob) { return new Promise(function (res) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.readAsDataURL(blob); }); }
   };

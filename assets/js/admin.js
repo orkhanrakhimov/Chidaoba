@@ -39,11 +39,15 @@
     app.innerHTML = '<p class="adm-loading">Loading…</p>';
     return Promise.all([H.api.adminCamps(), H.api.regs()]).then(function (r) {
       state.camps = r[0] || []; state.regs = r[1] || []; route();
+      H.api.messages().then(function (m) { state.msgs = m || []; if (!/^#(edit|new|product)/.test(location.hash)) route(); }).catch(function () { });
     }).catch(function (err) { if (/sign in|JWT|expired/i.test(err.message)) { H.api.signOut(); login(); } else app.innerHTML = box('<p class="body">' + e(err.message) + '</p>'); });
   }
   function shell(inner, tab) {
     return '<header class="adm-head"><a class="adm-brand" href="#dash"><img src="/assets/img/symbol-chalk.svg" alt="" width="20" height="28"> Admin</a>' +
-      '<nav><a href="#dash"' + (tab === 'dash' ? ' class="on"' : '') + '>Camps</a><a href="#regs"' + (tab === 'regs' ? ' class="on"' : '') + '>Requests</a><a href="/camps/" target="_blank">View site ↗</a></nav>' +
+      '<nav>' + [['dash', 'Camps'], ['regs', 'Requests'], ['shop', 'Shop'], ['subs', 'Signups'], ['msgs', 'Messages']].map(function (t) {
+        var n = t[0] === 'msgs' ? (state.msgs || []).filter(function (m) { return m.status === 'new'; }).length : t[0] === 'regs' ? state.regs.filter(function (r) { return r.status === 'pending'; }).length : 0;
+        return '<a href="#' + t[0] + '"' + (tab === t[0] ? ' class="on"' : '') + '>' + t[1] + (n ? '<i class="nav-n">' + n + '</i>' : '') + '</a>';
+      }).join('') + '<a href="/" target="_blank">View site ↗</a></nav>' +
       '<button type="button" class="adm-out">Sign out</button></header><main class="adm-main">' + inner + '</main>';
   }
   function route() {
@@ -51,6 +55,11 @@
     if (h.indexOf('edit/') === 0) return editor(h.slice(5));
     if (h === 'new') return editor(null);
     if (h.indexOf('regs') === 0) return regsView(h.split('/')[1] || 'all');
+    if (h === 'shop') return shopView();
+    if (h === 'product-new') return productEditor(null);
+    if (h.indexOf('product/') === 0) return productEditor(decodeURIComponent(h.slice(8)));
+    if (h === 'subs') return subsView();
+    if (h === 'msgs') return msgsView();
     return dash();
   }
   window.addEventListener('hashchange', function () { if (H.api.signedIn()) route(); });
@@ -386,6 +395,227 @@
       var m = /duplicate|unique/i.test(err.message) ? 'That web address is already used by another camp.' : err.message;
       msg.className = 'form-msg err'; msg.textContent = m; toast(m, true);
     });
+  }
+
+  // ================= shared for the new sections =================
+  var META = window.CHD_SHOP_META || { sports: [], cats: {}, audience: {}, guides: {}, drawings: [], colours: {}, dark: [], sizesets: {}, art: {} };
+  function needUpdate(title) {
+    return shell('<div class="adm-top"><h1 class="display h-md">' + title + '<span class="dot">.</span></h1></div>' +
+      '<div class="adm-sec"><h2>One database update needed</h2><p class="body">This section needs <b>update-005.sql</b>. Open Supabase → SQL Editor → New query, paste the file and press Run. Then reload this page.</p></div>',
+      title === 'Shop' ? 'shop' : title === 'Signups' ? 'subs' : 'msgs');
+  }
+  function fail(title) { return function (err) { if (err.message === 'NEEDS_UPDATE_005') app.innerHTML = needUpdate(title); else if (/sign in|expired/i.test(err.message)) { H.api.signOut(); login(); } else toast(err.message, true); }; }
+  function artSvg(p, size) {
+    var cols = p.colours || [], c = cols[0], hex = META.colours[c] || '#1E1E1E', dk = META.dark.indexOf(c) >= 0;
+    if (p.photo_url) return '<img src="' + e(p.photo_url) + '" alt="">';
+    return '<svg class="part" viewBox="0 0 120 120" style="--pc:' + hex + ';--pd:' + (dk ? 'rgba(255,255,255,.5)' : 'rgba(30,30,30,.45)') + (size ? ';width:' + size : '') + '">' + (META.art[p.drawing] || META.art.tshirt || '') + '</svg>';
+  }
+  var sportName = function (k) { var x = META.sports.filter(function (s) { return s[0] === k; })[0]; return x ? x[1] : k; };
+  var catName = function (sp, k) { var x = (META.cats[sp] || []).filter(function (c) { return c[0] === k; })[0]; return x ? x[1] : k; };
+  var PSTATUS = { active: 'In the shop', sold_out: 'Sold out', hidden: 'Hidden' };
+  function dl(name, text, type) { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + text], { type: type || 'text/csv' })); a.download = name; a.click(); }
+  function csvLine(vals) { return vals.map(function (v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','); }
+
+  // ================= shop =================
+  state.shop = { sport: 'all', q: '' };
+  function shopView() {
+    app.innerHTML = shell('<p class="adm-loading">Loading products…</p>', 'shop');
+    H.api.adminProducts().then(function (list) { state.products = list || []; drawShop(); }).catch(fail('Shop'));
+  }
+  function drawShop() {
+    var f = state.shop, q = f.q.toLowerCase();
+    var list = state.products.filter(function (p) { return (f.sport === 'all' || p.sport === f.sport) && (!q || (p.name + ' ' + (p.name_ka || '') + ' ' + p.id).toLowerCase().indexOf(q) >= 0); });
+    var groups = META.sports.filter(function (s) { return f.sport === 'all' || s[0] === f.sport; }).map(function (s) {
+      var ci = (META.cats[s[0]] || []).map(function (c) { return c[0]; });
+      var items = list.filter(function (p) { return p.sport === s[0]; }).sort(function (a, b) { return ci.indexOf(a.category) - ci.indexOf(b.category) || a.sort - b.sort; });
+      if (!items.length) return '';
+      return '<h2 class="sub-h">' + e(s[1]) + ' <em class="cnt">' + items.length + '</em></h2><div class="tbl-wrap"><table class="tbl prod-tbl"><thead><tr><th></th><th>Product</th><th>For</th><th>Sizes</th><th>Price</th><th>Status</th><th></th></tr></thead><tbody>' +
+        items.map(function (p) {
+          return '<tr data-id="' + e(p.id) + '"><td class="pt-art">' + artSvg(p) + '</td><td><a href="#product/' + encodeURIComponent(p.id) + '"><b>' + e(p.name) + '</b></a><span class="sub">' + e(catName(p.sport, p.category)) + (p.name_ka ? ' · ' + e(p.name_ka) : ' · <em class="warn">no Georgian name</em>') + '</span></td>' +
+            '<td>' + e(META.audience[p.audience] || p.audience) + '</td><td><span class="sub">' + e((p.sizes || []).length > 3 ? p.sizes[0] + ' to ' + p.sizes[p.sizes.length - 1] : (p.sizes || []).join(', ')) + '</span></td>' +
+            '<td>' + (p.price != null && p.price !== '' ? money(p.price, p.currency) : '<span class="sub">On request</span>') + '</td>' +
+            '<td><select class="ps s-' + p.status + '">' + Object.keys(PSTATUS).map(function (k) { return '<option value="' + k + '"' + (p.status === k ? ' selected' : '') + '>' + PSTATUS[k] + '</option>'; }).join('') + '</select></td>' +
+            '<td class="act"><a href="#product/' + encodeURIComponent(p.id) + '">Edit</a></td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }).join('');
+    var opts = '<option value="all">All sections</option>' + META.sports.map(function (s) { return '<option value="' + s[0] + '"' + (f.sport === s[0] ? ' selected' : '') + '>' + e(s[1]) + '</option>'; }).join('');
+    var act = state.products.filter(function (p) { return p.status === 'active'; }).length;
+    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Shop<span class="dot">.</span></h1><a class="btn btn-primary" href="#product-new">New product +</a></div>' +
+      '<div class="kpis"><div><span>Products</span><b>' + state.products.length + '</b></div><div><span>In the shop</span><b>' + act + '</b></div>' +
+      '<div><span>Without a price</span><b>' + state.products.filter(function (p) { return p.price == null || p.price === ''; }).length + '</b></div>' +
+      '<div><span>Hidden or sold out</span><b>' + (state.products.length - act) + '</b></div></div>' +
+      '<div class="adm-filters"><select id="sf">' + opts + '</select><input id="sq" type="search" placeholder="Search products…" value="' + e(f.q) + '"><span class="sub">' + list.length + ' shown</span></div>' +
+      (groups || '<p class="body">No products found.</p>') +
+      '<p class="note">Change the status here to hide a product or mark it sold out. Products without a price show “Price on request” and are ordered on WhatsApp.</p>', 'shop');
+    $('#sf').addEventListener('change', function () { f.sport = this.value; drawShop(); });
+    $('#sq').addEventListener('input', function () { f.q = this.value; clearTimeout(this._t); var v = this.value; this._t = setTimeout(function () { drawShop(); var i = $('#sq'); i.focus(); i.setSelectionRange(v.length, v.length); }, 250); });
+    $$('.ps').forEach(function (s) {
+      s.addEventListener('change', function () {
+        var id = s.closest('tr').dataset.id, p = state.products.filter(function (x) { return x.id === id; })[0], v = s.value;
+        var o = Object.assign({}, p, { status: v, old_id: p.id });
+        H.api.saveProduct(o).then(function () { p.status = v; s.className = 'ps s-' + v; toast('Saved'); }).catch(function (err) { toast(err.message, true); });
+      });
+    });
+  }
+  function productEditor(id) {
+    if (!state.products) { H.api.adminProducts().then(function (l) { state.products = l || []; productEditor(id); }).catch(fail('Shop')); app.innerHTML = shell('<p class="adm-loading">Loading…</p>', 'shop'); return; }
+    var p = id ? state.products.filter(function (x) { return x.id === id; })[0] : { id: '', name: '', sport: 'train', category: 'rash', audience: 'adult', sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'], colours: ['Black'], size_guide: 'top', drawing: 'tshirt', price: null, currency: 'GEL', status: 'active', sort: (state.products.length + 1) * 10 };
+    if (!p) { location.hash = 'shop'; return; }
+    p = JSON.parse(JSON.stringify(p));
+    var so = {}; META.sports.forEach(function (s) { so[s[0]] = s[1]; });
+    var swatches = Object.keys(META.colours).map(function (c) { return '<label class="sw-pick"><input type="checkbox" name="colour" value="' + c + '"' + ((p.colours || []).indexOf(c) >= 0 ? ' checked' : '') + '><i style="background:' + META.colours[c] + '"></i><span>' + c + '</span></label>'; }).join('');
+    var sets = Object.keys(META.sizesets).map(function (k) { return '<button type="button" class="btn btn-ghost sz-set" data-set="' + e(k) + '">' + e(k) + '</button>'; }).join('');
+    var draws = {}; META.drawings.forEach(function (d) { draws[d] = d; });
+    app.innerHTML = shell('<form id="pf" class="adm-edit" novalidate>' +
+      '<div class="adm-top"><div><a class="sub" href="#shop">← Shop</a><h1 class="display h-md">' + (id ? e(p.name) : 'New product') + '<span class="dot">.</span></h1></div>' +
+      '<div class="row-btns"><button class="btn btn-primary" type="submit">Save product</button></div></div>' +
+      '<div class="prod-ed"><div>' +
+      sec('Product', '<div class="g2">' + inp('name', 'Name', p.name, 'text', ' required') + inp('name_ka', 'Name in Georgian', p.name_ka) + '</div>' +
+        area('description', 'Short description', p.description) + area('description_ka', 'Short description in Georgian', p.description_ka) +
+        '<div class="g3">' + sel('sport', 'Section', p.sport, so) + '<div class="field"><label for="e-category">Category</label><select id="e-category" name="category"></select></div>' + sel('audience', 'For', p.audience, META.audience) + '</div>') +
+      sec('Sizes & colours', inp('sizes', 'Sizes (comma separated)', (p.sizes || []).join(', '), 'text', ' placeholder="XS, S, M, L, XL"') + '<div class="sz-sets">' + sets + '</div>' +
+        '<div class="g2">' + sel('size_guide', 'Size guide shown to buyers', p.size_guide || '', META.guides) + '</div>' +
+        '<div class="field full"><label>Colours (first one is shown on the card)</label><div class="sw-picks">' + swatches + '</div></div>') +
+      sec('Price & status', '<div class="g3">' + inp('price', 'Price (leave empty for “on request”)', p.price, 'number', ' min="0" step="any"') +
+        sel('currency', 'Currency', p.currency || 'GEL', { GEL: 'GEL ₾', EUR: 'EUR €', USD: 'USD $' }) + sel('status', 'Status', p.status, PSTATUS) + '</div>' +
+        '<div class="g2">' + inp('id', 'Web address (auto)', p.id, 'text', ' pattern="[a-z0-9-]{2,80}"') + inp('sort', 'Order in its row (lower comes first)', p.sort, 'number') + '</div>') +
+      sec('Picture', '<div class="g2">' + sel('drawing', 'Drawing (used when there is no photo)', p.drawing || 'tshirt', draws) + '</div>' +
+        '<div class="ph-wrap"><div class="ph-cover"><span class="rf-l">Product photo (optional)</span><div class="ph-slot" id="pp-slot"></div>' +
+        '<label class="btn btn-ghost ph-btn">Upload photo<input type="file" accept="image/*" id="pp-in" hidden></label><p class="form-msg" id="pp-msg"></p></div></div>') +
+      '</div><aside class="prod-prev"><span class="rf-l">Preview</span><div class="pp-card"><div class="pp-art" id="pp-art"></div><b id="pp-name"></b><span id="pp-meta"></span></div></aside></div>' +
+      '<div class="adm-foot"><button class="btn btn-primary" type="submit">Save product</button>' + (id ? '<button type="button" class="btn btn-ghost danger" id="pdel">Delete product</button>' : '') + '<p class="form-msg"></p></div></form>', 'shop');
+    var form = $('#pf'), E = form.elements, touched = !!p.id;
+    function cats() { var sp = E.sport.value, list = META.cats[sp] || []; E.category.innerHTML = list.map(function (c) { return '<option value="' + c[0] + '"' + (c[0] === p.category ? ' selected' : '') + '>' + e(c[1]) + '</option>'; }).join(''); }
+    function cur() {
+      return { id: E.id.value.trim(), name: E.name.value.trim(), name_ka: E.name_ka.value.trim(), description: E.description.value.trim(), description_ka: E.description_ka.value.trim(),
+        sport: E.sport.value, category: E.category.value, audience: E.audience.value,
+        sizes: E.sizes.value.split(',').map(function (x) { return x.trim(); }).filter(Boolean),
+        colours: $$('input[name="colour"]:checked', form).map(function (c) { return c.value; }),
+        size_guide: E.size_guide.value, drawing: E.drawing.value, price: E.price.value === '' ? null : +E.price.value, currency: E.currency.value,
+        status: E.status.value, sort: +E.sort.value || 0, photo_url: p.photo_url || null };
+    }
+    function preview() {
+      var o = cur();
+      $('#pp-art').innerHTML = artSvg(o); $('#pp-name').textContent = o.name || 'Product name';
+      $('#pp-meta').textContent = [catName(o.sport, o.category), o.price != null ? money(o.price, o.currency) : 'Price on request'].join(' · ');
+      $('#pp-slot').innerHTML = p.photo_url ? '<img src="' + e(p.photo_url) + '" alt=""><button type="button" class="ph-x" id="pp-x" aria-label="Remove photo">×</button>' : '<span>No photo. The drawing is used.</span>';
+    }
+    cats(); preview();
+    E.sport.addEventListener('change', function () { p.category = ''; cats(); preview(); });
+    E.name.addEventListener('input', function () { if (!touched) E.id.value = slugify(E.name.value); });
+    E.id.addEventListener('input', function () { touched = true; });
+    form.addEventListener('input', preview); form.addEventListener('change', preview);
+    $$('.sz-set', form).forEach(function (b) { b.addEventListener('click', function () { E.sizes.value = META.sizesets[b.dataset.set].join(', '); preview(); }); });
+    form.addEventListener('click', function (ev) { if (ev.target.id === 'pp-x') { p.photo_url = null; preview(); } });
+    $('#pp-in').addEventListener('change', function () {
+      var f = this.files[0], m = $('#pp-msg'); if (!f) return; m.className = 'form-msg'; m.textContent = 'Uploading…';
+      shrink(f, H.mode === 'demo' ? 900 : 1600).then(function (b) { return H.api.upload(b, 'product.jpg'); })
+        .then(function (u) { p.photo_url = u; preview(); m.textContent = 'Photo uploaded. Remember to save.'; })
+        .catch(function (err) { m.className = 'form-msg err'; m.textContent = err.message; });
+      this.value = '';
+    });
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var o = cur(), msg = form.querySelector('.adm-foot .form-msg'), errs = [];
+      o.id = o.id || slugify(o.name); o.old_id = id || '';
+      if (!o.name) errs.push('Add a name.');
+      if (!/^[a-z0-9-]{2,80}$/.test(o.id)) errs.push('Web address: lowercase letters, numbers and dashes.');
+      if (!id && state.products.some(function (x) { return x.id === o.id; })) errs.push('That web address is already used.');
+      if (!o.colours.length) errs.push('Choose at least one colour.');
+      if (!o.sizes.length) errs.push('Add at least one size (or “One size”).');
+      if (errs.length) { msg.className = 'form-msg err'; msg.textContent = errs.join(' '); toast(errs[0], true); return; }
+      msg.className = 'form-msg'; msg.textContent = 'Saving…';
+      H.api.saveProduct(o).then(function () {
+        toast('Product saved'); return H.api.adminProducts().then(function (l) { state.products = l || []; location.hash = 'product/' + encodeURIComponent(o.id); route(); });
+      }).catch(function (err) { msg.className = 'form-msg err'; msg.textContent = err.message === 'NEEDS_UPDATE_005' ? 'Run update-005.sql in Supabase first.' : err.message; toast(msg.textContent, true); });
+    });
+    if (id) $('#pdel').addEventListener('click', function () {
+      if (!confirm('Delete “' + p.name + '”? This cannot be undone. Tip: set the status to Hidden instead.')) return;
+      H.api.deleteProduct(p.id).then(function () { state.products = state.products.filter(function (x) { return x.id !== p.id; }); toast('Product deleted'); location.hash = 'shop'; }).catch(function (err) { toast(err.message, true); });
+    });
+  }
+
+  // ================= email signups =================
+  var INT = { camps: 'Camp dates', bjj: 'BJJ', wrestling: 'Wrestling', judo: 'Judo', shop: 'Shop news', news: 'Stories' };
+  var SRC = { foot: 'Footer', home: 'Home page', camps: 'Camps page', camp: 'Camp page' };
+  state.sub = { int: 'all', status: 'active', q: '' };
+  function subsView() {
+    app.innerHTML = shell('<p class="adm-loading">Loading signups…</p>', 'subs');
+    H.api.subscribers().then(function (l) { state.subs = l || []; drawSubs(); }).catch(fail('Signups'));
+  }
+  function drawSubs() {
+    var f = state.sub, q = f.q.toLowerCase(), all = state.subs, act = all.filter(function (s) { return s.status === 'active'; });
+    var list = all.filter(function (s) { return (f.status === 'all' || s.status === f.status) && (f.int === 'all' || (s.interests || []).indexOf(f.int) >= 0) && (!q || (s.email + ' ' + (s.name || '')).toLowerCase().indexOf(q) >= 0); });
+    var n = function (k) { return act.filter(function (s) { return (s.interests || []).indexOf(k) >= 0; }).length; };
+    var week = act.filter(function (s) { return new Date(s.created_at) > new Date(Date.now() - 7 * 864e5); }).length;
+    var rows = list.map(function (s) {
+      return '<tr data-id="' + s.id + '"><td><a href="mailto:' + e(s.email) + '"><b>' + e(s.email) + '</b></a>' + (s.name ? '<span class="sub">' + e(s.name) + '</span>' : '') + '</td>' +
+        '<td>' + (s.interests || []).map(function (i) { return '<span class="int-chip">' + e(INT[i] || i) + '</span>'; }).join(' ') + '</td>' +
+        '<td><span class="sub">' + e(SRC[s.source] || s.source || '') + ' · ' + e((s.lang || '').toUpperCase()) + '</span></td>' +
+        '<td><span class="sub">' + new Date(s.created_at).toLocaleDateString('en-GB') + '</span></td>' +
+        '<td class="act">' + (s.status === 'active' ? '<button type="button" class="lnk su-off">Unsubscribe</button>' : '<span class="pill-s s-cancelled">Unsubscribed</span> <button type="button" class="lnk su-on">Re-add</button>') + '<button type="button" class="lnk danger su-del">Delete</button></td></tr>';
+    }).join('');
+    var io = '<option value="all">Any interest</option>' + Object.keys(INT).map(function (k) { return '<option value="' + k + '"' + (f.int === k ? ' selected' : '') + '>' + INT[k] + '</option>'; }).join('');
+    var so = [['active', 'Subscribed'], ['unsubscribed', 'Unsubscribed'], ['all', 'Everyone']].map(function (o) { return '<option value="' + o[0] + '"' + (f.status === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Email signups<span class="dot">.</span></h1><div class="row-btns"><button class="btn btn-ghost" type="button" id="copy">Copy emails</button><button class="btn btn-ghost" type="button" id="scsv">Export CSV</button></div></div>' +
+      '<div class="kpis"><div><span>Subscribed</span><b>' + act.length + '</b></div><div><span>Want camp dates</span><b>' + n('camps') + '</b></div>' +
+      '<div><span>BJJ · Wrestling · Judo</span><b>' + n('bjj') + ' · ' + n('wrestling') + ' · ' + n('judo') + '</b></div><div><span>New this week</span><b>' + week + '</b></div></div>' +
+      '<div class="adm-filters"><select id="si">' + io + '</select><select id="ss">' + so + '</select><input id="sq2" type="search" placeholder="Search email…" value="' + e(f.q) + '"><span class="sub">' + list.length + ' shown</span></div>' +
+      (list.length ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Email</th><th>Interested in</th><th>Signed up from</th><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="body">No signups yet. They appear here when people use the email forms on the site.</p>') +
+      '<p class="note">“Copy emails” copies the emails shown above, so you can paste them into Gmail (BCC) or a newsletter tool. Filter first, e.g. “Want camp dates” + “BJJ”.</p>', 'subs');
+    $('#si').addEventListener('change', function () { f.int = this.value; drawSubs(); });
+    $('#ss').addEventListener('change', function () { f.status = this.value; drawSubs(); });
+    $('#sq2').addEventListener('input', function () { f.q = this.value; clearTimeout(this._t); var v = this.value; this._t = setTimeout(function () { drawSubs(); var i = $('#sq2'); i.focus(); i.setSelectionRange(v.length, v.length); }, 250); });
+    $('#copy').addEventListener('click', function () {
+      var t = list.filter(function (s) { return s.status === 'active'; }).map(function (s) { return s.email; }).join(', ');
+      if (!t) return toast('No emails to copy', true);
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast(t.split(',').length + ' emails copied'); }, function () { prompt('Copy these emails:', t); });
+    });
+    $('#scsv').addEventListener('click', function () {
+      dl('chidaoba-signups-' + new Date().toISOString().slice(0, 10) + '.csv', [csvLine(['email', 'name', 'interests', 'source', 'language', 'status', 'signed_up'])].concat(list.map(function (s) {
+        return csvLine([s.email, s.name, (s.interests || []).map(function (i) { return INT[i] || i; }).join('; '), SRC[s.source] || s.source, s.lang, s.status, (s.created_at || '').slice(0, 10)]); })).join('\n'));
+    });
+    app.querySelectorAll('.su-off, .su-on, .su-del').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.closest('tr').dataset.id, del = b.classList.contains('su-del');
+        if (del && !confirm('Delete this email from the list?')) return;
+        var patch = del ? { delete: true } : { status: b.classList.contains('su-off') ? 'unsubscribed' : 'active' };
+        H.api.updateSubscriber(id, patch).then(function () {
+          if (del) state.subs = state.subs.filter(function (s) { return s.id !== id; }); else state.subs.forEach(function (s) { if (s.id === id) s.status = patch.status; });
+          toast(del ? 'Deleted' : 'Saved'); drawSubs();
+        }).catch(function (err) { toast(err.message, true); });
+      });
+    });
+  }
+
+  // ================= contact messages =================
+  var MSTATUS = { new: 'New', replied: 'Replied', closed: 'Closed' };
+  state.msgF = 'open';
+  function msgsView() {
+    app.innerHTML = shell('<p class="adm-loading">Loading messages…</p>', 'msgs');
+    H.api.messages().then(function (l) { state.msgs = l || []; drawMsgs(); }).catch(fail('Messages'));
+  }
+  function drawMsgs() {
+    var f = state.msgF, list = state.msgs.filter(function (m) { return f === 'all' || (f === 'open' ? m.status !== 'closed' : m.status === f); });
+    var cards = list.map(function (m) {
+      var first = (m.name || '').split(' ')[0];
+      var wa = m.phone ? 'https://wa.me/' + m.phone.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent('Hi ' + first + ', this is CHIDAOBA. Thank you for your message.') : null;
+      return '<article class="msg s-' + m.status + '" data-id="' + m.id + '"><header><div><b>' + e(m.name) + '</b><span class="sub">' + e(m.topic || 'General') + ' · ' + new Date(m.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + (m.lang ? ' · ' + e(m.lang.toUpperCase()) : '') + '</span></div>' +
+        '<select class="ms">' + Object.keys(MSTATUS).map(function (k) { return '<option value="' + k + '"' + (m.status === k ? ' selected' : '') + '>' + MSTATUS[k] + '</option>'; }).join('') + '</select></header>' +
+        '<p class="msg-t">' + e(m.message).replace(/\n/g, '<br>') + '</p>' +
+        '<div class="msg-act"><a class="btn btn-primary sm" href="mailto:' + e(m.email) + '?subject=' + encodeURIComponent('Re: ' + (m.topic || 'your message') + ' | CHIDAOBA') + '">Reply by email</a>' +
+        (wa ? '<a class="btn btn-ghost sm" href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + e(m.phone) + '</a>' : '') +
+        '<span class="sub">' + e(m.email) + '</span><input class="mn" placeholder="Note…" value="' + e(m.admin_note || '') + '"><button type="button" class="lnk danger md">Delete</button></div></article>';
+    }).join('');
+    var fo = [['open', 'Open (new and replied)'], ['new', 'New'], ['replied', 'Replied'], ['closed', 'Closed'], ['all', 'All']].map(function (o) { return '<option value="' + o[0] + '"' + (f === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Messages<span class="dot">.</span></h1></div>' +
+      '<div class="adm-filters"><select id="mf">' + fo + '</select><span class="sub">' + list.length + ' shown</span></div>' +
+      (list.length ? '<div class="msgs">' + cards + '</div>' : '<p class="body">No messages here. Messages from the contact form appear here.</p>') +
+      '<p class="note">Reply by email or WhatsApp, then set the status to Replied. Closed messages are hidden from the default view.</p>', 'msgs');
+    $('#mf').addEventListener('change', function () { state.msgF = this.value; drawMsgs(); });
+    $$('.ms').forEach(function (s) { s.addEventListener('change', function () { var id = s.closest('.msg').dataset.id, v = s.value; H.api.updateMessage(id, { status: v }).then(function () { state.msgs.forEach(function (m) { if (m.id === id) m.status = v; }); toast('Saved'); drawMsgs(); }).catch(function (err) { toast(err.message, true); }); }); });
+    $$('.mn').forEach(function (i) { i.addEventListener('change', function () { var id = i.closest('.msg').dataset.id; H.api.updateMessage(id, { admin_note: i.value }).then(function () { state.msgs.forEach(function (m) { if (m.id === id) m.admin_note = i.value; }); toast('Note saved'); }).catch(function (err) { toast(err.message, true); }); }); });
+    $$('.md').forEach(function (b) { b.addEventListener('click', function () { if (!confirm('Delete this message?')) return; var id = b.closest('.msg').dataset.id; H.api.updateMessage(id, { delete: true }).then(function () { state.msgs = state.msgs.filter(function (m) { return m.id !== id; }); toast('Deleted'); drawMsgs(); }).catch(function (err) { toast(err.message, true); }); }); });
   }
 
   if (H.api.signedIn()) load(); else login();

@@ -97,22 +97,24 @@ def socials(cls="socials"):
     return f'<div class="{cls}">' + "".join(
         f'<a href="{u}"{"" if u.startswith("mailto") else " rel=\"noopener\""} aria-label="{n}" title="{n}">{i}</a>' for u, n, i in items) + "</div>"
 
-def newsletter_form(where):
+def newsletter_form(where, interests=("camps", "shop", "news"), title="The Culture Letter", sub="Camps, new products and stories. A few emails a year.", btn="Subscribe", hidden=()):
     big = where != "foot"
-    return f"""<form class="js-form news{' news-big' if big else ''}" data-key="{WEB3FORMS_KEY}" data-ok-text="You’re on the list. Welcome to The Culture Letter." novalidate>
-      <input type="hidden" name="subject" value="Newsletter signup, The Culture Letter">
-      <input type="hidden" name="from_name" value="chidaoba.com">
-      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <label class="news-label" for="nl-{where}">The Culture Letter</label>
-      <p class="news-sub">Camps, events, new releases and stories. A few times a year.</p>
+    names = {"camps": "Camp dates", "shop": "Shop news", "news": "Stories", "bjj": "BJJ", "wrestling": "Wrestling", "judo": "Judo"}
+    chips = "".join(f'<label class="news-int"><input type="checkbox" name="interest" value="{k}" checked><span>{names[k]}</span></label>' for k in interests)
+    return f"""<form class="js-form news{' news-big' if big else ''}" data-db="subscribe" data-source="{where}" data-key="{WEB3FORMS_KEY}" data-ok-text="Thank you. You’re on the list." novalidate>
+      <input type="hidden" name="subject" value="Email signup, chidaoba.com">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">{"".join(f'<input type="hidden" name="interest" value="{h}">' for h in hidden)}
+      <label class="news-label" for="nl-{where}">{title}</label>
+      <p class="news-sub">{sub}</p>
+      <div class="news-ints" role="group" aria-label="What would you like to hear about?">{chips}</div>
       <div class="news-row"><input id="nl-{where}" name="email" type="email" autocomplete="email" placeholder="Your email" required>
-      <button class="btn btn-primary" type="submit">Subscribe</button></div>
-      <label class="news-consent"><input type="checkbox" name="consent" value="yes" required><span>I agree to receive emails and accept the <a href="/privacy/">privacy notice</a>.</span></label>
+      <button class="btn btn-primary" type="submit">{btn}</button></div>
+      <label class="news-consent"><input type="checkbox" name="consent" value="yes" required><span>I agree to receive emails and accept the <a href="/privacy/">privacy notice</a>. Unsubscribe any time.</span></label>
       <p class="form-msg" aria-live="polite"></p>
     </form>"""
 
 def footer(path=""):
-    cta = "" if path in ("/camps/", "/admin/") else f"""
+    cta = "" if path.startswith("/camps/") or path == "/admin/" else f"""
     <div class="foot-cta">
       <h2 class="display">Train with us<br>in Georgia</h2>
       <div class="foot-cta-btns">
@@ -143,11 +145,13 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "31"
-EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["shop"]}
+ASSET_V = "32"
+EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
-    js = "".join(f'<script src="/assets/js/{n}.js?v={ASSET_V}" defer></script>' for n in EXTRA_JS.get(path, []))
+    names = EXTRA_JS.get(path, [])
+    names = names if "config" in names else ["config"] + names
+    js = "".join(f'<script src="/assets/js/{n}.js?v={ASSET_V}" defer></script>' for n in names)
     out = head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
     if path == "/admin/":
         out = head(title, desc, path).replace('<meta name="viewport"', '<meta name="robots" content="noindex,nofollow">\n<meta name="viewport"') + f'<main id="admin" class="adm"></main>' + f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script></body></html>'
@@ -226,7 +230,7 @@ def home():
         <ul class="chips"><li>BJJ &amp; grappling</li><li>Wrestling</li><li>Judo</li></ul>
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px">
           <a class="btn btn-primary" href="/camps/">Explore camps &amp; events {arrow()}</a>
-          <a class="btn btn-ghost" href="{IG}" rel="noopener">Follow for dates {arrow()}</a>
+          <a class="btn btn-ghost" href="/camps/#notify">Get dates by email {arrow()}</a>
         </div>
       </div>
     </article>
@@ -249,11 +253,6 @@ def home():
   <div class="wrap">
     <p class="label muted"><span class="bar"></span>04 · Newsletter</p>
     <h2 id="invite-title" class="display h-lg reveal" style="margin-top:24px">Stay updated</h2>
-    <div class="invite-links reveal">
-      <a href="{IG}" rel="noopener"><span class="label muted">Instagram</span><b>{IG_HANDLE} →</b></a>
-      <a href="/camps/"><span class="label muted">Upcoming</span><b>Camps &amp; events →</b></a>
-      <a href="{WA}" rel="noopener"><span class="label muted">WhatsApp</span><b>{WA_SHOW} →</b></a>
-    </div>
     <div class="news-wrap reveal">{newsletter_form("home")}</div>
   </div>
 </section>
@@ -401,6 +400,10 @@ def camps():
   </div>
 </section>
 
+<section class="section dark notify-sec" id="notify">
+  <div class="wrap notify-in">{newsletter_form("camps", interests=("bjj", "wrestling", "judo"), title="Get new camp dates by email", sub="Choose your sports. We email you when a new camp opens, before anyone else.", btn="Notify me", hidden=("camps",))}</div>
+</section>
+
 <section class="section light venues-sec">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px">
@@ -449,7 +452,8 @@ def camps():
 """
 
 def camp_detail():
-    return '<div id="camp-root"><section class="page-hero dark"><div class="wrap"><p class="body soft">Loading camp…</p></div></section></div>'
+    return '<div id="camp-root"><section class="page-hero dark"><div class="wrap"><p class="body soft">Loading camp…</p></div></section></div>' + \
+        f'<section class="section dark notify-sec" id="notify"><div class="wrap notify-in">{newsletter_form("camp", interests=("bjj", "wrestling", "judo"), title="Hear about the next camps", sub="We email you when new dates open for your sports.", btn="Notify me", hidden=("camps",))}</div></section>'
 
 def venue_page():
     return '<div id="venue-root"><section class="page-hero dark"><div class="wrap"><p class="body soft">Loading venue…</p></div></section></div>'
@@ -478,7 +482,7 @@ def georgia():
         "Training here means training in a country where these sports are taken seriously.",
     ]
     rt = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p></div>' for i, t in enumerate(roots))
-    chapters = [("roots", "Roots"), ("champions", "Champions"), ("newwave", "BJJ"), ("land", "Nature"),
+    chapters = [("champions", "Champions"), ("newwave", "BJJ"), ("land", "Nature"),
                 ("table", "Food"), ("people", "Hospitality"), ("know", "Practical info")]
     ch = "".join(f'<a href="#{k}"><b>{i+1:02d}</b> {t}</a>' for i, (k, t) in enumerate(chapters))
     day = [("08:00", "Breakfast"), ("10:00", "Morning session: technique"),
@@ -512,17 +516,11 @@ def georgia():
 
 <nav class="chapters" aria-label="Chapters"><div class="wrap">{ch}</div></nav>
 
-<section class="story dark" id="roots" aria-labelledby="roots-title">
-  <div class="wrap">
-    <p class="label muted" id="roots-title"><span class="bar"></span>01 · Roots</p>
-    <div class="scrub-list">{rt}</div>
-  </div>
-</section>
 
 <section class="section light" id="champions" aria-labelledby="champ-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>02 · Champions</p>
+      <p class="label"><span class="bar"></span>01 · Champions</p>
       <h2 id="champ-title" class="display h-lg">A small country with many champions</h2>
       <p class="body muted">Most of Georgia's Olympic medals come from judo and wrestling.</p>
     </div>
@@ -559,7 +557,7 @@ def georgia():
 <section class="section dark" id="newwave" aria-labelledby="nw-title">
   <div class="wrap gx-split">
     <div class="stagger">
-      <p class="label muted"><span class="bar"></span>03 · BJJ and grappling</p>
+      <p class="label muted"><span class="bar"></span>02 · BJJ and grappling</p>
       <h2 id="nw-title" class="display h-lg">A growing BJJ community</h2>
     </div>
     <div class="stagger">
@@ -574,7 +572,7 @@ def georgia():
 <section class="section light" id="land" aria-labelledby="land-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>04 · Nature and climate</p>
+      <p class="label"><span class="bar"></span>03 · Nature and climate</p>
       <h2 id="land-title" class="display h-lg">Mountains, sea and good weather</h2>
       <p class="body muted">Georgia is a small country with a lot of variety. The mountains and the Black Sea coast are both a few hours from Tbilisi.</p>
     </div>
@@ -582,10 +580,6 @@ def georgia():
       <div><b>The mountains</b><p>The Greater Caucasus runs along the north of the country, with peaks above 5,000 m. Mountain regions such as Svaneti stay cool in summer, which makes them good for training.</p></div>
       <div><b>The sea</b><p>The Black Sea coast around Batumi has beaches and warm water in summer. A good option for rest days or after the camp.</p></div>
       <div><b>The seasons</b><p>Summers are warm and sunny, spring and autumn are mild, and winters bring snow to the mountains. Most camps run from late spring to early autumn.</p></div>
-    </div>
-    <div class="gx-day reveal">
-      <p class="label"><span class="bar"></span>Example camp day</p>
-      <ol>{dl}</ol>
     </div>
   </div>
 </section>
@@ -595,7 +589,7 @@ def georgia():
     <div class="why-grid">
       <h2 id="table-title" class="display h-lg stagger"><span>Food and wine</span></h2>
       <div class="text stagger">
-        <p class="label muted"><span class="bar"></span>05 · Food</p>
+        <p class="label muted"><span class="bar"></span>04 · Food</p>
         <p class="lead soft">Georgian food is one of the best reasons to visit. A traditional feast is called a supra, with many dishes and toasts led by a tamada.</p>
         <p class="body soft">Georgia also has one of the oldest winemaking traditions in the world, about 8,000 years. Wine is still made in clay vessels called qvevri, a method listed by UNESCO.</p>
       </div>
@@ -607,7 +601,7 @@ def georgia():
 <section class="section light" id="people" aria-labelledby="people-title">
   <div class="wrap gx-split">
     <div class="stagger">
-      <p class="label"><span class="bar"></span>06 · Hospitality</p>
+      <p class="label"><span class="bar"></span>05 · Hospitality</p>
       <h2 id="people-title" class="display h-lg">Hospitality</h2>
     </div>
     <div class="stagger">
@@ -622,7 +616,7 @@ def georgia():
 <section class="section alt" id="know" aria-labelledby="know-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px">
-      <p class="label"><span class="bar"></span>07 · Practical information</p>
+      <p class="label"><span class="bar"></span>06 · Practical information</p>
       <h2 id="know-title" class="display h-md">Practical information</h2>
     </div>
     <div class="details gx-know stagger">{kn}</div>
@@ -778,7 +772,7 @@ def shop():
 <div class="pv" id="pv" hidden role="dialog" aria-modal="true" aria-labelledby="pv-name"><div class="pv-box">
   <button type="button" class="pv-x" aria-label="Close">×</button>
   <div class="pv-art" id="pv-art"></div>
-  <div class="pv-body"><p class="label" id="pv-cat"></p><h2 class="display h-md" id="pv-name"></h2><p class="body muted" id="pv-desc"></p>
+  <div class="pv-body"><p class="label" id="pv-cat"></p><h2 class="display h-md" id="pv-name"></h2><p class="pv-price req" id="pv-price"></p><p class="body muted" id="pv-desc"></p>
     <div class="pv-group"><p class="pv-l">Size <button type="button" class="pv-guide" id="pv-guide">Size guide</button></p><div class="pv-opts" id="pv-sizes"></div></div>
     <div class="pv-fit" id="pv-fit" hidden><p class="pv-l">Find my size</p>
       <div class="pv-fit-row"><label><span>Height</span><input type="number" inputmode="numeric" id="fit-h" min="80" max="230" placeholder="cm"></label>
@@ -794,7 +788,7 @@ def shop():
 <aside class="bagd" id="bagd" hidden aria-label="Bag"><div class="bagd-box">
   <div class="bagd-top"><h2 class="display h-md">Your bag</h2><button type="button" class="pv-x" id="bag-x" aria-label="Close">×</button></div>
   <div class="bagd-list" id="bag-list"></div>
-  <div class="bagd-foot"><p class="note">We will reply on WhatsApp with prices, delivery options and payment details.</p>
+  <div class="bagd-foot"><p class="bag-total" id="bag-total" hidden></p><p class="note">We will reply on WhatsApp with prices, delivery options and payment details.</p>
     <a class="btn btn-primary" id="bag-send" href="#" rel="noopener">Send order on WhatsApp {arrow()}</a>
     <button type="button" class="bagd-clear" id="bag-clear">Clear bag</button></div>
 </div></aside>
@@ -810,17 +804,16 @@ def privacy():
 <p class="label muted">Last updated: November 2026</p>
 <h2>What this website collects</h2>
 <p>We only collect what you choose to send us through the forms on this site:</p>
-<p><b>Camp interest form</b>, name, email, country, age, training experience and the optional details you add (phone/WhatsApp, belt or skill level, club, interests, accommodation needs, message). Used to contact you about camps and events.</p>
-<p><b>Contact form</b>, name, email, topic, message and optional phone. Used to reply to you.</p>
-<p><b>The Culture Letter</b>, your email address. Used to send our newsletter; you can unsubscribe at any time by replying “unsubscribe” or emailing us.</p>
+<p><b>Camp request form</b>: name, email, country, age, training experience and the optional details you add (phone or WhatsApp, level, club, accommodation needs, message). Used to arrange your place at a camp.</p>
+<p><b>Email signups</b> (The Culture Letter and “Get new camp dates”): your email and the topics you choose, such as camp dates for your sport, shop news or stories. Used to send you those emails. You can unsubscribe at any time by replying “unsubscribe” or writing to us.</p>
+<p><b>Contact form</b>: name, email, topic, message and optional phone. Used to reply to you.</p>
+<p><b>Shop orders</b> are sent by you on WhatsApp. Your bag is saved only in your own browser until you send it.</p>
 <p>We don’t sell or share your details, and there are no accounts, analytics or advertising cookies on this site.</p>
-<h2>How the forms work</h2>
-<p>Form submissions are delivered to our inbox (chidaobaculture@gmail.com) by Web3Forms, a form-processing service. If the form opens your email app instead, your message is sent from your own email account. We keep your details only as long as needed. To see, correct or delete what we hold about you, email us and we’ll do it.</p>
+<h2>Where your details are kept</h2>
+<p>Form submissions are stored in our database at Supabase, a hosting service for databases. Only the CHIDAOBA team can see them, through a password-protected admin page. If a form cannot reach the database, it opens your email app instead and the message is sent from your own email account. We keep your details only as long as needed. To see, correct or delete what we hold about you, email us and we’ll do it.</p>
 <p>WhatsApp, Instagram and Facebook links open those services; their own privacy policies apply when you use them.</p>
 <h2>Third-party services</h2>
-<p>The site is hosted on GitHub Pages and loads its typefaces from Google Fonts. Like any web server, these services receive technical information such as your IP address when your browser requests a page or a font. Their own privacy policies apply.</p>
-<h2>Changes</h2>
-<p>When we add accounts or the shop, this page will be updated before any new personal data is collected.</p>
+<p>The site is hosted on GitHub Pages, stores form data with Supabase and loads its typefaces from Google Fonts. Like any web server, these services receive technical information such as your IP address. Their own privacy policies apply.</p>
 <h2>Contact</h2>
 <p>Questions: email <a href="mailto:{EMAIL}">{EMAIL}</a> or message us on Instagram at <a href="{IG}" rel="noopener">{IG_HANDLE}</a>.</p>
 </div></section>"""
@@ -835,7 +828,7 @@ def notfound():
 
 def contact():
     topics = ["General question", "Camps &amp; events", "Coach / athlete / club", "Partnership or collaboration", "Press", "Shop &amp; apparel"]
-    opts = "".join(f"<option>{t}</option>" for t in topics)
+    opts = "".join(f"<option value=\"{t}\">{t}</option>" for t in topics)
     return f"""
 <section class="page-hero dark">
   {sym_svg("ghost")}
@@ -855,7 +848,7 @@ def contact():
         <a href="{FB}" rel="noopener"><span class="label muted">Facebook</span><b>fb.com/chidaoba</b></a>
       </div>
     </div>
-    <form id="contact-form" class="js-form" data-key="{WEB3FORMS_KEY}" data-done="contact-done" novalidate>
+    <form id="contact-form" class="js-form" data-db="message" data-key="{WEB3FORMS_KEY}" data-done="contact-done" novalidate>
       <input type="hidden" name="subject" value="New message, chidaoba.com">
       <input type="hidden" name="from_name" value="chidaoba.com">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -900,8 +893,23 @@ if __name__ == "__main__":
     import i18n
     trs = {l: i18n.Tr(l) for l in i18n.LANGS}
     cat = {slugify(p[0]): {"name": p[0].replace("&amp;", "&"), "cat": {k: n for k, n, _ in SPORTS}[p[2]].replace("&amp;", "&")} for p in PRODUCTS}
+    import shop_art
+    _ka = json.load(open(os.path.join(ROOT, "_src", "i18n", "ka.json"), encoding="utf-8"))
+    seed = [{"id": slugify(p[0]), "name": p[0], "name_ka": _ka.get(p[0]), "description": p[1], "description_ka": _ka.get(p[1]), "sport": p[2], "category": p[3],
+             "audience": p[4], "sizes": p[5], "colours": p[6], "size_guide": p[7] or None, "drawing": p[8], "price": None, "currency": "GEL",
+             "photo_url": None, "status": "active", "sort": i * 10} for i, p in enumerate(PRODUCTS)]
+    meta = {"sports": [[k, n.replace("&amp;", "&")] for k, n, _ in SPORTS],
+            "cats": {k: [[c, n.replace("&amp;", "&")] for c, n in v] for k, v in CATS.items()},
+            "audience": {"men": "Men", "women": "Women", "adult": "Adults, unisex", "kids": "Kids", "all": "Everyone (one size / any age)"},
+            "guides": {"": "None", "gi": "BJJ gi (A0 to A5)", "gi_w": "Women's gi (F1 to F4)", "gi_k": "Kids gi (M000 to M4)", "belt": "BJJ belt", "belt_k": "Kids BJJ belt",
+                       "judogi": "Judogi (by height)", "jbelt": "Judo belt", "top": "Tops (XS to XXL)", "top_w": "Women's tops (XS to XL)", "kids": "Kids clothing (by age)",
+                       "shorts": "Shorts (waist in inches)", "shoes": "Shoes (EU sizes)"},
+            "drawings": sorted(shop_art.ART.keys()), "art": shop_art.ART, "colours": shop_art.COLOURS, "dark": sorted(shop_art.DARK),
+            "sizesets": {"Adult XS to XXL": APPAREL, "Women XS to XL": WOMEN, "Kids by age": KIDS_AGE, "One size": ONE}}
     open(os.path.join(ROOT, "assets", "js", "catalog.js"), "w", encoding="utf-8").write(
-        "// Generated by _src/build.py: shop products, used to link 'What to bring' items.\nwindow.CHD_SHOP=" + json.dumps(cat, ensure_ascii=False) + ";\n")
+        "// Generated by _src/build.py: shop catalogue. The live shop reads products from the database;\n"
+        "// this copy is the fallback and the starting set.\nwindow.CHD_SHOP=" + json.dumps(cat, ensure_ascii=False) + ";\n"
+        "window.CHD_PRODUCTS=" + json.dumps(seed, ensure_ascii=False) + ";\nwindow.CHD_SHOP_META=" + json.dumps(meta, ensure_ascii=False) + ";\n")
     os.makedirs(os.path.join(ROOT, "assets", "i18n"), exist_ok=True)
     for l in i18n.LANGS:
         open(os.path.join(ROOT, "assets", "i18n", l + ".js"), "w", encoding="utf-8").write(i18n.runtime_js(l))
