@@ -143,7 +143,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "26"
+ASSET_V = "27"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["shop"]}
 
 def page(path, title, desc, main):
@@ -554,9 +554,10 @@ def georgia():
       <div><b data-count="9">9</b><span>Olympic gold medals in judo and wrestling</span></div>
       <div><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
     </div>
-    <div class="ch-lists">
-      <div><h3>Olympic champions</h3><p class="body muted">Judo and wrestling</p><ul><li><b>Zurab Zviadauri</b><span>Judo, 90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>Judo, 90 kg</span><em>2008</em></li><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 66 kg</span><em>2012</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Lasha Bekauri</b><span>Judo, 90 kg</span><em>2020, 2024</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
-      <div><h3>World champions</h3><p class="body muted">Recent titles</p><ul><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2025</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2025</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>3 world titles</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>3 world titles</em></li></ul></div>
+    <div class="ch-lists ch-3">
+      <div><h3>Olympic champions</h3><p class="body muted">Judo and wrestling, since 1996</p><ul><li><b>Zurab Zviadauri</b><span>Judo, 90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>Judo, 90 kg</span><em>2008</em></li><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 66 kg</span><em>2012</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Lasha Bekauri</b><span>Judo, 90 kg</span><em>2020, 2024</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
+      <div><h3>World champions</h3><p class="body muted">2025 and 2026</p><ul><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>2026 · 4th world title</em></li><li><b>Ilia Sulamanidze</b><span>Judo, 100 kg</span><em>2026</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2025</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li></ul></div>
+      <div><h3>European champions</h3><p class="body muted">2025 and 2026</p><ul><li><b>Lasha Shavdatuashvili</b><span>Judo, 73 kg</span><em>2026</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2026</em></li><li><b>Luka Maisuradze</b><span>Judo, 90 kg</span><em>2026</em></li><li><b>Guram Tushishvili</b><span>Judo, +100 kg</span><em>2026</em></li><li><b>Giorgi Sardalashvili</b><span>Judo, 60 kg</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>Judo, 100 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2025</em></li><li><b>Givi Matcharashvili</b><span>Freestyle, 97 kg</span><em>2025</em></li></ul></div>
     </div>
   </div>
 </section>
