@@ -143,7 +143,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "28"
+ASSET_V = "29"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["shop"]}
 
 def page(path, title, desc, main):
@@ -554,14 +554,24 @@ def georgia():
       <div><b data-count="9">9</b><span>Olympic gold medals in judo and wrestling</span></div>
       <div><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
     </div>
-    <div class="ch-lists">
-      <div><h3>Olympic champions</h3><p class="body muted">Judo and wrestling, all Olympic titles</p><ul><li><b>Zurab Zviadauri</b><span>Judo, 90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>Judo, 90 kg</span><em>2008</em></li><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 66 kg</span><em>2012</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Lasha Bekauri</b><span>Judo, 90 kg</span><em>2020, 2024</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
-      <div><h3>World champions</h3><p class="body muted">Judo and wrestling, 2022 to 2026</p><ul><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>2022, 2023, 2024, 2026</em></li><li><b>Luka Maisuradze</b><span>Judo, 90 kg</span><em>2023</em></li><li><b>Leri Abuladze</b><span>Greco-Roman, 63 kg</span><em>2023</em></li><li><b>Giorgi Sardalashvili</b><span>Judo, 60 kg</span><em>2024</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2025</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>Judo, 100 kg</span><em>2026</em></li></ul></div>
+    <div class="ch-eu ch-first">
+      <h3>Olympic champions</h3><p class="body muted">All Olympic titles in judo and wrestling</p>
+      <div class="ch-lists ch-lists-eu">
+        <div><h4>Judo</h4><ul><li><b>Zurab Zviadauri</b><span>90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>90 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>66 kg</span><em>2012</em></li><li><b>Lasha Bekauri</b><span>90 kg</span><em>2020, 2024</em></li></ul></div>
+        <div><h4>Wrestling</h4><ul><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
+      </div>
+    </div>
+    <div class="ch-eu">
+      <h3>World champions</h3><p class="body muted">Senior world titles, 2022 to 2026</p>
+      <div class="ch-lists ch-lists-eu">
+        <div><h4>Judo</h4><ul><li><b>Tato Grigalashvili</b><span>81 kg</span><em>2022, 2023, 2024, 2026</em></li><li><b>Luka Maisuradze</b><span>90 kg</span><em>2023</em></li><li><b>Giorgi Sardalashvili</b><span>60 kg</span><em>2024</em></li><li><b>Eteri Liparteliani</b><span>57 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Mixed team</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>100 kg</span><em>2026</em></li></ul></div>
+        <div><h4>Wrestling</h4><ul><li><b>Leri Abuladze</b><span>Greco-Roman, 63 kg</span><em>2023</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li></ul></div>
+      </div>
     </div>
     <div class="ch-eu">
       <h3>European champions</h3><p class="body muted">Senior European titles, 2022 to 2026</p>
       <div class="ch-lists ch-lists-eu">
-        <div><h4>Judo</h4><ul><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>2022, 2024</em></li><li><b>Luka Maisuradze</b><span>Judo, 90 kg</span><em>2022, 2026</em></li><li><b>Vazha Margvelashvili</b><span>Judo, 66 kg</span><em>2024</em></li><li><b>Giorgi Sardalashvili</b><span>Judo, 60 kg</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>Judo, 100 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2023, 2025</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2026</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 73 kg</span><em>2026</em></li><li><b>Guram Tushishvili</b><span>Judo, over 100 kg</span><em>2026</em></li></ul></div>
+        <div><h4>Judo</h4><ul><li><b>Tato Grigalashvili</b><span>81 kg</span><em>2022, 2024</em></li><li><b>Luka Maisuradze</b><span>90 kg</span><em>2022, 2026</em></li><li><b>Vazha Margvelashvili</b><span>66 kg</span><em>2024</em></li><li><b>Giorgi Sardalashvili</b><span>60 kg</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>100 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Mixed team</span><em>2023, 2025</em></li><li><b>Eteri Liparteliani</b><span>57 kg</span><em>2026</em></li><li><b>Lasha Shavdatuashvili</b><span>73 kg</span><em>2026</em></li><li><b>Guram Tushishvili</b><span>Over 100 kg</span><em>2026</em></li></ul></div>
         <div><h4>Wrestling</h4><ul><li><b>Leri Abuladze</b><span>Greco-Roman, 63 kg</span><em>2022, 2023</em></li><li><b>Zurabi Iakobishvili</b><span>Freestyle, 70 kg</span><em>2022</em></li><li><b>Givi Matcharashvili</b><span>Freestyle, 97 kg</span><em>2023, 2024, 2025</em></li></ul></div>
       </div>
     </div>
@@ -739,29 +749,25 @@ def shop():
         return f"""<article class="ptile" id="{pid}" data-id="{pid}" data-sport="{sp}" data-cat="{cat}" data-aud="{aud}">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: {n}">
             <div class="ptile-art">{art(kind, cols[0])}{badge}</div>
-            <div class="ptile-body"><h3>{n}</h3><p>{d}</p>
+            <div class="ptile-body"><p class="ptile-cat">{cat_name[cat]}</p><h3>{n}</h3><p>{d}</p>
             <div class="ptile-meta"><span>{sz_summary(sizes)}</span><span class="dots">{dots}</span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="{pid}">Choose size</button></article>"""
+</article>"""
     depts = ""
     for k, n, line in SPORTS:
         blocks = ""
         for c, cn in CATS[k]:
-            items = [p for p in PRODUCTS if p[2] == k and p[3] == c]
-            groups = [(a, [p for p in items if p[4] == a]) for a in AUD_ORDER]
-            groups = [g for g in groups if g[1]]
-            inner = ""
-            for a, ps in groups:
-                lab = f'<p class="pgroup-h">{GROUP[a]}</p>' if GROUP[a] and len(groups) > 1 else ""
-                inner += f'<div class="pgroup" data-aud="{a}" style="--n:{len(ps)}">{lab}<div class="pgrid">{"".join(tile(p) for p in ps)}</div></div>'
-            blocks += f'<div class="pcat" data-cat="{c}" id="{k}-{c}"><h3 class="pcat-h">{cn}</h3><div class="pcat-groups">{inner}</div></div>'
-        depts += f'<section class="dept" id="{k}" data-sport="{k}"><div class="dept-head"><h2 class="display h-md">{n}</h2><p class="lead">{line}</p></div>{blocks}</section>'
-    tiles_top = "".join(f'<button type="button" class="sport-tile" data-go="{k}"><b>{n}</b><span>{line}</span><em>{len([p for p in PRODUCTS if p[2] == k])} products</em></button>' for k, n, line in SPORTS)
+            items = sorted([p for p in PRODUCTS if p[2] == k and p[3] == c], key=lambda p: AUD_ORDER.index(p[4]))
+            blocks += f'''<div class="pcat" data-cat="{c}" id="{k}-{c}">
+          <div class="prow-head"><h3 class="pcat-h">{cn}</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow">{"".join(tile(p) for p in items)}</div></div>'''
+        nav = '<div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div>'
+        depts += f'<section class="dept" id="{k}" data-sport="{k}"><div class="dept-head"><h2 class="display h-md">{n}</h2><p class="lead">{line}</p><button type="button" class="dept-all" data-go="{k}">See all <span class="dept-n"></span></button>{nav}</div><div class="dept-rows">{blocks}</div></section>'
     who = "".join(f'<button type="button" class="who-btn" data-who="{a}"><b>{t}</b><span>{s}</span></button>' for a, t, s in
                   [("men", "Men", "Gis, rashguards, shorts and more"), ("women", "Women", "Cut and sized for women"), ("kids", "Kids", "Ages 4 to 13, kids' sizes")])
     tabs = '<button type="button" data-sport="all" aria-pressed="true">All</button>' + "".join(f'<button type="button" data-sport="{k}" aria-pressed="false">{n}</button>' for k, n, _ in SPORTS)
-    chips = "".join(f'<div class="shop-chips" data-for="{k}" hidden><button type="button" data-cat="all" aria-pressed="true">All {sport_name[k]}</button>' +
-                    "".join(f'<button type="button" data-cat="{c}" aria-pressed="false">{cn}</button>' for c, cn in CATS[k]) + '</div>' for k, *_ in SPORTS)
+    SEARCH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>'
     return f"""
 <section class="page-hero dark shop-hero">
   <div class="wrap" style="position:relative">
@@ -770,24 +776,19 @@ def shop():
     <p class="lead soft fade-load">Gis, fight wear, gear and clothing for BJJ, wrestling and judo. Choose your size, add to your bag and send the order on WhatsApp. No online payment.</p>
     <p class="shop-q-l fade-load">Who are you shopping for?</p>
     <div class="who fade-load">{who}</div>
-    <p class="shop-q-l fade-load">Or shop by sport</p>
-    <div class="sport-tiles fade-load">{tiles_top}</div>
   </div>
 </section>
-<div class="shop-bar" id="shop-bar"><div class="wrap">
-  <div class="shop-row">
-    <div class="shop-tabs" role="group" aria-label="Sport">{tabs}</div>
-    <div class="shop-tools">
-      <div class="seg" role="group" aria-label="Who for"><button type="button" data-aud="all" aria-pressed="true">Everyone</button><button type="button" data-aud="men" aria-pressed="false">Men</button><button type="button" data-aud="women" aria-pressed="false">Women</button><button type="button" data-aud="kids" aria-pressed="false">Kids</button></div>
-      <label class="shop-search"><span class="sr-only">Search</span><input type="search" id="shop-q" placeholder="Search"></label>
-      <button type="button" class="shop-bag-btn" id="bag-open" aria-label="Open bag">{BAG}<span>Bag</span><b id="bag-n">0</b></button>
-    </div>
+<div class="shop-bar" id="shop-bar"><div class="wrap sbar">
+  <div class="shop-tabs" role="group" aria-label="Sport">{tabs}</div>
+  <div class="sbar-tools">
+    <label class="who-sel"><span class="sr-only">Who for</span><select id="shop-who"><option value="all">Everyone</option><option value="men">Men</option><option value="women">Women</option><option value="kids">Kids</option></select></label>
+    <button type="button" class="sbar-ic" id="search-open" aria-label="Search">{SEARCH}</button>
   </div>
-  <div class="shop-row2">{chips}</div>
+  <div class="sbar-search" id="sbar-search" hidden>{SEARCH}<input type="search" id="shop-q" placeholder="Search the shop" aria-label="Search the shop"><button type="button" class="sbar-x" id="search-close" aria-label="Close search">×</button></div>
 </div></div>
-<section class="section light shop-main"><div class="wrap">
-  <ol class="shop-how"><li><b>1</b>Choose items and sizes</li><li><b>2</b>Send your bag on WhatsApp</li><li><b>3</b>We confirm price, stock and delivery</li></ol>
-  <div class="shop-status"><p class="shop-count" id="shop-count" aria-live="polite"></p><button type="button" class="shop-reset" id="shop-reset" hidden>Clear filters</button></div>
+<section class="section light shop-main all-view" id="shop-main"><div class="wrap">
+  <div class="shop-status"><p class="shop-count" id="shop-count" aria-live="polite"></p><button type="button" class="shop-reset" id="shop-reset" hidden>Clear filters</button>
+    <p class="shop-how-s">Choose items and sizes, send your bag on WhatsApp, and we confirm price, stock and delivery.</p></div>
   {depts}
   <div class="shop-empty" id="shop-empty" hidden><h3>No items found</h3><p>Try another category, sport or search.</p></div>
   <div class="shop-note"><h3>Need something else?</h3><p>Team orders, custom prints for your club or a product we do not list yet. Message us and we will help.</p>

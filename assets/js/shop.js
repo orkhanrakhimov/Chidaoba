@@ -26,13 +26,12 @@
   function save(b) { mem = b; try { localStorage.setItem(KEY, JSON.stringify(b)); } catch (e) { } count(); }
   function count() {
     var n = load().reduce(function (s, i) { return s + i.q; }, 0);
-    var el = $('#bag-n'); if (el) el.textContent = n;
     $$('[data-bag-n]').forEach(function (x) { x.textContent = n; x.hidden = !n; });
   }
 
-  // ---------- filters: sport, category, who for, search ----------
-  var state = { sport: 'all', cat: 'all', aud: 'all', q: '' };
-  var tiles = $$('.ptile'), depts = $$('.dept'), pcats = $$('.pcat'), groups = $$('.pgroup');
+  // ---------- filters: sport, who for, search ----------
+  var state = { sport: 'all', aud: 'all', q: '' };
+  var tiles = $$('.ptile'), depts = $$('.dept'), pcats = $$('.pcat');
   // men: men's and unisex adult items; women: women's and unisex adult items; kids: kids' items. One size / any age gear shows for all.
   var AUD = { all: null, men: { men: 1, adult: 1, all: 1 }, women: { women: 1, adult: 1, all: 1 }, kids: { kids: 1, all: 1 } };
   function audOk(a) { return !AUD[state.aud] || !!AUD[state.aud][a]; }
@@ -40,43 +39,75 @@
     var shown = 0, q = state.q.toLowerCase();
     tiles.forEach(function (t) {
       var p = P[t.dataset.id];
-      var ok = (state.sport === 'all' || t.dataset.sport === state.sport) && (state.cat === 'all' || t.dataset.cat === state.cat) && audOk(t.dataset.aud) &&
+      var ok = (state.sport === 'all' || t.dataset.sport === state.sport) && audOk(t.dataset.aud) &&
         (!q || (p.name + ' ' + p.desc + ' ' + p.catName + ' ' + p.sportName + ' ' + t.textContent).toLowerCase().indexOf(q) >= 0);
       t.hidden = !ok; if (ok) shown++;
     });
-    groups.forEach(function (g) { g.hidden = !$$('.ptile', g).some(function (t) { return !t.hidden; }); });
     pcats.forEach(function (c) {
-      c.hidden = !$$('.ptile', c).some(function (t) { return !t.hidden; });
-      var vis = $$('.pgroup', c).filter(function (g) { return !g.hidden; });
-      $$('.pgroup-h', c).forEach(function (h) { h.hidden = vis.length < 2; });
+      var n = $$('.ptile', c).filter(function (t) { return !t.hidden; }).length;
+      c.hidden = !n; $('.prow-n', c).textContent = n === 1 ? T('1 item', '1 ნივთი') : n + T(' items', ' ნივთი');
+      $('.prow', c).scrollLeft = 0;
     });
-    depts.forEach(function (d) { d.hidden = !$$('.ptile', d).some(function (t) { return !t.hidden; }); });
+    var overview = state.sport === 'all' && !state.q;
+    $('#shop-main').classList.toggle('all-view', overview);
+    depts.forEach(function (d) {
+      var n = $$('.ptile', d).filter(function (t) { return !t.hidden; }).length;
+      d.hidden = !n; $('.dept-n', d).textContent = '(' + n + ')';
+      $('.dept-rows', d).scrollLeft = 0;
+    });
     $('#shop-empty').hidden = shown > 0;
     $('#shop-count').textContent = shown === 1 ? T('1 item', '1 ნივთი') : shown + T(' items', ' ნივთი');
-    $('#shop-reset').hidden = state.sport === 'all' && state.cat === 'all' && state.aud === 'all' && !state.q;
+    $('#shop-reset').hidden = state.sport === 'all' && state.aud === 'all' && !state.q;
     $$('.shop-tabs button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.sport === state.sport ? 'true' : 'false'); });
-    $$('.shop-chips').forEach(function (g) { g.hidden = g.dataset.for !== state.sport; });
-    $$('.shop-chips button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.cat === state.cat ? 'true' : 'false'); });
-    $$('.seg button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.aud === state.aud ? 'true' : 'false'); });
+    $('#shop-who').value = state.aud;
+    $('#shop-who').parentNode.classList.toggle('on', state.aud !== 'all');
     $$('.who-btn').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.who === state.aud ? 'true' : 'false'); });
+    navs();
     try {
-      var u = new URLSearchParams(); if (state.sport !== 'all') u.set('sport', state.sport); if (state.cat !== 'all') u.set('cat', state.cat); if (state.aud !== 'all') u.set('for', state.aud);
+      var u = new URLSearchParams(); if (state.sport !== 'all') u.set('sport', state.sport); if (state.aud !== 'all') u.set('for', state.aud);
       var qs = u.toString(); history.replaceState(null, '', location.pathname + (qs ? '?' + qs : ''));
     } catch (e) { }
   }
   function toTop() {
     var main = $('.shop-main'), bar = $('#shop-bar');
-    var y = main.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - 60;
-    if (Math.abs(window.scrollY - y) > 40) window.scrollTo({ top: y, behavior: 'smooth' });
+    var y = main.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - 70;
+    if (window.scrollY > y + 40 || window.scrollY < y - 40) window.scrollTo({ top: y, behavior: 'smooth' });
   }
-  function setSport(k) { state.sport = k; state.cat = 'all'; apply(); toTop(); }
-  $$('.shop-tabs button').forEach(function (b) { b.addEventListener('click', function () { setSport(b.dataset.sport); }); });
-  $$('.sport-tile').forEach(function (b) { b.addEventListener('click', function () { setSport(b.dataset.go); }); });
-  $$('.shop-chips button').forEach(function (b) { b.addEventListener('click', function () { state.cat = b.dataset.cat; apply(); toTop(); }); });
-  $$('.seg button').forEach(function (b) { b.addEventListener('click', function () { state.aud = b.dataset.aud; apply(); }); });
-  $$('.who-btn').forEach(function (b) { b.addEventListener('click', function () { state.aud = b.dataset.who; state.sport = 'all'; state.cat = 'all'; apply(); toTop(); }); });
-  $('#shop-q').addEventListener('input', function (ev) { state.q = ev.target.value.trim(); if (state.q) { state.sport = 'all'; state.cat = 'all'; } apply(); });
-  $('#shop-reset').addEventListener('click', function () { state = { sport: 'all', cat: 'all', aud: 'all', q: '' }; $('#shop-q').value = ''; apply(); });
+  $$('.shop-tabs button').forEach(function (b) { b.addEventListener('click', function () { state.sport = b.dataset.sport; apply(); toTop(); }); });
+  $('#shop-who').addEventListener('change', function (ev) { state.aud = ev.target.value; apply(); toTop(); });
+  $$('.who-btn').forEach(function (b) { b.addEventListener('click', function () { state.aud = b.dataset.who; state.sport = 'all'; apply(); toTop(); }); });
+  $('#shop-q').addEventListener('input', function (ev) { state.q = ev.target.value.trim(); if (state.q) state.sport = 'all'; apply(); });
+  $('#shop-reset').addEventListener('click', function () { state = { sport: 'all', aud: 'all', q: '' }; $('#shop-q').value = ''; closeSearch(); apply(); });
+
+  // search opens over the bar
+  var sb = $('#sbar-search');
+  function openSearch() { sb.hidden = false; bar.classList.add('searching'); setTimeout(function () { $('#shop-q').focus(); }, 20); }
+  function closeSearch() { sb.hidden = true; bar.classList.remove('searching'); if (state.q) { state.q = ''; $('#shop-q').value = ''; apply(); } }
+  $('#search-open').addEventListener('click', openSearch);
+  $('#search-close').addEventListener('click', closeSearch);
+  $('#shop-q').addEventListener('keydown', function (ev) { if (ev.key === 'Escape') { ev.stopPropagation(); closeSearch(); } });
+
+  // ---------- side-scrolling rows ----------
+  function pairs() {
+    return pcats.map(function (c) { return [$('.prow', c), c]; }).concat(depts.map(function (d) { return [$('.dept-rows', d), d]; }));
+  }
+  function navs() {
+    pairs().forEach(function (pr) {
+      var r = pr[0], box = pr[1], over = r.scrollWidth > r.clientWidth + 4;
+      box.classList.toggle('scrolls', over);
+      var bs = $$(':scope > .prow-head .prow-btn, :scope > .dept-head .prow-btn', box);
+      if (bs.length) { bs[0].disabled = r.scrollLeft < 4; bs[1].disabled = r.scrollLeft + r.clientWidth >= r.scrollWidth - 4; }
+    });
+  }
+  pairs().forEach(function (pr) {
+    var r = pr[0], box = pr[1];
+    $$(':scope > .prow-head .prow-btn, :scope > .dept-head .prow-btn', box).forEach(function (b) {
+      b.addEventListener('click', function () { r.scrollBy({ left: +b.dataset.dir * r.clientWidth * 0.85, behavior: 'smooth' }); });
+    });
+    r.addEventListener('scroll', function () { clearTimeout(r._t); r._t = setTimeout(navs, 60); }, { passive: true });
+  });
+  $$('.dept-all').forEach(function (b) { b.addEventListener('click', function () { state.sport = b.dataset.go; apply(); toTop(); }); });
+  window.addEventListener('resize', navs);
 
   // sticky bar shadow
   var bar = $('#shop-bar');
@@ -177,7 +208,7 @@
   });
   $('.pv-x', pv).addEventListener('click', close);
   pv.addEventListener('click', function (ev) { if (ev.target === pv) close(); });
-  $$('.ptile-open, .ptile-add').forEach(function (b) { b.addEventListener('click', function () { open(b.closest('.ptile').dataset.id); }); });
+  $$('.ptile-open').forEach(function (b) { b.addEventListener('click', function () { open(b.closest('.ptile').dataset.id); }); });
   // colour dots on a tile preview that colour
   $$('.ptile').forEach(function (t) {
     var p = P[t.dataset.id], box = $('.ptile-art', t);
@@ -210,7 +241,6 @@
     if (t.classList.contains('bag-rm')) b.splice(k, 1); else { b[k].q = Math.max(0, Math.min(20, b[k].q + +t.dataset.d)); if (!b[k].q) b.splice(k, 1); }
     save(b); renderBag();
   });
-  $('#bag-open').addEventListener('click', function () { openBag(); });
   $('#bag-x').addEventListener('click', closeBag);
   bagd.addEventListener('click', function (ev) { if (ev.target === bagd) closeBag(); });
   $('#bag-clear').addEventListener('click', function () { save([]); renderBag(); });
@@ -219,9 +249,8 @@
 
   // ---------- start ----------
   var params = new URLSearchParams(location.search);
-  var sp = params.get('sport'), ct = params.get('cat'), au = params.get('for');
+  var sp = params.get('sport'), au = params.get('for');
   if (sp && $('.shop-tabs [data-sport="' + sp + '"]')) state.sport = sp;
-  if (ct && state.sport !== 'all' && $('.shop-chips[data-for="' + state.sport + '"] [data-cat="' + ct + '"]')) state.cat = ct;
   if (au === 'adult') au = 'men';
   if (au && AUD.hasOwnProperty(au)) state.aud = au;
   apply(); count();

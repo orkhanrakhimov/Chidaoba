@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Noto+Sans+Georgian:wght@400;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/site.css?v=28">
+<link rel="stylesheet" href="/assets/css/site.css?v=29">
 <link rel="alternate" hreflang="en" href="https://chidaoba.com/shop/">
 <link rel="alternate" hreflang="ka" href="https://chidaoba.com/ka/shop/">
 <link rel="alternate" hreflang="x-default" href="https://chidaoba.com/shop/">
@@ -50,271 +50,311 @@
     <p class="lead soft fade-load">Gis, fight wear, gear and clothing for BJJ, wrestling and judo. Choose your size, add to your bag and send the order on WhatsApp. No online payment.</p>
     <p class="shop-q-l fade-load">Who are you shopping for?</p>
     <div class="who fade-load"><button type="button" class="who-btn" data-who="men"><b>Men</b><span>Gis, rashguards, shorts and more</span></button><button type="button" class="who-btn" data-who="women"><b>Women</b><span>Cut and sized for women</span></button><button type="button" class="who-btn" data-who="kids"><b>Kids</b><span>Ages 4 to 13, kids' sizes</span></button></div>
-    <p class="shop-q-l fade-load">Or shop by sport</p>
-    <div class="sport-tiles fade-load"><button type="button" class="sport-tile" data-go="bjj"><b>BJJ &amp; Grappling</b><span>Gis, belts and no-gi wear.</span><em>14 products</em></button><button type="button" class="sport-tile" data-go="wrestling"><b>Wrestling</b><span>Singlets, shoes and protection.</span><em>6 products</em></button><button type="button" class="sport-tile" data-go="judo"><b>Judo</b><span>Judogi and belts.</span><em>4 products</em></button><button type="button" class="sport-tile" data-go="gear"><b>Gear</b><span>Bags, protection and training kit.</span><em>7 products</em></button><button type="button" class="sport-tile" data-go="lifestyle"><b>Clothing</b><span>Hoodies, T-shirts and accessories.</span><em>10 products</em></button></div>
   </div>
 </section>
-<div class="shop-bar" id="shop-bar"><div class="wrap">
-  <div class="shop-row">
-    <div class="shop-tabs" role="group" aria-label="Sport"><button type="button" data-sport="all" aria-pressed="true">All</button><button type="button" data-sport="bjj" aria-pressed="false">BJJ &amp; Grappling</button><button type="button" data-sport="wrestling" aria-pressed="false">Wrestling</button><button type="button" data-sport="judo" aria-pressed="false">Judo</button><button type="button" data-sport="gear" aria-pressed="false">Gear</button><button type="button" data-sport="lifestyle" aria-pressed="false">Clothing</button></div>
-    <div class="shop-tools">
-      <div class="seg" role="group" aria-label="Who for"><button type="button" data-aud="all" aria-pressed="true">Everyone</button><button type="button" data-aud="men" aria-pressed="false">Men</button><button type="button" data-aud="women" aria-pressed="false">Women</button><button type="button" data-aud="kids" aria-pressed="false">Kids</button></div>
-      <label class="shop-search"><span class="sr-only">Search</span><input type="search" id="shop-q" placeholder="Search"></label>
-      <button type="button" class="shop-bag-btn" id="bag-open" aria-label="Open bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span>Bag</span><b id="bag-n">0</b></button>
-    </div>
+<div class="shop-bar" id="shop-bar"><div class="wrap sbar">
+  <div class="shop-tabs" role="group" aria-label="Sport"><button type="button" data-sport="all" aria-pressed="true">All</button><button type="button" data-sport="bjj" aria-pressed="false">BJJ &amp; Grappling</button><button type="button" data-sport="wrestling" aria-pressed="false">Wrestling</button><button type="button" data-sport="judo" aria-pressed="false">Judo</button><button type="button" data-sport="gear" aria-pressed="false">Gear</button><button type="button" data-sport="lifestyle" aria-pressed="false">Clothing</button></div>
+  <div class="sbar-tools">
+    <label class="who-sel"><span class="sr-only">Who for</span><select id="shop-who"><option value="all">Everyone</option><option value="men">Men</option><option value="women">Women</option><option value="kids">Kids</option></select></label>
+    <button type="button" class="sbar-ic" id="search-open" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
   </div>
-  <div class="shop-row2"><div class="shop-chips" data-for="bjj" hidden><button type="button" data-cat="all" aria-pressed="true">All BJJ &amp; Grappling</button><button type="button" data-cat="gis" aria-pressed="false">Gis</button><button type="button" data-cat="belts" aria-pressed="false">Belts</button><button type="button" data-cat="rash" aria-pressed="false">Rashguards</button><button type="button" data-cat="shorts" aria-pressed="false">Shorts &amp; spats</button></div><div class="shop-chips" data-for="wrestling" hidden><button type="button" data-cat="all" aria-pressed="true">All Wrestling</button><button type="button" data-cat="singlets" aria-pressed="false">Singlets</button><button type="button" data-cat="shoes" aria-pressed="false">Wrestling shoes</button><button type="button" data-cat="protect" aria-pressed="false">Headgear &amp; pads</button></div><div class="shop-chips" data-for="judo" hidden><button type="button" data-cat="all" aria-pressed="true">All Judo</button><button type="button" data-cat="judogi" aria-pressed="false">Judogi</button><button type="button" data-cat="jbelts" aria-pressed="false">Belts</button></div><div class="shop-chips" data-for="gear" hidden><button type="button" data-cat="all" aria-pressed="true">All Gear</button><button type="button" data-cat="bags" aria-pressed="false">Bags</button><button type="button" data-cat="protection" aria-pressed="false">Protection</button><button type="button" data-cat="training" aria-pressed="false">Training</button></div><div class="shop-chips" data-for="lifestyle" hidden><button type="button" data-cat="all" aria-pressed="true">All Clothing</button><button type="button" data-cat="tops" aria-pressed="false">Tops</button><button type="button" data-cat="bottoms" aria-pressed="false">Bottoms</button><button type="button" data-cat="acc" aria-pressed="false">Accessories</button></div></div>
+  <div class="sbar-search" id="sbar-search" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="shop-q" placeholder="Search the shop" aria-label="Search the shop"><button type="button" class="sbar-x" id="search-close" aria-label="Close search">×</button></div>
 </div></div>
-<section class="section light shop-main"><div class="wrap">
-  <ol class="shop-how"><li><b>1</b>Choose items and sizes</li><li><b>2</b>Send your bag on WhatsApp</li><li><b>3</b>We confirm price, stock and delivery</li></ol>
-  <div class="shop-status"><p class="shop-count" id="shop-count" aria-live="polite"></p><button type="button" class="shop-reset" id="shop-reset" hidden>Clear filters</button></div>
-  <section class="dept" id="bjj" data-sport="bjj"><div class="dept-head"><h2 class="display h-md">BJJ &amp; Grappling</h2><p class="lead">Gis, belts and no-gi wear.</p></div><div class="pcat" data-cat="gis" id="bjj-gis"><h3 class="pcat-h">Gis</h3><div class="pcat-groups"><div class="pgroup" data-aud="men" style="--n:1"><p class="pgroup-h">Men</p><div class="pgrid"><article class="ptile" id="bjj-gi" data-id="bjj-gi" data-sport="bjj" data-cat="gis" data-aud="men">
+<section class="section light shop-main all-view" id="shop-main"><div class="wrap">
+  <div class="shop-status"><p class="shop-count" id="shop-count" aria-live="polite"></p><button type="button" class="shop-reset" id="shop-reset" hidden>Clear filters</button>
+    <p class="shop-how-s">Choose items and sizes, send your bag on WhatsApp, and we confirm price, stock and delivery.</p></div>
+  <section class="dept" id="bjj" data-sport="bjj"><div class="dept-head"><h2 class="display h-md">BJJ &amp; Grappling</h2><p class="lead">Gis, belts and no-gi wear.</p><button type="button" class="dept-all" data-go="bjj">See all <span class="dept-n"></span></button><div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div><div class="dept-rows"><div class="pcat" data-cat="gis" id="bjj-gis">
+          <div class="prow-head"><h3 class="pcat-h">Gis</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="bjj-gi" data-id="bjj-gi" data-sport="bjj" data-cat="gis" data-aud="men">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: BJJ gi">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><path class="f" d="M40 22 L60 30 L80 22 L100 34 L108 72 L94 76 L88 54 L88 102 L32 102 L32 54 L26 76 L12 72 L20 34 Z"/><path class="d" d="M40 22 L60 66 L80 22 M60 66 L60 102"/><rect class="belt" x="31" y="70" width="58" height="8" rx="2"/><path class="belt" d="M55 78 L48 96 L54 97 L59 80 Z M65 78 L72 96 L66 97 L61 80 Z"/></svg><span class="ptile-aud a-men">Men</span></div>
-            <div class="ptile-body"><h3>BJJ gi</h3><p>Pearl weave jacket, ripstop pants, reinforced collar. Men's cut.</p>
+            <div class="ptile-body"><p class="ptile-cat">Gis</p><h3>BJJ gi</h3><p>Pearl weave jacket, ripstop pants, reinforced collar. Men's cut.</p>
             <div class="ptile-meta"><span>Sizes A0 to A5</span><span class="dots"><i class="sw sw-white" title="White"></i><i class="sw sw-blue" title="Blue"></i><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="bjj-gi">Choose size</button></article></div></div><div class="pgroup" data-aud="women" style="--n:1"><p class="pgroup-h">Women</p><div class="pgrid"><article class="ptile" id="women-s-bjj-gi" data-id="women-s-bjj-gi" data-sport="bjj" data-cat="gis" data-aud="women">
+</article><article class="ptile" id="women-s-bjj-gi" data-id="women-s-bjj-gi" data-sport="bjj" data-cat="gis" data-aud="women">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Women's BJJ gi">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><path class="f" d="M40 22 L60 30 L80 22 L100 34 L108 72 L94 76 L88 54 L88 102 L32 102 L32 54 L26 76 L12 72 L20 34 Z"/><path class="d" d="M40 22 L60 66 L80 22 M60 66 L60 102"/><rect class="belt" x="31" y="70" width="58" height="8" rx="2"/><path class="belt" d="M55 78 L48 96 L54 97 L59 80 Z M65 78 L72 96 L66 97 L61 80 Z"/></svg><span class="ptile-aud a-women">Women</span></div>
-            <div class="ptile-body"><h3>Women's BJJ gi</h3><p>Cut for women: shorter jacket, tapered sleeves and pants.</p>
+            <div class="ptile-body"><p class="ptile-cat">Gis</p><h3>Women's BJJ gi</h3><p>Cut for women: shorter jacket, tapered sleeves and pants.</p>
             <div class="ptile-meta"><span>Sizes F1 to F4</span><span class="dots"><i class="sw sw-white" title="White"></i><i class="sw sw-blue" title="Blue"></i><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="women-s-bjj-gi">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:1"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-bjj-gi" data-id="kids-bjj-gi" data-sport="bjj" data-cat="gis" data-aud="kids">
+</article><article class="ptile" id="kids-bjj-gi" data-id="kids-bjj-gi" data-sport="bjj" data-cat="gis" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids BJJ gi">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><path class="f" d="M40 22 L60 30 L80 22 L100 34 L108 72 L94 76 L88 54 L88 102 L32 102 L32 54 L26 76 L12 72 L20 34 Z"/><path class="d" d="M40 22 L60 66 L80 22 M60 66 L60 102"/><rect class="belt" x="31" y="70" width="58" height="8" rx="2"/><path class="belt" d="M55 78 L48 96 L54 97 L59 80 Z M65 78 L72 96 L66 97 L61 80 Z"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids BJJ gi</h3><p>Light, tough gi for kids, easy to wash.</p>
+            <div class="ptile-body"><p class="ptile-cat">Gis</p><h3>Kids BJJ gi</h3><p>Light, tough gi for kids, easy to wash.</p>
             <div class="ptile-meta"><span>Sizes M000 to M4</span><span class="dots"><i class="sw sw-white" title="White"></i><i class="sw sw-blue" title="Blue"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-bjj-gi">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="belts" id="bjj-belts"><h3 class="pcat-h">Belts</h3><div class="pcat-groups"><div class="pgroup" data-aud="adult" style="--n:1"><p class="pgroup-h">Adults, unisex</p><div class="pgrid"><article class="ptile" id="bjj-belt" data-id="bjj-belt" data-sport="bjj" data-cat="belts" data-aud="adult">
+</article></div></div><div class="pcat" data-cat="belts" id="bjj-belts">
+          <div class="prow-head"><h3 class="pcat-h">Belts</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="bjj-belt" data-id="bjj-belt" data-sport="bjj" data-cat="belts" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: BJJ belt">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><rect class="f" x="14" y="50" width="92" height="14" rx="3"/><rect class="f" x="50" y="44" width="20" height="24" rx="3"/><path class="f" d="M54 66 L42 104 L52 106 L60 70 Z M66 66 L78 104 L68 106 L60 70 Z"/><path class="d" d="M50 56 L70 56"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>BJJ belt</h3><p>Cotton rank belt for adults.</p>
+            <div class="ptile-body"><p class="ptile-cat">Belts</p><h3>BJJ belt</h3><p>Cotton rank belt for adults.</p>
             <div class="ptile-meta"><span>Sizes A1 to A4</span><span class="dots"><i class="sw sw-white" title="White"></i><i class="sw sw-blue" title="Blue"></i><i class="sw sw-purple" title="Purple"></i><i class="sw sw-brown" title="Brown"></i><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="bjj-belt">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:1"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-bjj-belt" data-id="kids-bjj-belt" data-sport="bjj" data-cat="belts" data-aud="kids">
+</article><article class="ptile" id="kids-bjj-belt" data-id="kids-bjj-belt" data-sport="bjj" data-cat="belts" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids BJJ belt">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><rect class="f" x="14" y="50" width="92" height="14" rx="3"/><rect class="f" x="50" y="44" width="20" height="24" rx="3"/><path class="f" d="M54 66 L42 104 L52 106 L60 70 Z M66 66 L78 104 L68 106 L60 70 Z"/><path class="d" d="M50 56 L70 56"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids BJJ belt</h3><p>Cotton rank belt in kids' colours.</p>
+            <div class="ptile-body"><p class="ptile-cat">Belts</p><h3>Kids BJJ belt</h3><p>Cotton rank belt in kids' colours.</p>
             <div class="ptile-meta"><span>Sizes M0 to M4</span><span class="dots"><i class="sw sw-white" title="White"></i><i class="sw sw-grey" title="Grey"></i><i class="sw sw-yellow" title="Yellow"></i><i class="sw sw-orange" title="Orange"></i><i class="sw sw-green" title="Green"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-bjj-belt">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="rash" id="bjj-rash"><h3 class="pcat-h">Rashguards</h3><div class="pcat-groups"><div class="pgroup" data-aud="men" style="--n:2"><p class="pgroup-h">Men</p><div class="pgrid"><article class="ptile" id="rashguard-long-sleeve" data-id="rashguard-long-sleeve" data-sport="bjj" data-cat="rash" data-aud="men">
+</article></div></div><div class="pcat" data-cat="rash" id="bjj-rash">
+          <div class="prow-head"><h3 class="pcat-h">Rashguards</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="rashguard-long-sleeve" data-id="rashguard-long-sleeve" data-sport="bjj" data-cat="rash" data-aud="men">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Rashguard, long sleeve">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M42 20 Q60 32 78 20 L98 30 L108 98 L96 100 L88 52 L88 104 L32 104 L32 52 L24 100 L12 98 L22 30 Z"/><path class="d" d="M42 20 Q60 32 78 20 M88 52 L88 70 M32 52 L32 70 M44 104 L60 60 L76 104"/></svg><span class="ptile-aud a-men">Men</span></div>
-            <div class="ptile-body"><h3>Rashguard, long sleeve</h3><p>Tight fit, flatlock seams, print that does not crack.</p>
+            <div class="ptile-body"><p class="ptile-cat">Rashguards</p><h3>Rashguard, long sleeve</h3><p>Tight fit, flatlock seams, print that does not crack.</p>
             <div class="ptile-meta"><span>Sizes XS to XXL</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="rashguard-long-sleeve">Choose size</button></article><article class="ptile" id="rashguard-short-sleeve" data-id="rashguard-short-sleeve" data-sport="bjj" data-cat="rash" data-aud="men">
+</article><article class="ptile" id="rashguard-short-sleeve" data-id="rashguard-short-sleeve" data-sport="bjj" data-cat="rash" data-aud="men">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Rashguard, short sleeve">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M42 22 Q60 34 78 22 L100 34 L94 56 L86 52 L86 104 L34 104 L34 52 L26 56 L20 34 Z"/><path class="d" d="M42 22 Q60 34 78 22 M44 104 L60 62 L76 104"/></svg><span class="ptile-aud a-men">Men</span></div>
-            <div class="ptile-body"><h3>Rashguard, short sleeve</h3><p>Same fabric and fit, for warm gyms and summer camps.</p>
+            <div class="ptile-body"><p class="ptile-cat">Rashguards</p><h3>Rashguard, short sleeve</h3><p>Same fabric and fit, for warm gyms and summer camps.</p>
             <div class="ptile-meta"><span>Sizes XS to XXL</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="rashguard-short-sleeve">Choose size</button></article></div></div><div class="pgroup" data-aud="women" style="--n:1"><p class="pgroup-h">Women</p><div class="pgrid"><article class="ptile" id="women-s-rashguard" data-id="women-s-rashguard" data-sport="bjj" data-cat="rash" data-aud="women">
+</article><article class="ptile" id="women-s-rashguard" data-id="women-s-rashguard" data-sport="bjj" data-cat="rash" data-aud="women">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Women's rashguard">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M42 20 Q60 32 78 20 L98 30 L108 98 L96 100 L88 52 L88 104 L32 104 L32 52 L24 100 L12 98 L22 30 Z"/><path class="d" d="M42 20 Q60 32 78 20 M88 52 L88 70 M32 52 L32 70 M44 104 L60 60 L76 104"/></svg><span class="ptile-aud a-women">Women</span></div>
-            <div class="ptile-body"><h3>Women's rashguard</h3><p>Long sleeve, cut for women, slightly longer body.</p>
+            <div class="ptile-body"><p class="ptile-cat">Rashguards</p><h3>Women's rashguard</h3><p>Long sleeve, cut for women, slightly longer body.</p>
             <div class="ptile-meta"><span>Sizes XS to XL</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="women-s-rashguard">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:1"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-rashguard" data-id="kids-rashguard" data-sport="bjj" data-cat="rash" data-aud="kids">
+</article><article class="ptile" id="kids-rashguard" data-id="kids-rashguard" data-sport="bjj" data-cat="rash" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids rashguard">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M42 20 Q60 32 78 20 L98 30 L108 98 L96 100 L88 52 L88 104 L32 104 L32 52 L24 100 L12 98 L22 30 Z"/><path class="d" d="M42 20 Q60 32 78 20 M88 52 L88 70 M32 52 L32 70 M44 104 L60 60 L76 104"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids rashguard</h3><p>Long sleeve rashguard sized for kids.</p>
+            <div class="ptile-body"><p class="ptile-cat">Rashguards</p><h3>Kids rashguard</h3><p>Long sleeve rashguard sized for kids.</p>
             <div class="ptile-meta"><span>Ages 4 to 13</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-rashguard">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="shorts" id="bjj-shorts"><h3 class="pcat-h">Shorts &amp; spats</h3><div class="pcat-groups"><div class="pgroup" data-aud="men" style="--n:2"><p class="pgroup-h">Men</p><div class="pgrid"><article class="ptile" id="fight-shorts" data-id="fight-shorts" data-sport="bjj" data-cat="shorts" data-aud="men">
+</article></div></div><div class="pcat" data-cat="shorts" id="bjj-shorts">
+          <div class="prow-head"><h3 class="pcat-h">Shorts &amp; spats</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="fight-shorts" data-id="fight-shorts" data-sport="bjj" data-cat="shorts" data-aud="men">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Fight shorts">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M26 26 L94 26 L100 92 L66 96 L60 56 L54 96 L20 92 Z"/><path class="d" d="M26 38 L94 38 M60 26 L60 38 M56 38 L52 48 M64 38 L68 48"/></svg><span class="ptile-aud a-men">Men</span></div>
-            <div class="ptile-body"><h3>Fight shorts</h3><p>Stretch fabric, no pockets, secure waistband with drawcord.</p>
+            <div class="ptile-body"><p class="ptile-cat">Shorts &amp; spats</p><h3>Fight shorts</h3><p>Stretch fabric, no pockets, secure waistband with drawcord.</p>
             <div class="ptile-meta"><span>Sizes 28 to 38</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="fight-shorts">Choose size</button></article><article class="ptile" id="spats" data-id="spats" data-sport="bjj" data-cat="shorts" data-aud="men">
+</article><article class="ptile" id="spats" data-id="spats" data-sport="bjj" data-cat="shorts" data-aud="men">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Spats">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M36 16 L84 16 L82 106 L66 106 L60 42 L54 106 L38 106 Z"/><path class="d" d="M36 26 L84 26 M76 30 L74 104"/></svg><span class="ptile-aud a-men">Men</span></div>
-            <div class="ptile-body"><h3>Spats</h3><p>Compression leggings for no-gi and wrestling training.</p>
+            <div class="ptile-body"><p class="ptile-cat">Shorts &amp; spats</p><h3>Spats</h3><p>Compression leggings for no-gi and wrestling training.</p>
             <div class="ptile-meta"><span>Sizes XS to XXL</span><span class="dots"><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="spats">Choose size</button></article></div></div><div class="pgroup" data-aud="women" style="--n:2"><p class="pgroup-h">Women</p><div class="pgrid"><article class="ptile" id="women-s-fight-shorts" data-id="women-s-fight-shorts" data-sport="bjj" data-cat="shorts" data-aud="women">
+</article><article class="ptile" id="women-s-fight-shorts" data-id="women-s-fight-shorts" data-sport="bjj" data-cat="shorts" data-aud="women">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Women's fight shorts">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M26 26 L94 26 L100 92 L66 96 L60 56 L54 96 L20 92 Z"/><path class="d" d="M26 38 L94 38 M60 26 L60 38 M56 38 L52 48 M64 38 L68 48"/></svg><span class="ptile-aud a-women">Women</span></div>
-            <div class="ptile-body"><h3>Women's fight shorts</h3><p>Shorter leg, stretch fabric, wide waistband.</p>
+            <div class="ptile-body"><p class="ptile-cat">Shorts &amp; spats</p><h3>Women's fight shorts</h3><p>Shorter leg, stretch fabric, wide waistband.</p>
             <div class="ptile-meta"><span>Sizes XS to XL</span><span class="dots"><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="women-s-fight-shorts">Choose size</button></article><article class="ptile" id="women-s-leggings" data-id="women-s-leggings" data-sport="bjj" data-cat="shorts" data-aud="women">
+</article><article class="ptile" id="women-s-leggings" data-id="women-s-leggings" data-sport="bjj" data-cat="shorts" data-aud="women">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Women's leggings">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M36 16 L84 16 L82 106 L66 106 L60 42 L54 106 L38 106 Z"/><path class="d" d="M36 26 L84 26 M76 30 L74 104"/></svg><span class="ptile-aud a-women">Women</span></div>
-            <div class="ptile-body"><h3>Women's leggings</h3><p>High waist compression leggings for training.</p>
+            <div class="ptile-body"><p class="ptile-cat">Shorts &amp; spats</p><h3>Women's leggings</h3><p>High waist compression leggings for training.</p>
             <div class="ptile-meta"><span>Sizes XS to XL</span><span class="dots"><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="women-s-leggings">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:1"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-fight-shorts" data-id="kids-fight-shorts" data-sport="bjj" data-cat="shorts" data-aud="kids">
+</article><article class="ptile" id="kids-fight-shorts" data-id="kids-fight-shorts" data-sport="bjj" data-cat="shorts" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids fight shorts">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M26 26 L94 26 L100 92 L66 96 L60 56 L54 96 L20 92 Z"/><path class="d" d="M26 38 L94 38 M60 26 L60 38 M56 38 L52 48 M64 38 L68 48"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids fight shorts</h3><p>Stretch shorts with an elastic waist.</p>
+            <div class="ptile-body"><p class="ptile-cat">Shorts &amp; spats</p><h3>Kids fight shorts</h3><p>Stretch shorts with an elastic waist.</p>
             <div class="ptile-meta"><span>Ages 4 to 13</span><span class="dots"><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-fight-shorts">Choose size</button></article></div></div></div></div></section><section class="dept" id="wrestling" data-sport="wrestling"><div class="dept-head"><h2 class="display h-md">Wrestling</h2><p class="lead">Singlets, shoes and protection.</p></div><div class="pcat" data-cat="singlets" id="wrestling-singlets"><h3 class="pcat-h">Singlets</h3><div class="pcat-groups"><div class="pgroup" data-aud="adult" style="--n:1"><p class="pgroup-h">Adults, unisex</p><div class="pgrid"><article class="ptile" id="wrestling-singlet" data-id="wrestling-singlet" data-sport="wrestling" data-cat="singlets" data-aud="adult">
+</article></div></div></div></section><section class="dept" id="wrestling" data-sport="wrestling"><div class="dept-head"><h2 class="display h-md">Wrestling</h2><p class="lead">Singlets, shoes and protection.</p><button type="button" class="dept-all" data-go="wrestling">See all <span class="dept-n"></span></button><div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div><div class="dept-rows"><div class="pcat" data-cat="singlets" id="wrestling-singlets">
+          <div class="prow-head"><h3 class="pcat-h">Singlets</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="wrestling-singlet" data-id="wrestling-singlet" data-sport="wrestling" data-cat="singlets" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Wrestling singlet">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#B5212F;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M40 14 L50 14 Q60 34 70 14 L80 14 Q80 40 90 50 L92 86 L76 102 L60 90 L44 102 L28 86 L30 50 Q40 40 40 14 Z"/><path class="d" d="M31 66 L89 66 M50 14 Q60 34 70 14"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>Wrestling singlet</h3><p>Competition cut for freestyle and Greco-Roman.</p>
+            <div class="ptile-body"><p class="ptile-cat">Singlets</p><h3>Wrestling singlet</h3><p>Competition cut for freestyle and Greco-Roman.</p>
             <div class="ptile-meta"><span>Sizes XS to XXL</span><span class="dots"><i class="sw sw-red" title="Red"></i><i class="sw sw-blue" title="Blue"></i><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="wrestling-singlet">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:1"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-wrestling-singlet" data-id="kids-wrestling-singlet" data-sport="wrestling" data-cat="singlets" data-aud="kids">
+</article><article class="ptile" id="kids-wrestling-singlet" data-id="kids-wrestling-singlet" data-sport="wrestling" data-cat="singlets" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids wrestling singlet">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#B5212F;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M40 14 L50 14 Q60 34 70 14 L80 14 Q80 40 90 50 L92 86 L76 102 L60 90 L44 102 L28 86 L30 50 Q40 40 40 14 Z"/><path class="d" d="M31 66 L89 66 M50 14 Q60 34 70 14"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids wrestling singlet</h3><p>Competition singlet sized for kids.</p>
+            <div class="ptile-body"><p class="ptile-cat">Singlets</p><h3>Kids wrestling singlet</h3><p>Competition singlet sized for kids.</p>
             <div class="ptile-meta"><span>Ages 4 to 13</span><span class="dots"><i class="sw sw-red" title="Red"></i><i class="sw sw-blue" title="Blue"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-wrestling-singlet">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="shoes" id="wrestling-shoes"><h3 class="pcat-h">Wrestling shoes</h3><div class="pcat-groups"><div class="pgroup" data-aud="adult" style="--n:1"><p class="pgroup-h">Adults, unisex</p><div class="pgrid"><article class="ptile" id="wrestling-shoes" data-id="wrestling-shoes" data-sport="wrestling" data-cat="shoes" data-aud="adult">
+</article></div></div><div class="pcat" data-cat="shoes" id="wrestling-shoes">
+          <div class="prow-head"><h3 class="pcat-h">Wrestling shoes</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="wrestling-shoes" data-id="wrestling-shoes" data-sport="wrestling" data-cat="shoes" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Wrestling shoes">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M20 30 L50 26 L56 58 Q82 62 100 70 Q108 74 106 88 L20 88 Z"/><path class="d" d="M20 80 L106 80 M50 36 L62 34 M52 44 L66 42 M54 52 L70 50 M30 30 L32 80"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>Wrestling shoes</h3><p>Lightweight, split sole, ankle support.</p>
+            <div class="ptile-body"><p class="ptile-cat">Wrestling shoes</p><h3>Wrestling shoes</h3><p>Lightweight, split sole, ankle support.</p>
             <div class="ptile-meta"><span>Sizes EU 38 to EU 47</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="wrestling-shoes">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:1"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-wrestling-shoes" data-id="kids-wrestling-shoes" data-sport="wrestling" data-cat="shoes" data-aud="kids">
+</article><article class="ptile" id="kids-wrestling-shoes" data-id="kids-wrestling-shoes" data-sport="wrestling" data-cat="shoes" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids wrestling shoes">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M20 30 L50 26 L56 58 Q82 62 100 70 Q108 74 106 88 L20 88 Z"/><path class="d" d="M20 80 L106 80 M50 36 L62 34 M52 44 L66 42 M54 52 L70 50 M30 30 L32 80"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids wrestling shoes</h3><p>Light shoes with good grip for young wrestlers.</p>
+            <div class="ptile-body"><p class="ptile-cat">Wrestling shoes</p><h3>Kids wrestling shoes</h3><p>Light shoes with good grip for young wrestlers.</p>
             <div class="ptile-meta"><span>Sizes EU 30 to EU 37</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-wrestling-shoes">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="protect" id="wrestling-protect"><h3 class="pcat-h">Headgear &amp; pads</h3><div class="pcat-groups"><div class="pgroup" data-aud="all" style="--n:2"><div class="pgrid"><article class="ptile" id="headgear" data-id="headgear" data-sport="wrestling" data-cat="protect" data-aud="all">
+</article></div></div><div class="pcat" data-cat="protect" id="wrestling-protect">
+          <div class="prow-head"><h3 class="pcat-h">Headgear &amp; pads</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="headgear" data-id="headgear" data-sport="wrestling" data-cat="protect" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Headgear">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="d thick" d="M32 46 Q60 4 88 46 M36 80 Q60 106 84 80"/><circle class="f" cx="30" cy="62" r="19"/><circle class="f" cx="90" cy="62" r="19"/><circle class="d" cx="30" cy="62" r="7"/><circle class="d" cx="90" cy="62" r="7"/></svg></div>
-            <div class="ptile-body"><h3>Headgear</h3><p>Ear guards for wrestling and grappling. Adjustable straps.</p>
+            <div class="ptile-body"><p class="ptile-cat">Headgear &amp; pads</p><h3>Headgear</h3><p>Ear guards for wrestling and grappling. Adjustable straps.</p>
             <div class="ptile-meta"><span>Sizes Youth · Adult</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="headgear">Choose size</button></article><article class="ptile" id="knee-pads" data-id="knee-pads" data-sport="wrestling" data-cat="protect" data-aud="all">
+</article><article class="ptile" id="knee-pads" data-id="knee-pads" data-sport="wrestling" data-cat="protect" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Knee pads">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><rect class="f" x="24" y="20" width="30" height="80" rx="15"/><rect class="f" x="66" y="20" width="30" height="80" rx="15"/><ellipse class="d" cx="39" cy="60" rx="8" ry="13"/><ellipse class="d" cx="81" cy="60" rx="8" ry="13"/></svg></div>
-            <div class="ptile-body"><h3>Knee pads</h3><p>Low profile pads for shots and scrambles. Sold as a pair.</p>
+            <div class="ptile-body"><p class="ptile-cat">Headgear &amp; pads</p><h3>Knee pads</h3><p>Low profile pads for shots and scrambles. Sold as a pair.</p>
             <div class="ptile-meta"><span>Sizes XS to L</span><span class="dots"><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="knee-pads">Choose size</button></article></div></div></div></div></section><section class="dept" id="judo" data-sport="judo"><div class="dept-head"><h2 class="display h-md">Judo</h2><p class="lead">Judogi and belts.</p></div><div class="pcat" data-cat="judogi" id="judo-judogi"><h3 class="pcat-h">Judogi</h3><div class="pcat-groups"><div class="pgroup" data-aud="adult" style="--n:1"><p class="pgroup-h">Adults, unisex</p><div class="pgrid"><article class="ptile" id="judogi" data-id="judogi" data-sport="judo" data-cat="judogi" data-aud="adult">
+</article></div></div></div></section><section class="dept" id="judo" data-sport="judo"><div class="dept-head"><h2 class="display h-md">Judo</h2><p class="lead">Judogi and belts.</p><button type="button" class="dept-all" data-go="judo">See all <span class="dept-n"></span></button><div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div><div class="dept-rows"><div class="pcat" data-cat="judogi" id="judo-judogi">
+          <div class="prow-head"><h3 class="pcat-h">Judogi</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="judogi" data-id="judogi" data-sport="judo" data-cat="judogi" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Judogi">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><path class="f" d="M40 22 L60 30 L80 22 L100 34 L108 72 L94 76 L88 54 L88 102 L32 102 L32 54 L26 76 L12 72 L20 34 Z"/><path class="d" d="M40 22 L60 66 L80 22 M60 66 L60 102"/><rect class="belt" x="31" y="70" width="58" height="8" rx="2"/><path class="belt" d="M55 78 L48 96 L54 97 L59 80 Z M65 78 L72 96 L66 97 L61 80 Z"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>Judogi</h3><p>Double weave judogi for training and grading.</p>
+            <div class="ptile-body"><p class="ptile-cat">Judogi</p><h3>Judogi</h3><p>Double weave judogi for training and grading.</p>
             <div class="ptile-meta"><span>Sizes 160 cm to 200 cm</span><span class="dots"><i class="sw sw-white" title="White"></i><i class="sw sw-blue" title="Blue"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="judogi">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:1"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-judogi" data-id="kids-judogi" data-sport="judo" data-cat="judogi" data-aud="kids">
+</article><article class="ptile" id="kids-judogi" data-id="kids-judogi" data-sport="judo" data-cat="judogi" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids judogi">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><path class="f" d="M40 22 L60 30 L80 22 L100 34 L108 72 L94 76 L88 54 L88 102 L32 102 L32 54 L26 76 L12 72 L20 34 Z"/><path class="d" d="M40 22 L60 66 L80 22 M60 66 L60 102"/><rect class="belt" x="31" y="70" width="58" height="8" rx="2"/><path class="belt" d="M55 78 L48 96 L54 97 L59 80 Z M65 78 L72 96 L66 97 L61 80 Z"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids judogi</h3><p>Single weave judogi for kids, light and durable.</p>
+            <div class="ptile-body"><p class="ptile-cat">Judogi</p><h3>Kids judogi</h3><p>Single weave judogi for kids, light and durable.</p>
             <div class="ptile-meta"><span>Sizes 110 cm to 150 cm</span><span class="dots"><i class="sw sw-white" title="White"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-judogi">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="jbelts" id="judo-jbelts"><h3 class="pcat-h">Belts</h3><div class="pcat-groups"><div class="pgroup" data-aud="adult" style="--n:1"><p class="pgroup-h">Adults, unisex</p><div class="pgrid"><article class="ptile" id="judo-belt" data-id="judo-belt" data-sport="judo" data-cat="jbelts" data-aud="adult">
+</article></div></div><div class="pcat" data-cat="jbelts" id="judo-jbelts">
+          <div class="prow-head"><h3 class="pcat-h">Belts</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="judo-belt" data-id="judo-belt" data-sport="judo" data-cat="jbelts" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Judo belt">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><rect class="f" x="14" y="50" width="92" height="14" rx="3"/><rect class="f" x="50" y="44" width="20" height="24" rx="3"/><path class="f" d="M54 66 L42 104 L52 106 L60 70 Z M66 66 L78 104 L68 106 L60 70 Z"/><path class="d" d="M50 56 L70 56"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>Judo belt</h3><p>Cotton rank belt for adults.</p>
+            <div class="ptile-body"><p class="ptile-cat">Belts</p><h3>Judo belt</h3><p>Cotton rank belt for adults.</p>
             <div class="ptile-meta"><span>Sizes 240 cm to 300 cm</span><span class="dots"><i class="sw sw-white" title="White"></i><i class="sw sw-yellow" title="Yellow"></i><i class="sw sw-orange" title="Orange"></i><i class="sw sw-green" title="Green"></i><i class="sw sw-blue" title="Blue"></i><i class="sw sw-brown" title="Brown"></i><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="judo-belt">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:1"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-judo-belt" data-id="kids-judo-belt" data-sport="judo" data-cat="jbelts" data-aud="kids">
+</article><article class="ptile" id="kids-judo-belt" data-id="kids-judo-belt" data-sport="judo" data-cat="jbelts" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids judo belt">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><rect class="f" x="14" y="50" width="92" height="14" rx="3"/><rect class="f" x="50" y="44" width="20" height="24" rx="3"/><path class="f" d="M54 66 L42 104 L52 106 L60 70 Z M66 66 L78 104 L68 106 L60 70 Z"/><path class="d" d="M50 56 L70 56"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids judo belt</h3><p>Cotton rank belt for kids.</p>
+            <div class="ptile-body"><p class="ptile-cat">Belts</p><h3>Kids judo belt</h3><p>Cotton rank belt for kids.</p>
             <div class="ptile-meta"><span>Sizes 180 cm to 220 cm</span><span class="dots"><i class="sw sw-white" title="White"></i><i class="sw sw-yellow" title="Yellow"></i><i class="sw sw-orange" title="Orange"></i><i class="sw sw-green" title="Green"></i><i class="sw sw-blue" title="Blue"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-judo-belt">Choose size</button></article></div></div></div></div></section><section class="dept" id="gear" data-sport="gear"><div class="dept-head"><h2 class="display h-md">Gear</h2><p class="lead">Bags, protection and training kit.</p></div><div class="pcat" data-cat="bags" id="gear-bags"><h3 class="pcat-h">Bags</h3><div class="pcat-groups"><div class="pgroup" data-aud="all" style="--n:2"><div class="pgrid"><article class="ptile" id="gear-bag" data-id="gear-bag" data-sport="gear" data-cat="bags" data-aud="all">
+</article></div></div></div></section><section class="dept" id="gear" data-sport="gear"><div class="dept-head"><h2 class="display h-md">Gear</h2><p class="lead">Bags, protection and training kit.</p><button type="button" class="dept-all" data-go="gear">See all <span class="dept-n"></span></button><div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div><div class="dept-rows"><div class="pcat" data-cat="bags" id="gear-bags">
+          <div class="prow-head"><h3 class="pcat-h">Bags</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="gear-bag" data-id="gear-bag" data-sport="gear" data-cat="bags" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Gear bag">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="d thick" d="M42 42 Q42 22 60 22 Q78 22 78 42"/><path class="f" d="M16 52 Q16 42 26 42 L94 42 Q104 42 104 52 L104 94 L16 94 Z"/><path class="d" d="M30 42 L30 94 M90 42 L90 94 M30 54 L90 54"/></svg></div>
-            <div class="ptile-body"><h3>Gear bag</h3><p>Large duffel with a separate wet compartment for your gi and shoes.</p>
+            <div class="ptile-body"><p class="ptile-cat">Bags</p><h3>Gear bag</h3><p>Large duffel with a separate wet compartment for your gi and shoes.</p>
             <div class="ptile-meta"><span>One size</span><span class="dots"><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="gear-bag">Choose size</button></article><article class="ptile" id="backpack" data-id="backpack" data-sport="gear" data-cat="bags" data-aud="all">
+</article><article class="ptile" id="backpack" data-id="backpack" data-sport="gear" data-cat="bags" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Backpack">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="d thick" d="M52 20 Q60 8 68 20"/><path class="f" d="M30 36 Q30 18 60 18 Q90 18 90 36 L92 106 L28 106 Z"/><rect class="d" x="40" y="66" width="40" height="28" rx="6"/><path class="d" d="M40 76 L80 76"/></svg></div>
-            <div class="ptile-body"><h3>Backpack</h3><p>Daily training backpack with laptop sleeve and shoe pocket.</p>
+            <div class="ptile-body"><p class="ptile-cat">Bags</p><h3>Backpack</h3><p>Daily training backpack with laptop sleeve and shoe pocket.</p>
             <div class="ptile-meta"><span>One size</span><span class="dots"><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="backpack">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="protection" id="gear-protection"><h3 class="pcat-h">Protection</h3><div class="pcat-groups"><div class="pgroup" data-aud="all" style="--n:1"><div class="pgrid"><article class="ptile" id="mouthguard" data-id="mouthguard" data-sport="gear" data-cat="protection" data-aud="all">
+</article></div></div><div class="pcat" data-cat="protection" id="gear-protection">
+          <div class="prow-head"><h3 class="pcat-h">Protection</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="mouthguard" data-id="mouthguard" data-sport="gear" data-cat="protection" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Mouthguard">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M22 46 Q22 94 60 98 Q98 94 98 46 Q98 36 87 36 Q85 76 60 78 Q35 76 33 36 Q22 36 22 46 Z"/><path class="d" d="M30 50 Q34 86 60 88 Q86 86 90 50"/></svg></div>
-            <div class="ptile-body"><h3>Mouthguard</h3><p>Boil and bite fit, with a ventilated case.</p>
+            <div class="ptile-body"><p class="ptile-cat">Protection</p><h3>Mouthguard</h3><p>Boil and bite fit, with a ventilated case.</p>
             <div class="ptile-meta"><span>Sizes Junior · Adult</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-clear" title="Clear"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="mouthguard">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="training" id="gear-training"><h3 class="pcat-h">Training</h3><div class="pcat-groups"><div class="pgroup" data-aud="all" style="--n:4"><div class="pgrid"><article class="ptile" id="finger-tape" data-id="finger-tape" data-sport="gear" data-cat="training" data-aud="all">
+</article></div></div><div class="pcat" data-cat="training" id="gear-training">
+          <div class="prow-head"><h3 class="pcat-h">Training</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="finger-tape" data-id="finger-tape" data-sport="gear" data-cat="training" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Finger tape">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#F7F6F2;--pd:rgba(30,30,30,.45)" aria-hidden="true"><circle class="f" cx="56" cy="56" r="36"/><circle class="hole" cx="56" cy="56" r="14"/><path class="f" d="M84 78 L106 100 L98 108 L76 86 Z"/><circle class="d" cx="56" cy="56" r="26"/></svg></div>
-            <div class="ptile-body"><h3>Finger tape</h3><p>Cotton tape for fingers and joints. Pack of 4 rolls.</p>
+            <div class="ptile-body"><p class="ptile-cat">Training</p><h3>Finger tape</h3><p>Cotton tape for fingers and joints. Pack of 4 rolls.</p>
             <div class="ptile-meta"><span>Sizes 0.8 cm to 2.5 cm</span><span class="dots"><i class="sw sw-white" title="White"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="finger-tape">Choose size</button></article><article class="ptile" id="gym-towel" data-id="gym-towel" data-sport="gear" data-cat="training" data-aud="all">
+</article><article class="ptile" id="gym-towel" data-id="gym-towel" data-sport="gear" data-cat="training" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Gym towel">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><rect class="f" x="22" y="30" width="76" height="66" rx="8"/><path class="d" d="M22 48 L98 48 M22 80 L98 80 M22 86 L98 86"/></svg></div>
-            <div class="ptile-body"><h3>Gym towel</h3><p>Quick dry microfibre towel.</p>
+            <div class="ptile-body"><p class="ptile-cat">Training</p><h3>Gym towel</h3><p>Quick dry microfibre towel.</p>
             <div class="ptile-meta"><span>One size</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="gym-towel">Choose size</button></article><article class="ptile" id="slides" data-id="slides" data-sport="gear" data-cat="training" data-aud="all">
+</article><article class="ptile" id="slides" data-id="slides" data-sport="gear" data-cat="training" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Slides">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><rect class="f" x="18" y="30" width="38" height="78" rx="19"/><rect class="f" x="64" y="16" width="38" height="78" rx="19"/><rect class="d" x="18" y="46" width="38" height="18" rx="4"/><rect class="d" x="64" y="32" width="38" height="18" rx="4"/></svg></div>
-            <div class="ptile-body"><h3>Slides</h3><p>For walking off the mat. Keep the mat clean.</p>
+            <div class="ptile-body"><p class="ptile-cat">Training</p><h3>Slides</h3><p>For walking off the mat. Keep the mat clean.</p>
             <div class="ptile-meta"><span>Sizes EU 38-39 to EU 46-47</span><span class="dots"><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="slides">Choose size</button></article><article class="ptile" id="water-bottle" data-id="water-bottle" data-sport="gear" data-cat="training" data-aud="all">
+</article><article class="ptile" id="water-bottle" data-id="water-bottle" data-sport="gear" data-cat="training" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Water bottle">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><rect class="d thick" x="48" y="8" width="24" height="10" rx="3"/><path class="f" d="M48 18 L72 18 L72 28 Q84 34 84 48 L84 104 Q84 110 78 110 L42 110 Q36 110 36 104 L36 48 Q36 34 48 28 Z"/><path class="d" d="M36 60 L84 60 M36 92 L84 92"/></svg></div>
-            <div class="ptile-body"><h3>Water bottle</h3><p>Stainless steel, 750 ml, keeps water cold.</p>
+            <div class="ptile-body"><p class="ptile-cat">Training</p><h3>Water bottle</h3><p>Stainless steel, 750 ml, keeps water cold.</p>
             <div class="ptile-meta"><span>One size</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="water-bottle">Choose size</button></article></div></div></div></div></section><section class="dept" id="lifestyle" data-sport="lifestyle"><div class="dept-head"><h2 class="display h-md">Clothing</h2><p class="lead">Hoodies, T-shirts and accessories.</p></div><div class="pcat" data-cat="tops" id="lifestyle-tops"><h3 class="pcat-h">Tops</h3><div class="pcat-groups"><div class="pgroup" data-aud="women" style="--n:1"><p class="pgroup-h">Women</p><div class="pgrid"><article class="ptile" id="women-s-t-shirt" data-id="women-s-t-shirt" data-sport="lifestyle" data-cat="tops" data-aud="women">
+</article></div></div></div></section><section class="dept" id="lifestyle" data-sport="lifestyle"><div class="dept-head"><h2 class="display h-md">Clothing</h2><p class="lead">Hoodies, T-shirts and accessories.</p><button type="button" class="dept-all" data-go="lifestyle">See all <span class="dept-n"></span></button><div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div><div class="dept-rows"><div class="pcat" data-cat="tops" id="lifestyle-tops">
+          <div class="prow-head"><h3 class="pcat-h">Tops</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="women-s-t-shirt" data-id="women-s-t-shirt" data-sport="lifestyle" data-cat="tops" data-aud="women">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Women's T-shirt">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M40 22 Q60 36 80 22 L104 36 L96 58 L86 53 L86 104 L34 104 L34 53 L24 58 L16 36 Z"/><path class="d" d="M40 22 Q60 36 80 22"/></svg><span class="ptile-aud a-women">Women</span></div>
-            <div class="ptile-body"><h3>Women's T-shirt</h3><p>Fitted cotton T-shirt, cut for women.</p>
+            <div class="ptile-body"><p class="ptile-cat">Tops</p><h3>Women's T-shirt</h3><p>Fitted cotton T-shirt, cut for women.</p>
             <div class="ptile-meta"><span>Sizes XS to XL</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="women-s-t-shirt">Choose size</button></article></div></div><div class="pgroup" data-aud="adult" style="--n:3"><p class="pgroup-h">Adults, unisex</p><div class="pgrid"><article class="ptile" id="hoodie" data-id="hoodie" data-sport="lifestyle" data-cat="tops" data-aud="adult">
+</article><article class="ptile" id="hoodie" data-id="hoodie" data-sport="lifestyle" data-cat="tops" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Hoodie">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M38 30 L82 30 L102 40 L108 98 L96 100 L88 58 L88 104 L32 104 L32 58 L24 100 L12 98 L18 40 Z"/><path class="f" d="M42 34 Q40 12 60 12 Q80 12 78 34 Q60 46 42 34 Z"/><path class="d" d="M42 34 Q60 46 78 34 M54 42 L54 58 M66 42 L66 58 M42 80 L78 80 L82 96 L38 96 Z M32 98 L88 98"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>Hoodie</h3><p>Heavy cotton, relaxed fit.</p>
+            <div class="ptile-body"><p class="ptile-cat">Tops</p><h3>Hoodie</h3><p>Heavy cotton, relaxed fit.</p>
             <div class="ptile-meta"><span>Sizes XS to XXL</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="hoodie">Choose size</button></article><article class="ptile" id="t-shirt" data-id="t-shirt" data-sport="lifestyle" data-cat="tops" data-aud="adult">
+</article><article class="ptile" id="t-shirt" data-id="t-shirt" data-sport="lifestyle" data-cat="tops" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: T-shirt">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M40 22 Q60 36 80 22 L104 36 L96 58 L86 53 L86 104 L34 104 L34 53 L24 58 L16 36 Z"/><path class="d" d="M40 22 Q60 36 80 22"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>T-shirt</h3><p>Heavyweight cotton T-shirt.</p>
+            <div class="ptile-body"><p class="ptile-cat">Tops</p><h3>T-shirt</h3><p>Heavyweight cotton T-shirt.</p>
             <div class="ptile-meta"><span>Sizes XS to XXL</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="t-shirt">Choose size</button></article><article class="ptile" id="sweatshirt" data-id="sweatshirt" data-sport="lifestyle" data-cat="tops" data-aud="adult">
+</article><article class="ptile" id="sweatshirt" data-id="sweatshirt" data-sport="lifestyle" data-cat="tops" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Sweatshirt">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M38 26 L82 26 L102 38 L108 98 L96 100 L88 56 L88 104 L32 104 L32 56 L24 100 L12 98 L18 38 Z"/><path class="d" d="M44 26 Q60 40 76 26 M32 96 L88 96 M12 92 L24 94 M96 94 L108 92"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>Sweatshirt</h3><p>Crewneck sweatshirt.</p>
+            <div class="ptile-body"><p class="ptile-cat">Tops</p><h3>Sweatshirt</h3><p>Crewneck sweatshirt.</p>
             <div class="ptile-meta"><span>Sizes XS to XXL</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-grey" title="Grey"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="sweatshirt">Choose size</button></article></div></div><div class="pgroup" data-aud="kids" style="--n:2"><p class="pgroup-h">Kids</p><div class="pgrid"><article class="ptile" id="kids-hoodie" data-id="kids-hoodie" data-sport="lifestyle" data-cat="tops" data-aud="kids">
+</article><article class="ptile" id="kids-hoodie" data-id="kids-hoodie" data-sport="lifestyle" data-cat="tops" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids hoodie">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M38 30 L82 30 L102 40 L108 98 L96 100 L88 58 L88 104 L32 104 L32 58 L24 100 L12 98 L18 40 Z"/><path class="f" d="M42 34 Q40 12 60 12 Q80 12 78 34 Q60 46 42 34 Z"/><path class="d" d="M42 34 Q60 46 78 34 M54 42 L54 58 M66 42 L66 58 M42 80 L78 80 L82 96 L38 96 Z M32 98 L88 98"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids hoodie</h3><p>Soft heavy cotton hoodie for kids.</p>
+            <div class="ptile-body"><p class="ptile-cat">Tops</p><h3>Kids hoodie</h3><p>Soft heavy cotton hoodie for kids.</p>
             <div class="ptile-meta"><span>Ages 4 to 13</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-hoodie">Choose size</button></article><article class="ptile" id="kids-t-shirt" data-id="kids-t-shirt" data-sport="lifestyle" data-cat="tops" data-aud="kids">
+</article><article class="ptile" id="kids-t-shirt" data-id="kids-t-shirt" data-sport="lifestyle" data-cat="tops" data-aud="kids">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Kids T-shirt">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M40 22 Q60 36 80 22 L104 36 L96 58 L86 53 L86 104 L34 104 L34 53 L24 58 L16 36 Z"/><path class="d" d="M40 22 Q60 36 80 22"/></svg><span class="ptile-aud a-kids">Kids</span></div>
-            <div class="ptile-body"><h3>Kids T-shirt</h3><p>Cotton T-shirt with the CHIDAOBA logo.</p>
+            <div class="ptile-body"><p class="ptile-cat">Tops</p><h3>Kids T-shirt</h3><p>Cotton T-shirt with the CHIDAOBA logo.</p>
             <div class="ptile-meta"><span>Ages 4 to 13</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="kids-t-shirt">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="bottoms" id="lifestyle-bottoms"><h3 class="pcat-h">Bottoms</h3><div class="pcat-groups"><div class="pgroup" data-aud="adult" style="--n:1"><div class="pgrid"><article class="ptile" id="track-pants" data-id="track-pants" data-sport="lifestyle" data-cat="bottoms" data-aud="adult">
+</article></div></div><div class="pcat" data-cat="bottoms" id="lifestyle-bottoms">
+          <div class="prow-head"><h3 class="pcat-h">Bottoms</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="track-pants" data-id="track-pants" data-sport="lifestyle" data-cat="bottoms" data-aud="adult">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Track pants">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M32 16 L88 16 L92 106 L68 106 L60 44 L52 106 L28 106 Z"/><path class="d" d="M32 26 L88 26 M84 30 L88 98 M28 98 L52 98 M68 98 L92 98"/></svg><span class="ptile-aud a-adult">Unisex</span></div>
-            <div class="ptile-body"><h3>Track pants</h3><p>Tapered joggers with zip pockets.</p>
+            <div class="ptile-body"><p class="ptile-cat">Bottoms</p><h3>Track pants</h3><p>Tapered joggers with zip pockets.</p>
             <div class="ptile-meta"><span>Sizes XS to XXL</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-grey" title="Grey"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="track-pants">Choose size</button></article></div></div></div></div><div class="pcat" data-cat="acc" id="lifestyle-acc"><h3 class="pcat-h">Accessories</h3><div class="pcat-groups"><div class="pgroup" data-aud="all" style="--n:3"><div class="pgrid"><article class="ptile" id="cap" data-id="cap" data-sport="lifestyle" data-cat="acc" data-aud="all">
+</article></div></div><div class="pcat" data-cat="acc" id="lifestyle-acc">
+          <div class="prow-head"><h3 class="pcat-h">Accessories</h3><span class="prow-n"></span>
+            <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
+          <div class="prow"><article class="ptile" id="cap" data-id="cap" data-sport="lifestyle" data-cat="acc" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Cap">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><path class="f" d="M18 74 Q18 32 58 32 Q90 32 92 66 L92 74 Z"/><path class="f" d="M78 70 Q100 66 112 76 Q100 86 78 82 Z"/><path class="d" d="M58 32 Q48 50 50 74 M58 32 Q72 50 74 72"/><circle class="d" cx="58" cy="30" r="3"/></svg></div>
-            <div class="ptile-body"><h3>Cap</h3><p>Cotton cap with embroidered logo.</p>
+            <div class="ptile-body"><p class="ptile-cat">Accessories</p><h3>Cap</h3><p>Cotton cap with embroidered logo.</p>
             <div class="ptile-meta"><span>One size</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-white" title="White"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="cap">Choose size</button></article><article class="ptile" id="beanie" data-id="beanie" data-sport="lifestyle" data-cat="acc" data-aud="all">
+</article><article class="ptile" id="beanie" data-id="beanie" data-sport="lifestyle" data-cat="acc" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Beanie">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#1E1E1E;--pd:rgba(255,255,255,.5)" aria-hidden="true"><circle class="f" cx="60" cy="22" r="10"/><path class="f" d="M24 84 Q24 30 60 30 Q96 30 96 84 Z"/><rect class="f" x="20" y="76" width="80" height="22" rx="5"/><path class="d" d="M36 78 L36 96 M48 78 L48 96 M60 78 L60 96 M72 78 L72 96 M84 78 L84 96"/></svg></div>
-            <div class="ptile-body"><h3>Beanie</h3><p>Knitted beanie with embroidered logo.</p>
+            <div class="ptile-body"><p class="ptile-cat">Accessories</p><h3>Beanie</h3><p>Knitted beanie with embroidered logo.</p>
             <div class="ptile-meta"><span>One size</span><span class="dots"><i class="sw sw-black" title="Black"></i><i class="sw sw-red" title="Red"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="beanie">Choose size</button></article><article class="ptile" id="tote-bag" data-id="tote-bag" data-sport="lifestyle" data-cat="acc" data-aud="all">
+</article><article class="ptile" id="tote-bag" data-id="tote-bag" data-sport="lifestyle" data-cat="acc" data-aud="all">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: Tote bag">
             <div class="ptile-art"><svg class="part" viewBox="0 0 120 120" style="--pc:#E6DCC6;--pd:rgba(30,30,30,.45)" aria-hidden="true"><path class="d thick" d="M42 48 Q42 18 60 18 Q78 18 78 48"/><path class="f" d="M24 46 L96 46 L90 108 L30 108 Z"/></svg></div>
-            <div class="ptile-body"><h3>Tote bag</h3><p>Heavy canvas tote bag.</p>
+            <div class="ptile-body"><p class="ptile-cat">Accessories</p><h3>Tote bag</h3><p>Heavy canvas tote bag.</p>
             <div class="ptile-meta"><span>One size</span><span class="dots"><i class="sw sw-natural" title="Natural"></i><i class="sw sw-black" title="Black"></i></span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="tote-bag">Choose size</button></article></div></div></div></div></section>
+</article></div></div></div></section>
   <div class="shop-empty" id="shop-empty" hidden><h3>No items found</h3><p>Try another category, sport or search.</p></div>
   <div class="shop-note"><h3>Need something else?</h3><p>Team orders, custom prints for your club or a product we do not list yet. Message us and we will help.</p>
     <a class="btn btn-primary" href="https://wa.me/995595606670?text=Hi%20CHIDAOBA%2C%20" rel="noopener">Message us on WhatsApp <span class="arr" aria-hidden="true">→</span></a></div>
@@ -379,6 +419,6 @@
   </div>
 </footer>
 <a class="wa-float" href="https://wa.me/995595606670?text=Hi%20CHIDAOBA%2C%20" rel="noopener" aria-label="Message us on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg><span>WhatsApp</span></a>
-<script src="/assets/js/shop.js?v=28" defer></script><script src="/assets/js/site.js?v=28" defer></script>
+<script src="/assets/js/shop.js?v=29" defer></script><script src="/assets/js/site.js?v=29" defer></script>
 </body>
 </html>
