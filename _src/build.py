@@ -19,7 +19,7 @@ WA = "https://wa.me/" + WA_NUM + "?text=" + "Hi%20CHIDAOBA%2C%20"
 UNESCO = "https://ich.unesco.org/en/RL/chidaoba-wrestling-in-georgia-01371"
 
 NAV = [("/", "Home"), ("/culture/", "Culture"), ("/camps/", "Camps &amp; Events"),
-       ("/georgia/", "Why Georgia"), ("/community/", "Community"), ("/journal/", "Journal"), ("/shop/", "Shop")]
+       ("/georgia/", "Why Georgia"), ("/shop/", "Shop")]
 
 def sym_svg(cls, extra=""):
     return f'<svg class="{cls}" viewBox="130 10 670 940" aria-hidden="true" focusable="false"{extra}><path d="{SYM}" fill-rule="evenodd"/></svg>'
@@ -125,7 +125,7 @@ def footer(path=""):
       {news}
       <nav class="foot-col" aria-label="Explore"><h3>Explore</h3><ul>
         <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
-        <li><a href="/georgia/">Why Georgia</a></li><li><a href="/community/">Community</a></li><li><a href="/journal/">Journal</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
+        <li><a href="/georgia/">Why Georgia</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
       <div class="foot-col"><h3>Connect</h3>{socials()}<ul style="margin-top:22px"><li><a href="/contact/">Contact</a></li></ul></div>
       <div class="foot-col"><h3>Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
     </div>
@@ -222,33 +222,12 @@ def home():
   </div>
 </section>
 
-<section class="section light" aria-label="Community and Journal">
-  <div class="wrap">
-    <div class="duo">
-      <article class="reveal">
-        <p class="label"><span class="bar"></span>03 · Community</p>
-        <h2 class="display h-md">Community</h2>
-        <p class="body muted">Athletes, coaches and clubs who carry the culture, in Georgia and around the world. Profiles are in preparation.</p>
-        <div class="cols3"><div><b>Athletes</b><span>Wrestlers and grapplers</span></div><div><b>Coaches</b><span>The people who teach</span></div><div><b>Clubs</b><span>Where to train</span></div></div>
-        <a class="link" href="/contact/" style="align-self:start">Coach, athlete or club? Get in touch</a>
-      </article>
-      <article class="reveal">
-        <p class="label"><span class="bar"></span>04 · Journal</p>
-        <h2 class="display h-md">Journal<span class="dot">.</span></h2>
-        <p class="body muted">Articles about Georgian wrestling and grappling: history, technique, training and athletes. Coming soon.</p>
-        <ul class="chips">{jchips}</ul>
-        <a class="link" href="/journal/" style="align-self:start">Visit the journal</a>
-      </article>
-    </div>
-  </div>
-</section>
-
 <section class="section dark drop" aria-labelledby="drop-title">
   <div class="big" aria-hidden="true">01</div>
   <div class="wrap">
     <div class="drop-grid">
       <div class="reveal">
-        <p class="label muted"><span class="bar"></span>05 · Apparel</p>
+        <p class="label muted"><span class="bar"></span>03 · Shop</p>
         <h2 id="drop-title" class="display h-lg">Shop</h2>
         <p class="lead soft">Rashguards, shorts, gis, gear and everyday clothing. The first collection is in development.</p>
         <a class="btn btn-primary" href="/shop/" style="align-self:start">View shop {arrow()}</a>
@@ -259,7 +238,7 @@ def home():
 
 <section class="section dark invite" aria-labelledby="invite-title" style="border-top:1px solid var(--carbon-line)">
   <div class="wrap">
-    <p class="label muted"><span class="bar"></span>06 · Newsletter</p>
+    <p class="label muted"><span class="bar"></span>04 · Newsletter</p>
     <h2 id="invite-title" class="display h-lg reveal" style="margin-top:24px">Stay updated</h2>
     <div class="invite-links reveal">
       <a href="{IG}" rel="noopener"><span class="label muted">Instagram</span><b>{IG_HANDLE} →</b></a>
@@ -857,10 +836,6 @@ PAGES = [
     ("/camps/venue/", "camps/venue/index.html", "Venue | CHIDAOBA CULTURE",
      "Where we train: Ilia Gabliani Sports Complex in Mulakhi, Svaneti. Training hall, rooms for 40, meals, pool and mountain views.", venue_page),
     ("/admin/", "admin/index.html", "Admin | CHIDAOBA CULTURE", "Admin.", admin),
-    ("/community/", "community/index.html", "Community | CHIDAOBA CULTURE",
-     "Athletes, coaches and clubs of Georgian wrestling and grappling.", community),
-    ("/journal/", "journal/index.html", "Journal | CHIDAOBA CULTURE",
-     "Stories on Georgian wrestling heritage, technique, training and the people behind it.", journal),
     ("/shop/", "shop/index.html", "Shop | CHIDAOBA CULTURE", "Rashguards, fight shorts, singlets, BJJ gis, judo kimonos, gear and lifestyle pieces from CHIDAOBA CULTURE.", shop),
     ("/contact/", "contact/index.html", "Contact | CHIDAOBA CULTURE",
      "Contact CHIDAOBA CULTURE: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
