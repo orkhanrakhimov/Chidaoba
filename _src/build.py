@@ -145,7 +145,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "33"
+ASSET_V = "34"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -482,7 +482,7 @@ def georgia():
         "Training here means training in a country where these sports are taken seriously.",
     ]
     rt = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p></div>' for i, t in enumerate(roots))
-    chapters = [("champions", "Champions"), ("newwave", "BJJ"), ("land", "Nature"),
+    chapters = [("champions", "Champions"), ("newwave", "BJJ and grappling"), ("land", "Nature"),
                 ("table", "Food"), ("people", "Hospitality"), ("know", "Practical info")]
     ch = "".join(f'<a href="#{k}"><b>{i+1:02d}</b> {t}</a>' for i, (k, t) in enumerate(chapters))
     day = [("08:00", "Breakfast"), ("10:00", "Morning session: technique"),
@@ -563,7 +563,7 @@ def georgia():
     <div class="stagger">
       <p class="lead soft">Brazilian jiu-jitsu and no-gi grappling are growing quickly in Georgia. New academies are opening in Tbilisi, and international tournaments are now held in the city.</p>
       <p class="body soft">Many local athletes also have a wrestling or judo background, so training is technical and physically demanding.</p>
-      <ul class="chips gx-chips"><li>BJJ</li><li>No-gi</li><li>Freestyle</li><li>Greco-Roman</li><li>Judo</li></ul>
+      <ul class="chips gx-chips"><li>Brazilian jiu-jitsu</li><li>No-gi</li><li>Freestyle</li><li>Greco-Roman</li><li>Judo</li></ul>
     </div>
   </div>
 </section>
@@ -925,6 +925,8 @@ if __name__ == "__main__":
             multi.append(path)
             for l, t in trs.items():
                 d = t.page(doc, path)
+                if l == "ka":  # numbers the text translator skips
+                    d = d.replace("<b>3.9M</b>", "<b>3.9 მლნ</b>").replace("1 : 82,000", "1 : 82 000")
                 d = d.replace("<script ", f'<script src="/assets/i18n/{l}.js?v={ASSET_V}"></script>\n<script ', 1) if "<script " in d else d
                 outs.append((os.path.join(l, out), fin(d, l)))
         for o, d in outs:
