@@ -143,7 +143,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "29"
+ASSET_V = "30"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["shop"]}
 
 def page(path, title, desc, main):
@@ -661,14 +661,16 @@ WOMEN = ["XS", "S", "M", "L", "XL"]
 KIDS_AGE = ["4-5 y", "6-7 y", "8-9 y", "10-11 y", "12-13 y"]
 ONE = ["One size"]
 SPORTS = [  # key, name, short line
-    ("bjj", "BJJ &amp; Grappling", "Gis, belts and no-gi wear."),
+    ("bjj", "BJJ &amp; Grappling", "Gis and belts."),
     ("wrestling", "Wrestling", "Singlets, shoes and protection."),
     ("judo", "Judo", "Judogi and belts."),
+    ("train", "Training wear", "Rashguards, shorts and compression wear for every grappling sport."),
     ("gear", "Gear", "Bags, protection and training kit."),
     ("lifestyle", "Clothing", "Hoodies, T-shirts and accessories."),
 ]
 CATS = {  # sport -> [(cat key, name)]
-    "bjj": [("gis", "Gis"), ("belts", "Belts"), ("rash", "Rashguards"), ("shorts", "Shorts &amp; spats")],
+    "bjj": [("gis", "Gis"), ("belts", "Belts")],
+    "train": [("rash", "Rashguards"), ("shorts", "Shorts"), ("compress", "Compression &amp; spats")],
     "wrestling": [("singlets", "Singlets"), ("shoes", "Wrestling shoes"), ("protect", "Headgear &amp; pads")],
     "judo": [("judogi", "Judogi"), ("jbelts", "Belts")],
     "gear": [("bags", "Bags"), ("protection", "Protection"), ("training", "Training")],
@@ -682,15 +684,16 @@ PRODUCTS = [
     ("Kids BJJ gi", "Light, tough gi for kids, easy to wash.", "bjj", "gis", "kids", ["M000", "M00", "M0", "M1", "M2", "M3", "M4"], ["White", "Blue"], "gi_k", "gi"),
     ("BJJ belt", "Cotton rank belt for adults.", "bjj", "belts", "adult", ["A1", "A2", "A3", "A4"], ["White", "Blue", "Purple", "Brown", "Black"], "belt", "belt"),
     ("Kids BJJ belt", "Cotton rank belt in kids' colours.", "bjj", "belts", "kids", ["M0", "M1", "M2", "M3", "M4"], ["White", "Grey", "Yellow", "Orange", "Green"], "belt_k", "belt"),
-    ("Rashguard, long sleeve", "Tight fit, flatlock seams, print that does not crack.", "bjj", "rash", "men", APPAREL, ["Black", "White", "Red"], "top", "rash"),
-    ("Rashguard, short sleeve", "Same fabric and fit, for warm gyms and summer camps.", "bjj", "rash", "men", APPAREL, ["Black", "White", "Red"], "top", "rash_ss"),
-    ("Women's rashguard", "Long sleeve, cut for women, slightly longer body.", "bjj", "rash", "women", WOMEN, ["Black", "White", "Red"], "top_w", "rash"),
-    ("Kids rashguard", "Long sleeve rashguard sized for kids.", "bjj", "rash", "kids", KIDS_AGE, ["Black", "Red"], "kids", "rash"),
-    ("Fight shorts", "Stretch fabric, no pockets, secure waistband with drawcord.", "bjj", "shorts", "men", ["28", "30", "32", "34", "36", "38"], ["Black", "Red"], "shorts", "shorts"),
-    ("Spats", "Compression leggings for no-gi and wrestling training.", "bjj", "shorts", "men", APPAREL, ["Black"], "top", "spats"),
-    ("Women's fight shorts", "Shorter leg, stretch fabric, wide waistband.", "bjj", "shorts", "women", WOMEN, ["Black"], "top_w", "shorts"),
-    ("Women's leggings", "High waist compression leggings for training.", "bjj", "shorts", "women", WOMEN, ["Black"], "top_w", "spats"),
-    ("Kids fight shorts", "Stretch shorts with an elastic waist.", "bjj", "shorts", "kids", KIDS_AGE, ["Black"], "kids", "shorts"),
+    ("Rashguard, long sleeve", "Tight fit, flatlock seams, print that does not crack.", "train", "rash", "men", APPAREL, ["Black", "White", "Red"], "top", "rash"),
+    ("Rashguard, short sleeve", "Same fabric and fit, for warm gyms and summer camps.", "train", "rash", "men", APPAREL, ["Black", "White", "Red"], "top", "rash_ss"),
+    ("Women's rashguard", "Long sleeve, cut for women, slightly longer body.", "train", "rash", "women", WOMEN, ["Black", "White", "Red"], "top_w", "rash"),
+    ("Kids rashguard", "Long sleeve rashguard sized for kids.", "train", "rash", "kids", KIDS_AGE, ["Black", "Red"], "kids", "rash"),
+    ("Fight shorts", "Stretch fabric, no pockets, secure waistband with drawcord.", "train", "shorts", "men", ["28", "30", "32", "34", "36", "38"], ["Black", "Red"], "shorts", "shorts"),
+    ("Spats", "Full length compression leggings for no-gi, wrestling and MMA.", "train", "compress", "men", APPAREL, ["Black"], "top", "spats"),
+    ("Compression shorts", "Base layer shorts worn under fight shorts, singlets or a gi.", "train", "compress", "adult", APPAREL, ["Black"], "top", "cshorts"),
+    ("Women's fight shorts", "Shorter leg, stretch fabric, wide waistband.", "train", "shorts", "women", WOMEN, ["Black"], "top_w", "shorts"),
+    ("Women's leggings", "High waist compression leggings for training.", "train", "compress", "women", WOMEN, ["Black"], "top_w", "spats"),
+    ("Kids fight shorts", "Stretch shorts with an elastic waist.", "train", "shorts", "kids", KIDS_AGE, ["Black"], "kids", "shorts"),
     ("Wrestling singlet", "Competition cut for freestyle and Greco-Roman.", "wrestling", "singlets", "adult", APPAREL, ["Red", "Blue", "Black"], "top", "singlet"),
     ("Kids wrestling singlet", "Competition singlet sized for kids.", "wrestling", "singlets", "kids", KIDS_AGE, ["Red", "Blue"], "kids", "singlet"),
     ("Wrestling shoes", "Lightweight, split sole, ankle support.", "wrestling", "shoes", "adult", ["EU 38", "EU 39", "EU 40", "EU 41", "EU 42", "EU 43", "EU 44", "EU 45", "EU 46", "EU 47"], ["Black", "Red"], "shoes", "shoe"),

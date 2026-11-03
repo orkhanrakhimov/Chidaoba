@@ -20,6 +20,8 @@ ART = {
            '<path class="d" d="M44 26 Q60 40 76 26 M32 96 L88 96 M12 92 L24 94 M96 94 L108 92"/>'),
  "shorts": ('<path class="f" d="M26 26 L94 26 L100 92 L66 96 L60 56 L54 96 L20 92 Z"/>'
             '<path class="d" d="M26 38 L94 38 M60 26 L60 38 M56 38 L52 48 M64 38 L68 48"/>'),
+ "cshorts": ('<path class="f" d="M34 24 L86 24 L89 80 L64 84 L60 46 L56 84 L31 80 Z"/>'
+            '<path class="d" d="M34 34 L86 34 M80 38 L82 78 M40 38 L38 78"/>'),
  "spats": ('<path class="f" d="M36 16 L84 16 L82 106 L66 106 L60 42 L54 106 L38 106 Z"/>'
            '<path class="d" d="M36 26 L84 26 M76 30 L74 104"/>'),
  "pants": ('<path class="f" d="M32 16 L88 16 L92 106 L68 106 L60 44 L52 106 L28 106 Z"/>'
