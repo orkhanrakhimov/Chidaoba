@@ -29,7 +29,7 @@
   var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1 };
   function link(a) {
     var h = a.getAttribute('href'); if (a.hasAttribute('hreflang')) return;
-    if (h && h.charAt(0) === '/' && h.charAt(1) !== '/' && !/^\/(assets|admin|ka|ru)(\/|$)/.test(h)) a.setAttribute('href', '/' + L + h);
+    if (h && h.charAt(0) === '/' && h.charAt(1) !== '/' && !/^\/(assets|admin|ka)(\/|$)/.test(h)) a.setAttribute('href', '/' + L + h);
   }
   function walk(n) {
     if (n.nodeType === 3) {

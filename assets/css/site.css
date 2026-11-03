@@ -1202,20 +1202,21 @@ html, body { overflow-x: clip; }
 @media (max-width:560px){.cf-grid{grid-template-columns:1fr}.cf-grid>div:nth-child(2n){padding-left:0;border-left:0}.cf-top{grid-template-columns:1fr}}
 
 /* ---------- languages ---------- */
-.lang-sw{display:inline-flex;align-items:center;gap:2px;margin-right:6px}
-.lang-sw a{padding:6px 7px;font-size:11px;font-weight:600;letter-spacing:.12em;color:rgba(242,241,236,.6);text-decoration:none;transition:color .2s}
-.lang-sw a:hover{color:var(--chalk)}
-.lang-sw a.on{color:var(--chalk);box-shadow:inset 0 -1.5px 0 var(--red)}
-.mobile-menu .lang-sw{margin:28px 0 0}
-.mobile-menu .lang-sw a{font-size:14px;padding:10px 14px 10px 0}
-@media (max-width:900px){.head-tools>.lang-sw{display:none}}
-html[lang="ru"]{--font:'Archivo','Inter','Noto Sans Georgian',system-ui,-apple-system,sans-serif}
-html[lang="ru"] p{hyphens:auto}
-html[lang="ka"] *,html[lang="ru"] .display{hyphens:manual}
-html[lang="ka"] .display,html[lang="ru"] .display{letter-spacing:0;overflow-wrap:break-word}
-html[lang="ka"] .h-xl,html[lang="ru"] .h-xl{font-size:clamp(34px,6.2vw,100px)}
-html[lang="ka"] .hero h1.h-xl,html[lang="ru"] .hero h1.h-xl{font-size:clamp(36px,6.8vw,112px)}
-html[lang="ka"] .h-lg,html[lang="ru"] .h-lg{font-size:clamp(28px,4vw,64px)}
-html[lang="ka"] .cx-hero h1,html[lang="ru"] .cx-hero h1{font-size:clamp(34px,6vw,100px)}
-html[lang="ka"] .display{font-family:'Noto Sans Georgian',var(--font);font-weight:700;text-transform:none}
+.lang-dd{position:relative}
+.lang-dd summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid var(--carbon-line);font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--chalk);user-select:none;transition:border-color .2s}
+.lang-dd summary::-webkit-details-marker{display:none}
+.lang-dd summary:hover,.lang-dd[open] summary{border-color:var(--chalk)}
+.lang-dd summary i{width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+.lang-dd[open] summary i{transform:translateY(1px) rotate(-135deg)}
+.lang-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:170px;background:var(--carbon);border:1px solid var(--carbon-line);box-shadow:0 12px 32px rgba(0,0,0,.35);padding:6px;z-index:60;display:flex;flex-direction:column}
+.lang-menu a{display:flex;align-items:center;gap:12px;padding:11px 12px;color:var(--chalk);text-decoration:none;font-size:14px;transition:background .15s}
+.lang-menu a b{width:24px;font-size:11px;letter-spacing:.12em;color:var(--sand)}
+.lang-menu a:hover{background:var(--carbon-2)}
+.lang-menu a.on{background:var(--carbon-2);box-shadow:inset 2px 0 0 var(--red)}
+html[lang="ka"] *{hyphens:manual}
+html[lang="ka"] .display{letter-spacing:0;overflow-wrap:break-word;font-family:'Noto Sans Georgian',var(--font);font-weight:700;text-transform:none}
+html[lang="ka"] .h-xl{font-size:clamp(34px,6.2vw,100px)}
+html[lang="ka"] .hero h1.h-xl{font-size:clamp(36px,6.8vw,112px)}
+html[lang="ka"] .h-lg{font-size:clamp(28px,4vw,64px)}
+html[lang="ka"] .cx-hero h1{font-size:clamp(34px,6vw,100px)}
 html[lang="ka"] .label,html[lang="ka"] .nav a,html[lang="ka"] .btn{letter-spacing:.04em}

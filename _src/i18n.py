@@ -10,8 +10,9 @@ import json
 import os
 import re
 
-LANGS = ["ka", "ru"]
-NAMES = {"en": "EN", "ka": "KA", "ru": "RU"}
+LANGS = ["ka"]
+NAMES = {"en": "EN", "ka": "KA"}
+FULL = {"en": "English", "ka": "ქართული"}
 LOCALE = {"en": "en", "ka": "ka", "ru": "ru"}
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,7 +20,7 @@ TOKEN = re.compile(r'(<!--.*?-->|<script\b[^>]*>.*?</script>|<style\b[^>]*>.*?</
 ATTR = re.compile(r'(\s(?:placeholder|aria-label|title|alt|content|data-ok-text)=")([^"]*)(")')
 HREF = re.compile(r'(\s(?:href|action)=")(/[^"]*)(")')
 SAME = re.compile(r"^([\d.,\-– ]+ ?(cm|kg|in|ml)|EU [\d\-]+|[A-Z]\d|X{0,2}[SML]|XXL|XL|@\w+.*|CHIDAOBA( CULTURE)?|Chidaoba Culture|BJJ|WhatsApp|Instagram|Facebook|EN|KA|RU|\d+)$")
-KEEP = ("/assets/", "/admin", "//", "/site.webmanifest", "/ka/", "/ru/")
+KEEP = ("/assets/", "/admin", "//", "/site.webmanifest", "/ka/")
 
 
 def load(lang):
@@ -113,12 +114,13 @@ class Tr:
 
 
 def switcher(path, lang):
-    links = []
+    items = []
     for l in ["en"] + LANGS:
         href = path if l == "en" else f"/{l}{path}"
-        cls = ' class="on" aria-current="true"' if l == lang else ""
-        links.append(f'<a href="{href}" hreflang="{l}" lang="{l}"{cls}>{NAMES[l]}</a>')
-    return '<div class="lang-sw" aria-label="Language">' + "".join(links) + "</div>"
+        cur = ' aria-current="true" class="on"' if l == lang else ""
+        items.append(f'<a href="{href}" hreflang="{l}" lang="{l}"{cur}><b>{NAMES[l]}</b>{FULL[l]}</a>')
+    return (f'<details class="lang-dd"><summary aria-label="Language">{NAMES[lang]}<i aria-hidden="true"></i></summary>'
+            f'<div class="lang-menu">{"".join(items)}</div></details>')
 
 
 def alternates(path):

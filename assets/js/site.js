@@ -158,8 +158,13 @@
 
 // language switcher: keep ?query (e.g. /camps/camp/?c=...) and remember choice
 (function () {
-  document.querySelectorAll('.lang-sw a').forEach(function (a) {
+  document.querySelectorAll('.lang-dd a').forEach(function (a) {
     if (location.search) a.setAttribute('href', a.getAttribute('href').split('?')[0] + location.search);
     a.addEventListener('click', function () { try { localStorage.setItem('chd_lang', a.getAttribute('hreflang')); } catch (e) { } });
   });
 })();
+
+// close the language dropdown when clicking elsewhere
+document.addEventListener('click', function (ev) {
+  document.querySelectorAll('.lang-dd[open]').forEach(function (d) { if (!d.contains(ev.target)) d.removeAttribute('open'); });
+});

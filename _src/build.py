@@ -74,7 +74,6 @@ def header(path):
 </header>
 <div class="mobile-menu" id="mobile-menu">
   <nav aria-label="Mobile">{mlinks}</nav>
-  <!--LANGSW-->
   {socials("socials socials-menu")}
 </div>
 """
@@ -144,7 +143,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "22"
+ASSET_V = "23"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"], "/shop/": ["shop"]}
 
 def page(path, title, desc, main):
@@ -865,8 +864,6 @@ if __name__ == "__main__":
             for l, t in trs.items():
                 d = t.page(doc, path)
                 d = d.replace("<script ", f'<script src="/assets/i18n/{l}.js?v={ASSET_V}"></script>\n<script ', 1) if "<script " in d else d
-                if l == "ru":
-                    d = d.replace("&amp;family=Noto+Sans+Georgian", "&amp;family=Inter:wght@400;500;600;700;800&amp;family=Noto+Sans+Georgian", 1)
                 outs.append((os.path.join(l, out), fin(d, l)))
         for o, d in outs:
             full = os.path.join(ROOT, o)
@@ -877,7 +874,7 @@ if __name__ == "__main__":
         miss = sorted(t.missing)
         json.dump(miss, open(f"/tmp/i18n-missing-{l}.json", "w"), ensure_ascii=False, indent=0)
         print(l, "missing", len(miss))
-    sm = "".join(f"<url><loc>https://chidaoba.com{pre}{p}</loc></url>" for p in multi if p not in ("/camps/camp/",) for pre in ("", "/ka", "/ru"))
+    sm = "".join(f"<url><loc>https://chidaoba.com{pre}{p}</loc></url>" for p in multi if p not in ("/camps/camp/",) for pre in ("", "/ka"))
     open(os.path.join(ROOT, "sitemap.xml"), "w").write(
         f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>\n')
     open(os.path.join(ROOT, "robots.txt"), "w").write("User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: https://chidaoba.com/sitemap.xml\n")
