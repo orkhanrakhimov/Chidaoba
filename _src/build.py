@@ -145,7 +145,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "37"
+ASSET_V = "39"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -808,7 +808,8 @@ def privacy():
 <p><b>Email signups</b> (The Culture Letter and “Get new camp dates”): your email and the topics you choose, such as camp dates for your sport, shop news or stories. Used to send you those emails. You can unsubscribe at any time by replying “unsubscribe” or writing to us.</p>
 <p><b>Contact form</b>: name, email, topic, message and optional phone. Used to reply to you.</p>
 <p><b>Shop orders</b> are sent by you on WhatsApp. Your bag is saved only in your own browser until you send it.</p>
-<p>We don’t sell or share your details, and there are no accounts, analytics or advertising cookies on this site.</p>
+<p><b>Visitor counts</b>: we count page views anonymously (the page, language, phone or computer, and which site you came from) to see how the site is used. No cookies, no IP addresses and nothing that identifies you is stored.</p>
+<p>We don’t sell or share your details, and there are no accounts or advertising cookies on this site.</p>
 <h2>Where your details are kept</h2>
 <p>Form submissions are stored in our database at Supabase, a hosting service for databases. Only the CHIDAOBA team can see them, through a password-protected admin page. If a form cannot reach the database, it opens your email app instead and the message is sent from your own email account. We keep your details only as long as needed. To see, correct or delete what we hold about you, email us and we’ll do it.</p>
 <p>WhatsApp, Instagram and Facebook links open those services; their own privacy policies apply when you use them.</p>

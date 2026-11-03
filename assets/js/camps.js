@@ -439,7 +439,7 @@
       var p = { camp: c.slug, package: s.package, addons: s.addons, people: s.people, consent: !!fd.get('consent'), website: fd.get('website') || '' };
       ['full_name', 'email', 'phone', 'country', 'age', 'experience', 'level', 'notes'].forEach(function (k) { p[k] = (fd.get(k) || '').toString().trim(); });
       btn.disabled = true; msg.className = 'form-msg'; msg.textContent = 'Sending…';
-      H.api.register(p).then(function (r) { done(c, r, p); })
+      H.api.register(p).then(function (r) { if (window.CHD_TRACK) window.CHD_TRACK('camp', c.slug); done(c, r, p); })
         .catch(function (err) { btn.disabled = false; msg.className = 'form-msg err'; msg.textContent = (err && err.message) || 'Something went wrong. Please try again.'; });
     });
   }

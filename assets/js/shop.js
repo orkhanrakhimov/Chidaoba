@@ -150,6 +150,7 @@
   var pv = $('#pv'), cur = null, sel = {}, last = null;
   function open(id) {
     var p = P[id]; if (!p) return; cur = id; last = document.activeElement;
+    if (window.CHD_TRACK) window.CHD_TRACK('product', id);
     sel = { size: p.sizes.length === 1 ? p.sizes[0] : null, colour: p.colours[0], q: 1 };
     $('#pv-cat').textContent = p.sportName + ' · ' + p.catName; $('#pv-name').textContent = p.name; $('#pv-desc').textContent = p.desc;
     var pr = $('#pv-price'); if (pr) { pr.textContent = p.price != null ? fmt(p.price, p.currency) : T('Price on request', 'ფასი მოთხოვნით'); pr.classList.toggle('req', p.price == null); }
@@ -207,7 +208,7 @@
   $('#pv-cols').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { sel.colour = b.dataset.v; draw(); } });
   $$('.pv-qty button').forEach(function (b) { b.addEventListener('click', function () { sel.q = Math.max(1, Math.min(20, sel.q + +b.dataset.q)); $('#pv-q').textContent = sel.q; draw(); }); });
   $('#pv-guide').addEventListener('click', function () { var g = $('#pv-sg'); g.hidden = !g.hidden; });
-  $('#pv-wa').addEventListener('click', function (ev) { if (!ready()) ev.preventDefault(); });
+  $('#pv-wa').addEventListener('click', function (ev) { if (!ready()) { ev.preventDefault(); return; } if (window.CHD_TRACK) window.CHD_TRACK('order', cur); });
   $('#pv-add').addEventListener('click', function () {
     if (!ready()) return;
     var b = load(), found = b.filter(function (i) { return i.id === cur && i.size === sel.size && i.colour === sel.colour; })[0];
@@ -251,6 +252,7 @@
     save(b); renderBag();
   });
   $('#bag-x').addEventListener('click', closeBag);
+  $('#bag-send').addEventListener('click', function () { if (window.CHD_TRACK) window.CHD_TRACK('order', load().length + ' items'); });
   bagd.addEventListener('click', function (ev) { if (ev.target === bagd) closeBag(); });
   $('#bag-clear').addEventListener('click', function () { save([]); renderBag(); });
   $$('.site-head .bag').forEach(function (a) { a.addEventListener('click', function (ev) { ev.preventDefault(); openBag(); }); });

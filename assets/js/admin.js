@@ -44,7 +44,7 @@
   }
   function shell(inner, tab) {
     return '<header class="adm-head"><a class="adm-brand" href="#dash"><img src="/assets/img/symbol-chalk.svg" alt="" width="20" height="28"> Admin</a>' +
-      '<nav>' + [['dash', 'Camps'], ['regs', 'Requests'], ['shop', 'Shop'], ['subs', 'Signups'], ['msgs', 'Messages']].map(function (t) {
+      '<nav>' + [['dash', 'Camps'], ['regs', 'Requests'], ['shop', 'Shop'], ['subs', 'Signups'], ['msgs', 'Messages'], ['vis', 'Visitors']].map(function (t) {
         var n = t[0] === 'msgs' ? (state.msgs || []).filter(function (m) { return m.status === 'new'; }).length : t[0] === 'regs' ? state.regs.filter(function (r) { return r.status === 'pending'; }).length : 0;
         return '<a href="#' + t[0] + '"' + (tab === t[0] ? ' class="on"' : '') + '>' + t[1] + (n ? '<i class="nav-n">' + n + '</i>' : '') + '</a>';
       }).join('') + '<a href="/" target="_blank">View site ↗</a></nav>' +
@@ -60,6 +60,7 @@
     if (h.indexOf('product/') === 0) return productEditor(decodeURIComponent(h.slice(8)));
     if (h === 'subs') return subsView();
     if (h === 'msgs') return msgsView();
+    if (h === 'vis') return visView();
     return dash();
   }
   window.addEventListener('hashchange', function () { if (H.api.signedIn()) route(); });
@@ -616,6 +617,47 @@
     $$('.ms').forEach(function (s) { s.addEventListener('change', function () { var id = s.closest('.msg').dataset.id, v = s.value; H.api.updateMessage(id, { status: v }).then(function () { state.msgs.forEach(function (m) { if (m.id === id) m.status = v; }); toast('Saved'); drawMsgs(); }).catch(function (err) { toast(err.message, true); }); }); });
     $$('.mn').forEach(function (i) { i.addEventListener('change', function () { var id = i.closest('.msg').dataset.id; H.api.updateMessage(id, { admin_note: i.value }).then(function () { state.msgs.forEach(function (m) { if (m.id === id) m.admin_note = i.value; }); toast('Note saved'); }).catch(function (err) { toast(err.message, true); }); }); });
     $$('.md').forEach(function (b) { b.addEventListener('click', function () { if (!confirm('Delete this message?')) return; var id = b.closest('.msg').dataset.id; H.api.updateMessage(id, { delete: true }).then(function () { state.msgs = state.msgs.filter(function (m) { return m.id !== id; }); toast('Deleted'); drawMsgs(); }).catch(function (err) { toast(err.message, true); }); }); });
+  }
+
+  // ================= visitors =================
+  state.visDays = 30;
+  function visView() {
+    app.innerHTML = shell('<p class="adm-loading">Loading visitor stats…</p>', 'vis');
+    H.api.stats(state.visDays).then(drawVis).catch(function (err) {
+      if (err.message === 'NEEDS_UPDATE_007') app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Visitors<span class="dot">.</span></h1></div><div class="adm-sec"><h2>One database update needed</h2><p class="body">Run <b>update-007.sql</b> in Supabase (SQL Editor → New query → paste → Run), then reload this page. Stats start counting from that moment.</p></div>', 'vis');
+      else if (/sign in|expired/i.test(err.message)) { H.api.signOut(); login(); } else toast(err.message, true);
+    });
+  }
+  var PAGE = { '/': 'Home', '/shop/': 'Shop', '/camps/': 'Camps', '/camps/camp/': 'A camp page', '/camps/venue/': 'Venue', '/georgia/': 'Why Georgia', '/culture/': 'Culture', '/contact/': 'Contact', '/privacy/': 'Privacy' };
+  function pageName(p) { var ka = /^\/ka(\/|$)/.test(p || ''), k = (p || '/').replace(/^\/ka/, '') || '/'; return (PAGE[k] || k) + (ka ? ' (Georgian)' : ''); }
+  function refName(r) { if (!r) return 'Direct, or link without source'; var m = { 'instagram.com': 'Instagram', instagram: 'Instagram', ig: 'Instagram', 'facebook.com': 'Facebook', facebook: 'Facebook', fb: 'Facebook', google: 'Google', tiktok: 'TikTok', 'google.com': 'Google', 't.co': 'X / Twitter', 'youtube.com': 'YouTube', 'tiktok.com': 'TikTok', 'wa.me': 'WhatsApp', 'web.whatsapp.com': 'WhatsApp' }; return m[r] || (/google\./.test(r) ? 'Google' : r); }
+  function bars(rows, total, label) {
+    total = total || rows.reduce(function (s, r) { return s + r[1]; }, 0) || 1;
+    return '<ul class="vbars">' + rows.map(function (r) { var pc = Math.round(r[1] / total * 100); return '<li><span class="vb-l">' + e(label(r[0])) + '</span><span class="vb-b"><i style="width:' + Math.max(2, pc) + '%"></i></span><b>' + r[1] + '</b><em>' + pc + '%</em></li>'; }).join('') + '</ul>';
+  }
+  function drawVis(s) {
+    var days = s.days || [], max = Math.max.apply(null, days.map(function (d) { return d[1]; }).concat([1]));
+    var chart = '<div class="vchart" role="img" aria-label="Page views per day">' + days.map(function (d) {
+      var dt = new Date(d[0] + 'T00:00:00'), lab = dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      return '<div class="vc-col" title="' + lab + ': ' + d[1] + ' page views, ' + d[2] + ' visits"><i style="height:' + Math.round(d[1] / max * 100) + '%"></i><i class="v2" style="height:' + Math.round(d[2] / max * 100) + '%"></i></div>';
+    }).join('') + '</div><div class="vc-axis"><span>' + (days[0] ? new Date(days[0][0] + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '') + '</span><span>Today</span></div>';
+    var dev = s.devices || {}, dt = (dev.mobile || 0) + (dev.desktop || 0) + (dev.unknown || 0) || 1;
+    var lg = s.langs || {}, lt = (lg.en || 0) + (lg.ka || 0) || 1;
+    var prodName = function (id) { var x = (window.CHD_PRODUCTS || []).filter(function (p) { return p.id === id; })[0]; return x ? x.name : id; };
+    var opts = [[7, 'Last 7 days'], [30, 'Last 30 days'], [90, 'Last 90 days'], [365, 'Last 12 months']].map(function (o) { return '<option value="' + o[0] + '"' + (state.visDays === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Visitors<span class="dot">.</span></h1><select id="vd" class="vd">' + opts + '</select></div>' +
+      '<div class="kpis"><div><span>Visits</span><b>' + s.visits + '</b></div><div><span>Page views</span><b>' + s.views + '</b></div>' +
+      '<div><span>WhatsApp clicks</span><b>' + s.wa + '</b></div><div><span>Shop orders sent</span><b>' + s.orders + '</b></div></div>' +
+      '<section class="adm-sec"><h2>Every day</h2>' + chart + '<p class="note"><i class="lg"></i> Page views <i class="lg v2"></i> Visits (a visit can include several pages)</p></section>' +
+      '<div class="vgrid"><section class="adm-sec"><h2>Where visitors come from</h2>' + ((s.refs || []).length ? bars(s.refs, s.visits, refName) : '<p class="body">No visits yet.</p>') +
+        '<p class="note">Tip: add <code>?utm_source=instagram</code> to the link in your Instagram bio to see exactly how many people come from it.</p></section>' +
+      '<section class="adm-sec"><h2>Most visited pages</h2>' + ((s.pages || []).length ? bars(s.pages, s.views, pageName) : '<p class="body">No page views yet.</p>') + '</section>' +
+      '<section class="adm-sec"><h2>Phone or computer</h2>' + bars([['Phone', dev.mobile || 0], ['Computer', dev.desktop || 0]], dt, function (x) { return x; }) +
+        '<h2 style="margin-top:28px">Language</h2>' + bars([['English', lg.en || 0], ['Georgian', lg.ka || 0]], lt, function (x) { return x; }) + '</section>' +
+      '<section class="adm-sec"><h2>Most opened products</h2>' + ((s.products || []).length ? bars(s.products, null, prodName) : '<p class="body">No products opened yet.</p>') +
+        '<p class="note">Camp requests sent: <b>' + (s.camps || 0) + '</b>. WhatsApp clicks by page: ' + ((s.wa_pages || []).map(function (r) { return e(pageName(r[0])) + ' ' + r[1]; }).join(', ') || 'none yet') + '.</p></section></div>' +
+      '<p class="note">Counted without cookies and without storing anything personal. Your own visits are not counted on any browser where you have opened this admin page.</p>', 'vis');
+    $('#vd').addEventListener('change', function () { state.visDays = +this.value; visView(); });
   }
 
   if (H.api.signedIn()) load(); else login();

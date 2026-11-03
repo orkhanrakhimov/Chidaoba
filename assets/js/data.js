@@ -150,6 +150,7 @@
     updateSubscriber: function (id, patch) { return rpcA('admin_update_subscriber', { p_id: id, p: patch }).catch(u5); },
     messages: function () { return rpcA('admin_messages', {}).catch(u5); },
     updateMessage: function (id, patch) { return rpcA('admin_update_message', { p_id: id, p: patch }).catch(u5); },
+    stats: function (days) { return rpcA('admin_stats', { p_days: days }).catch(function (err) { if (/Could not find|schema cache|does not exist|404/i.test(err.message)) throw new Error('NEEDS_UPDATE_007'); throw err; }); },
     upload: function (blob, name) {
       var base = C.SUPABASE_URL.replace(/\/$/, ''), path;
       return rpcA('admin_upload_ticket', {}).then(function (folder) {
@@ -271,6 +272,15 @@
     updateSubscriber: function (id, patch) { var x = db(); x.subs = (x.subs || []).filter(function (r) { return !(patch.delete && r.id === id); }); x.subs.forEach(function (r) { if (r.id === id && patch.status) r.status = patch.status; }); save(x); return wait(true); },
     messages: function () { return wait(db().msgs || []); },
     updateMessage: function (id, patch) { var x = db(); x.msgs = (x.msgs || []).filter(function (r) { return !(patch.delete && r.id === id); }); x.msgs.forEach(function (r) { if (r.id === id) Object.assign(r, patch); }); save(x); return wait(true); },
+    stats: function (days) {
+      var d = [], t = new Date(); for (var i = days - 1; i >= 0; i--) { var x = new Date(t); x.setDate(t.getDate() - i); var n = Math.round(20 + 15 * Math.sin(i / 2) + Math.random() * 10); d.push([x.toISOString().slice(0, 10), n, Math.round(n * .6)]); }
+      var v = d.reduce(function (s, r) { return s + r[1]; }, 0), s2 = d.reduce(function (s, r) { return s + r[2]; }, 0);
+      return wait({ views: v, visits: s2, wa: Math.round(s2 * .08), orders: Math.round(s2 * .02), camps: 1, days: d,
+        pages: [['/', Math.round(v * .35)], ['/shop/', Math.round(v * .2)], ['/camps/', Math.round(v * .15)], ['/ka/', Math.round(v * .1)], ['/georgia/', Math.round(v * .08)]],
+        refs: [['', Math.round(s2 * .4)], ['instagram.com', Math.round(s2 * .35)], ['google.com', Math.round(s2 * .15)], ['facebook.com', Math.round(s2 * .1)]],
+        devices: { mobile: Math.round(s2 * .7), desktop: Math.round(s2 * .3) }, langs: { en: Math.round(s2 * .55), ka: Math.round(s2 * .45) },
+        products: [['bjj-gi', 14], ['rashguard-long-sleeve', 9], ['kids-bjj-gi', 6]], wa_pages: [['/shop/', 5], ['/camps/', 3]] });
+    },
     reset: function () { localStorage.removeItem(DK); return wait(true); },
     upload: function (blob) { return new Promise(function (res) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.readAsDataURL(blob); }); }
   };

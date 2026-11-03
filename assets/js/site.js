@@ -188,3 +188,38 @@
 document.addEventListener('click', function (ev) {
   document.querySelectorAll('.lang-dd[open]').forEach(function (d) { if (!d.contains(ev.target)) d.removeAttribute('open'); });
 });
+
+// visitor stats: page views and a few actions, no cookies, nothing personal (Admin → Visitors)
+(function () {
+  var C = window.CHD_CONFIG || {};
+  var host = location.hostname;
+  var on = /(^|\.)chidaoba\.com$/.test(host);
+  try { if (localStorage.getItem('chd_track_test') === '1') on = true; if (localStorage.getItem('chd_notrack') === '1') on = false; } catch (e) { }
+  if (location.pathname.indexOf('/admin') === 0) { try { localStorage.setItem('chd_notrack', '1'); } catch (e) { } on = false; }
+  if (!on || !C.SUPABASE_URL || navigator.webdriver && !host.match(/localhost|127\./)) { window.CHD_TRACK = function () { }; return; }
+  var lang = document.documentElement.lang || 'en';
+  var device = Math.min(screen.width || 9999, window.innerWidth || 9999) < 760 ? 'mobile' : 'desktop';
+  function send(body) {
+    try {
+      fetch(C.SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/rpc/track', {
+        method: 'POST', keepalive: true,
+        headers: { apikey: C.SUPABASE_ANON_KEY, Authorization: 'Bearer ' + C.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p: body })
+      }).catch(function () { });
+    } catch (e) { }
+  }
+  var ref = '';
+  try {
+    var q = new URLSearchParams(location.search).get('utm_source');
+    if (q) ref = q.toLowerCase();
+    else if (document.referrer) { var h = new URL(document.referrer).hostname; if (h !== host) ref = h.replace(/^(www|l|lm|m|mobile)\./, ''); }
+  } catch (e) { }
+  var first = false;
+  try { first = !sessionStorage.getItem('chd_visit'); sessionStorage.setItem('chd_visit', '1'); } catch (e) { }
+  send({ kind: 'view', path: location.pathname, lang: lang, ref: first ? ref : '', device: device, new_visit: first });
+  window.CHD_TRACK = function (kind, item) { send({ kind: kind, item: item || '', path: location.pathname, lang: lang, device: device }); };
+  document.addEventListener('click', function (ev) {
+    var a = ev.target.closest && ev.target.closest('a[href*="wa.me/"]');
+    if (a && a.id !== 'bag-send' && a.id !== 'pv-wa') window.CHD_TRACK('wa');
+  }, true);
+})();

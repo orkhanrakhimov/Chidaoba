@@ -722,3 +722,68 @@ create trigger subscribers_welcome after insert on public.subscribers for each r
 -- To turn the email off later:  update public.mail_settings set enabled = false;
 -- To change the sender:          update public.mail_settings set from_addr = 'CHIDAOBA <hello@chidaoba.com>';
 -- =====================================================================
+
+-- =====================================================================
+-- Update 007: simple visitor stats (no cookies, no personal data)
+-- Counts page views and a few actions. Shown in Admin → Visitors.
+-- Safe to run again.
+-- =====================================================================
+create table if not exists public.visits (
+  id        bigserial primary key,
+  at        timestamptz not null default now(),
+  kind      text not null default 'view',   -- view, wa (WhatsApp click), product (shop product opened), order (bag sent), camp (camp request sent)
+  path      text,                           -- page, e.g. /shop/
+  item      text,                           -- product id or camp, for actions
+  lang      text,                           -- en or ka
+  ref       text,                           -- the site the visitor came from, e.g. instagram.com
+  device    text,                           -- mobile or desktop
+  new_visit boolean not null default false  -- first page of a visit
+);
+create index if not exists visits_at on public.visits (at);
+alter table public.visits enable row level security;
+revoke all on public.visits from anon, authenticated;
+
+-- public: record one view or action
+create or replace function public.track(p jsonb) returns void
+language plpgsql security definer set search_path = public as $$
+declare k text := coalesce(p->>'kind', 'view');
+begin
+  if k not in ('view', 'wa', 'product', 'order', 'camp') then return; end if;
+  insert into public.visits (kind, path, item, lang, ref, device, new_visit)
+  values (k, left(p->>'path', 160), left(p->>'item', 80), left(p->>'lang', 5),
+          nullif(left(lower(regexp_replace(coalesce(p->>'ref', ''), '^www\.', '')), 80), ''),
+          case when p->>'device' in ('mobile', 'desktop') then p->>'device' end,
+          coalesce((p->>'new_visit')::boolean, false));
+  -- keep about 13 months of data
+  if random() < 0.002 then delete from public.visits where at < now() - interval '400 days'; end if;
+end; $$;
+
+-- admin: stats for the last N days
+create or replace function public.admin_stats(p_token text, p_days int default 30) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare since timestamptz := date_trunc('day', now() at time zone 'Asia/Tbilisi') at time zone 'Asia/Tbilisi' - make_interval(days => greatest(1, least(p_days, 400)) - 1);
+begin
+  perform public.admin_check(p_token);
+  return (
+    with v as (select * from public.visits where at >= since)
+    select jsonb_build_object(
+      'views',   (select count(*) from v where kind = 'view'),
+      'visits',  (select count(*) from v where kind = 'view' and new_visit),
+      'wa',      (select count(*) from v where kind = 'wa'),
+      'orders',  (select count(*) from v where kind = 'order'),
+      'camps',   (select count(*) from v where kind = 'camp'),
+      'days',    (select coalesce(jsonb_agg(jsonb_build_array(d, n, s) order by d), '[]') from (
+                    select to_char(g::date, 'YYYY-MM-DD') d,
+                           (select count(*) from v where kind = 'view' and (at at time zone 'Asia/Tbilisi')::date = g::date) n,
+                           (select count(*) from v where kind = 'view' and new_visit and (at at time zone 'Asia/Tbilisi')::date = g::date) s
+                      from generate_series((since at time zone 'Asia/Tbilisi')::date, (now() at time zone 'Asia/Tbilisi')::date, interval '1 day') g) x),
+      'pages',   (select coalesce(jsonb_agg(jsonb_build_array(path, n) order by n desc), '[]') from (select path, count(*) n from v where kind = 'view' group by path order by n desc limit 15) x),
+      'refs',    (select coalesce(jsonb_agg(jsonb_build_array(ref, n) order by n desc), '[]') from (select coalesce(ref, '') ref, count(*) n from v where kind = 'view' and new_visit group by 1 order by n desc limit 12) x),
+      'devices', (select coalesce(jsonb_object_agg(coalesce(device, 'unknown'), n), '{}') from (select device, count(*) n from v where kind = 'view' and new_visit group by device) x),
+      'langs',   (select coalesce(jsonb_object_agg(coalesce(lang, 'en'), n), '{}') from (select lang, count(*) n from v where kind = 'view' and new_visit group by lang) x),
+      'products',(select coalesce(jsonb_agg(jsonb_build_array(item, n) order by n desc), '[]') from (select item, count(*) n from v where kind = 'product' and item is not null group by item order by n desc limit 10) x),
+      'wa_pages',(select coalesce(jsonb_agg(jsonb_build_array(path, n) order by n desc), '[]') from (select path, count(*) n from v where kind = 'wa' group by path order by n desc limit 8) x)
+    ));
+end; $$;
+
+grant execute on function public.track(jsonb), public.admin_stats(text, int) to anon, authenticated;

@@ -1629,3 +1629,19 @@ input[type=checkbox]{border-radius:4px}
 .foot-news .news-row{border-radius:999px;border:1.5px solid #555;padding:4px}.foot-news .news-row input{padding-left:14px}.foot-news .news-row .btn{background:var(--red)!important;color:#fff!important;min-height:44px;padding:0 20px}
 html[lang="ka"] .hero h1{font-size:clamp(38px,6.2vw,92px);line-height:1.12}html[lang="ka"] .hero h1 .ln{padding-bottom:.14em;margin-bottom:-.1em}
 html[lang="ka"] .hero h1.h-xl{font-size:clamp(34px,5.4vw,84px);max-width:none}@media (min-width:700px){html[lang="ka"] .hero h1 .ln{white-space:nowrap}}
+/* admin: visitors */
+.vd{height:44px;padding:0 14px;border:1px solid var(--chalk-line);background:#fff;font:inherit}
+.vchart{display:flex;align-items:flex-end;gap:3px;height:180px;margin-top:14px;padding-bottom:2px;border-bottom:1px solid var(--chalk-line)}
+.vc-col{position:relative;flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;min-width:2px}
+.vc-col i{position:absolute;bottom:0;left:0;right:0;background:#d9d5cb;border-radius:4px 4px 0 0}
+.vc-col i.v2{left:22%;right:22%;background:var(--red)}
+.vc-col:hover i{filter:brightness(.92)}
+.vc-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--grey);margin-top:6px}
+.lg{display:inline-block;width:10px;height:10px;border-radius:2px;background:#d9d5cb;margin:0 4px 0 10px;vertical-align:-1px}.lg.v2{background:var(--red)}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+@media (max-width:900px){.vgrid{grid-template-columns:1fr}}
+.vbars{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.vbars li{display:grid;grid-template-columns:minmax(110px,1.2fr) 2fr 44px 40px;gap:10px;align-items:center;font-size:14px}
+.vb-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vb-b{height:10px;border-radius:999px;background:#eeebe4;overflow:hidden}.vb-b i{display:block;height:100%;background:var(--carbon);border-radius:999px}
+.vbars b{text-align:right}.vbars em{font-style:normal;color:var(--grey);font-size:12px;text-align:right}
