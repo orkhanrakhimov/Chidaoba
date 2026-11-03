@@ -97,7 +97,7 @@ def socials(cls="socials"):
     return f'<div class="{cls}">' + "".join(
         f'<a href="{u}"{"" if u.startswith("mailto") else " rel=\"noopener\""} aria-label="{n}" title="{n}">{i}</a>' for u, n, i in items) + "</div>"
 
-def newsletter_form(where, interests=("camps", "shop", "news"), title="The Culture Letter", sub="Camps, new products and stories. A few emails a year.", btn="Subscribe", hidden=()):
+def newsletter_form(where, interests=("camps", "shop"), title="The Culture Letter", sub="New camps and new products, first. A few emails a year.", btn="Subscribe", hidden=()):
     big = where != "foot"
     names = {"camps": "Camp dates", "shop": "Shop news", "news": "Stories", "bjj": "BJJ", "wrestling": "Wrestling", "judo": "Judo"}
     chips = "".join(f'<label class="news-int"><input type="checkbox" name="interest" value="{k}" checked><span>{names[k]}</span></label>' for k in interests)
@@ -145,7 +145,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "36"
+ASSET_V = "37"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):

@@ -666,52 +666,25 @@ revoke all on public.mail_settings from anon, authenticated;
 
 alter table public.subscribers add column if not exists welcomed_at timestamptz;
 
--- the email text, in English or Georgian, based on what the person chose
+-- the email text, in English or Georgian
 create or replace function public.welcome_email(s public.subscribers) returns jsonb
 language plpgsql stable set search_path = public as $$
-declare ka boolean := coalesce(s.lang, 'en') = 'ka';
-        i text[] := coalesce(s.interests, '{}');
-        sports text[] := '{}';
-        items text := '';
-        subj text; intro text; outro text; html text;
+declare ka boolean := coalesce(s.lang, 'en') = 'ka'; body text;
 begin
-  if 'bjj' = any(i) then sports := sports || (case when ka then 'BJJ' else 'BJJ' end); end if;
-  if 'wrestling' = any(i) then sports := sports || (case when ka then 'ჭიდაობა' else 'wrestling' end); end if;
-  if 'judo' = any(i) then sports := sports || (case when ka then 'ძიუდო' else 'judo' end); end if;
-
-  if 'camps' = any(i) or array_length(sports, 1) > 0 then
-    items := items || '<li>' || case when ka
-      then 'ახალი ბანაკების თარიღები' || coalesce(' (' || array_to_string(sports, ', ') || ')', '') || ', რეგისტრაციის გახსნამდე'
-      else 'New camp dates' || coalesce(' for ' || array_to_string(sports, ', '), '') || ', before registration opens to everyone' end || '</li>';
-  end if;
-  if 'shop' = any(i) then
-    items := items || '<li>' || case when ka then 'ახალი პროდუქცია და CHIDAOBA-ს მერჩი, სანამ საიტზე გამოჩნდება' else 'New products and CHIDAOBA merch, before they go on the site' end || '</li>';
-  end if;
-  if 'news' = any(i) or items = '' then
-    items := items || '<li>' || case when ka then 'ისტორიები ქართული ჭიდაობისა და მისი ადამიანების შესახებ' else 'Stories about Georgian wrestling and the people behind it' end || '</li>';
-  end if;
-
   if ka then
-    subj  := 'მადლობა, რომ შემოგვიერთდით | CHIDAOBA';
-    intro := '<p>გამარჯობა,</p><p>მადლობა გამოწერისთვის. ახლა თქვენ CHIDAOBA-ს სიაში ხართ და პირველი გაიგებთ:</p>';
-    outro := '<p>წელიწადში მხოლოდ რამდენიმე წერილს ვგზავნით. კითხვა თუ გაქვთ, უბრალოდ უპასუხეთ ამ წერილს.</p>'
-          || '<p>გამოგვყევით Instagram-ზე: <a href="https://www.instagram.com/chidaobaculture/">@chidaobaculture</a></p>'
-          || '<p>CHIDAOBA-ს გუნდი</p>'
-          || '<p style="color:#8a8a85;font-size:12px">გამოწერის გასაუქმებლად უპასუხეთ სიტყვით „unsubscribe“.</p>';
-  else
-    subj  := 'Thanks for joining CHIDAOBA';
-    intro := '<p>Hi,</p><p>Thank you for signing up. You are now on the CHIDAOBA list, and you will be the first to hear about:</p>';
-    outro := '<p>We only write a few times a year. If you have a question, just reply to this email.</p>'
-          || '<p>Follow us on Instagram: <a href="https://www.instagram.com/chidaobaculture/">@chidaobaculture</a></p>'
-          || '<p>The CHIDAOBA team</p>'
-          || '<p style="color:#8a8a85;font-size:12px">To unsubscribe, reply with “unsubscribe”.</p>';
+    body := '<p>გამარჯობა,</p>'
+         || '<p>მადლობა გამოწერისთვის. ახალი ბანაკებისა და ახალი პროდუქციის შესახებ პირველი შეიტყობთ.</p>'
+         || '<p>კითხვა თუ გაქვთ, უპასუხეთ ამ წერილს.</p>'
+         || '<p>CHIDAOBA<br><a href="https://www.instagram.com/chidaobaculture/" style="color:#1e1e1e">@chidaobaculture</a> · <a href="https://chidaoba.com/ka/" style="color:#1e1e1e">chidaoba.com</a></p>'
+         || '<p style="color:#8a8a85;font-size:12px">გამოწერის გასაუქმებლად უპასუხეთ სიტყვით „unsubscribe“.</p>';
+    return jsonb_build_object('subject', 'მოგესალმებით CHIDAOBA-ში', 'html', '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1e1e1e;max-width:560px">' || body || '</div>');
   end if;
-
-  html := '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1e1e1e;max-width:560px">'
-       || '<p style="font-weight:700;letter-spacing:.12em">CHIDAOBA</p>' || intro
-       || '<ul style="padding-left:20px">' || items || '</ul>' || outro
-       || '<p><a href="https://chidaoba.com' || case when ka then '/ka/' else '/' end || '" style="color:#b5212f">chidaoba.com</a></p></div>';
-  return jsonb_build_object('subject', subj, 'html', html);
+  body := '<p>Hi,</p>'
+       || '<p>Thanks for signing up. You will be the first to know about new camps and new products.</p>'
+       || '<p>Any questions? Just reply to this email.</p>'
+       || '<p>CHIDAOBA<br><a href="https://www.instagram.com/chidaobaculture/" style="color:#1e1e1e">@chidaobaculture</a> · <a href="https://chidaoba.com/" style="color:#1e1e1e">chidaoba.com</a></p>'
+       || '<p style="color:#8a8a85;font-size:12px">To unsubscribe, reply with “unsubscribe”.</p>';
+  return jsonb_build_object('subject', 'Welcome to CHIDAOBA', 'html', '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1e1e1e;max-width:560px">' || body || '</div>');
 end; $$;
 
 -- send it right after a new signup is saved
