@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE, shop: filters, product options, bag, WhatsApp order
+// CHIDAOBA CULTURE, shop: filters, product options, size finder, bag, WhatsApp order
 (function () {
   var dataEl = document.getElementById('shop-data'); if (!dataEl) return;
   var P = JSON.parse(dataEl.textContent);
@@ -7,10 +7,22 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var KA = document.documentElement.lang === 'ka';
+  var T = function (en, ka) { return KA ? ka : en; };
+
+  // ---------- product drawings ----------
+  var ART = {};
+  var tpl = document.getElementById('shop-art');
+  if (tpl) $$('svg', tpl.content).forEach(function (s) { ART[s.getAttribute('data-k')] = s.innerHTML; });
+  // colour is passed by its position in the product's colour list (names are translated, hex values are not)
+  function artSvg(p, colour) {
+    var i = Math.max(0, p.colours.indexOf(colour));
+    return '<svg class="part" viewBox="0 0 120 120" aria-hidden="true" style="--pc:' + (p.hex[i] || '#1E1E1E') + ';--pd:' + (p.dk[i] ? 'rgba(255,255,255,.5)' : 'rgba(30,30,30,.45)') + '">' + (ART[p.art] || '') + '</svg>';
+  }
 
   // ---------- bag storage ----------
-  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return mem; } }
   var mem = [];
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return mem; } }
   function save(b) { mem = b; try { localStorage.setItem(KEY, JSON.stringify(b)); } catch (e) { } count(); }
   function count() {
     var n = load().reduce(function (s, i) { return s + i.q; }, 0);
@@ -18,67 +30,107 @@
     $$('[data-bag-n]').forEach(function (x) { x.textContent = n; x.hidden = !n; });
   }
 
-  // ---------- filters ----------
-  var state = { cat: 'all', sport: null, q: '' };
-  var tiles = $$('.ptile'), depts = $$('.dept');
+  // ---------- filters: sport, category, who for, search ----------
+  var state = { sport: 'all', cat: 'all', aud: 'all', q: '' };
+  var tiles = $$('.ptile'), depts = $$('.dept'), pcats = $$('.pcat'), groups = $$('.pgroup');
+  // men: men's and unisex adult items; women: women's and unisex adult items; kids: kids' items. One size / any age gear shows for all.
+  var AUD = { all: null, men: { men: 1, adult: 1, all: 1 }, women: { women: 1, adult: 1, all: 1 }, kids: { kids: 1, all: 1 } };
+  function audOk(a) { return !AUD[state.aud] || !!AUD[state.aud][a]; }
   function apply() {
     var shown = 0, q = state.q.toLowerCase();
     tiles.forEach(function (t) {
       var p = P[t.dataset.id];
-      var ok = (state.cat === 'all' || t.dataset.cat === state.cat) &&
-        (!state.sport || t.dataset.sports === 'all' || t.dataset.sports.split(' ').indexOf(state.sport) >= 0) &&
-        (!q || (p.name + ' ' + p.desc + ' ' + p.cat).toLowerCase().indexOf(q) >= 0);
+      var ok = (state.sport === 'all' || t.dataset.sport === state.sport) && (state.cat === 'all' || t.dataset.cat === state.cat) && audOk(t.dataset.aud) &&
+        (!q || (p.name + ' ' + p.desc + ' ' + p.catName + ' ' + p.sportName + ' ' + t.textContent).toLowerCase().indexOf(q) >= 0);
       t.hidden = !ok; if (ok) shown++;
+    });
+    groups.forEach(function (g) { g.hidden = !$$('.ptile', g).some(function (t) { return !t.hidden; }); });
+    pcats.forEach(function (c) {
+      c.hidden = !$$('.ptile', c).some(function (t) { return !t.hidden; });
+      var vis = $$('.pgroup', c).filter(function (g) { return !g.hidden; });
+      $$('.pgroup-h', c).forEach(function (h) { h.hidden = vis.length < 2; });
     });
     depts.forEach(function (d) { d.hidden = !$$('.ptile', d).some(function (t) { return !t.hidden; }); });
     $('#shop-empty').hidden = shown > 0;
-    $('#shop-count').textContent = shown + ' item' + (shown === 1 ? '' : 's');
-    $$('.shop-cats button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.cat === state.cat ? 'true' : 'false'); });
-    $$('.shop-sports button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.sport === state.sport ? 'true' : 'false'); });
+    $('#shop-count').textContent = shown === 1 ? T('1 item', '1 ნივთი') : shown + T(' items', ' ნივთი');
+    $('#shop-reset').hidden = state.sport === 'all' && state.cat === 'all' && state.aud === 'all' && !state.q;
+    $$('.shop-tabs button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.sport === state.sport ? 'true' : 'false'); });
+    $$('.shop-chips').forEach(function (g) { g.hidden = g.dataset.for !== state.sport; });
+    $$('.shop-chips button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.cat === state.cat ? 'true' : 'false'); });
+    $$('.seg button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.aud === state.aud ? 'true' : 'false'); });
+    $$('.who-btn').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.who === state.aud ? 'true' : 'false'); });
+    try {
+      var u = new URLSearchParams(); if (state.sport !== 'all') u.set('sport', state.sport); if (state.cat !== 'all') u.set('cat', state.cat); if (state.aud !== 'all') u.set('for', state.aud);
+      var qs = u.toString(); history.replaceState(null, '', location.pathname + (qs ? '?' + qs : ''));
+    } catch (e) { }
   }
   function toTop() {
     var main = $('.shop-main'), bar = $('#shop-bar');
-    var y = main.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - 70;
-    if (window.scrollY > y) window.scrollTo({ top: y, behavior: 'smooth' });
+    var y = main.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - 60;
+    if (Math.abs(window.scrollY - y) > 40) window.scrollTo({ top: y, behavior: 'smooth' });
   }
-  $$('.shop-cats button').forEach(function (b) { b.addEventListener('click', function () { state.cat = b.dataset.cat; apply(); toTop(); }); });
-  $$('.shop-sports button').forEach(function (b) {
-    b.addEventListener('click', function () { state.sport = state.sport === b.dataset.sport ? null : b.dataset.sport; apply(); toTop(); });
-  });
-  $('#shop-q').addEventListener('input', function (ev) { state.q = ev.target.value.trim(); apply(); });
+  function setSport(k) { state.sport = k; state.cat = 'all'; apply(); toTop(); }
+  $$('.shop-tabs button').forEach(function (b) { b.addEventListener('click', function () { setSport(b.dataset.sport); }); });
+  $$('.sport-tile').forEach(function (b) { b.addEventListener('click', function () { setSport(b.dataset.go); }); });
+  $$('.shop-chips button').forEach(function (b) { b.addEventListener('click', function () { state.cat = b.dataset.cat; apply(); toTop(); }); });
+  $$('.seg button').forEach(function (b) { b.addEventListener('click', function () { state.aud = b.dataset.aud; apply(); }); });
+  $$('.who-btn').forEach(function (b) { b.addEventListener('click', function () { state.aud = b.dataset.who; state.sport = 'all'; state.cat = 'all'; apply(); toTop(); }); });
+  $('#shop-q').addEventListener('input', function (ev) { state.q = ev.target.value.trim(); if (state.q) { state.sport = 'all'; state.cat = 'all'; } apply(); });
+  $('#shop-reset').addEventListener('click', function () { state = { sport: 'all', cat: 'all', aud: 'all', q: '' }; $('#shop-q').value = ''; apply(); });
 
   // sticky bar shadow
   var bar = $('#shop-bar');
   window.addEventListener('scroll', function () { bar.classList.toggle('stuck', bar.getBoundingClientRect().top <= 73); }, { passive: true });
 
-  // ---------- size guides ----------
+  // ---------- size guides (approximate, sizes vary between makers) ----------
+  var H = T('Height (cm)', 'სიმაღლე (სმ)'), W = T('Weight (kg)', 'წონა (კგ)'), S = T('Size', 'ზომა');
   var GUIDES = {
-    apparel: [['Size', 'Chest (cm)', 'Height (cm)'], ['XS', '84-88', '160-167'], ['S', '89-94', '165-172'], ['M', '95-100', '170-177'], ['L', '101-106', '175-182'], ['XL', '107-112', '180-187'], ['XXL', '113-118', '185-192']],
-    gi: [['Size', 'Height (cm)', 'Weight (kg)'], ['A0', '150-160', '45-55'], ['A1', '160-170', '55-70'], ['A2', '170-180', '70-85'], ['A3', '180-190', '85-100'], ['A4', '190-200', '100-115']],
-    shorts: [['Size', 'Waist (in)', 'Waist (cm)'], ['28', '28', '71'], ['30', '30', '76'], ['32', '32', '81'], ['34', '34', '86'], ['36', '36', '91'], ['38', '38', '97']]
+    gi: [[S, H, W], ['A0', '150-160', '45-55'], ['A1', '160-170', '55-70'], ['A2', '170-180', '70-85'], ['A3', '180-190', '85-100'], ['A4', '190-200', '100-115'], ['A5', '195-205', '115-140']],
+    gi_w: [[S, H, W], ['F1', '150-160', '45-55'], ['F2', '158-168', '55-65'], ['F3', '165-175', '65-75'], ['F4', '172-182', '75-90']],
+    gi_k: [[S, H, W], ['M000', '95-105', '14-18'], ['M00', '105-115', '18-22'], ['M0', '115-125', '22-27'], ['M1', '125-135', '27-33'], ['M2', '135-145', '33-40'], ['M3', '145-155', '40-48'], ['M4', '155-165', '48-56']],
+    belt: [[T('Belt', 'ქამარი'), T('Fits gi size', 'კიმონოს ზომა')], ['A1', 'A0, A1'], ['A2', 'A2'], ['A3', 'A3'], ['A4', 'A4, A5']],
+    belt_k: [[T('Belt', 'ქამარი'), T('Fits gi size', 'კიმონოს ზომა')], ['M0', 'M000-M0'], ['M1', 'M1'], ['M2', 'M2'], ['M3', 'M3'], ['M4', 'M4']],
+    judogi: [[S, H], ['110 cm', '105-115'], ['120 cm', '115-125'], ['130 cm', '125-135'], ['140 cm', '135-145'], ['150 cm', '145-155'], ['160 cm', '155-165'], ['170 cm', '165-175'], ['180 cm', '175-185'], ['190 cm', '185-195'], ['200 cm', '195-205']],
+    jbelt: [[T('Belt length', 'ქამრის სიგრძე'), T('Judogi size', 'კიმონოს ზომა')], ['180 cm', '110-120'], ['200 cm', '130-140'], ['220 cm', '150'], ['240 cm', '160'], ['260 cm', '170-180'], ['280 cm', '190'], ['300 cm', '200']],
+    top: [[S, T('Chest (cm)', 'მკერდი (სმ)'), H], ['XS', '84-88', '160-167'], ['S', '89-94', '165-172'], ['M', '95-100', '170-177'], ['L', '101-106', '175-182'], ['XL', '107-112', '180-187'], ['XXL', '113-118', '185-195']],
+    top_w: [[S, T('Chest (cm)', 'მკერდი (სმ)'), H], ['XS', '78-82', '152-160'], ['S', '83-87', '158-165'], ['M', '88-93', '163-170'], ['L', '94-99', '168-175'], ['XL', '100-106', '173-182']],
+    kids: [[S, T('Age', 'ასაკი'), H], ['4-5 y', '4-5', '104-116'], ['6-7 y', '6-7', '116-128'], ['8-9 y', '8-9', '128-140'], ['10-11 y', '10-11', '140-152'], ['12-13 y', '12-13', '152-164']],
+    shorts: [[S, T('Waist (in)', 'წელი (ინჩი)'), T('Waist (cm)', 'წელი (სმ)')], ['28', '28', '71'], ['30', '30', '76'], ['32', '32', '81'], ['34', '34', '86'], ['36', '36', '91'], ['38', '38', '97']],
+    shoes: [[T('EU size', 'EU ზომა'), T('Foot length (cm)', 'ტერფის სიგრძე (სმ)')], ['EU 30', '19.0'], ['EU 32', '20.5'], ['EU 34', '21.5'], ['EU 36', '23.0'], ['EU 38', '24.0'], ['EU 40', '25.5'], ['EU 42', '26.5'], ['EU 44', '28.0'], ['EU 46', '29.5']]
   };
-  function guideFor(p) {
-    if (p.sizes[0] === 'XS') return GUIDES.apparel;
-    if (p.sizes[0] === 'A0' || p.sizes[0] === 'A1') return GUIDES.gi;
-    if (p.sizes[0] === '28') return GUIDES.shorts;
-    return null;
+  // size finder: columns with height / weight ranges
+  function col(g, word) { for (var i = 1; i < g[0].length; i++) if (g[0][i] === word) return i; return -1; }
+  function rng(s) { var m = String(s).split('-'); return [+m[0], +(m[1] || m[0])]; }
+  function findSize(g, h, w) {
+    var hi = col(g, H), wi = col(g, W), best = -1, rows = g.slice(1);
+    function pick(ci, v) {
+      if (ci < 0 || !v) return -1;
+      for (var i = 0; i < rows.length; i++) { var r = rng(rows[i][ci]); if (v <= r[1]) return i; }
+      return rows.length - 1;
+    }
+    var a = pick(hi, h), b = pick(wi, w);
+    best = Math.max(a, b);
+    return best >= 0 ? rows[best][0] : null;
   }
 
   // ---------- product popup ----------
   var pv = $('#pv'), cur = null, sel = {}, last = null;
   function open(id) {
     var p = P[id]; if (!p) return; cur = id; last = document.activeElement;
-    sel = { size: p.sizes.length === 1 ? p.sizes[0] : null, colour: p.colours.length === 1 ? p.colours[0] : null, q: 1 };
-    $('#pv-cat').textContent = p.cat; $('#pv-name').textContent = p.name; $('#pv-desc').textContent = p.desc;
-    $('#pv-sizes').innerHTML = p.sizes.map(function (z) { return '<button type="button" data-v="' + esc(z) + '" aria-pressed="' + (sel.size === z) + '">' + esc(z) + '</button>'; }).join('');
-    $('#pv-cols').innerHTML = p.colours.map(function (c) { return '<button type="button" class="sw sw-' + c.toLowerCase() + '" data-v="' + esc(c) + '" aria-pressed="' + (sel.colour === c) + '" aria-label="' + esc(c) + '" title="' + esc(c) + '"></button>'; }).join('');
-    var g = guideFor(p);
+    sel = { size: p.sizes.length === 1 ? p.sizes[0] : null, colour: p.colours[0], q: 1 };
+    $('#pv-cat').textContent = p.sportName + ' · ' + p.catName; $('#pv-name').textContent = p.name; $('#pv-desc').textContent = p.desc;
+    $('#pv-sizes').innerHTML = p.sizes.map(function (z) { return '<button type="button" data-v="' + esc(z) + '">' + esc(z) + '</button>'; }).join('');
+    $('#pv-cols').innerHTML = p.colours.map(function (c) { return '<button type="button" class="sw sw-' + c.toLowerCase() + '" data-v="' + esc(c) + '" aria-label="' + esc(c) + '" title="' + esc(c) + '"></button>'; }).join('');
+    var g = GUIDES[p.guide] || null;
     $('#pv-guide').hidden = !g; $('#pv-sg').hidden = true;
-    $('#pv-sg').innerHTML = g ? '<table>' + g.map(function (r, i) { return '<tr>' + r.map(function (c) { return i ? '<td>' + c + '</td>' : '<th>' + c + '</th>'; }).join('') + '</tr>'; }).join('') + '</table><p class="note">Between two sizes? Message us and we will help.</p>' : '';
+    $('#pv-sg').innerHTML = g ? '<table>' + g.map(function (r, i) { return '<tr>' + r.map(function (c) { return i ? '<td>' + esc(c) + '</td>' : '<th>' + esc(c) + '</th>'; }).join('') + '</tr>'; }).join('') + '</table><p class="note">' + T('Approximate sizes. Between two sizes? Take the larger one or message us.', 'მიახლოებითი ზომებია. ორ ზომას შორის ხართ? აიღეთ უფრო დიდი ან მოგვწერეთ.') + '</p>' : '';
+    var canFit = g && col(g, H) > 0;
+    $('#pv-fit').hidden = !canFit; $('#fit-w-l').hidden = !(g && col(g, W) > 0);
+    $('#fit-h').value = ''; $('#fit-w').value = ''; $('#fit-out').textContent = '';
     $('#pv-q').textContent = '1'; $('#pv-msg').textContent = '';
     draw();
     pv.hidden = false; document.body.classList.add('modal-open');
-    try { history.replaceState(null, '', '#' + id); } catch (e) { }
+    try { history.replaceState(null, '', location.pathname + location.search + '#' + id); } catch (e) { }
     setTimeout(function () { $('.pv-x', pv).focus(); }, 30);
   }
   function close() {
@@ -87,23 +139,33 @@
     if (last) last.focus();
   }
   function draw() {
+    var p = P[cur];
     $$('#pv-sizes button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.v === sel.size ? 'true' : 'false'); });
     $$('#pv-cols button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.v === sel.colour ? 'true' : 'false'); });
     $('#pv-col-name').textContent = sel.colour || '';
-    $('#pv-wa').href = WA + '?text=' + encodeURIComponent('Hi CHIDAOBA! I would like to order:\n' + line(cur, sel) + '\n\nName:\nCity / country:');
+    $('#pv-art').innerHTML = artSvg(p, sel.colour);
+    $('#pv-wa').href = WA + '?text=' + encodeURIComponent(T('Hi CHIDAOBA! I would like to order:', 'გამარჯობა CHIDAOBA! მინდა შევუკვეთო:') + '\n' + line(cur, sel) + '\n\n' + T('Name:\nCity / country:', 'სახელი:\nქალაქი / ქვეყანა:'));
   }
   function line(id, o) {
     var p = P[id];
-    return p.name + (o.size && o.size !== 'One size' ? ', size ' + o.size : '') + (o.colour ? ', ' + o.colour : '') + ' x' + o.q;
+    return p.name + (o.size && !p.one ? ', ' + T('size ', 'ზომა ') + o.size : '') + (o.colour ? ', ' + o.colour : '') + ' x' + o.q;
   }
   function ready() {
-    var miss = [];
-    if (!sel.size) miss.push('a size'); if (!sel.colour) miss.push('a colour');
-    if (miss.length) { $('#pv-msg').textContent = 'Please choose ' + miss.join(' and ') + '.'; return false; }
+    if (!sel.size) { $('#pv-msg').textContent = T('Please choose a size.', 'აირჩიეთ ზომა.'); return false; }
     return true;
   }
+  function fit() {
+    var p = P[cur], g = GUIDES[p.guide], h = +$('#fit-h').value, w = +$('#fit-w').value;
+    if (!g || (!h && !w)) { $('#fit-out').textContent = ''; return; }
+    var z = findSize(g, h, w);
+    if (z && p.sizes.indexOf(z) < 0) z = h < rng(g[1][col(g, H)])[0] ? p.sizes[0] : p.sizes[p.sizes.length - 1];
+    if (!z) return;
+    sel.size = z; draw();
+    $('#fit-out').textContent = T('We suggest size ' + z + '. Between sizes? Take the larger one or message us.', 'გირჩევთ ზომას ' + z + '. ორ ზომას შორის ხართ? აიღეთ უფრო დიდი ან მოგვწერეთ.');
+  }
+  $('#fit-h').addEventListener('input', fit); $('#fit-w').addEventListener('input', fit);
   $('#pv-sizes').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { sel.size = b.dataset.v; $('#pv-msg').textContent = ''; draw(); } });
-  $('#pv-cols').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { sel.colour = b.dataset.v; $('#pv-msg').textContent = ''; draw(); } });
+  $('#pv-cols').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b) { sel.colour = b.dataset.v; draw(); } });
   $$('.pv-qty button').forEach(function (b) { b.addEventListener('click', function () { sel.q = Math.max(1, Math.min(20, sel.q + +b.dataset.q)); $('#pv-q').textContent = sel.q; draw(); }); });
   $('#pv-guide').addEventListener('click', function () { var g = $('#pv-sg'); g.hidden = !g.hidden; });
   $('#pv-wa').addEventListener('click', function (ev) { if (!ready()) ev.preventDefault(); });
@@ -116,6 +178,13 @@
   $('.pv-x', pv).addEventListener('click', close);
   pv.addEventListener('click', function (ev) { if (ev.target === pv) close(); });
   $$('.ptile-open, .ptile-add').forEach(function (b) { b.addEventListener('click', function () { open(b.closest('.ptile').dataset.id); }); });
+  // colour dots on a tile preview that colour
+  $$('.ptile').forEach(function (t) {
+    var p = P[t.dataset.id], box = $('.ptile-art', t);
+    $$('.dots .sw', t).forEach(function (d, k) {
+      d.addEventListener('mouseenter', function () { var s = $('svg.part', box); if (s) s.outerHTML = artSvg(p, p.colours[k]); });
+    });
+  });
 
   // ---------- bag drawer ----------
   var bagd = $('#bagd');
@@ -123,18 +192,18 @@
     var b = load().filter(function (i) { return P[i.id]; });
     $('#bag-list').innerHTML = b.length ? b.map(function (i, k) {
       var p = P[i.id];
-      return '<div class="bag-item"><div><b>' + esc(p.name) + '</b><span>' + esc([i.size !== 'One size' ? i.size : '', i.colour].filter(Boolean).join(' · ')) + '</span></div>' +
+      return '<div class="bag-item"><div class="bag-art">' + artSvg(p, i.colour) + '</div><div><b>' + esc(p.name) + '</b><span>' + esc([!p.one ? i.size : '', i.colour].filter(Boolean).join(' · ')) + '</span></div>' +
         '<div class="stepper sm"><button type="button" data-k="' + k + '" data-d="-1" aria-label="Less">−</button><output>' + i.q + '</output><button type="button" data-k="' + k + '" data-d="1" aria-label="More">+</button></div>' +
         '<button type="button" class="bag-rm" data-k="' + k + '" aria-label="Remove">×</button></div>';
-    }).join('') : '<p class="bag-empty">Your bag is empty. Choose items from the shop and they will appear here.</p>';
+    }).join('') : '<p class="bag-empty">' + T('Your bag is empty. Choose items from the shop and they will appear here.', 'კალათა ცარიელია. აირჩიეთ ნივთები მაღაზიიდან და ისინი აქ გამოჩნდება.') + '</p>';
     $('#bag-send').hidden = !b.length; $('#bag-clear').hidden = !b.length;
-    $('#bag-send').href = WA + '?text=' + encodeURIComponent('Hi CHIDAOBA! I would like to order:\n' + b.map(function (i, k) { return (k + 1) + '. ' + line(i.id, i); }).join('\n') + '\n\nName:\nCity / country:');
+    $('#bag-send').href = WA + '?text=' + encodeURIComponent(T('Hi CHIDAOBA! I would like to order:', 'გამარჯობა CHIDAOBA! მინდა შევუკვეთო:') + '\n' + b.map(function (i, k) { return (k + 1) + '. ' + line(i.id, i); }).join('\n') + '\n\n' + T('Name:\nCity / country:', 'სახელი:\nქალაქი / ქვეყანა:'));
   }
   function openBag(added) {
     renderBag(); bagd.hidden = false; document.body.classList.add('modal-open');
     bagd.classList.toggle('just-added', !!added);
   }
-  function closeBag() { bagd.hidden = true; document.body.classList.remove('modal-open'); if (location.hash === '#bag') try { history.replaceState(null, '', location.pathname); } catch (e) { } }
+  function closeBag() { bagd.hidden = true; document.body.classList.remove('modal-open'); if (location.hash === '#bag') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { } }
   $('#bag-list').addEventListener('click', function (ev) {
     var t = ev.target.closest('button'); if (!t) return;
     var b = load(), k = +t.dataset.k;
@@ -150,8 +219,11 @@
 
   // ---------- start ----------
   var params = new URLSearchParams(location.search);
-  if (params.get('cat') && $('.shop-cats [data-cat="' + params.get('cat') + '"]')) state.cat = params.get('cat');
-  if (params.get('sport') && P && $('.shop-sports [data-sport="' + params.get('sport') + '"]')) state.sport = params.get('sport');
+  var sp = params.get('sport'), ct = params.get('cat'), au = params.get('for');
+  if (sp && $('.shop-tabs [data-sport="' + sp + '"]')) state.sport = sp;
+  if (ct && state.sport !== 'all' && $('.shop-chips[data-for="' + state.sport + '"] [data-cat="' + ct + '"]')) state.cat = ct;
+  if (au === 'adult') au = 'men';
+  if (au && AUD.hasOwnProperty(au)) state.aud = au;
   apply(); count();
   var h = location.hash.slice(1);
   if (h === 'bag') openBag(); else if (P[h]) open(h);

@@ -143,7 +143,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "26"
+ASSET_V = "28"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["shop"]}
 
 def page(path, title, desc, main):
@@ -555,8 +555,15 @@ def georgia():
       <div><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
     </div>
     <div class="ch-lists">
-      <div><h3>Olympic champions</h3><p class="body muted">Judo and wrestling</p><ul><li><b>Zurab Zviadauri</b><span>Judo, 90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>Judo, 90 kg</span><em>2008</em></li><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 66 kg</span><em>2012</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Lasha Bekauri</b><span>Judo, 90 kg</span><em>2020, 2024</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
-      <div><h3>World champions</h3><p class="body muted">Recent titles</p><ul><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2025</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2025</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>3 world titles</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>3 world titles</em></li></ul></div>
+      <div><h3>Olympic champions</h3><p class="body muted">Judo and wrestling, all Olympic titles</p><ul><li><b>Zurab Zviadauri</b><span>Judo, 90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>Judo, 90 kg</span><em>2008</em></li><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 66 kg</span><em>2012</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Lasha Bekauri</b><span>Judo, 90 kg</span><em>2020, 2024</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
+      <div><h3>World champions</h3><p class="body muted">Judo and wrestling, 2022 to 2026</p><ul><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>2022, 2023, 2024, 2026</em></li><li><b>Luka Maisuradze</b><span>Judo, 90 kg</span><em>2023</em></li><li><b>Leri Abuladze</b><span>Greco-Roman, 63 kg</span><em>2023</em></li><li><b>Giorgi Sardalashvili</b><span>Judo, 60 kg</span><em>2024</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2025</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>Judo, 100 kg</span><em>2026</em></li></ul></div>
+    </div>
+    <div class="ch-eu">
+      <h3>European champions</h3><p class="body muted">Senior European titles, 2022 to 2026</p>
+      <div class="ch-lists ch-lists-eu">
+        <div><h4>Judo</h4><ul><li><b>Tato Grigalashvili</b><span>Judo, 81 kg</span><em>2022, 2024</em></li><li><b>Luka Maisuradze</b><span>Judo, 90 kg</span><em>2022, 2026</em></li><li><b>Vazha Margvelashvili</b><span>Judo, 66 kg</span><em>2024</em></li><li><b>Giorgi Sardalashvili</b><span>Judo, 60 kg</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>Judo, 100 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Judo, mixed team</span><em>2023, 2025</em></li><li><b>Eteri Liparteliani</b><span>Judo, 57 kg</span><em>2026</em></li><li><b>Lasha Shavdatuashvili</b><span>Judo, 73 kg</span><em>2026</em></li><li><b>Guram Tushishvili</b><span>Judo, over 100 kg</span><em>2026</em></li></ul></div>
+        <div><h4>Wrestling</h4><ul><li><b>Leri Abuladze</b><span>Greco-Roman, 63 kg</span><em>2022, 2023</em></li><li><b>Zurabi Iakobishvili</b><span>Freestyle, 70 kg</span><em>2022</em></li><li><b>Givi Matcharashvili</b><span>Freestyle, 97 kg</span><em>2023, 2024, 2025</em></li></ul></div>
+      </div>
     </div>
   </div>
 </section>
@@ -640,100 +647,161 @@ def georgia():
 
 
 APPAREL = ["XS", "S", "M", "L", "XL", "XXL"]
-GI = ["A0", "A1", "A2", "A3", "A4"]
+WOMEN = ["XS", "S", "M", "L", "XL"]
+KIDS_AGE = ["4-5 y", "6-7 y", "8-9 y", "10-11 y", "12-13 y"]
 ONE = ["One size"]
-# (name, description, sports, sizes, colours)
-SHOP = [
-  ("fightwear", "Fight wear", "Rashguards, shorts, spats and singlets.", [
-    ("Rashguard, long sleeve", "Tight fit, flatlock seams, sublimated print that does not crack.", ["bjj", "wrestling"], APPAREL, ["Black", "White", "Red"]),
-    ("Rashguard, short sleeve", "Same fabric and fit, for warm gyms and summer camps.", ["bjj", "wrestling"], APPAREL, ["Black", "White", "Red"]),
-    ("Fight shorts", "Stretch fabric, no pockets, secure waistband with drawcord.", ["bjj", "wrestling"], ["28", "30", "32", "34", "36", "38"], ["Black", "Red"]),
-    ("Spats", "Compression leggings for no-gi and wrestling training.", ["bjj", "wrestling"], APPAREL, ["Black"]),
-    ("Wrestling singlet", "Competition cut for freestyle and Greco-Roman.", ["wrestling"], APPAREL, ["Red", "Blue", "Black"]),
-  ]),
-  ("gis", "Gis &amp; kimonos", "Gis, kimonos and belts.", [
-    ("BJJ gi", "Pearl weave jacket, ripstop pants, reinforced collar.", ["bjj"], GI, ["White", "Black", "Blue"]),
-    ("Judo kimono", "Double weave judogi for training.", ["judo"], ["150 cm", "160 cm", "170 cm", "180 cm", "190 cm", "200 cm"], ["White", "Blue"]),
-    ("BJJ belt", "Cotton rank belt.", ["bjj"], ["A1", "A2", "A3", "A4"], ["White", "Blue", "Purple", "Brown", "Black"]),
-    ("Judo belt", "Cotton rank belt.", ["judo"], ["240 cm", "260 cm", "280 cm", "300 cm"], ["White", "Yellow", "Orange", "Green", "Blue", "Brown", "Black"]),
-  ]),
-  ("gear", "Gear", "Bags, protection and training essentials.", [
-    ("Gear bag", "Large duffel with a separate wet compartment for your gi and shoes.", ["bjj", "wrestling", "judo"], ONE, ["Black"]),
-    ("Backpack", "Daily training backpack with laptop sleeve and shoe pocket.", ["bjj", "wrestling", "judo"], ONE, ["Black"]),
-    ("Headgear", "Ear guards for wrestling and grappling. Adjustable straps.", ["wrestling", "bjj"], ONE, ["Black", "Red"]),
-    ("Mouthguard", "Boil and bite fit, with a ventilated case.", ["bjj", "wrestling", "judo"], ["Junior", "Adult"], ["Black", "Clear"]),
-    ("Knee pads", "Low profile pads for shots and scrambles. Sold as a pair.", ["wrestling"], ["S", "M", "L"], ["Black"]),
-    ("Wrestling shoes", "Lightweight, split sole, ankle support.", ["wrestling"], ["EU 38", "EU 39", "EU 40", "EU 41", "EU 42", "EU 43", "EU 44", "EU 45", "EU 46"], ["Black", "Red"]),
-    ("Finger tape", "Cotton tape for fingers and joints. Pack of 4 rolls.", ["bjj", "judo", "wrestling"], ["0.8 cm", "1.3 cm", "2.5 cm"], ["White"]),
-    ("Gym towel", "Quick dry microfibre towel.", ["bjj", "wrestling", "judo"], ONE, ["Black", "Red"]),
-    ("Slides", "For walking off the mat. Keep the mat clean.", ["bjj", "wrestling", "judo"], ["EU 38-39", "EU 40-41", "EU 42-43", "EU 44-45", "EU 46-47"], ["Black"]),
-    ("Water bottle", "Stainless steel, 750 ml, keeps water cold.", ["bjj", "wrestling", "judo"], ONE, ["Black", "White"]),
-  ]),
-  ("lifestyle", "Lifestyle", "Everyday clothing and accessories.", [
-    ("Hoodie", "Heavy cotton, relaxed fit.", [], APPAREL, ["Black", "White", "Red"]),
-    ("T-shirt", "Heavyweight cotton T-shirt.", [], APPAREL, ["Black", "White", "Red"]),
-    ("Sweatshirt", "Crewneck sweatshirt.", [], APPAREL, ["Black", "Grey"]),
-    ("Track pants", "Tapered joggers with zip pockets.", [], APPAREL, ["Black", "Grey"]),
-    ("Cap", "Cotton cap with embroidered logo.", [], ONE, ["Black", "White"]),
-    ("Beanie", "Knitted beanie with embroidered logo.", [], ONE, ["Black", "Red"]),
-    ("Tote bag", "Heavy canvas tote bag.", [], ONE, ["Natural", "Black"]),
-  ]),
+SPORTS = [  # key, name, short line
+    ("bjj", "BJJ &amp; Grappling", "Gis, belts and no-gi wear."),
+    ("wrestling", "Wrestling", "Singlets, shoes and protection."),
+    ("judo", "Judo", "Judogi and belts."),
+    ("gear", "Gear", "Bags, protection and training kit."),
+    ("lifestyle", "Clothing", "Hoodies, T-shirts and accessories."),
 ]
+CATS = {  # sport -> [(cat key, name)]
+    "bjj": [("gis", "Gis"), ("belts", "Belts"), ("rash", "Rashguards"), ("shorts", "Shorts &amp; spats")],
+    "wrestling": [("singlets", "Singlets"), ("shoes", "Wrestling shoes"), ("protect", "Headgear &amp; pads")],
+    "judo": [("judogi", "Judogi"), ("jbelts", "Belts")],
+    "gear": [("bags", "Bags"), ("protection", "Protection"), ("training", "Training")],
+    "lifestyle": [("tops", "Tops"), ("bottoms", "Bottoms"), ("acc", "Accessories")],
+}
+# audience: men, women, adult (unisex), kids, all (any age / one size)
+# (name, description, sport, category, audience, sizes, colours, size guide, drawing)
+PRODUCTS = [
+    ("BJJ gi", "Pearl weave jacket, ripstop pants, reinforced collar. Men's cut.", "bjj", "gis", "men", ["A0", "A1", "A2", "A3", "A4", "A5"], ["White", "Blue", "Black"], "gi", "gi"),
+    ("Women's BJJ gi", "Cut for women: shorter jacket, tapered sleeves and pants.", "bjj", "gis", "women", ["F1", "F2", "F3", "F4"], ["White", "Blue", "Black"], "gi_w", "gi"),
+    ("Kids BJJ gi", "Light, tough gi for kids, easy to wash.", "bjj", "gis", "kids", ["M000", "M00", "M0", "M1", "M2", "M3", "M4"], ["White", "Blue"], "gi_k", "gi"),
+    ("BJJ belt", "Cotton rank belt for adults.", "bjj", "belts", "adult", ["A1", "A2", "A3", "A4"], ["White", "Blue", "Purple", "Brown", "Black"], "belt", "belt"),
+    ("Kids BJJ belt", "Cotton rank belt in kids' colours.", "bjj", "belts", "kids", ["M0", "M1", "M2", "M3", "M4"], ["White", "Grey", "Yellow", "Orange", "Green"], "belt_k", "belt"),
+    ("Rashguard, long sleeve", "Tight fit, flatlock seams, print that does not crack.", "bjj", "rash", "men", APPAREL, ["Black", "White", "Red"], "top", "rash"),
+    ("Rashguard, short sleeve", "Same fabric and fit, for warm gyms and summer camps.", "bjj", "rash", "men", APPAREL, ["Black", "White", "Red"], "top", "rash_ss"),
+    ("Women's rashguard", "Long sleeve, cut for women, slightly longer body.", "bjj", "rash", "women", WOMEN, ["Black", "White", "Red"], "top_w", "rash"),
+    ("Kids rashguard", "Long sleeve rashguard sized for kids.", "bjj", "rash", "kids", KIDS_AGE, ["Black", "Red"], "kids", "rash"),
+    ("Fight shorts", "Stretch fabric, no pockets, secure waistband with drawcord.", "bjj", "shorts", "men", ["28", "30", "32", "34", "36", "38"], ["Black", "Red"], "shorts", "shorts"),
+    ("Spats", "Compression leggings for no-gi and wrestling training.", "bjj", "shorts", "men", APPAREL, ["Black"], "top", "spats"),
+    ("Women's fight shorts", "Shorter leg, stretch fabric, wide waistband.", "bjj", "shorts", "women", WOMEN, ["Black"], "top_w", "shorts"),
+    ("Women's leggings", "High waist compression leggings for training.", "bjj", "shorts", "women", WOMEN, ["Black"], "top_w", "spats"),
+    ("Kids fight shorts", "Stretch shorts with an elastic waist.", "bjj", "shorts", "kids", KIDS_AGE, ["Black"], "kids", "shorts"),
+    ("Wrestling singlet", "Competition cut for freestyle and Greco-Roman.", "wrestling", "singlets", "adult", APPAREL, ["Red", "Blue", "Black"], "top", "singlet"),
+    ("Kids wrestling singlet", "Competition singlet sized for kids.", "wrestling", "singlets", "kids", KIDS_AGE, ["Red", "Blue"], "kids", "singlet"),
+    ("Wrestling shoes", "Lightweight, split sole, ankle support.", "wrestling", "shoes", "adult", ["EU 38", "EU 39", "EU 40", "EU 41", "EU 42", "EU 43", "EU 44", "EU 45", "EU 46", "EU 47"], ["Black", "Red"], "shoes", "shoe"),
+    ("Kids wrestling shoes", "Light shoes with good grip for young wrestlers.", "wrestling", "shoes", "kids", ["EU 30", "EU 31", "EU 32", "EU 33", "EU 34", "EU 35", "EU 36", "EU 37"], ["Black", "Red"], "shoes", "shoe"),
+    ("Headgear", "Ear guards for wrestling and grappling. Adjustable straps.", "wrestling", "protect", "all", ["Youth", "Adult"], ["Black", "Red"], "", "headgear"),
+    ("Knee pads", "Low profile pads for shots and scrambles. Sold as a pair.", "wrestling", "protect", "all", ["XS", "S", "M", "L"], ["Black"], "", "knee"),
+    ("Judogi", "Double weave judogi for training and grading.", "judo", "judogi", "adult", ["160 cm", "170 cm", "180 cm", "190 cm", "200 cm"], ["White", "Blue"], "judogi", "gi"),
+    ("Kids judogi", "Single weave judogi for kids, light and durable.", "judo", "judogi", "kids", ["110 cm", "120 cm", "130 cm", "140 cm", "150 cm"], ["White"], "judogi", "gi"),
+    ("Judo belt", "Cotton rank belt for adults.", "judo", "jbelts", "adult", ["240 cm", "260 cm", "280 cm", "300 cm"], ["White", "Yellow", "Orange", "Green", "Blue", "Brown", "Black"], "jbelt", "belt"),
+    ("Kids judo belt", "Cotton rank belt for kids.", "judo", "jbelts", "kids", ["180 cm", "200 cm", "220 cm"], ["White", "Yellow", "Orange", "Green", "Blue"], "jbelt", "belt"),
+    ("Gear bag", "Large duffel with a separate wet compartment for your gi and shoes.", "gear", "bags", "all", ONE, ["Black"], "", "bag"),
+    ("Backpack", "Daily training backpack with laptop sleeve and shoe pocket.", "gear", "bags", "all", ONE, ["Black"], "", "backpack"),
+    ("Mouthguard", "Boil and bite fit, with a ventilated case.", "gear", "protection", "all", ["Junior", "Adult"], ["Black", "Clear"], "", "mouth"),
+    ("Finger tape", "Cotton tape for fingers and joints. Pack of 4 rolls.", "gear", "training", "all", ["0.8 cm", "1.3 cm", "2.5 cm"], ["White"], "", "tape"),
+    ("Gym towel", "Quick dry microfibre towel.", "gear", "training", "all", ONE, ["Black", "Red"], "", "towel"),
+    ("Slides", "For walking off the mat. Keep the mat clean.", "gear", "training", "all", ["EU 38-39", "EU 40-41", "EU 42-43", "EU 44-45", "EU 46-47"], ["Black"], "", "slides"),
+    ("Water bottle", "Stainless steel, 750 ml, keeps water cold.", "gear", "training", "all", ONE, ["Black", "White"], "", "bottle"),
+    ("Hoodie", "Heavy cotton, relaxed fit.", "lifestyle", "tops", "adult", APPAREL, ["Black", "White", "Red"], "top", "hoodie"),
+    ("T-shirt", "Heavyweight cotton T-shirt.", "lifestyle", "tops", "adult", APPAREL, ["Black", "White", "Red"], "top", "tshirt"),
+    ("Sweatshirt", "Crewneck sweatshirt.", "lifestyle", "tops", "adult", APPAREL, ["Black", "Grey"], "top", "sweat"),
+    ("Women's T-shirt", "Fitted cotton T-shirt, cut for women.", "lifestyle", "tops", "women", WOMEN, ["Black", "White"], "top_w", "tshirt"),
+    ("Kids hoodie", "Soft heavy cotton hoodie for kids.", "lifestyle", "tops", "kids", KIDS_AGE, ["Black", "Red"], "kids", "hoodie"),
+    ("Kids T-shirt", "Cotton T-shirt with the CHIDAOBA logo.", "lifestyle", "tops", "kids", KIDS_AGE, ["Black", "White"], "kids", "tshirt"),
+    ("Track pants", "Tapered joggers with zip pockets.", "lifestyle", "bottoms", "adult", APPAREL, ["Black", "Grey"], "top", "pants"),
+    ("Cap", "Cotton cap with embroidered logo.", "lifestyle", "acc", "all", ONE, ["Black", "White"], "", "cap"),
+    ("Beanie", "Knitted beanie with embroidered logo.", "lifestyle", "acc", "all", ONE, ["Black", "Red"], "", "beanie"),
+    ("Tote bag", "Heavy canvas tote bag.", "lifestyle", "acc", "all", ONE, ["Natural", "Black"], "", "tote"),
+]
+AUD_ORDER = ["men", "women", "adult", "kids", "all"]
+GROUP = {"men": "Men", "women": "Women", "adult": "Adults, unisex", "kids": "Kids", "all": ""}
+BADGE = {"men": "Men", "women": "Women", "adult": "Unisex", "kids": "Kids", "all": ""}
+# kept for the camp editor's product picker (catalog.js)
+SHOP = [(k, n, d, [(p[0],) for p in PRODUCTS if p[2] == k]) for k, n, d in SPORTS]
 SPORT_NAMES = {"bjj": "BJJ", "wrestling": "Wrestling", "judo": "Judo"}
 
 def slugify(n):
     return re.sub(r"[^a-z0-9]+", "-", n.replace("&amp;", "and").lower()).strip("-")
 
 def shop():
-    import json
-    cats = "".join(f'<button type="button" data-cat="{k}"><span>{t}</span><em>{len(items)}</em></button>' for k, t, _, items in SHOP)
-    total = sum(len(i[3]) for i in SHOP)
-    data, depts = {}, ""
-    for i, (k, t, sub, items) in enumerate(SHOP):
-        tiles = ""
-        for j, (n, d, sp, sizes, cols) in enumerate(items):
-            pid = slugify(n)
-            data[pid] = {"name": n.replace("&amp;", "&"), "desc": d, "cat": t.replace("&amp;", "&"), "sizes": sizes, "colours": cols}
-            tags = " · ".join(SPORT_NAMES[x] for x in sp) if sp else "Everyday"
-            tiles += f"""<article class="ptile" id="{pid}" data-id="{pid}" data-cat="{k}" data-sports="{' '.join(sp) or 'all'}">
+    from shop_art import art
+    data = {}
+    sport_name = {k: n for k, n, _ in SPORTS}
+    cat_name = {c: n for k in CATS for c, n in CATS[k]}
+    def sz_summary(z):
+        if z == ONE: return "One size"
+        if z == KIDS_AGE: return "Ages 4 to 13"
+        return f"Sizes {z[0]} to {z[-1]}" if len(z) > 2 else "Sizes " + " · ".join(z)
+    def tile(p):
+        n, d, sp, cat, aud, sizes, cols, guide, kind = p
+        pid = slugify(n)
+        data[pid] = {"name": n.replace("&amp;", "&"), "desc": d, "sport": sp, "cat": cat, "catName": cat_name[cat].replace("&amp;", "&"),
+                     "sportName": sport_name[sp].replace("&amp;", "&"), "aud": aud, "sizes": sizes, "colours": cols, "guide": guide, "art": kind,
+                     "hex": [__import__("shop_art").COLOURS.get(c, "#1E1E1E") for c in cols], "dk": [1 if c in __import__("shop_art").DARK else 0 for c in cols], "one": sizes == ONE}
+        dots = "".join(f'<i class="sw sw-{c.lower()}" title="{c}"></i>' for c in cols)
+        badge = f'<span class="ptile-aud a-{aud}">{BADGE[aud]}</span>' if BADGE[aud] else ""
+        return f"""<article class="ptile" id="{pid}" data-id="{pid}" data-sport="{sp}" data-cat="{cat}" data-aud="{aud}">
           <button type="button" class="ptile-open" aria-label="Choose size and colour: {n}">
-            <div class="ptile-art" aria-hidden="true">{sym_svg("")}<span class="ptile-badge">Pre-order</span></div>
-            <div class="ptile-body"><p class="ptile-tag">{tags}</p><h3>{n}</h3><p>{d}</p>
-            <p class="ptile-opts">{len(sizes) if sizes != ONE else 'One'} size{'s' if len(sizes) > 1 else ''} · {len(cols)} colour{'s' if len(cols) > 1 else ''}</p></div>
+            <div class="ptile-art">{art(kind, cols[0])}{badge}</div>
+            <div class="ptile-body"><h3>{n}</h3><p>{d}</p>
+            <div class="ptile-meta"><span>{sz_summary(sizes)}</span><span class="dots">{dots}</span></div></div>
           </button>
-          <button type="button" class="ptile-add" data-id="{pid}">Choose options</button></article>"""
-        depts += f"""<section class="dept" id="{k}" data-cat="{k}"><div class="dept-head"><span class="dept-num">0{i+1}</span><div><h2 class="display h-md">{t}</h2><p class="lead">{sub}</p></div></div>
-      <div class="pgrid">{tiles}</div></section>"""
-    sports = "".join(f'<button type="button" data-sport="{k}" aria-pressed="false">{v}</button>' for k, v in SPORT_NAMES.items())
+          <button type="button" class="ptile-add" data-id="{pid}">Choose size</button></article>"""
+    depts = ""
+    for k, n, line in SPORTS:
+        blocks = ""
+        for c, cn in CATS[k]:
+            items = [p for p in PRODUCTS if p[2] == k and p[3] == c]
+            groups = [(a, [p for p in items if p[4] == a]) for a in AUD_ORDER]
+            groups = [g for g in groups if g[1]]
+            inner = ""
+            for a, ps in groups:
+                lab = f'<p class="pgroup-h">{GROUP[a]}</p>' if GROUP[a] and len(groups) > 1 else ""
+                inner += f'<div class="pgroup" data-aud="{a}" style="--n:{len(ps)}">{lab}<div class="pgrid">{"".join(tile(p) for p in ps)}</div></div>'
+            blocks += f'<div class="pcat" data-cat="{c}" id="{k}-{c}"><h3 class="pcat-h">{cn}</h3><div class="pcat-groups">{inner}</div></div>'
+        depts += f'<section class="dept" id="{k}" data-sport="{k}"><div class="dept-head"><h2 class="display h-md">{n}</h2><p class="lead">{line}</p></div>{blocks}</section>'
+    tiles_top = "".join(f'<button type="button" class="sport-tile" data-go="{k}"><b>{n}</b><span>{line}</span><em>{len([p for p in PRODUCTS if p[2] == k])} products</em></button>' for k, n, line in SPORTS)
+    who = "".join(f'<button type="button" class="who-btn" data-who="{a}"><b>{t}</b><span>{s}</span></button>' for a, t, s in
+                  [("men", "Men", "Gis, rashguards, shorts and more"), ("women", "Women", "Cut and sized for women"), ("kids", "Kids", "Ages 4 to 13, kids' sizes")])
+    tabs = '<button type="button" data-sport="all" aria-pressed="true">All</button>' + "".join(f'<button type="button" data-sport="{k}" aria-pressed="false">{n}</button>' for k, n, _ in SPORTS)
+    chips = "".join(f'<div class="shop-chips" data-for="{k}" hidden><button type="button" data-cat="all" aria-pressed="true">All {sport_name[k]}</button>' +
+                    "".join(f'<button type="button" data-cat="{c}" aria-pressed="false">{cn}</button>' for c, cn in CATS[k]) + '</div>' for k, *_ in SPORTS)
     return f"""
 <section class="page-hero dark shop-hero">
   <div class="wrap" style="position:relative">
     <p class="label muted fade-load"><span class="bar"></span>Shop</p>
     <h1 class="display h-xl"><span class="ln"><span>Shop</span></span></h1>
-    <p class="lead soft fade-load">Fight wear, gis, gear and everyday clothing for wrestling, judo and grappling. Choose your size and colour, add items to your bag and send the order to us on WhatsApp. No online payment.</p>
-    <ol class="shop-how fade-load"><li><b>1</b>Choose items</li><li><b>2</b>Send your bag on WhatsApp</li><li><b>3</b>We confirm price and delivery</li></ol>
+    <p class="lead soft fade-load">Gis, fight wear, gear and clothing for BJJ, wrestling and judo. Choose your size, add to your bag and send the order on WhatsApp. No online payment.</p>
+    <p class="shop-q-l fade-load">Who are you shopping for?</p>
+    <div class="who fade-load">{who}</div>
+    <p class="shop-q-l fade-load">Or shop by sport</p>
+    <div class="sport-tiles fade-load">{tiles_top}</div>
   </div>
 </section>
 <div class="shop-bar" id="shop-bar"><div class="wrap">
-  <div class="shop-cats" role="group" aria-label="Category"><button type="button" data-cat="all" aria-pressed="true"><span>All</span><em>{total}</em></button>{cats}</div>
-  <div class="shop-tools">
-    <div class="shop-sports" role="group" aria-label="Sport">{sports}</div>
-    <label class="shop-search"><span class="sr-only">Search</span><input type="search" id="shop-q" placeholder="Search"></label>
-    <button type="button" class="shop-bag-btn" id="bag-open" aria-label="Open bag">{BAG}<span>Bag</span><b id="bag-n">0</b></button>
+  <div class="shop-row">
+    <div class="shop-tabs" role="group" aria-label="Sport">{tabs}</div>
+    <div class="shop-tools">
+      <div class="seg" role="group" aria-label="Who for"><button type="button" data-aud="all" aria-pressed="true">Everyone</button><button type="button" data-aud="men" aria-pressed="false">Men</button><button type="button" data-aud="women" aria-pressed="false">Women</button><button type="button" data-aud="kids" aria-pressed="false">Kids</button></div>
+      <label class="shop-search"><span class="sr-only">Search</span><input type="search" id="shop-q" placeholder="Search"></label>
+      <button type="button" class="shop-bag-btn" id="bag-open" aria-label="Open bag">{BAG}<span>Bag</span><b id="bag-n">0</b></button>
+    </div>
   </div>
+  <div class="shop-row2">{chips}</div>
 </div></div>
 <section class="section light shop-main"><div class="wrap">
-  <p class="shop-count" id="shop-count" aria-live="polite"></p>
+  <ol class="shop-how"><li><b>1</b>Choose items and sizes</li><li><b>2</b>Send your bag on WhatsApp</li><li><b>3</b>We confirm price, stock and delivery</li></ol>
+  <div class="shop-status"><p class="shop-count" id="shop-count" aria-live="polite"></p><button type="button" class="shop-reset" id="shop-reset" hidden>Clear filters</button></div>
   {depts}
-  <div class="shop-empty" id="shop-empty" hidden><h3>No items found</h3><p>Try another category or sport.</p></div>
+  <div class="shop-empty" id="shop-empty" hidden><h3>No items found</h3><p>Try another category, sport or search.</p></div>
   <div class="shop-note"><h3>Need something else?</h3><p>Team orders, custom prints for your club or a product we do not list yet. Message us and we will help.</p>
     <a class="btn btn-primary" href="{WA}" rel="noopener">Message us on WhatsApp {arrow()}</a></div>
 </div></section>
 <div class="pv" id="pv" hidden role="dialog" aria-modal="true" aria-labelledby="pv-name"><div class="pv-box">
   <button type="button" class="pv-x" aria-label="Close">×</button>
-  <div class="pv-art" aria-hidden="true">{sym_svg("")}</div>
+  <div class="pv-art" id="pv-art"></div>
   <div class="pv-body"><p class="label" id="pv-cat"></p><h2 class="display h-md" id="pv-name"></h2><p class="body muted" id="pv-desc"></p>
     <div class="pv-group"><p class="pv-l">Size <button type="button" class="pv-guide" id="pv-guide">Size guide</button></p><div class="pv-opts" id="pv-sizes"></div></div>
+    <div class="pv-fit" id="pv-fit" hidden><p class="pv-l">Find my size</p>
+      <div class="pv-fit-row"><label><span>Height</span><input type="number" inputmode="numeric" id="fit-h" min="80" max="230" placeholder="cm"></label>
+      <label id="fit-w-l"><span>Weight</span><input type="number" inputmode="numeric" id="fit-w" min="10" max="200" placeholder="kg"></label></div>
+      <p class="note" id="fit-out" aria-live="polite"></p></div>
     <div class="pv-sg" id="pv-sg" hidden></div>
     <div class="pv-group"><p class="pv-l">Colour <span id="pv-col-name"></span></p><div class="pv-opts" id="pv-cols"></div></div>
     <div class="pv-group pv-qty"><p class="pv-l">Quantity</p><div class="stepper"><button type="button" data-q="-1" aria-label="Less">−</button><output id="pv-q">1</output><button type="button" data-q="1" aria-label="More">+</button></div></div>
@@ -748,7 +816,8 @@ def shop():
     <a class="btn btn-primary" id="bag-send" href="#" rel="noopener">Send order on WhatsApp {arrow()}</a>
     <button type="button" class="bagd-clear" id="bag-clear">Clear bag</button></div>
 </div></aside>
-<script id="shop-data" type="application/json">{json.dumps(data)}</script>
+<template id="shop-art">{"".join(f'<svg data-k="{k}" viewBox="0 0 120 120">{v}</svg>' for k, v in __import__("shop_art").ART.items())}</template>
+<script id="shop-data" type="application/json">{json.dumps(data, ensure_ascii=False)}</script>
 """
 
 def privacy():
@@ -848,7 +917,7 @@ PAGES = [
 if __name__ == "__main__":
     import i18n
     trs = {l: i18n.Tr(l) for l in i18n.LANGS}
-    cat = {slugify(n): {"name": n.replace("&amp;", "&"), "cat": t.replace("&amp;", "&")} for k, t, _, items in SHOP for n, *_ in items}
+    cat = {slugify(p[0]): {"name": p[0].replace("&amp;", "&"), "cat": {k: n for k, n, _ in SPORTS}[p[2]].replace("&amp;", "&")} for p in PRODUCTS}
     open(os.path.join(ROOT, "assets", "js", "catalog.js"), "w", encoding="utf-8").write(
         "// Generated by _src/build.py: shop products, used to link 'What to bring' items.\nwindow.CHD_SHOP=" + json.dumps(cat, ensure_ascii=False) + ";\n")
     os.makedirs(os.path.join(ROOT, "assets", "i18n"), exist_ok=True)
