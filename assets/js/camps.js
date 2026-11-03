@@ -11,6 +11,25 @@
     document.body.prepend(b);
   }
 
+  // On the Georgian site, use the Georgian text the admin entered (falls back to English).
+  var KA = document.documentElement.lang === 'ka';
+  function locItem(o) {
+    if (Array.isArray(o)) return o.map(locItem);
+    if (!o || typeof o !== 'object') return o;
+    var r = {};
+    Object.keys(o).forEach(function (k) { if (!/_ka$/.test(k)) r[k] = locItem(o[k]); });
+    Object.keys(o).forEach(function (k) {
+      var m = k.match(/^(.*)_ka$/); if (!m) return;
+      var v = o[k]; if (Array.isArray(v) ? v.length : (v != null && String(v).trim() !== '')) r[m[1]] = locItem(v);
+    });
+    return r;
+  }
+  function loc(c) {
+    if (!KA || !c) return c;
+    var r = locItem(c), k = c.ka || {};
+    Object.keys(k).forEach(function (f) { var v = k[f]; if (Array.isArray(v) ? v.length : (v != null && String(v).trim() !== '')) r[f] = v; });
+    return r;
+  }
   function spots(c) {
     if (!c.capacity) return null;
     var left = Math.max(0, c.capacity - (c.taken || 0));
@@ -73,7 +92,7 @@
       tabs.forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.f === k ? 'true' : 'false'); });
       render(k);
     }
-    H.api.listCamps().then(function (c) { all = c || []; counts(); pick(start && document.querySelector('.disc-tabs [data-f="' + start + '"]') ? start : 'all'); })
+    H.api.listCamps().then(function (c) { all = (c || []).map(loc); counts(); pick(start && document.querySelector('.disc-tabs [data-f="' + start + '"]') ? start : 'all'); })
       .catch(function () { list.innerHTML = '<p class="body soft">Camps could not be loaded. Please refresh, or message us on WhatsApp.</p>'; });
     tabs.forEach(function (t) {
       t.addEventListener('click', function () {
@@ -119,7 +138,7 @@
   if (!root) return;
   var slug = new URLSearchParams(location.search).get('c');
   if (!slug) { notFound(); return; }
-  H.api.getCamp(slug).then(function (c) { if (!c) return notFound(); renderCamp(c); })
+  H.api.getCamp(slug).then(function (c) { if (!c) return notFound(); renderCamp(loc(c)); })
     .catch(function () { root.innerHTML = '<div class="wrap section"><p class="body">This camp could not be loaded. Please refresh.</p></div>'; });
 
   function notFound() {
@@ -145,22 +164,30 @@
       fact('Dates', H.dateRange(c.start_date, c.end_date)) + (n ? fact('Duration', n + ' days') : '') +
       fact('Where', [c.venue, c.city, c.country].filter(Boolean).join(', ') || 'TBA') + (c.level ? fact('Level', c.level) : '') +
       (s ? fact('Spots', s.left ? s.left + ' of ' + c.capacity + ' left' : 'Full (waitlist open)') : '') +
-      '</div><span class="cc-status hero-status st-' + st.key + '">' + e(st.label) + '</span></div></section>';
+      '</div><span class="cc-status hero-status st-' + st.key + '">' + e(st.label) + '</span>' + (canBook ? urgency(c, s) : '') + '</div></section>';
 
     html += '<section class="section light camp-body"><div class="wrap camp-grid"><div class="camp-main">';
     if (c.summary) html += '<p class="lead">' + e(c.summary) + '</p>';
     if (c.description) html += '<div class="prose camp-desc">' + paras(c.description) + '</div>';
+    html += fitHtml(c);
     var gal = (c.gallery || []).map(function (g) { return { url: g.url, thumb: g.url, alt: g.alt || c.title }; }).concat(V ? V.gallery : []);
     if (V || c.address || c.venue_info || gal.length) {
       html += block('Where you’ll train &amp; stay', venueHtml(V, c, gal));
       galleryData = gal;
     }
     if ((c.packages || []).length) {
-      html += block('Packages', '<div class="pkg-list">' + c.packages.map(function (p) {
-        var ep = early && p.early_price !== '' && p.early_price != null;
-        return '<div class="pkg-row"><div><b>' + e(p.name) + '</b>' + (p.description ? '<span>' + e(p.description) + '</span>' : '') + '</div>' +
-          '<div class="pkg-p">' + (ep ? '<s>' + H.money(p.price, c.currency) + '</s>' : '') + '<b>' + H.money(ep ? p.early_price : p.price, c.currency) + '</b></div></div>';
-      }).join('') + '</div>' + (early ? '<p class="note">Early-bird prices until ' + e(H.dateRange(c.early_bird_deadline)) + '.</p>' : '') +
+      var feats = [];
+      c.packages.forEach(function (p) { (p.features || []).forEach(function (f) { if (feats.indexOf(f) < 0) feats.push(f); }); });
+      var price = function (p) { var ep = early && p.early_price !== '' && p.early_price != null; return (ep ? '<s>' + H.money(p.price, c.currency) + '</s>' : '') + '<b>' + H.money(ep ? p.early_price : p.price, c.currency) + '</b>'; };
+      var body = feats.length
+        ? '<div class="cmp-wrap"><table class="cmp"><thead><tr><th></th>' + c.packages.map(function (p) { return '<th><span>' + e(p.name) + '</span><div class="cmp-p">' + price(p) + '</div></th>'; }).join('') + '</tr></thead><tbody>' +
+          feats.map(function (f) { return '<tr><td>' + e(f) + '</td>' + c.packages.map(function (p) { var y = (p.features || []).indexOf(f) >= 0; return '<td class="' + (y ? 'y' : 'n') + '">' + (y ? '<i aria-label="Included">✓</i>' : '<i aria-label="Not included">–</i>') + '</td>'; }).join('') + '</tr>'; }).join('') +
+          (c.packages.some(function (p) { return p.description; }) ? '<tr class="cmp-d"><td></td>' + c.packages.map(function (p) { return '<td>' + e(p.description || '') + '</td>'; }).join('') + '</tr>' : '') +
+          '</tbody></table></div>'
+        : '<div class="pkg-list">' + c.packages.map(function (p) {
+            return '<div class="pkg-row"><div><b>' + e(p.name) + '</b>' + (p.description ? '<span>' + e(p.description) + '</span>' : '') + '</div><div class="pkg-p">' + price(p) + '</div></div>';
+          }).join('') + '</div>';
+      html += block('Packages', body + (early ? '<p class="note">Early-bird prices until ' + e(H.dateRange(c.early_bird_deadline)) + '.</p>' : '') +
         (c.group_min && c.group_discount_pct ? '<p class="note">Groups of ' + c.group_min + '+ save ' + c.group_discount_pct + '%.</p>' : ''));
     }
     if (sched.length) {
@@ -174,7 +201,25 @@
     if ((c.coaches || []).length) {
       html += block('Coaches', '<div class="coaches">' + c.coaches.map(function (k) {
         var ini = (k.name || '?').replace(/[\[\]]/g, '').split(/\s+/).map(function (w) { return w[0] || ''; }).join('').slice(0, 2).toUpperCase();
-        return '<div class="coach"><span class="ini">' + e(ini) + '</span><div><b>' + e(k.name) + '</b><span class="label muted">' + e(k.role || '') + '</span><p>' + e(k.bio || '') + '</p></div></div>';
+        var titles = Array.isArray(k.titles) ? k.titles : String(k.titles || '').split('\n').filter(Boolean);
+        return '<div class="coach">' + (k.photo ? '<img class="coach-ph" src="' + e(k.photo) + '" alt="' + e(k.name) + '" loading="lazy">' : '<span class="ini">' + e(ini) + '</span>') +
+          '<div><b>' + e(k.name) + '</b><span class="label muted">' + e(k.role || '') + '</span>' +
+          (titles.length ? '<ul class="coach-t">' + titles.map(function (t) { return '<li>' + e(t) + '</li>'; }).join('') + '</ul>' : '') +
+          (k.bio ? '<p>' + e(k.bio) + '</p>' : '') + '</div></div>';
+      }).join('') + '</div>');
+    }
+    if ((c.bring || []).length) {
+      var SHOP = window.CHD_SHOP || {};
+      html += block('What to bring', '<ul class="bring">' + c.bring.map(function (b) {
+        var sp = b.shop && SHOP[b.shop];
+        return '<li><i aria-hidden="true"></i><span>' + e(b.item) + '</span>' + (sp ? '<a href="/shop/#' + e(b.shop) + '">Get it in our shop <span class="arr">→</span></a>' : '') + '</li>';
+      }).join('') + '</ul>');
+    }
+    if ((c.reviews || []).length) {
+      html += block('What people say', '<div class="reviews">' + c.reviews.map(function (r) {
+        var n = Math.max(0, Math.min(5, +r.rating || 0));
+        return '<figure class="review">' + (n ? '<div class="stars" aria-label="' + n + ' out of 5">' + '★★★★★'.slice(0, n) + '<span>' + '★★★★★'.slice(n) + '</span></div>' : '') +
+          '<blockquote>' + e(r.text) + '</blockquote><figcaption><b>' + e(r.name) + '</b>' + (r.from ? '<span>' + e(r.from) + '</span>' : '') + '</figcaption></figure>';
       }).join('') + '</div>');
     }
     if ((c.faq || []).length) html += block('Questions', '<div class="faq">' + c.faq.map(function (f) { return '<details><summary>' + e(f.q) + '</summary><p>' + e(f.a) + '</p></details>'; }).join('') + '</div>');
@@ -194,6 +239,7 @@
         }).join('') + '</fieldset>' : '') +
         '<div class="b-people"><span>People</span><div class="stepper"><button type="button" data-d="-1" aria-label="Fewer people">−</button><output id="b-n">1</output><button type="button" data-d="1" aria-label="More people">+</button></div></div>' +
         (c.group_min && c.group_discount_pct ? '<p class="note">' + c.group_min + '+ people: −' + c.group_discount_pct + '% group discount</p>' : '') +
+        urgency(c, s) +
         '<div class="b-sum" id="b-sum"></div>' +
         '<button class="btn btn-primary b-go" type="button" id="b-go">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + ' <span class="arr">→</span></button>' +
         '<p class="note">Free and takes a minute. No payment now. ' + (st.key === 'full' ? 'We’ll contact you if a spot opens.' : 'We confirm your spot on WhatsApp or email within 24 hours.') + '</p>';
@@ -202,6 +248,7 @@
         (c.status === 'completed' ? 'This camp has finished. See upcoming camps.' : 'Registration is not open for this camp right now.') + '</p>' +
         '<a class="btn btn-primary" href="/camps/">Upcoming camps <span class="arr">→</span></a>';
     }
+    if (c.start_date && c.status !== 'completed') html += calHtml(c);
     html += '<a class="book-wa" href="' + WA + '?text=' + encodeURIComponent('Hi CHIDAOBA, a question about ' + c.title + ': ') + '" rel="noopener">Questions? WhatsApp us</a></div></aside>';
     html += '</div></section>';
     if (canBook) html += '<div class="book-bar dark" id="book-bar"><div><span>From</span><b>' + H.money(H.fromPrice(c), c.currency) + '</b></div><a class="btn btn-primary" href="#book">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + '</a></div>';
@@ -209,6 +256,7 @@
     root.innerHTML = html;
 
     wireMedia(root);
+    var ib = root.querySelector('.cal-ics'); if (ib) ib.addEventListener('click', function () { icsDownload(c); });
     // schedule tabs
     root.querySelectorAll('.sched-tabs button').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -269,6 +317,47 @@
     var sx = null; lb.addEventListener('touchstart', function (ev) { sx = ev.touches[0].clientX; }, { passive: true });
     lb.addEventListener('touchend', function (ev) { if (sx == null) return; var dx = ev.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) { i = (i + (dx < 0 ? 1 : -1) + g.length) % g.length; show(); } sx = null; });
     document.addEventListener('keydown', key); show(); lb.querySelector('.lb-x').focus();
+  }
+  var INT = ['', 'Light', 'Moderate', 'Hard', 'Very hard', 'Competition level'];
+  function fitHtml(c) {
+    var ages = c.age_min && c.age_max ? c.age_min + '–' + c.age_max : c.age_min ? c.age_min + '+' : c.age_max ? 'Up to ' + c.age_max : '';
+    var fit = c.fit_for || [];
+    if (!c.level && !c.intensity && !ages && !fit.length) return '';
+    var n = +c.intensity || 0;
+    return block('Is this camp for you?', '<div class="fit">' +
+      '<div class="fit-facts">' + (c.level ? '<div><span class="label muted">Level</span><b>' + e(c.level) + '</b></div>' : '') +
+      (n ? '<div><span class="label muted">Intensity</span><b>' + e(INT[n]) + '</b><span class="meter" aria-label="' + n + ' of 5">' + [1, 2, 3, 4, 5].map(function (i) { return '<i class="' + (i <= n ? 'on' : '') + '"></i>'; }).join('') + '</span></div>' : '') +
+      (ages ? '<div><span class="label muted">Age</span><b>' + e(ages) + '</b></div>' : '') + '</div>' +
+      (fit.length ? '<div class="fit-list"><h3>Good for you if</h3><ul>' + fit.map(function (t) { return '<li><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div>' : '') + '</div>');
+  }
+  function urgency(c, s) {
+    if (c.show_urgency === false) return '';
+    var out = [], t = H.today();
+    if (H.isEarly(c) && c.early_bird_deadline) {
+      var d = Math.ceil((H.d(c.early_bird_deadline) - t) / 864e5);
+      if (d >= 0) out.push(d === 0 ? 'Early-bird price ends today' : d === 1 ? 'Early-bird price ends tomorrow' : 'Early-bird price ends in ' + d + ' days');
+    }
+    if (s && s.left > 0 && s.left <= Math.max(5, Math.ceil(c.capacity * 0.25))) out.push(s.left === 1 ? 'Only 1 spot left' : 'Only ' + s.left + ' spots left');
+    return out.length ? '<div class="urg">' + out.map(function (x) { return '<span><i></i>' + x + '</span>'; }).join('') + '</div>' : '';
+  }
+  function ymd(dt) { return dt.getFullYear() + String(dt.getMonth() + 1).padStart(2, '0') + String(dt.getDate()).padStart(2, '0'); }
+  function calHtml(c) {
+    var a = H.d(c.start_date), b = H.d(c.end_date || c.start_date); if (!a) return '';
+    var end = new Date(b.getTime() + 864e5), where = [c.venue, c.city, c.country].filter(Boolean).join(', ');
+    var url = location.origin + location.pathname + location.search;
+    var g = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(c.title) + '&dates=' + ymd(a) + '/' + ymd(end) +
+      '&details=' + encodeURIComponent((c.summary ? c.summary + '\n\n' : '') + url) + '&location=' + encodeURIComponent(where);
+    return '<details class="cal"><summary>Add to calendar</summary><div><a href="' + g + '" target="_blank" rel="noopener">Google Calendar</a><button type="button" class="cal-ics">Apple / Outlook (.ics)</button></div></details>';
+  }
+  function icsDownload(c) {
+    var a = H.d(c.start_date), b = H.d(c.end_date || c.start_date), end = new Date(b.getTime() + 864e5);
+    var esc = function (t) { return String(t || '').replace(/[\\,;]/g, '\\$&').replace(/\n/g, '\\n'); };
+    var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//CHIDAOBA//Camps//EN', 'BEGIN:VEVENT', 'UID:' + (c.id || c.slug) + '@chidaoba.com',
+      'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z', 'DTSTART;VALUE=DATE:' + ymd(a), 'DTEND;VALUE=DATE:' + ymd(end),
+      'SUMMARY:' + esc(c.title), 'LOCATION:' + esc([c.venue, c.city, c.country].filter(Boolean).join(', ')),
+      'DESCRIPTION:' + esc((c.summary || '') + '\n' + location.href), 'URL:' + location.href, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    var l = document.createElement('a'); l.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); l.download = (c.slug || 'camp') + '.ics';
+    document.body.appendChild(l); l.click(); l.remove();
   }
   function fact(k, v) { return '<div><span class="label muted">' + k + '</span><b>' + e(v) + '</b></div>'; }
   function block(t, inner) { return '<div class="camp-block reveal in"><h2 class="display h-md">' + t + '<span class="dot">.</span></h2>' + inner + '</div>'; }

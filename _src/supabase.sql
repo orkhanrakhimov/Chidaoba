@@ -396,3 +396,17 @@ grant execute on function public.admin_login(text, text), public.admin_logout(te
   public.admin_update_reg(text, uuid, jsonb), public.admin_upload_ticket(text), public.upload_ok(text)
   to anon, authenticated;
 revoke execute on function public.admin_check(text) from public, anon, authenticated;
+
+-- =====================================================================
+-- Update 004: richer camp pages (who it's for, what to bring, reviews,
+-- Georgian text). Coach photos, package features and Georgian versions of
+-- list items live inside the existing JSON columns.
+-- =====================================================================
+alter table public.camps add column if not exists intensity    integer check (intensity is null or intensity between 1 and 5);
+alter table public.camps add column if not exists age_min      integer check (age_min is null or age_min between 5 and 99);
+alter table public.camps add column if not exists age_max      integer check (age_max is null or age_max between 5 and 99);
+alter table public.camps add column if not exists fit_for      jsonb not null default '[]'::jsonb;  -- ["Beginners with 6+ months", ...]
+alter table public.camps add column if not exists bring        jsonb not null default '[]'::jsonb;  -- [{item, item_ka, shop}]
+alter table public.camps add column if not exists reviews      jsonb not null default '[]'::jsonb;  -- [{name, from, text, text_ka, rating}]
+alter table public.camps add column if not exists ka           jsonb not null default '{}'::jsonb;  -- Georgian: {title, summary, description, level, venue_info, fit_for, included, excluded}
+alter table public.camps add column if not exists show_urgency boolean not null default true;

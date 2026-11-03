@@ -146,53 +146,80 @@
     return { title: '', slug: '', discipline: 'bjj', status: 'draft', featured: false, start_date: '', end_date: '', city: '', country: 'Georgia', venue: '', level: 'All levels',
       summary: '', description: '', capacity: 20, currency: 'EUR', early_bird_deadline: '', registration_deadline: '', deposit_pct: 30, payment_days: 7,
       group_min: 4, group_discount_pct: 10, bank_details: '', packages: [{ id: 'training', name: 'Training only', description: '', price: '', early_price: '' }],
-      addons: [], schedule: [], included: [], excluded: [], coaches: [], faq: [], cover_url: null, gallery: [], venue_key: '', address: '', map_url: '', venue_info: '' };
+      addons: [], schedule: [], included: [], excluded: [], coaches: [], faq: [], cover_url: null, gallery: [], venue_key: '', address: '', map_url: '', venue_info: '',
+      intensity: null, age_min: null, age_max: null, fit_for: [], bring: [], reviews: [], ka: {}, show_urgency: true };
   }
   function slugify(t) { return (t || '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70); }
   function inp(n, l, v, t, extra) { return '<div class="field"><label for="e-' + n + '">' + l + '</label><input id="e-' + n + '" name="' + n + '" type="' + (t || 'text') + '" value="' + e(v == null ? '' : v) + '"' + (extra || '') + '></div>'; }
   function sel(n, l, v, o) { return '<div class="field"><label for="e-' + n + '">' + l + '</label><select id="e-' + n + '" name="' + n + '">' + Object.keys(o).map(function (k) { return '<option value="' + k + '"' + (k === v ? ' selected' : '') + '>' + o[k] + '</option>'; }).join('') + '</select></div>'; }
   function area(n, l, v, ph) { return '<div class="field full"><label for="e-' + n + '">' + l + '</label><textarea id="e-' + n + '" name="' + n + '" placeholder="' + e(ph || '') + '">' + e(v || '') + '</textarea></div>'; }
+  function kaInp(n, l, v, isArea) {
+    return '<div class="field ka-f' + (isArea ? ' full' : '') + '"><label for="e-ka-' + n + '">' + l + ' <em>ქართული</em></label>' +
+      (isArea ? '<textarea id="e-ka-' + n + '" name="ka_' + n + '">' + e(v || '') + '</textarea>' : '<input id="e-ka-' + n + '" name="ka_' + n + '" value="' + e(v || '') + '">') + '</div>';
+  }
   function rep(key, items, fields, addLabel) {
     return '<div class="rep" data-key="' + key + '">' + items.map(function (it) { return repRow(fields, it); }).join('') +
       '</div><button type="button" class="btn btn-ghost add-row" data-key="' + key + '">' + addLabel + '</button>';
   }
+  function fieldHtml(f, it, ka) {
+    var k = f[0] + (ka ? '_ka' : ''), t = f[2] || 'text', o = f[4] || {}, lab = f[1] + (ka ? ' <em>ქართული</em>' : '');
+    var v = it[k] == null ? '' : it[k], cls = 'rf' + (f[3] ? ' ' + f[3] : '') + (ka ? ' ka-f' : '');
+    if (t === 'lines') return '<label class="' + cls + ' w"><span>' + lab + '</span><textarea data-f="' + k + '" data-lines placeholder="One per line">' + e(Array.isArray(v) ? v.join('\n') : v) + '</textarea></label>';
+    if (t === 'area') return '<label class="' + cls + ' w"><span>' + lab + '</span><textarea data-f="' + k + '">' + e(v) + '</textarea></label>';
+    if (t === 'select') return '<label class="' + cls + '"><span>' + lab + '</span><select data-f="' + k + '">' + Object.keys(o.opts).map(function (x) { return '<option value="' + e(x) + '"' + (String(v) === x ? ' selected' : '') + '>' + e(o.opts[x]) + '</option>'; }).join('') + '</select></label>';
+    if (t === 'photo') return '<div class="' + cls + ' rf-ph"><span>' + lab + '</span><input type="hidden" data-f="' + k + '" value="' + e(v) + '"><div class="rph">' + (v ? '<img src="' + e(v) + '" alt="">' : '<i>No photo</i>') + '</div>' +
+      '<label class="btn btn-ghost rph-up">' + (v ? 'Change' : 'Upload') + '<input type="file" accept="image/*" hidden></label>' + (v ? '<button type="button" class="rph-x">Remove</button>' : '') + '</div>';
+    return '<label class="' + cls + '"><span>' + lab + '</span><input data-f="' + k + '" type="' + t + '" value="' + e(v) + '"' + (t === 'number' ? ' step="any" min="0"' : '') + '></label>';
+  }
   function repRow(fields, it) {
     it = it || {};
-    return '<div class="rep-row">' + fields.map(function (f) {
-      var v = it[f[0]] == null ? '' : it[f[0]];
-      return f[2] === 'area' ? '<label class="rf w"><span>' + f[1] + '</span><textarea data-f="' + f[0] + '">' + e(v) + '</textarea></label>'
-        : '<label class="rf' + (f[3] ? ' ' + f[3] : '') + '"><span>' + f[1] + '</span><input data-f="' + f[0] + '" type="' + (f[2] || 'text') + '" value="' + e(v) + '"' + (f[2] === 'number' ? ' step="any" min="0"' : '') + '></label>';
-    }).join('') + '<button type="button" class="rep-x" aria-label="Remove">×</button></div>';
+    return '<div class="rep-row">' + fields.map(function (f) { return fieldHtml(f, it) + ((f[4] || {}).ka ? fieldHtml(f, it, true) : ''); }).join('') +
+      '<div class="rep-tools"><button type="button" class="rep-up" aria-label="Move up" title="Move up">↑</button><button type="button" class="rep-dn" aria-label="Move down" title="Move down">↓</button><button type="button" class="rep-x" aria-label="Remove" title="Remove">×</button></div></div>';
   }
+  var KA = { ka: true };
+  var shopOpts = function () { var o = { '': 'No shop link' }, S = window.CHD_SHOP || {}; Object.keys(S).forEach(function (k) { o[k] = S[k].name + ' (' + S[k].cat + ')'; }); return o; };
   var F = {
-    packages: [['name', 'Package name'], ['price', 'Price', 'number', 's'], ['early_price', 'Early-bird price', 'number', 's'], ['description', 'What’s included', 'text', 'w']],
-    addons: [['name', 'Add-on'], ['price', 'Price', 'number', 's']],
-    coaches: [['name', 'Name'], ['role', 'Role / rank'], ['bio', 'Short bio', 'area']],
-    faq: [['q', 'Question'], ['a', 'Answer', 'area']],
-    schedule: [['day', 'Day / label', 'text', 's'], ['items', 'One line per item: “09:30 Morning technique”', 'area']]
+    packages: [['name', 'Package name', 'text', '', KA], ['price', 'Price', 'number', 's'], ['early_price', 'Early-bird price', 'number', 's'],
+      ['description', 'Short description', 'text', 'w', KA], ['features', 'What’s included (one per line, for the comparison table)', 'lines', 'w', KA]],
+    addons: [['name', 'Add-on', 'text', '', KA], ['price', 'Price', 'number', 's']],
+    coaches: [['photo', 'Photo', 'photo'], ['name', 'Name'], ['role', 'Role / rank (e.g. BJJ black belt)', 'text', '', KA], ['titles', 'Titles and achievements (one per line)', 'lines', 'w', KA], ['bio', 'Short bio', 'area', '', KA]],
+    faq: [['q', 'Question', 'text', 'w', KA], ['a', 'Answer', 'area', '', KA]],
+    schedule: [['day', 'Day / label', 'text', 's', KA], ['items', 'One line per item: “09:30 Morning technique”', 'area'], ['items_ka', 'Same lines in Georgian (titles only, same order)', 'area', 'ka-f']],
+    bring: [['item', 'Item', 'text', '', KA], ['shop', 'Link to shop product', 'select', '', { opts: shopOpts() }]],
+    reviews: [['name', 'Name'], ['from', 'Country / club'], ['rating', 'Stars', 'select', 's', { opts: { '5': '★★★★★', '4': '★★★★', '3': '★★★', '': 'No stars' } }], ['text', 'Review', 'area', '', KA]]
   };
 
   function editor(id) {
     var c = id ? state.camps.filter(function (k) { return k.id === id; })[0] : blank();
     if (!c) { location.hash = 'dash'; return; }
-    var sched = (c.schedule || []).map(function (d) { return { day: d.day, items: (d.items || []).map(function (i) { return (i.time ? i.time + ' ' : '') + i.title; }).join('\n') }; });
+    var sched = (c.schedule || []).map(function (d) { return { day: d.day, day_ka: d.day_ka, items: (d.items || []).map(function (i) { return (i.time ? i.time + ' ' : '') + i.title; }).join('\n'), items_ka: (d.items || []).map(function (i) { return i.title_ka || ''; }).join('\n').replace(/^\n+$/, '') }; });
+    var K = c.ka || {}, kaOn = localStorage.getItem('chd_adm_ka') === '1';
+    var INT = { '': 'Not set', '1': '1 · Light', '2': '2 · Moderate', '3': '3 · Hard', '4': '4 · Very hard', '5': '5 · Competition level' };
     var s = id ? statsFor(c) : null;
-    app.innerHTML = shell('<form id="ef" class="adm-edit" novalidate>' +
+    app.innerHTML = shell('<form id="ef" class="adm-edit' + (kaOn ? ' show-ka' : '') + '" novalidate>' +
       '<div class="adm-top"><div><a class="sub" href="#dash">← Camps</a><h1 class="display h-md">' + (id ? e(c.title) : 'New camp') + '<span class="dot">.</span></h1>' +
       (s ? '<span class="sub">' + s.people + (c.capacity ? '/' + c.capacity : '') + ' booked · ' + s.wl + ' waitlist · ' + money(s.received, c.currency) + ' received</span>' : '') + '</div>' +
       '<div class="row-btns">' + (id ? '<button type="button" class="btn btn-ghost" id="dup">Duplicate</button>' : '') + '<button class="btn btn-primary" type="submit">Save camp</button></div></div>' +
+      '<label class="ka-toggle"><input type="checkbox" id="ka-on"' + (kaOn ? ' checked' : '') + '> Show Georgian fields <span>ქართული ვერსია</span></label>' +
 
       sec('Basics', '<div class="g2">' + inp('title', 'Title', c.title, 'text', ' required') + inp('slug', 'Web address (auto)', c.slug, 'text', ' pattern="[a-z0-9-]{3,80}"') +
         sel('discipline', 'Discipline', c.discipline, H.DISC) + sel('status', 'Status', c.status, STATUS) +
         inp('start_date', 'Start date', c.start_date, 'date') + inp('end_date', 'End date', c.end_date, 'date') +
         inp('city', 'City', c.city) + inp('country', 'Country', c.country) + inp('venue', 'Venue', c.venue) + inp('level', 'Level', c.level) +
         '<label class="chk"><input type="checkbox" name="featured"' + (c.featured ? ' checked' : '') + '> Feature this camp</label></div>' +
-        area('summary', 'Card summary (1–2 sentences)', c.summary) + area('description', 'Full description (blank line = new paragraph)', c.description)) +
+        '<div class="g2 ka-g">' + kaInp('title', 'Title', K.title) + kaInp('level', 'Level', K.level) + '</div>' +
+        area('summary', 'Card summary (1–2 sentences)', c.summary) + kaInp('summary', 'Card summary', K.summary, true) +
+        area('description', 'Full description (blank line = new paragraph)', c.description) + kaInp('description', 'Full description', K.description, true)) +
+
+      sec('Who it’s for', '<div class="g3">' + sel('intensity', 'Intensity', c.intensity == null ? '' : String(c.intensity), INT) +
+        inp('age_min', 'Minimum age', c.age_min, 'number', ' min="5" max="99"') + inp('age_max', 'Maximum age (optional)', c.age_max, 'number', ' min="5" max="99"') + '</div>' +
+        area('fit_for', '“Good for you if” (one per line)', (c.fit_for || []).join('\n'), 'You have trained 6 months or more…') + kaInp('fit_for', '“Good for you if”', (K.fit_for || []).join('\n'), true) +
+        '<label class="chk"><input type="checkbox" name="show_urgency"' + (c.show_urgency === false ? '' : ' checked') + '> Show “Early-bird ends in X days” and “Only X spots left”</label>') +
 
       sec('Photos & location', photosHtml(c) +
         '<div class="g2">' + sel('venue_key', 'Venue', c.venue_key || '', venueOpts()) + inp('address', 'Address (for the map)', c.address) +
         inp('map_url', 'Google Maps link (optional)', c.map_url, 'url', ' placeholder="https://maps.app.goo.gl/…"') + '</div>' +
-        area('venue_info', 'Venue notes (extra details for this camp)', c.venue_info, 'Rooms, transfers, what to bring…') +
+        area('venue_info', 'Venue notes (extra details for this camp)', c.venue_info, 'Rooms, transfers…') + kaInp('venue_info', 'Venue notes', K.venue_info, true) +
         '<p class="note">Choosing a venue adds its photos, facilities, meals and map to the camp page. Your own photos above appear first.</p>') +
 
       sec('Spots & pricing', '<div class="g3">' + inp('capacity', 'Capacity (people)', c.capacity, 'number', ' min="1"') +
@@ -204,9 +231,13 @@
         '<h3 class="sub-h">Add-ons</h3>' + rep('addons', c.addons || [], F.addons, 'Add add-on +') ) +
 
       sec('Programme', '<h3 class="sub-h">Schedule</h3>' + rep('schedule', sched, F.schedule, 'Add day +') +
-        '<div class="g2">' + area('included', 'Included (one per line)', (c.included || []).join('\n')) + area('excluded', 'Not included (one per line)', (c.excluded || []).join('\n')) + '</div>' +
-        '<h3 class="sub-h">Coaches</h3>' + rep('coaches', c.coaches || [], F.coaches, 'Add coach +') +
+        '<div class="g2">' + area('included', 'Included (one per line)', (c.included || []).join('\n')) + area('excluded', 'Not included (one per line)', (c.excluded || []).join('\n')) +
+        kaInp('included', 'Included', (K.included || []).join('\n'), true) + kaInp('excluded', 'Not included', (K.excluded || []).join('\n'), true) + '</div>' +
         '<h3 class="sub-h">FAQ</h3>' + rep('faq', c.faq || [], F.faq, 'Add question +')) +
+
+      sec('Coaches', rep('coaches', c.coaches || [], F.coaches, 'Add coach +')) +
+      sec('What to bring', '<p class="note">Link an item to a shop product and the camp page shows “Get it in our shop”.</p>' + rep('bring', c.bring || [], F.bring, 'Add item +')) +
+      sec('Reviews', '<p class="note">Add reviews from past camps. They appear under “What people say”.</p>' + rep('reviews', c.reviews || [], F.reviews, 'Add review +')) +
 
       '<div class="adm-foot"><button class="btn btn-primary" type="submit">Save camp</button>' + (id ? '<button type="button" class="btn btn-ghost danger" id="del">Delete camp</button>' : '') + '<p class="form-msg"></p></div></form>', 'dash');
 
@@ -216,7 +247,26 @@
     slug.addEventListener('input', function () { touched = true; });
     title.addEventListener('input', function () { if (!touched) slug.value = slugify(title.value); });
     $$('.add-row').forEach(function (b) { b.addEventListener('click', function () { var k = b.dataset.key; $('.rep[data-key="' + k + '"]').insertAdjacentHTML('beforeend', repRow(F[k], {})); }); });
-    form.addEventListener('click', function (ev) { if (ev.target.classList.contains('rep-x')) ev.target.closest('.rep-row').remove(); });
+    var jump = document.createElement('nav'); jump.className = 'adm-jump';
+    jump.innerHTML = $$('.adm-sec', form).map(function (x) { return '<button type="button">' + e(x.dataset.sec) + '</button>'; }).join('');
+    form.querySelector('.ka-toggle').after(jump);
+    jump.addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (!b) return; var i = [].indexOf.call(jump.children, b); var t = $$('.adm-sec', form)[i]; window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); });
+    $('#ka-on').addEventListener('change', function () { form.classList.toggle('show-ka', this.checked); try { localStorage.setItem('chd_adm_ka', this.checked ? '1' : '0'); } catch (x) { } });
+    form.addEventListener('click', function (ev) {
+      var t = ev.target, row = t.closest('.rep-row');
+      if (t.classList.contains('rep-x')) row.remove();
+      else if (t.classList.contains('rep-up') && row.previousElementSibling) row.parentNode.insertBefore(row, row.previousElementSibling);
+      else if (t.classList.contains('rep-dn') && row.nextElementSibling) row.parentNode.insertBefore(row.nextElementSibling, row);
+      else if (t.classList.contains('rph-x')) { var w = t.closest('.rf-ph'); w.querySelector('[data-f]').value = ''; w.querySelector('.rph').innerHTML = '<i>No photo</i>'; t.remove(); }
+    });
+    form.addEventListener('change', function (ev) {
+      var t = ev.target; if (!t.closest('.rph-up') || !t.files || !t.files[0]) return;
+      var w = t.closest('.rf-ph'), f = t.files[0]; w.querySelector('.rph').innerHTML = '<i>Uploading…</i>';
+      shrink(f, H.mode === 'demo' ? 600 : 900).then(function (b) { return H.api.upload(b, 'coach.jpg'); })
+        .then(function (u) { w.querySelector('[data-f]').value = u; w.querySelector('.rph').innerHTML = '<img src="' + e(u) + '" alt="">'; toast('Photo uploaded. Remember to save.'); })
+        .catch(function (err) { w.querySelector('.rph').innerHTML = '<i>Upload failed</i>'; toast(err.message, true); });
+      t.value = '';
+    });
     form.addEventListener('submit', function (ev) { ev.preventDefault(); save(c, form); });
     if (id) {
       $('#del').addEventListener('click', function () {
@@ -280,11 +330,11 @@
       redraw();
     });
   }
-  function sec(t, inner) { return '<section class="adm-sec"><h2>' + t + '</h2>' + inner + '</section>'; }
+  function sec(t, inner) { return '<section class="adm-sec" data-sec="' + e(t) + '"><h2>' + t + '</h2>' + inner + '</section>'; }
 
   function read(form, key) {
     return $$('.rep[data-key="' + key + '"] .rep-row', form).map(function (row) {
-      var o = {}; $$('[data-f]', row).forEach(function (i) { o[i.dataset.f] = i.value.trim(); }); return o;
+      var o = {}; $$('[data-f]', row).forEach(function (i) { var v = i.value.trim(); o[i.dataset.f] = i.hasAttribute('data-lines') ? v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean) : v; }); return o;
     });
   }
   function save(c, form) {
@@ -301,16 +351,23 @@
     var used = {};
     o.packages = read(form, 'packages').filter(function (p) { return p.name; }).map(function (p) {
       var id = slugify(p.name) || 'pkg'; while (used[id]) id += '-2'; used[id] = 1;
-      return { id: id, name: p.name, description: p.description, price: num(p.price), early_price: p.early_price === '' ? null : num(p.early_price) };
+      return { id: id, name: p.name, name_ka: p.name_ka, description: p.description, description_ka: p.description_ka, features: p.features || [], features_ka: p.features_ka || [], price: num(p.price), early_price: p.early_price === '' ? null : num(p.early_price) };
     });
     used = {};
-    o.addons = read(form, 'addons').filter(function (a) { return a.name; }).map(function (a) { var id = slugify(a.name) || 'addon'; while (used[id]) id += '-2'; used[id] = 1; return { id: id, name: a.name, price: num(a.price) || 0 }; });
+    o.addons = read(form, 'addons').filter(function (a) { return a.name; }).map(function (a) { var id = slugify(a.name) || 'addon'; while (used[id]) id += '-2'; used[id] = 1; return { id: id, name: a.name, name_ka: a.name_ka, price: num(a.price) || 0 }; });
     o.schedule = read(form, 'schedule').filter(function (d) { return d.day || d.items; }).map(function (d) {
-      return { day: d.day, items: lines(d.items || '').map(function (l) { var m = l.match(/^(\d{1,2}[:.]\d{2})\s+(.*)$/); return m ? { time: m[1].replace('.', ':'), title: m[2] } : { time: '', title: l }; }) };
+      var kl = (d.items_ka || '').split('\n').map(function (x) { return x.trim().replace(/^\d{1,2}[:.]\d{2}\s+/, ''); });
+      return { day: d.day, day_ka: d.day_ka, items: lines(d.items || '').map(function (l, i) { var m = l.match(/^(\d{1,2}[:.]\d{2})\s+(.*)$/); var it = m ? { time: m[1].replace('.', ':'), title: m[2] } : { time: '', title: l }; if (kl[i]) it.title_ka = kl[i]; return it; }) };
     });
     o.included = lines(E.included.value); o.excluded = lines(E.excluded.value);
     o.coaches = read(form, 'coaches').filter(function (k) { return k.name; });
     o.faq = read(form, 'faq').filter(function (f) { return f.q; });
+    o.bring = read(form, 'bring').filter(function (b) { return b.item; });
+    o.reviews = read(form, 'reviews').filter(function (r) { return r.text; }).map(function (r) { r.rating = r.rating ? +r.rating : null; return r; });
+    o.intensity = num(E.intensity.value); o.age_min = num(E.age_min.value); o.age_max = num(E.age_max.value);
+    o.fit_for = lines(E.fit_for.value); o.show_urgency = E.show_urgency.checked;
+    o.ka = { title: E.ka_title.value.trim(), level: E.ka_level.value.trim(), summary: E.ka_summary.value.trim(), description: E.ka_description.value.trim(),
+      venue_info: E.ka_venue_info.value.trim(), fit_for: lines(E.ka_fit_for.value), included: lines(E.ka_included.value), excluded: lines(E.ka_excluded.value) };
 
     var errs = [];
     if (!o.title) errs.push('Add a title.');
@@ -320,6 +377,7 @@
       if (!o.packages.length || o.packages.some(function (p) { return p.price == null; })) errs.push('Published camps need at least one package with a price.');
     }
     if (o.end_date && o.start_date && o.end_date < o.start_date) errs.push('End date is before start date.');
+    if (o.age_min && o.age_max && o.age_max < o.age_min) errs.push('Maximum age is below minimum age.');
     if (errs.length) { msg.className = 'form-msg err'; msg.textContent = errs.join(' '); toast(errs[0], true); return; }
     msg.className = 'form-msg'; msg.textContent = 'Saving…';
     H.api.saveCamp(o).then(function (saved) {

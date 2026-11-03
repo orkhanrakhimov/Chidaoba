@@ -157,7 +157,7 @@
   }
 
   // ---------------- Demo (this browser only) ----------------
-  var DK = 'chd_demo_db2';
+  var DK = 'chd_demo_db3';
   function uid() { return 'x' + Math.random().toString(36).slice(2, 10); }
   function iso(offset) { var t = today(); t.setDate(t.getDate() + offset); return t.toISOString().slice(0, 10); }
   function seed() {
@@ -170,9 +170,9 @@
         capacity: 20, currency: 'EUR', early_bird_deadline: iso(20), registration_deadline: iso(50), deposit_pct: 30, payment_days: 7,
         group_min: 4, group_discount_pct: 10, bank_details: '[Bank name]\n[Account holder]\nIBAN: [GE00 XX00 0000 0000 0000 00]\nReference: your booking code',
         packages: [
-          { id: 'training', name: 'Training only', description: 'All sessions, camp T-shirt.', price: 390, early_price: 340 },
-          { id: 'stay', name: 'Training + stay', description: 'All sessions, 7 nights shared room, breakfast.', price: 690, early_price: 620 },
-          { id: 'all', name: 'All-inclusive', description: 'Training, private room, all meals, transfers, cultural day.', price: 990, early_price: 900 }
+          { id: 'training', name: 'Training only', name_ka: 'მხოლოდ ვარჯიში', description: 'All sessions, camp T-shirt.', price: 390, early_price: 340, features: ['All training sessions', 'Camp T-shirt'] },
+          { id: 'stay', name: 'Training + stay', name_ka: 'ვარჯიში + საცხოვრებელი', description: 'All sessions, 7 nights shared room, breakfast.', price: 690, early_price: 620, features: ['All training sessions', 'Camp T-shirt', '7 nights, shared room', 'Breakfast'] },
+          { id: 'all', name: 'All-inclusive', name_ka: 'ყველაფერი ჩათვლით', description: 'Training, private room, all meals, transfers, cultural day.', price: 990, early_price: 900, features: ['All training sessions', 'Camp T-shirt', '7 nights, private room', 'Breakfast', 'Lunch and dinner', 'Airport transfers', 'Cultural day trip'] }
         ],
         addons: [{ id: 'transfer', name: 'Airport transfer (both ways)', price: 40 }, { id: 'private', name: 'Private lesson (1 hour)', price: 60 }, { id: 'merch', name: 'CHIDAOBA merch pack', price: 55 }],
         schedule: [
@@ -182,8 +182,13 @@
         ],
         included: ['Two training sessions a day', 'Coaches & instructors', 'Camp T-shirt', 'One cultural day'],
         excluded: ['Flights', 'Travel insurance'],
-        coaches: [{ name: '[Coach name]', role: 'BJJ black belt', bio: 'Sample coach profile.' }, { name: '[Coach name]', role: 'Wrestling coach', bio: 'Sample coach profile.' }],
-        faq: [{ q: 'Is this a real camp?', a: 'No. This is demo content to preview the booking flow.' }]
+        coaches: [{ name: '[Coach name]', role: 'BJJ black belt', titles: ['Sample title 1', 'Sample title 2'], bio: 'Sample coach profile.' }, { name: '[Coach name]', role: 'Wrestling coach', titles: [], bio: 'Sample coach profile.' }],
+        faq: [{ q: 'Is this a real camp?', a: 'No. This is demo content to preview the booking flow.' }],
+        intensity: 3, age_min: 16, age_max: null, show_urgency: true,
+        fit_for: ['You have trained BJJ, wrestling or judo for 6 months or more', 'You want two sessions a day and real sparring', 'You like the mountains and a slower pace between sessions'],
+        bring: [{ item: 'BJJ gi (2 if you can)', shop: 'bjj-gi' }, { item: 'Rashguard and shorts for no-gi', shop: 'rashguard-long-sleeve' }, { item: 'Mouthguard', shop: 'mouthguard' }, { item: 'Slides for walking off the mat', shop: 'slides' }, { item: 'Warm layer for mountain evenings', shop: 'hoodie' }, { item: 'Towel', shop: 'gym-towel' }, { item: 'Passport and travel insurance', shop: '' }],
+        reviews: [{ name: '[Name]', from: 'Sample review', rating: 5, text: 'Demo review. Real reviews from past camps appear here.' }],
+        ka: { title: 'დემო: BJJ და No-Gi სამთო ბანაკი, სვანეთი', summary: 'სანიმუშო ბანაკი, რომ ნახოთ, როგორ გამოიყურება ბანაკები.', fit_for: ['BJJ-ს, ჭიდაობას ან ძიუდოს 6 თვე ან მეტია ვარჯიშობთ', 'გსურთ დღეში ორი ვარჯიში და ნამდვილი სპარინგი'] }
       }, {
         id: uid(), slug: 'demo-wrestling-week', title: 'DEMO: Wrestling Week, Kutaisi', discipline: 'wrestling', status: 'published', featured: false,
         start_date: iso(95), end_date: iso(99), city: 'Kutaisi', country: 'Georgia', level: 'Intermediate+',
