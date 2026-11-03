@@ -1426,7 +1426,7 @@ html[lang="ka"] .label,html[lang="ka"] .nav a,html[lang="ka"] .btn{letter-spacin
 .shop-bar .wrap>*{min-width:0;max-width:100%}.shop-row{min-width:0}
 @media (max-width:760px){.pv-art{min-height:200px;max-height:240px}.pv-art svg.part{width:auto;height:180px}}
 /* softer corners, remaining pieces */
-.feature,.perks,.steps{border-radius:var(--r-card);overflow:hidden}
+.feature,.perks{border-radius:var(--r-card);overflow:hidden}
 input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{border-radius:var(--r-in)}
 .news-row{border-radius:999px;overflow:hidden;padding:4px}
 .news-row input{border-radius:999px!important;border:0}
@@ -1528,3 +1528,35 @@ input[type=checkbox]{border-radius:4px}
 .shop-main:not(.all-view) .ptile-cat{display:none!important}
 .dept{margin-top:44px}
 @media (max-width:600px){.who{grid-template-columns:repeat(3,1fr);gap:8px}.who-btn{justify-content:center;align-items:center;padding:14px 8px}.who-btn span{display:none}.who-btn b{font-size:16px}.shop-how-s{display:none}}
+/* compact story lists (Culture, Why Georgia) */
+.story{padding:clamp(72px,9vw,128px) 0}
+.story .label{margin-bottom:clamp(32px,4vw,56px)}
+.scrub-list{grid-template-columns:1fr 1fr;gap:clamp(36px,4vw,64px) clamp(32px,5vw,80px)}
+.scrub-item{grid-template-columns:56px 1fr;gap:16px}
+.scrub-list .scrub{font-size:clamp(22px,2.2vw,32px);line-height:1.22;max-width:none}
+.scrub-item .n{padding-top:.55em}
+@media (max-width:800px){.scrub-list{grid-template-columns:1fr}}
+/* home */
+.stats-3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:800px){.stats-3{grid-template-columns:1fr}}
+.home-why{grid-column:1/-1;justify-self:start;margin-top:8px}
+#home-camps{margin-top:8px}
+.home-picks{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.hpick{display:flex;flex-direction:column;gap:4px;padding:8px 8px 16px;background:#fff;border:1px solid var(--chalk-line);border-radius:var(--r-card);color:var(--carbon);text-decoration:none;transition:border-color .2s,transform .2s}
+.hpick:hover{border-color:var(--carbon);transform:translateY(-2px)}
+.hpick-art{aspect-ratio:1;background:#ECE9E1;border-radius:calc(var(--r-card) - 6px);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.hpick-art svg.part{width:62%}
+.hpick-art .part .f{fill:var(--pc);stroke:#1E1E1E;stroke-width:2.4;stroke-linejoin:round}
+.hpick-art .part .d{fill:none;stroke:var(--pd);stroke-width:2;stroke-linecap:round}
+.hpick-art .part .belt{fill:#1E1E1E}
+.hpick b{padding:0 8px;font-size:16px}
+.hpick span{padding:0 8px;font-size:13px;color:var(--grey)}
+@media (max-width:800px){.home-picks{grid-template-columns:1fr 1fr;gap:12px}}
+.camps-list-sec{display:flow-root}
+.camps-list-sec .pick-head{padding-top:8px}
+.sport-pick button{border-radius:var(--r-card)!important}
+.cx-hero{min-height:clamp(460px,72svh,780px)}
+@media (max-width:700px){.cx-hero{min-height:0}.cx-hero .wrap{padding-top:72px;padding-bottom:44px}}
+@media (max-width:560px){.ch-stats{grid-template-columns:1fr 1fr!important}.ch-stats>div{padding:18px 0!important;border-left:0!important}.ch-stats>div+div{border-top:0}.ch-stats>div:nth-child(n+3){border-top:1px solid var(--chalk-line)!important}.ch-stats b{font-size:34px!important}.ch-stats span{font-size:13px}
+  .stats-3{grid-template-columns:1fr 1fr}.stats-3 .stat:last-child{grid-column:1/-1}}
+@media (max-width:560px){.ch-stats{column-gap:16px}}

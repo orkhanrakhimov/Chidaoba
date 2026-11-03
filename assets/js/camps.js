@@ -46,6 +46,30 @@
   }
 
   // ================= LIST =================
+  function card(c) {
+    var st = state(c), s = spots(c), from = H.fromPrice(c), early = H.isEarly(c);
+    var n = H.days(c.start_date, c.end_date);
+    var cv = H.cover(c), v = H.venue(c);
+    return '<a class="camp-card st-' + st.key + (c.featured ? ' featured' : '') + (cv ? ' has-img' : '') + '" href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '">' +
+      (cv ? '<div class="cc-img"><img src="' + e(cv.thumb) + '" alt="' + e(cv.alt || '') + '" loading="lazy"></div>' : '') + '<div class="cc-body">' +
+      '<div class="cc-top"><span class="label">' + e(H.DISC[c.discipline] || '') + '</span><span class="cc-status">' + e(st.label) + '</span></div>' +
+      '<h3>' + e(c.title) + '</h3>' +
+      '<dl class="cc-meta"><div><dt>Dates</dt><dd>' + e(H.dateRange(c.start_date, c.end_date)) + (n ? ' · ' + n + ' days' : '') + '</dd></div>' +
+      '<div><dt>Where</dt><dd>' + e([c.city, c.country].filter(Boolean).join(', ') || 'TBA') + '</dd></div>' +
+      (c.level ? '<div><dt>Level</dt><dd>' + e(c.level) + '</dd></div>' : '') + '</dl>' +
+      (c.summary ? '<p class="cc-sum">' + e(c.summary) + '</p>' : '') +
+      '<div class="cc-foot"><div class="cc-price">' + (from != null ? '<span>From</span><b>' + H.money(from, c.currency) + '</b>' + (early ? '<em>Early-bird</em>' : '') : '<b>Price TBA</b>') + '</div>' +
+      (s && c.status !== 'completed' ? '<div class="cc-spots"><span>' + (s.left ? s.left + ' of ' + c.capacity + ' spots left' : 'Waitlist open') + '</span><i><b style="width:' + s.pct + '%"></b></i></div>' : '') +
+      '<span class="cc-cta">' + (st.key === 'open' || st.key === 'few' ? 'See camp &amp; request' : 'View camp') + ' <span class="arr">→</span></span></div></div></a>';
+  }
+  // home page: next camps, if any are published
+  var hc = $('#home-camps');
+  if (hc) H.api.listCamps().then(function (c) {
+    var up = (c || []).map(loc).filter(function (x) { return x.status !== 'completed'; }).slice(0, 3);
+    if (!up.length) return;
+    hc.innerHTML = up.map(card).join(''); hc.hidden = false;
+    var soon = $('#home-camps-soon'); if (soon) soon.hidden = true;
+  }).catch(function () { });
   var list = $('#camp-list');
   if (list) {
     var tabs = document.querySelectorAll('.disc-tabs button');
@@ -63,22 +87,6 @@
         return;
       }
       list.innerHTML = up.map(card).join('') + (past.length ? '<p class="label muted past-label">Past camps</p>' + past.map(card).join('') : '');
-    }
-    function card(c) {
-      var st = state(c), s = spots(c), from = H.fromPrice(c), early = H.isEarly(c);
-      var n = H.days(c.start_date, c.end_date);
-      var cv = H.cover(c), v = H.venue(c);
-      return '<a class="camp-card st-' + st.key + (c.featured ? ' featured' : '') + (cv ? ' has-img' : '') + '" href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '">' +
-        (cv ? '<div class="cc-img"><img src="' + e(cv.thumb) + '" alt="' + e(cv.alt || '') + '" loading="lazy"></div>' : '') + '<div class="cc-body">' +
-        '<div class="cc-top"><span class="label">' + e(H.DISC[c.discipline] || '') + '</span><span class="cc-status">' + e(st.label) + '</span></div>' +
-        '<h3>' + e(c.title) + '</h3>' +
-        '<dl class="cc-meta"><div><dt>Dates</dt><dd>' + e(H.dateRange(c.start_date, c.end_date)) + (n ? ' · ' + n + ' days' : '') + '</dd></div>' +
-        '<div><dt>Where</dt><dd>' + e([c.city, c.country].filter(Boolean).join(', ') || 'TBA') + '</dd></div>' +
-        (c.level ? '<div><dt>Level</dt><dd>' + e(c.level) + '</dd></div>' : '') + '</dl>' +
-        (c.summary ? '<p class="cc-sum">' + e(c.summary) + '</p>' : '') +
-        '<div class="cc-foot"><div class="cc-price">' + (from != null ? '<span>From</span><b>' + H.money(from, c.currency) + '</b>' + (early ? '<em>Early-bird</em>' : '') : '<b>Price TBA</b>') + '</div>' +
-        (s && c.status !== 'completed' ? '<div class="cc-spots"><span>' + (s.left ? s.left + ' of ' + c.capacity + ' spots left' : 'Waitlist open') + '</span><i><b style="width:' + s.pct + '%"></b></i></div>' : '') +
-        '<span class="cc-cta">' + (st.key === 'open' || st.key === 'few' ? 'See camp &amp; request' : 'View camp') + ' <span class="arr">→</span></span></div></div></a>';
     }
     list.innerHTML = '<p class="body soft loading">Loading camps…</p>';
     function counts() {

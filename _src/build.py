@@ -143,8 +143,8 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "30"
-EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["shop"]}
+ASSET_V = "31"
+EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["shop"]}
 
 def page(path, title, desc, main):
     js = "".join(f'<script src="/assets/js/{n}.js?v={ASSET_V}" defer></script>' for n in EXTRA_JS.get(path, []))
@@ -161,6 +161,15 @@ CATS = ["Training Camps", "Wrestling Seminars", "BJJ / No-Gi Camps",
 JCATS = ["Heritage", "Wrestling", "Grappling", "Training", "Athletes", "Culture", "Interviews"]
 
 # ------------------------------------------------------------------ home
+def home_picks():
+    from shop_art import art
+    picks = [("BJJ gi", "bjj"), ("Rashguard, long sleeve", "train"), ("Wrestling singlet", "wrestling"), ("Judogi", "judo")]
+    out = ""
+    for name, sp in picks:
+        p = next(x for x in PRODUCTS if x[0] == name)
+        out += f'<a class="hpick" href="/shop/?sport={sp}#{slugify(name)}"><div class="hpick-art">{art(p[8], p[6][0])}</div><b>{name}</b><span>{dict((k, n) for k, n, _ in SPORTS)[sp]}</span></a>'
+    return out
+
 def home():
     chips = "".join(f"<li>{c}</li>" for c in CATS)
     jchips = "".join(f"<li>{c}</li>" for c in JCATS)
@@ -177,9 +186,6 @@ def home():
         <a class="btn btn-ghost" href="/shop/">Shop {arrow()}</a>
       </div>
     </div>
-    <div class="hero-foot label muted">
-      <span>Chidaoba, UNESCO Intangible Cultural Heritage, 2018</span>
-    </div>
   </div>
 </section>
 
@@ -189,14 +195,16 @@ def home():
       <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 · The culture</p>
       <h2 id="intro-title" class="display h-lg reveal">Our roots<span class="dot">.</span></h2>
       <div class="text reveal">
-        <p class="scrub scrub-sm">Chidaoba is the traditional wrestling of Georgia, recognised by UNESCO as cultural heritage. Our brand takes its name and values from it.</p>
+        <p class="scrub scrub-sm">Chidaoba is the traditional wrestling of Georgia. Our brand takes its name and values from it.</p>
         <p class="body muted">We connect this heritage with the sports people train today: wrestling, judo, Brazilian jiu-jitsu and grappling.</p>
         <a class="link" href="/culture/" style="align-self:start">What is Chidaoba</a>
       </div>
-      <div class="stats stats-2 stagger">
-        <div class="stat"><b data-count="2018" data-from="1900">2018</b><span>Chidaoba, wrestling in Georgia, inscribed on UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</span></div>
-        <div class="stat"><b>ჭ</b><span>The first letter of ჭიდაობა, and the CHIDAOBA logo.</span></div>
+      <div class="stats stats-3 stagger">
+        <div class="stat"><b data-count="9">9</b><span>Olympic gold medals for Georgia in judo and wrestling</span></div>
+        <div class="stat"><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
+        <div class="stat"><b data-count="2018" data-from="1900">2018</b><span>Chidaoba added to UNESCO’s list of intangible cultural heritage</span></div>
       </div>
+      <a class="link home-why" href="/georgia/">Why train in Georgia</a>
     </div>
   </div>
 </section>
@@ -208,13 +216,14 @@ def home():
       <h2 id="camps-title" class="display h-lg reveal">Training camps in Georgia</h2>
       <p class="body soft reveal">Camps for BJJ and grappling, wrestling and judo, with local coaches, accommodation and meals.</p>
     </div>
-    <article class="feature reveal">
+    <div id="home-camps" class="camp-list" hidden></div>
+    <article class="feature reveal" id="home-camps-soon">
       <div class="feature-visual" aria-hidden="true">{sym_svg("")}<div class="ring"></div></div>
       <div class="feature-body">
         <span class="pill"><i></i>First dates announced soon</span>
         <h3 class="display h-md">The first camps are being planned<span class="dot">.</span></h3>
         <p class="body soft">We are preparing our first training camps and experiences in Georgia. Dates, coaches, locations and registration will be published here first.</p>
-        <ul class="chips">{chips}</ul>
+        <ul class="chips"><li>BJJ &amp; grappling</li><li>Wrestling</li><li>Judo</li></ul>
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px">
           <a class="btn btn-primary" href="/camps/">Explore camps &amp; events {arrow()}</a>
           <a class="btn btn-ghost" href="{IG}" rel="noopener">Follow for dates {arrow()}</a>
@@ -224,17 +233,15 @@ def home():
   </div>
 </section>
 
-<section class="section dark drop" aria-labelledby="drop-title">
-  <div class="big" aria-hidden="true">01</div>
+<section class="section light home-shop" aria-labelledby="drop-title">
   <div class="wrap">
-    <div class="drop-grid">
-      <div class="reveal">
-        <p class="label muted"><span class="bar"></span>03 · Shop</p>
-        <h2 id="drop-title" class="display h-lg">Shop</h2>
-        <p class="lead soft">Rashguards, shorts, gis, gear and everyday clothing. The first collection is in development.</p>
-        <a class="btn btn-primary" href="/shop/" style="align-self:start">View shop {arrow()}</a>
-      </div>
+    <div class="sec-head">
+      <p class="label"><span class="bar"></span>03 · Shop</p>
+      <h2 id="drop-title" class="display h-lg reveal">Shop</h2>
+      <p class="body muted reveal">Gis, training wear and gear for adults and kids. Order on WhatsApp.</p>
     </div>
+    <div class="home-picks stagger">{home_picks()}</div>
+    <a class="btn btn-primary" href="/shop/" style="margin-top:28px">View the shop {arrow()}</a>
   </div>
 </section>
 
@@ -309,10 +316,7 @@ def culture():
   <div class="wrap">
     <p class="label muted fade-load"><span class="bar"></span>Culture</p>
     <h1 id="c-title" class="display"><span class="ln"><span>About Chidaoba</span></span></h1>
-    <p class="lead soft fade-load">CHIDAOBA is a sports brand inspired by Georgian traditional wrestling. We support wrestling and grappling sports and the people who practise them.</p>
-    <div class="cx-hero-foot fade-load">
-      <span class="label muted">UNESCO Intangible Cultural Heritage of Humanity, 2018</span>
-    </div>
+    <p class="lead soft fade-load">Chidaoba is the traditional wrestling of Georgia. Standing bouts in a short jacket, open-air arenas and live music. This is where our name comes from.</p>
   </div>
 </section>
 
@@ -347,33 +351,7 @@ def culture():
   </div>
 </section>
 
-<section class="section dark" aria-labelledby="disc-title" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-head" style="margin-bottom:40px">
-      <p class="label muted"><span class="bar"></span>04 · Our sports</p>
-      <h2 id="disc-title" class="display h-md">The sports we support</h2>
-      <p class="body soft">Our brand is inspired by Georgian wrestling, and we work with all grappling sports.</p>
-    </div>
-    <ul class="disc">{dl}</ul>
-  </div>
-</section>
 
-<section class="section light" aria-labelledby="purpose-title">
-  <div class="wrap">
-    <div class="sec-head" style="margin-bottom:56px">
-      <p class="label"><span class="bar"></span>05 · What we do</p>
-      <h2 id="purpose-title" class="display h-md">What we do</h2>
-      <p class="body muted">We focus on three things.</p>
-    </div>
-    <div class="pillars stagger">
-      <div><b>Promote</b><p>Wrestling and grappling sports, in Georgia and around the world.</p></div>
-      <div><b>Celebrate</b><p>Their culture: the heritage, the people and the stories behind every grip.</p></div>
-      <div><b>Connect</b><p>Athletes, coaches, clubs and communities, and help these sports grow.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="dark" aria-hidden="true"><div class="marquee"><div class="marquee-track">{mq}</div></div></section>
 
 
 </div>
