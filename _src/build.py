@@ -5,7 +5,7 @@ Run from the repo root:  python3 _src/build.py
 Writes index.html, culture/, camps/, community/, journal/, shop/, privacy/ and 404.html.
 Folders starting with "_" are not published by GitHub Pages (Jekyll), so this source stays private to the repo.
 """
-import os, html, re
+import os, html, re, json
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SYM = open(os.path.join(ROOT, "_src", "symbol_path.txt")).read().strip()
@@ -52,6 +52,7 @@ def head(title, desc, path):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Noto+Sans+Georgian:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
+<!--ALT-->
 </head>
 <body id="top">
 <a class="skip" href="#main">Skip to content</a>
@@ -65,6 +66,7 @@ def header(path):
     <a class="brand" href="/" aria-label="CHIDAOBA CULTURE home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA CULTURE" width="26" height="36"></a>
     <nav class="nav" aria-label="Main">{links}</nav>
     <div class="head-tools">
+      <!--LANGSW-->
       <a class="bag" href="/shop/#bag" aria-label="Bag">{BAG}<b class="bag-n" data-bag-n hidden>0</b></a>
       <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
     </div>
@@ -72,6 +74,7 @@ def header(path):
 </header>
 <div class="mobile-menu" id="mobile-menu">
   <nav aria-label="Mobile">{mlinks}</nav>
+  <!--LANGSW-->
   {socials("socials socials-menu")}
 </div>
 """
@@ -141,7 +144,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "20"
+ASSET_V = "22"
 EXTRA_JS = {"/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "data", "admin"], "/shop/": ["shop"]}
 
 def page(path, title, desc, main):
@@ -306,7 +309,7 @@ def culture():
   <div class="ghost-word" aria-hidden="true">ჭ</div>
   <div class="wrap">
     <p class="label muted fade-load"><span class="bar"></span>Culture</p>
-    <h1 id="c-title" class="display"><span class="ln"><span>About</span></span><span class="ln"><span>Chidaoba</span></span></h1>
+    <h1 id="c-title" class="display"><span class="ln"><span>About Chidaoba</span></span></h1>
     <p class="lead soft fade-load">CHIDAOBA is a sports brand inspired by Georgian traditional wrestling. We support wrestling and grappling sports and the people who practise them.</p>
     <div class="cx-hero-foot fade-load">
       <span class="label muted">UNESCO Intangible Cultural Heritage of Humanity, 2018</span>
@@ -525,7 +528,7 @@ def georgia():
   <div class="ghost-word" aria-hidden="true">ჭ</div>
   <div class="wrap">
     <p class="label muted fade-load"><span class="bar"></span>Why Georgia</p>
-    <h1 id="g-title" class="display"><span class="ln"><span>Why train</span></span><span class="ln"><span>in Georgia</span></span></h1>
+    <h1 id="g-title" class="display"><span class="ln"><span>Why train in Georgia</span></span></h1>
     <p class="lead soft fade-load">Georgia has a long wrestling tradition, world-class judo and wrestling athletes and a growing BJJ community. It is also an easy and affordable country to visit, with mountains, sea and great food.</p>
   </div>
 </section>
@@ -844,14 +847,38 @@ PAGES = [
 ]
 
 if __name__ == "__main__":
+    import i18n
+    trs = {l: i18n.Tr(l) for l in i18n.LANGS}
+    os.makedirs(os.path.join(ROOT, "assets", "i18n"), exist_ok=True)
+    for l in i18n.LANGS:
+        open(os.path.join(ROOT, "assets", "i18n", l + ".js"), "w", encoding="utf-8").write(i18n.runtime_js(l))
+    multi = []
     for path, out, title, desc, fn in PAGES:
-        full = os.path.join(ROOT, out)
-        os.makedirs(os.path.dirname(full), exist_ok=True)
-        with open(full, "w") as f:
-            f.write(page(path, html.escape(title, quote=False), html.escape(desc), fn()))
-        print("wrote", out)
-    sm = "".join(f"<url><loc>https://chidaoba.com{p}</loc></url>" for p, o, *_ in PAGES if not o.startswith("404") and p not in ("/admin/", "/camps/camp/"))
+        doc = page(path, html.escape(title, quote=False), html.escape(desc), fn())
+        ml = path not in ("/admin/", "/404.html")
+        def fin(d, lang):
+            d = d.replace("<!--LANGSW-->", i18n.switcher(path, lang) if ml else "")
+            return d.replace("<!--ALT-->", i18n.alternates(path) if ml else "")
+        outs = [(out, fin(doc, "en"))]
+        if ml:
+            multi.append(path)
+            for l, t in trs.items():
+                d = t.page(doc, path)
+                d = d.replace("<script ", f'<script src="/assets/i18n/{l}.js?v={ASSET_V}"></script>\n<script ', 1) if "<script " in d else d
+                if l == "ru":
+                    d = d.replace("&amp;family=Noto+Sans+Georgian", "&amp;family=Inter:wght@400;500;600;700;800&amp;family=Noto+Sans+Georgian", 1)
+                outs.append((os.path.join(l, out), fin(d, l)))
+        for o, d in outs:
+            full = os.path.join(ROOT, o)
+            os.makedirs(os.path.dirname(full), exist_ok=True)
+            with open(full, "w", encoding="utf-8") as f:
+                f.write(d)
+    for l, t in trs.items():
+        miss = sorted(t.missing)
+        json.dump(miss, open(f"/tmp/i18n-missing-{l}.json", "w"), ensure_ascii=False, indent=0)
+        print(l, "missing", len(miss))
+    sm = "".join(f"<url><loc>https://chidaoba.com{pre}{p}</loc></url>" for p in multi if p not in ("/camps/camp/",) for pre in ("", "/ka", "/ru"))
     open(os.path.join(ROOT, "sitemap.xml"), "w").write(
         f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>\n')
     open(os.path.join(ROOT, "robots.txt"), "w").write("User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: https://chidaoba.com/sitemap.xml\n")
-    print("wrote sitemap.xml, robots.txt")
+    print("built", len(PAGES), "pages x", 1 + len(trs), "languages")

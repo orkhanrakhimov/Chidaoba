@@ -12,6 +12,7 @@
   var demoOn = sessionStorage.getItem('chd_demo') === '1';
 
   var NET = 'Can’t reach the database. Check your internet connection, turn off content blockers for this site, and make sure the Supabase project is active.';
+  var LOC = ({ ka: 'ka-GE', ru: 'ru-RU' })[document.documentElement.lang] || 'en-GB';
   var DISC = { bjj: 'BJJ & Grappling', wrestling: 'Freestyle & Greco-Roman Wrestling', judo: 'Judo', other: 'Other' };
   var ERR = {
     camp_not_open: 'Registration for this camp is not open.',
@@ -23,7 +24,7 @@
 
   // ---------------- helpers ----------------
   function money(n, cur) {
-    try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: cur || 'EUR', maximumFractionDigits: (Math.round(n) === +n ? 0 : 2) }).format(+n || 0); }
+    try { return new Intl.NumberFormat(LOC, { style: 'currency', currency: cur || 'EUR', maximumFractionDigits: (Math.round(n) === +n ? 0 : 2) }).format(+n || 0); }
     catch (e) { return (cur || '') + ' ' + n; }
   }
   function d(s) { return s ? new Date(s + 'T00:00:00') : null; }
@@ -31,12 +32,12 @@
     var A = d(a), B = d(b);
     if (!A) return 'Dates to be announced';
     var o = { day: 'numeric', month: 'short', year: 'numeric' };
-    if (!B || a === b) return A.toLocaleDateString('en-GB', o);
+    if (!B || a === b) return A.toLocaleDateString(LOC, o);
     if (A.getFullYear() === B.getFullYear() && A.getMonth() === B.getMonth())
-      return A.getDate() + '–' + B.toLocaleDateString('en-GB', o);
+      return A.getDate() + '–' + B.toLocaleDateString(LOC, o);
     if (A.getFullYear() === B.getFullYear())
-      return A.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' – ' + B.toLocaleDateString('en-GB', o);
-    return A.toLocaleDateString('en-GB', o) + ' – ' + B.toLocaleDateString('en-GB', o);
+      return A.toLocaleDateString(LOC, { day: 'numeric', month: 'short' }) + ' – ' + B.toLocaleDateString(LOC, o);
+    return A.toLocaleDateString(LOC, o) + ' – ' + B.toLocaleDateString(LOC, o);
   }
   function days(a, b) { var A = d(a), B = d(b); return A && B ? Math.round((B - A) / 864e5) + 1 : null; }
   function today() { var t = new Date(); t.setHours(0, 0, 0, 0); return t; }

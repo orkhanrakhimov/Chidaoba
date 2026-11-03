@@ -155,3 +155,11 @@
     document.querySelectorAll('[data-bag-n]').forEach(function (x) { x.textContent = n; x.hidden = !n; });
   } catch (e) { }
 })();
+
+// language switcher: keep ?query (e.g. /camps/camp/?c=...) and remember choice
+(function () {
+  document.querySelectorAll('.lang-sw a').forEach(function (a) {
+    if (location.search) a.setAttribute('href', a.getAttribute('href').split('?')[0] + location.search);
+    a.addEventListener('click', function () { try { localStorage.setItem('chd_lang', a.getAttribute('hreflang')); } catch (e) { } });
+  });
+})();
