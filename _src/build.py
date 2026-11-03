@@ -109,7 +109,7 @@ def newsletter_form(where, interests=("camps", "shop", "news"), title="The Cultu
       <div class="news-ints" role="group" aria-label="What would you like to hear about?">{chips}</div>
       <div class="news-row"><input id="nl-{where}" name="email" type="email" autocomplete="email" placeholder="Your email" required>
       <button class="btn btn-primary" type="submit">{btn}</button></div>
-      <label class="news-consent"><input type="checkbox" name="consent" value="yes" required><span>I agree to receive emails and accept the <a href="/privacy/">privacy notice</a>. Unsubscribe any time.</span></label>
+      <label class="news-consent"><input type="checkbox" name="consent" value="yes" required><span>I agree to receive emails and accept the <a href="/privacy/">privacy policy</a>. Unsubscribe any time.</span></label>
       <p class="form-msg" aria-live="polite"></p>
     </form>"""
 
@@ -145,7 +145,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "32"
+ASSET_V = "33"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
