@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE, shop: filters, product options, size finder, bag, WhatsApp order
+// CHIDAOBA, shop: filters, product options, size finder, bag, WhatsApp order
 (function () {
   var dataEl = document.getElementById('shop-data'); if (!dataEl) return;
   var P = JSON.parse(dataEl.textContent);

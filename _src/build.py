@@ -38,7 +38,7 @@ def head(title, desc, path):
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="CHIDAOBA CULTURE">
+<meta property="og:site_name" content="CHIDAOBA">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
@@ -63,7 +63,7 @@ def header(path):
     mlinks = "".join(f'<a href="{h}"{" aria-current=\"page\"" if h == path else ""}>{t}</a>' for h, t in NAV)
     return f"""<header class="site-head">
   <div class="wrap">
-    <a class="brand" href="/" aria-label="CHIDAOBA CULTURE home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA CULTURE" width="26" height="36"></a>
+    <a class="brand" href="/" aria-label="CHIDAOBA home"><img src="/assets/img/symbol-chalk.svg" alt="CHIDAOBA" width="26" height="36"></a>
     <nav class="nav" aria-label="Main">{links}</nav>
     <div class="head-tools">
       <!--LANGSW-->
@@ -136,7 +136,7 @@ def footer(path=""):
   </div>
   <div class="foot-mark" aria-hidden="true"><svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet"><text x="0" y="128" textLength="1000" lengthAdjust="spacingAndGlyphs">CHIDAOBA</text></svg></div>
   <div class="wrap">
-    <div class="foot-bottom label"><span class="foot-copy">© <span data-year>2026</span> Chidaoba Culture {FLAG}</span><a class="foot-top" href="#top">Back to top ↑</a></div>
+    <div class="foot-bottom label"><span class="foot-copy">© <span data-year>2026</span> CHIDAOBA {FLAG}</span><a class="foot-top" href="#top">Back to top ↑</a></div>
   </div>
 </footer>
 <a class="wa-float" href="{WA}" rel="noopener" aria-label="Message us on WhatsApp">{WA_ICON}<span>WhatsApp</span></a>
@@ -145,7 +145,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "40"
+ASSET_V = "41"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -181,7 +181,7 @@ def home():
 <section class="hero dark" aria-labelledby="hero-title">
   {sym_svg("hero-sym")}
   <div class="wrap">
-    <p class="label muted fade-load hero-top"><span class="hero-brand"><span class="bar"></span>Chidaoba Culture {FLAG}</span><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
+    <p class="label muted fade-load hero-top"><span class="hero-brand"><span class="bar"></span>CHIDAOBA {FLAG}</span><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
     <div>
       <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
       <p class="lead soft fade-load">Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.</p>
@@ -858,7 +858,7 @@ def contact():
       <div class="field"><label for="c-topic">Topic</label><select id="c-topic" name="topic">{opts}</select></div>
       <div class="field"><label for="c-phone">Phone / WhatsApp <em>optional</em></label><input id="c-phone" name="phone" type="tel" autocomplete="tel"></div>
       <div class="field full"><label for="c-msg">Message</label><textarea id="c-msg" name="message" required></textarea></div>
-      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA CULTURE may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
       <div class="form-foot"><button class="btn btn-primary" type="submit">Send message {arrow()}</button><p class="form-msg" aria-live="polite"></p></div>
     </form>
     <div class="done" id="contact-done" role="status">
@@ -870,24 +870,24 @@ def contact():
 </section>"""
 
 PAGES = [
-    ("/", "index.html", "CHIDAOBA CULTURE | About Chidaoba.",
+    ("/", "index.html", "CHIDAOBA | Georgian wrestling culture, training camps and gear",
      "Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.", home),
-    ("/georgia/", "georgia/index.html", "Why Georgia | Training camps in Georgia, CHIDAOBA CULTURE",
+    ("/georgia/", "georgia/index.html", "Why Georgia | Training camps in Georgia, CHIDAOBA",
      "Why train in Georgia: a wrestling culture centuries old, Olympic and world champions, booming BJJ, the Caucasus mountains, the Black Sea and the Georgian table.", georgia),
     ("/culture/", "culture/index.html", "Culture | Chidaoba and the CHIDAOBA brand",
      "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
-    ("/camps/", "camps/index.html", "Camps & Events | CHIDAOBA CULTURE",
+    ("/camps/", "camps/index.html", "Camps & Events | CHIDAOBA",
      "Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo. Choose your sport and send a request in a minute.", camps),
-    ("/camps/camp/", "camps/camp/index.html", "Camp | CHIDAOBA CULTURE",
-     "Camp details, packages, schedule and registration | CHIDAOBA CULTURE.", camp_detail),
-    ("/camps/venue/", "camps/venue/index.html", "Venue | CHIDAOBA CULTURE",
+    ("/camps/camp/", "camps/camp/index.html", "Camp | CHIDAOBA",
+     "Camp details, packages, schedule and registration | CHIDAOBA.", camp_detail),
+    ("/camps/venue/", "camps/venue/index.html", "Venue | CHIDAOBA",
      "Where we train: Ilia Gabliani Sports Complex in Mulakhi, Svaneti. Training hall, rooms for 40, meals, pool and mountain views.", venue_page),
-    ("/admin/", "admin/index.html", "Admin | CHIDAOBA CULTURE", "Admin.", admin),
-    ("/shop/", "shop/index.html", "Shop | CHIDAOBA CULTURE", "Rashguards, fight shorts, singlets, BJJ gis, judo kimonos, gear and lifestyle pieces from CHIDAOBA CULTURE.", shop),
-    ("/contact/", "contact/index.html", "Contact | CHIDAOBA CULTURE",
-     "Contact CHIDAOBA CULTURE: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
-    ("/privacy/", "privacy/index.html", "Privacy | CHIDAOBA CULTURE", "Privacy information for chidaoba.com.", privacy),
-    ("/404.html", "404.html", "Not found | CHIDAOBA CULTURE", "Page not found.", notfound),
+    ("/admin/", "admin/index.html", "Admin | CHIDAOBA", "Admin.", admin),
+    ("/shop/", "shop/index.html", "Shop | CHIDAOBA", "Rashguards, fight shorts, singlets, BJJ gis, judo kimonos, gear and lifestyle pieces from CHIDAOBA.", shop),
+    ("/contact/", "contact/index.html", "Contact | CHIDAOBA",
+     "Contact CHIDAOBA: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
+    ("/privacy/", "privacy/index.html", "Privacy | CHIDAOBA", "Privacy information for chidaoba.com.", privacy),
+    ("/404.html", "404.html", "Not found | CHIDAOBA", "Page not found.", notfound),
 ]
 
 if __name__ == "__main__":
@@ -927,7 +927,7 @@ if __name__ == "__main__":
             for l, t in trs.items():
                 d = t.page(doc, path)
                 if l == "ka":  # numbers the text translator skips
-                    d = d.replace("<b>3.9M</b>", "<b>3.9 მლნ</b>").replace("1 : 82,000", "1 : 82 000")
+                    d = d.replace("<b>3.9M</b>", "<b>3.9 მლნ</b>").replace("1 : 82,000", "1 : 82 000")
                 d = d.replace("<script ", f'<script src="/assets/i18n/{l}.js?v={ASSET_V}"></script>\n<script ', 1) if "<script " in d else d
                 outs.append((os.path.join(l, out), fin(d, l)))
         for o, d in outs:

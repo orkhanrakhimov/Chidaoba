@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE, public camps: list, detail page, booking
+// CHIDAOBA, public camps: list, detail page, booking
 (function () {
   var H = window.CHD; if (!H) return;
   var e = H.esc, $ = function (s, r) { return (r || document).querySelector(s); };
@@ -128,7 +128,7 @@
     var vk = new URLSearchParams(location.search).get('v'), V1 = V_ALL[vk];
     if (!V1) { vroot.innerHTML = '<section class="page-hero dark"><div class="wrap"><h1 class="display h-lg">Venue not found</h1><div style="margin-top:28px"><a class="btn btn-primary" href="/camps/">All camps <span class="arr">→</span></a></div></div></section>'; }
     else {
-      document.title = V1.name + ', ' + V1.place + ' | CHIDAOBA CULTURE';
+      document.title = V1.name + ', ' + V1.place + ' | CHIDAOBA';
       galleryData = V1.gallery;
       vroot.innerHTML = '<section class="camp-hero dark has-img"><img class="camp-hero-img" src="' + e(V1.cover.url) + '" alt="' + e(V1.cover.alt) + '"><div class="wrap">' +
         '<a class="back label muted" href="/camps/">← All camps</a><p class="label muted" style="margin-top:28px">Venue · ' + e(V1.place) + '</p>' +
@@ -158,7 +158,7 @@
   function paras(t) { return (t || '').split(/\n\s*\n/).map(function (p) { return '<p>' + e(p).replace(/\n/g, '<br>') + '</p>'; }).join(''); }
 
   function renderCamp(c) {
-    document.title = c.title + ' | CHIDAOBA CULTURE';
+    document.title = c.title + ' | CHIDAOBA';
     var st = state(c), s = spots(c), n = H.days(c.start_date, c.end_date), early = H.isEarly(c);
     var canBook = c.status === 'published' && st.key !== 'closed';
     var sched = (c.schedule || []).filter(function (d) { return d && (d.day || (d.items || []).length); });
@@ -383,7 +383,7 @@
       f('age', 'Age', 'number', false) + f('level', 'Belt / level', 'text', false) +
       '<div class="field full"><label for="b-notes">Message <em>optional</em></label><textarea id="b-notes" name="notes" placeholder="Questions, people in your group, dietary needs…"></textarea></div>' +
       '<input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-      '<label class="consent"><input type="checkbox" name="consent" required><span>I agree that CHIDAOBA CULTURE stores these details to organise this camp and contact me, as described in the <a href="/privacy/" target="_blank">privacy notice</a>.</span></label>' +
+      '<label class="consent"><input type="checkbox" name="consent" required><span>I agree that CHIDAOBA stores these details to organise this camp and contact me, as described in the <a href="/privacy/" target="_blank">privacy notice</a>.</span></label>' +
       '</div><div class="form-foot"><button class="btn btn-primary" type="submit" id="b-submit">' + (st.key === 'full' ? 'Join waitlist' : 'Send request') + ' <span class="arr">→</span></button><p class="form-msg" aria-live="polite"></p></div></form>' +
       '<div id="b-done" hidden></div></div></div>';
   }

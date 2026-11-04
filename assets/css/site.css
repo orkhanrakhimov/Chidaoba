@@ -1,4 +1,4 @@
-/* CHIDAOBA CULTURE: site styles (Phase 1) */
+/* CHIDAOBA: site styles (Phase 1) */
 :root {
   --carbon: #202020;
   --carbon-2: #2B2B2B;
@@ -1647,3 +1647,16 @@ html[lang="ka"] .hero h1.h-xl{font-size:clamp(34px,5.4vw,84px);max-width:none}@m
 .vbars b{text-align:right}.vbars em{font-style:normal;color:var(--grey);font-size:12px;text-align:right}
 .camp-main,.camp-side{min-width:0}.cmp-wrap{max-width:100%;overflow-x:auto}
 @media (max-width:1000px){.camp-grid{grid-template-columns:minmax(0,1fr)!important}}.camp-main{grid-template-columns:minmax(0,1fr)}
+/* Georgian display font: headings, menu, buttons, labels */
+@font-face{font-family:'Gremi Web';src:url(/assets/fonts/gremi-web.woff) format('woff');font-display:swap;unicode-range:U+10A0-10FF,U+1C90-1CBF,U+2D00-2D2F}
+html[lang="ka"]{--font-ka:'Gremi Web','Archivo','Noto Sans Georgian',system-ui,sans-serif}
+html[lang="ka"] :is(.display,h1,h2,h3,h4,.label,.btn,.nav a,.mobile-menu a,.chapters a,.lang-dd summary,.lang-dd a,.pcat-h,.prow-head h3,.dept-head h2,.who-btn b,.sport-tile b,.sport-pick button b,.news-label,.foot-col h3,.foot-col a,.foot-top,.ptile h3,.ptile-cat,.ptile-aud,.shop-tabs button,.who-sel select,.dept-all,.ch-lists h4,.ch-lists li b,.cf-grid b,.cf-top b,.pillars b,.details b,.gx-know b,.food h3,.steps h3,.chips li,.news-int span,.hpick b,.cc-cta,.cc-status,.pill,.camp-card h3,.pv-l,.pv-guide,.bagd h2,.faq summary,.disc-tabs button,.sched-tabs button,.hero-story,.link){font-family:var(--font-ka);font-weight:400;font-synthesis:none;letter-spacing:.02em}
+html[lang="ka"] :is(.label,.chapters a,.pcat-h,.ptile-cat,.ptile-aud,.foot-col h3,.ch-lists h4,.news-label){letter-spacing:.08em}
+html[lang="ka"] .nav a{font-size:15px;letter-spacing:.03em}
+html[lang="ka"] .label{font-size:13px}
+html[lang="ka"] .btn{font-size:15px}
+html[lang="ka"] .chapters a{font-size:14px}
+html[lang="ka"] :is(.foot-col h3,.pcat-h,.ptile-cat,.ch-lists h4,.news-label){font-size:13px}
+html[lang="ka"] :is(.shop-tabs button,.who-sel select,.lang-dd summary,.dept-all,.chips li,.news-int span,.cc-status,.pill){font-size:14px}
+html[lang="ka"] .ch-lists li b{font-size:17px}
+html[lang="ka"] .ptile-art span.ptile-aud{font-size:13px;letter-spacing:.04em}

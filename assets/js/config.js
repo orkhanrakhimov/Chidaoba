@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE: site configuration.
+// CHIDAOBA: site configuration.
 // Paste the two values from Supabase → Project Settings → API.
 // The "anon public" key is designed to be public: the database's security rules protect all data.
 window.CHD_CONFIG = {

@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE, admin panel (camps & registrations)
+// CHIDAOBA, admin panel (camps & registrations)
 (function () {
   var H = window.CHD, app = document.getElementById('admin');
   if (!H || !app) return;

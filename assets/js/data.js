@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE, data layer for camps.
+// CHIDAOBA, data layer for camps.
 // Uses Supabase (REST, no library) when configured; otherwise a clearly labelled
 // demo mode stored in this browser only (enable with ?demo=1).
 (function () {

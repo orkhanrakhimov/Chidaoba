@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE, venues that camps can use.
+// CHIDAOBA, venues that camps can use.
 // Pick a venue in the admin camp editor; the camp page then shows its photos,
 // facilities, meals and map. A camp's own photos / address override these.
 (function () {

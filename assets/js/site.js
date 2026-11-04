@@ -1,4 +1,4 @@
-// CHIDAOBA CULTURE, site behaviours
+// CHIDAOBA, site behaviours
 (function () {
   var body = document.body;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
