@@ -79,7 +79,7 @@
       var up = items.filter(function (c) { return c.status !== 'completed'; });
       var past = items.filter(function (c) { return c.status === 'completed'; });
       if (!items.length) {
-        list.innerHTML = '<div class="camp-empty"><p class="label muted"><span class="bar"></span>Coming soon</p>' +
+        list.innerHTML = '<div class="camp-empty">' +
           '<h3 class="display h-md">' + (all.length ? 'No camps in this discipline yet' : 'The first camps are being planned') + '<span class="dot">.</span></h3>' +
           '<p class="body soft">New dates are published here first. Message us and we’ll tell you as soon as registration opens.</p>' +
           '<div class="row-btns"><a class="btn btn-primary" href="' + WA + '?text=' + encodeURIComponent('Hi CHIDAOBA, please tell me when camps open.') + '" rel="noopener">Notify me on WhatsApp <span class="arr">→</span></a>' +
@@ -118,7 +118,7 @@
     vlist.innerHTML = Object.keys(V_ALL).map(function (k) {
       var v = V_ALL[k];
       return '<a class="venue-card" href="/camps/venue/?v=' + encodeURIComponent(k) + '"><div class="vc-img"><img src="' + e(v.cover.url) + '" alt="' + e(v.cover.alt) + '" loading="lazy"></div>' +
-        '<div class="vc-body"><span class="label">' + e(v.place) + '</span><h3>' + e(v.name) + '</h3><p>' + e(v.intro) + '</p>' +
+        '<div class="vc-body"><h3>' + e(v.name) + '</h3><p class="vc-place">' + e(v.place) + '</p><p>' + e(v.intro) + '</p>' +
         '<div class="vc-facts">' + v.facts.map(function (f) { return '<span><b>' + e(f[0]) + '</b> ' + e(f[1]) + '</span>'; }).join('') + '</div>' +
         '<span class="cc-cta">See the venue <span class="arr">→</span></span></div></a>';
     }).join('');
@@ -150,7 +150,7 @@
     .catch(function () { root.innerHTML = '<div class="wrap section"><p class="body">This camp could not be loaded. Please refresh.</p></div>'; });
 
   function notFound() {
-    root.innerHTML = '<section class="page-hero dark"><div class="wrap"><p class="label muted"><span class="bar"></span>Camps</p>' +
+    root.innerHTML = '<section class="page-hero dark"><div class="wrap">' +
       '<h1 class="display h-lg" style="margin-top:24px">Camp not found<span class="dot">.</span></h1><p class="lead soft">It may have ended or moved.</p>' +
       '<div style="margin-top:32px"><a class="btn btn-primary" href="/camps/">All camps <span class="arr">→</span></a></div></div></section>';
   }
@@ -166,7 +166,6 @@
     var cv = H.cover(c), V = H.venue(c);
     html += '<section class="camp-hero dark' + (cv ? ' has-img' : '') + '">' + (cv ? '<img class="camp-hero-img" src="' + e(cv.url) + '" alt="' + e(cv.alt || '') + '">' : '') + '<div class="wrap">' +
       '<a class="back label muted" href="/camps/">← All camps</a>' +
-      '<p class="label muted" style="margin-top:28px"><span class="bar"></span>' + e(H.DISC[c.discipline] || 'Camp') + '</p>' +
       '<h1 class="display h-lg">' + e(c.title) + '</h1>' +
       '<div class="facts-row">' +
       fact('Dates', H.dateRange(c.start_date, c.end_date)) + (n ? fact('Duration', n + ' days') : '') +
@@ -236,7 +235,7 @@
     // booking panel
     html += '<aside class="book" id="book"><div class="book-in dark">';
     if (canBook && (c.packages || []).length) {
-      html += '<p class="label"><span class="bar"></span>' + (st.key === 'full' ? 'Join the waitlist' : 'Request a spot') + '</p>' +
+      html += '<h3 class="book-h">' + (st.key === 'full' ? 'Join the waitlist' : 'Request a spot') + '</h3>' +
         '<fieldset class="b-pk"><legend>Package</legend>' + c.packages.map(function (p, i) {
           var ep = early && p.early_price !== '' && p.early_price != null;
           return '<label class="b-opt"><input type="radio" name="package" value="' + e(p.id) + '"' + (i === 0 ? ' checked' : '') + '>' +
@@ -252,7 +251,7 @@
         '<button class="btn btn-primary b-go" type="button" id="b-go">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + ' <span class="arr">→</span></button>' +
         '<p class="note">Free and takes a minute. No payment now. ' + (st.key === 'full' ? 'We’ll contact you if a spot opens.' : 'We confirm your spot on WhatsApp or email within 24 hours.') + '</p>';
     } else {
-      html += '<p class="label"><span class="bar"></span>' + e(st.label) + '</p><p class="body">' +
+      html += '<h3 class="book-h">' + e(st.label) + '</h3><p class="body">' +
         (c.status === 'completed' ? 'This camp has finished. See upcoming camps.' : 'Registration is not open for this camp right now.') + '</p>' +
         '<a class="btn btn-primary" href="/camps/">Upcoming camps <span class="arr">→</span></a>';
     }
@@ -373,7 +372,7 @@
   function modal(c, st) {
     return '<div class="modal" id="b-modal" hidden role="dialog" aria-modal="true" aria-labelledby="b-title"><div class="modal-box dark">' +
       '<button class="modal-x" type="button" aria-label="Close">×</button>' +
-      '<form id="b-form" novalidate><p class="label muted"><span class="bar"></span>' + e(c.title) + '</p>' +
+      '<form id="b-form" novalidate><h3 class="book-h">' + e(c.title) + '</h3>' +
       '<h2 id="b-title" class="display h-md">' + (st.key === 'full' ? 'Join the waitlist' : 'Send your request') + '<span class="dot">.</span></h2>' +
       '<div class="b-recap" id="b-recap"></div>' +
       '<div class="b-fields">' +
@@ -448,7 +447,7 @@
     var m = function (v) { return H.money(v, r.currency); };
     var wait = r.status === 'waitlist';
     var waMsg = 'Hi CHIDAOBA, I just sent a request for ' + c.title + '. My code: ' + r.ref;
-    var h = '<p class="label muted"><span class="bar"></span>' + (wait ? 'On the waitlist' : 'Request sent') + '</p>' +
+    var h = '<h3 class="book-h">' + (wait ? 'On the waitlist' : 'Request sent') + '</h3>' +
       '<h2 class="display h-md">' + (wait ? 'You’re on the waitlist' : 'Thank you, ' + e(p.full_name.split(' ')[0])) + '<span class="dot">.</span></h2>' +
       (wait ? '<p class="body">The camp is full right now. If a spot opens, we’ll contact you at ' + e(p.email) + ' or on WhatsApp. First come, first served.</p>'
             : '<p class="body">We got your request for <b>' + e(c.title) + '</b>. We’ll contact you within 24 hours on WhatsApp or at ' + e(p.email) + ' to confirm your spot and the details.</p>') +

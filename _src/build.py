@@ -145,7 +145,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "43"
+ASSET_V = "46"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -158,7 +158,7 @@ def page(path, title, desc, main):
     tag = f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script>'
     return out.replace(tag, js + tag)
 
-def arrow(): return '<span class="arr" aria-hidden="true">→</span>'
+def arrow(): return ''
 
 CATS = ["Training Camps", "Wrestling Seminars", "BJJ / No-Gi Camps",
         "Competitions", "Open Mats", "Cultural Experiences"]
@@ -181,7 +181,7 @@ def home():
 <section class="hero dark" aria-labelledby="hero-title">
   {sym_svg("hero-sym")}
   <div class="wrap">
-    <p class="label muted fade-load hero-top"><span class="hero-brand"><span class="bar"></span>CHIDAOBA {FLAG}</span><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
+    <p class="hero-top fade-load"><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
     <div>
       <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
       <p class="lead soft fade-load">Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.</p>
@@ -196,7 +196,6 @@ def home():
 <section class="section light" aria-labelledby="intro-title">
   <div class="wrap">
     <div class="intro">
-      <p class="label" style="grid-column:1/-1"><span class="bar"></span>01 · The culture</p>
       <h2 id="intro-title" class="display h-lg reveal">Our roots<span class="dot">.</span></h2>
       <div class="text reveal">
         <p class="scrub scrub-sm">Chidaoba is the traditional wrestling of Georgia. Our brand takes its name and values from it.</p>
@@ -216,7 +215,6 @@ def home():
 <section class="section dark" aria-labelledby="camps-title">
   <div class="wrap">
     <div class="sec-head">
-      <p class="label muted"><span class="bar"></span>02 · Camps &amp; Events</p>
       <h2 id="camps-title" class="display h-lg reveal">Training camps in Georgia</h2>
       <p class="body soft reveal">Camps for BJJ and grappling, wrestling and judo, with local coaches, accommodation and meals.</p>
     </div>
@@ -224,8 +222,7 @@ def home():
     <article class="feature reveal" id="home-camps-soon">
       <div class="feature-visual" aria-hidden="true">{sym_svg("")}<div class="ring"></div></div>
       <div class="feature-body">
-        <span class="pill"><i></i>First dates announced soon</span>
-        <h3 class="display h-md">The first camps are being planned<span class="dot">.</span></h3>
+                <h3 class="display h-md">The first camps are being planned<span class="dot">.</span></h3>
         <p class="body soft">We are preparing our first training camps and experiences in Georgia. Dates, coaches, locations and registration will be published here first.</p>
         <ul class="chips"><li>BJJ &amp; grappling</li><li>Wrestling</li><li>Judo</li></ul>
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px">
@@ -240,7 +237,6 @@ def home():
 <section class="section light home-shop" aria-labelledby="drop-title">
   <div class="wrap">
     <div class="sec-head">
-      <p class="label"><span class="bar"></span>03 · Shop</p>
       <h2 id="drop-title" class="display h-lg reveal">Shop</h2>
       <p class="body muted reveal">Gis, training wear and gear for adults and kids. Order on WhatsApp.</p>
     </div>
@@ -250,9 +246,8 @@ def home():
 </section>
 
 <section class="section dark invite" aria-labelledby="invite-title" style="border-top:1px solid var(--carbon-line)">
-  <div class="wrap">
-    <p class="label muted"><span class="bar"></span>04 · Newsletter</p>
-    <h2 id="invite-title" class="display h-lg reveal" style="margin-top:24px">Stay updated</h2>
+  <div class="wrap invite-grid">
+    <h2 id="invite-title" class="display h-lg reveal">Stay updated</h2>
     <div class="news-wrap reveal">{newsletter_form("home")}</div>
   </div>
 </section>
@@ -265,7 +260,6 @@ def inner(label, title, lead, what, what_items, cta_html, extra=""):
 <section class="page-hero dark">
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
-    <p class="label muted"><span class="bar"></span>{label}</p>
     <h1 class="display h-xl">{title}</h1>
     <p class="lead soft">{lead}</p>
   </div>
@@ -313,7 +307,6 @@ def culture():
 <section class="cx-hero dark" aria-labelledby="c-title">
   <div class="ghost-word" aria-hidden="true">ჭ</div>
   <div class="wrap">
-    <p class="label muted fade-load"><span class="bar"></span>Culture</p>
     <h1 id="c-title" class="display"><span class="ln"><span>About Chidaoba</span></span></h1>
     <p class="lead soft fade-load">Chidaoba is the traditional wrestling of Georgia. Standing bouts in a short jacket, open-air arenas and live music. This is where our name comes from.</p>
   </div>
@@ -321,7 +314,7 @@ def culture():
 
 <section class="story dark" aria-labelledby="story-title">
   <div class="wrap">
-    <p class="label muted" id="story-title"><span class="bar"></span>01 · The story of Chidaoba</p>
+    <h2 id="story-title" class="display h-md story-h">The story of Chidaoba</h2>
     <div class="scrub-list">{st}</div>
   </div>
 </section>
@@ -329,7 +322,6 @@ def culture():
 <section class="section light" aria-labelledby="details-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>02 · At a glance</p>
       <h2 id="details-title" class="display h-lg">How Chidaoba works</h2>
     </div>
     <div class="cf-top reveal"><b>2018</b><p>Chidaoba was added to UNESCO’s Representative List of the Intangible Cultural Heritage of Humanity.</p></div>
@@ -342,7 +334,6 @@ def culture():
     <div class="why-grid">
       <h2 id="why-title" class="display h-lg stagger"><span>Why the name Chidaoba</span></h2>
       <div class="text stagger">
-        <p class="label muted"><span class="bar"></span>03 · The name</p>
         <p class="lead soft">In Georgian, ჭიდაობა (Chidaoba) means wrestling. It is an everyday word that every Georgian knows.</p>
         <p class="body soft">We chose this name because it connects our brand to the Georgian wrestling tradition. Our goal is to make it known internationally.</p>
       </div>
@@ -385,7 +376,6 @@ def camps():
 <section class="page-hero dark camps-hero">
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
-    <p class="label muted fade-load"><span class="bar"></span>Camps &amp; Events</p>
     <h1 class="display h-xl"><span class="ln"><span>Training camps</span></span></h1>
     <p class="lead soft fade-load">Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo, with experienced local coaches.</p>
     <a class="hero-story fade-load" href="/georgia/" style="margin-top:22px">Why train in Georgia {arrow()}</a>
@@ -394,7 +384,7 @@ def camps():
 
 <section class="section dark camps-list-sec" id="camps" style="padding-top:0">
   <div class="wrap">
-    <div class="pick-head"><p class="label muted"><span class="bar"></span>Step 1</p><h2 class="display h-md">Choose your sport</h2></div>
+    <div class="pick-head"><h2 class="display h-md">Choose your sport</h2></div>
     <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport">{tb}</div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
   </div>
@@ -407,7 +397,6 @@ def camps():
 <section class="section light venues-sec">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px">
-      <p class="label"><span class="bar"></span>Where we train</p>
       <h2 class="display h-md">Our venues</h2>
       <p class="body muted">Training halls, accommodation and meals in one place.</p>
     </div>
@@ -418,7 +407,6 @@ def camps():
 <section class="section light" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>How it works</p>
       <h2 class="display h-md">How to sign up</h2>
     </div>
     <div class="steps stagger">
@@ -438,12 +426,11 @@ def camps():
 <section class="section light" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:24px">
-      <p class="label"><span class="bar"></span>Questions</p>
       <h2 class="display h-md">FAQ</h2>
     </div>
     <div class="faq">{fq}</div>
     <div class="team-cta">
-      <div><p class="label"><span class="bar"></span>Clubs &amp; teams</p><h3 class="display h-md">Want a camp for your club?</h3>
+      <div><h3 class="display h-md">Want a camp for your club?</h3>
       <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
       <a class="btn btn-primary" href="/contact/">Get in touch {arrow()}</a>
     </div>
@@ -502,13 +489,12 @@ def georgia():
             ("Language", "Georgian, with its own alphabet. Many young people speak English, and our team is with you the whole camp."),
             ("Best time", "Late spring to early autumn for mountain camps. Tbilisi works all year."),
             ("Time zone", "GMT+4, all year round.")]
-    kn = "".join(f'<div><b>{t}</b><p>{d}</p></div>' for t, d in know)
+    kn = "".join(f'<div><h3 class="kn-h">{t}</h3><p>{d}</p></div>' for t, d in know)
     return f"""
 <div class="cx gx">
 <section class="cx-hero dark" aria-labelledby="g-title">
   <div class="ghost-word" aria-hidden="true">ჭ</div>
   <div class="wrap">
-    <p class="label muted fade-load"><span class="bar"></span>Why Georgia</p>
     <h1 id="g-title" class="display"><span class="ln"><span>Why train in Georgia</span></span></h1>
     <p class="lead soft fade-load">Georgia has a long wrestling tradition, world-class judo and wrestling athletes and a growing BJJ community. It is also an easy and affordable country to visit, with mountains, sea and great food.</p>
   </div>
@@ -520,7 +506,6 @@ def georgia():
 <section class="section light" id="champions" aria-labelledby="champ-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>01 · Champions</p>
       <h2 id="champ-title" class="display h-lg">A small country with many champions</h2>
       <p class="body muted">Most of Georgia's Olympic medals come from judo and wrestling.</p>
     </div>
@@ -557,7 +542,6 @@ def georgia():
 <section class="section dark" id="newwave" aria-labelledby="nw-title">
   <div class="wrap gx-split">
     <div class="stagger">
-      <p class="label muted"><span class="bar"></span>02 · BJJ and grappling</p>
       <h2 id="nw-title" class="display h-lg">A growing BJJ community</h2>
     </div>
     <div class="stagger">
@@ -572,7 +556,6 @@ def georgia():
 <section class="section light" id="land" aria-labelledby="land-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:48px">
-      <p class="label"><span class="bar"></span>03 · Nature and climate</p>
       <h2 id="land-title" class="display h-lg">Mountains, sea and good weather</h2>
       <p class="body muted">Georgia is a small country with a lot of variety. The mountains and the Black Sea coast are both a few hours from Tbilisi.</p>
     </div>
@@ -589,7 +572,6 @@ def georgia():
     <div class="why-grid">
       <h2 id="table-title" class="display h-lg stagger"><span>Food and wine</span></h2>
       <div class="text stagger">
-        <p class="label muted"><span class="bar"></span>04 · Food</p>
         <p class="lead soft">Georgian food is one of the best reasons to visit. A traditional feast is called a supra, with many dishes and toasts led by a tamada.</p>
         <p class="body soft">Georgia also has one of the oldest winemaking traditions in the world, about 8,000 years. Wine is still made in clay vessels called qvevri, a method listed by UNESCO.</p>
       </div>
@@ -601,7 +583,6 @@ def georgia():
 <section class="section light" id="people" aria-labelledby="people-title">
   <div class="wrap gx-split">
     <div class="stagger">
-      <p class="label"><span class="bar"></span>05 · Hospitality</p>
       <h2 id="people-title" class="display h-lg">Hospitality</h2>
     </div>
     <div class="stagger">
@@ -616,7 +597,6 @@ def georgia():
 <section class="section alt" id="know" aria-labelledby="know-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px">
-      <p class="label"><span class="bar"></span>06 · Practical information</p>
       <h2 id="know-title" class="display h-md">Practical information</h2>
     </div>
     <div class="details gx-know stagger">{kn}</div>
@@ -746,7 +726,6 @@ def shop():
     return f"""
 <section class="page-hero dark shop-hero">
   <div class="wrap" style="position:relative">
-    <p class="label muted fade-load"><span class="bar"></span>Shop</p>
     <h1 class="display h-xl"><span class="ln"><span>Shop</span></span></h1>
     <p class="lead soft fade-load">Gis, fight wear, gear and clothing for BJJ, wrestling and judo. Choose your size, add to your bag and send the order on WhatsApp. No online payment.</p>
     <p class="shop-q-l fade-load">Who are you shopping for?</p>
@@ -798,7 +777,7 @@ def shop():
 
 def privacy():
     return f"""
-<section class="page-hero dark"><div class="wrap"><p class="label muted"><span class="bar"></span>Legal</p>
+<section class="page-hero dark"><div class="wrap">
 <h1 class="display h-lg">Privacy<span class="dot">.</span></h1></div></section>
 <section class="section light"><div class="wrap prose">
 <p class="label muted">Last updated: November 2026</p>
@@ -822,7 +801,6 @@ def privacy():
 def notfound():
     return f"""
 <section class="page-hero dark" style="min-height:70vh">{sym_svg("ghost")}<div class="wrap" style="position:relative">
-<p class="label muted"><span class="bar"></span>404</p>
 <h1 class="display h-xl">Page not found</h1>
 <p class="lead soft">This page does not exist.</p>
 <div style="margin-top:36px"><a class="btn btn-primary" href="/">Back to home {arrow()}</a></div></div></section>"""
@@ -834,7 +812,6 @@ def contact():
 <section class="page-hero dark">
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
-    <p class="label muted fade-load"><span class="bar"></span>Contact</p>
     <h1 class="display h-xl"><span class="ln"><span>Contact</span></span></h1>
     <p class="lead soft fade-load">Questions about camps, clubs, partnerships or the brand? Write to us, or message us on WhatsApp.</p>
   </div>
@@ -849,7 +826,7 @@ def contact():
         <a href="{FB}" rel="noopener"><span class="label muted">Facebook</span><b>fb.com/chidaoba</b></a>
       </div>
     </div>
-    <form id="contact-form" class="js-form" data-db="message" data-key="{WEB3FORMS_KEY}" data-done="contact-done" novalidate>
+    <form id="contact-form" class="js-form stagger" data-db="message" data-key="{WEB3FORMS_KEY}" data-done="contact-done" novalidate>
       <input type="hidden" name="subject" value="New message, chidaoba.com">
       <input type="hidden" name="from_name" value="chidaoba.com">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -862,7 +839,6 @@ def contact():
       <div class="form-foot"><button class="btn btn-primary" type="submit">Send message {arrow()}</button><p class="form-msg" aria-live="polite"></p></div>
     </form>
     <div class="done" id="contact-done" role="status">
-      <p class="label muted"><span class="bar"></span>Sent</p>
       <h3 class="display h-md">Thank you<span class="dot">.</span></h3>
       <p class="body soft">We’ll reply as soon as we can, usually within a few days. For anything urgent, message us on <a href="{WA}" rel="noopener">WhatsApp</a>.</p>
     </div>

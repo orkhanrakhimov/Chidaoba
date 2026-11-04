@@ -3,7 +3,7 @@
   --carbon: #202020;
   --carbon-2: #2B2B2B;
   --carbon-line: #3A3A3A;
-  --chalk: #F2F1EC;
+  --chalk: #F1F0ED;
   --chalk-2: #E6E4DC;
   --chalk-line: #D6D3CA;
   --red: #B32632;
@@ -1670,3 +1670,132 @@ html[lang="ka"] :is(.ptile-body p,.cf-grid p,.pillars p,.details p,.gx-know p,.f
 html[lang="ka"] .lead{font-size:clamp(19px,1.7vw,23px)}
 html[lang="ka"] :is(.stat b,.ch-stats b){font-weight:400;letter-spacing:0}
 html{overflow-x:clip}
+
+/* =====================================================================
+   Taste pass (design-taste-frontend): one type scale, no eyebrows, no hairlines,
+   no outlined boxes, no resting shadows, no glass. Brand colours and rounded corners kept.
+   ===================================================================== */
+:root{
+  --ink:#1E1E1E; --ground:#F2F1EC; --ground-2:#E8E6DF; --ground-3:#DEDBD2;
+  --night:#1E1E1E; --night-2:#2A2A2A; --night-3:#353535; --on-night:#F2F1EC; --on-night-soft:#C9C6BD;
+  --accent:#B5212F;
+  --t-display:clamp(48px,8.4vw,132px); --t-h2:clamp(34px,4.6vw,68px); --t-h3:clamp(21px,1.7vw,26px);
+  --t-lead:clamp(19px,1.5vw,22px); --t-body:17px; --t-small:14px;
+}
+body{font-size:var(--t-body);line-height:1.55;color:var(--ink)}
+.dark{--ink-soft:var(--on-night-soft)}
+/* type scale */
+.h-xl,.cx-hero h1,.hero h1{font-size:var(--t-display);line-height:.92;letter-spacing:-.025em}
+.h-lg{font-size:var(--t-h2);line-height:.96;letter-spacing:-.02em}
+.h-md{font-size:clamp(28px,3vw,44px);line-height:1;letter-spacing:-.015em}
+.lead{font-size:var(--t-lead);line-height:1.45}
+.body,.prose p{font-size:var(--t-body);line-height:1.6}
+.muted,.soft{opacity:1}
+.light .body.muted,.light .muted:not(.label),.section.light p.muted{color:#4A4844}
+.dark .soft,.dark .body.soft,.dark .lead.soft{color:var(--on-night-soft)}
+/* labels: sentence case, readable */
+.label,.cf-grid .label,.pv-body .label,.contact-list .label,.news-label,.foot-col h3,.pcat-h,.ptile-cat,.ch-lists h4,.cc-meta dt,.fit-facts .label,.rf-l{
+  font-size:var(--t-small)!important;letter-spacing:0!important;text-transform:none!important;font-weight:600}
+.label .bar{display:none}
+.hero-top{margin:0}
+.story-h{margin:0 0 clamp(32px,4vw,56px);color:var(--on-night)}
+/* buttons: flat pill, sentence case, no arrows */
+.arr{display:none!important}
+.btn{font-size:16px!important;letter-spacing:0!important;text-transform:none!important;font-weight:600;box-shadow:none!important;min-height:52px}
+.btn-ghost,.dark .btn-ghost{background:var(--night-3)!important;color:var(--on-night)!important;box-shadow:none!important;border:0!important}
+.light .btn-ghost,.section.light .btn-ghost,.alt .btn-ghost,.pv .btn-ghost,.bagd .btn-ghost,.adm .btn-ghost{background:var(--ground-3)!important;color:var(--ink)!important}
+.btn-ghost:hover{filter:brightness(1.08)}
+/* navigation */
+.nav a,.mobile-menu a,.chapters a,.hero-story,.link,.foot-top,.cc-cta,.dept-all,.sport-tile em{letter-spacing:0!important;text-transform:none!important;font-size:15px}
+.nav a{font-weight:500}
+.mobile-menu a{font-size:clamp(28px,7vw,40px)}
+.chapters a b{color:var(--accent);font-weight:600}
+.lang-dd summary,.lang-dd a{letter-spacing:0;text-transform:none}
+/* no hairlines, no outlined boxes: separate by tone */
+.site-head{border-bottom:0!important}
+.section.dark+.section.dark,.section.dark.drop,.invite,.notify-sec{border-top:0!important}
+.stats,.ch-stats,.ch-stats>div,.stat,.cf-grid,.cf-grid>div,.cf-top,.details,.details>div,.gx-know>div,.pillars>div,.dept-head,.foot-grid,.foot-bottom,.foot-cta,.intro .stats,.news-wrap,.steps>div,.steps,.perks,.perks>div,.ch-lists ul,.ch-lists li,.vbars li,.faq details,.faq summary,.incl li,.timeline li,.cc-meta,.cc-foot,.pgroup-h::after,.prose h2,.chapters,.shop-bar,.why-grid,.disc li,.bring li,.fit-facts,.fit-facts>div{border:0!important}
+.pgroup-h::after{display:none}
+/* tone-step surfaces instead of outlines */
+.ptile,.hpick,.camp-card,.venue-card,.review,.coach,.cmp-wrap,.book-in,.faq-box,.team-cta,.shop-note,.camp-empty,.pv-fit,.msg,.pp-card{border:0!important;box-shadow:none!important}
+.section.light .ptile,.shop-main .ptile,.hpick{background:#FBFAF7}
+.ptile:hover,.hpick:hover{background:#fff}
+.ptile-art,.hpick-art,.pv-art,.bag-art,.pp-art{background:var(--ground-2)}
+.sport-tile,.sport-pick button,.who-btn{border:0!important;box-shadow:none!important}
+.who-btn:hover{box-shadow:none;transform:translateY(-2px)}
+.chips li,.pill,.news-int span,.sbar .shop-tabs button,.disc-tabs button:not(.sport-pick button),.sched-tabs button,.prow-btn,.who-sel select,.cal a,.cal button,.stepper,.pv-opts button,.socials a{border:0!important;box-shadow:none!important}
+.dark .chips li,.dark .pill,.dark .news-int span,.dark .socials a{background:var(--night-3)}
+.light .chips li,.section.light .chips li,.prow-btn,.who-sel select,.stepper,.pv-opts button,.light .news-int span{background:var(--ground-2)}
+.news-int input:checked+span{background:var(--on-night);color:var(--ink)}
+.light .news-int input:checked+span{background:var(--ink);color:var(--on-night)}
+.news-row,.foot-news .news-row{border:0!important;background:var(--night-3)}
+.light .news-row{background:var(--ground-2)}
+.shop-search input,.rf input,.rf textarea,.rf select,.field input,.field textarea,.field select{border-color:transparent!important;background:var(--ground-2)}
+.dark .field input,.dark .field textarea,.dark .field select,.dark .rf input,.dark .rf textarea,.dark .rf select{background:var(--night-2)}
+/* stats and lists: tone rows instead of lines */
+.ch-lists li{padding:14px 16px!important;border-radius:12px}
+.ch-lists li:nth-child(odd){background:var(--ground-2)}
+.ch-lists ul{display:grid;gap:2px}
+.cf-grid{gap:2px!important;background:transparent}
+.cf-grid>div{background:var(--ground-2);border-radius:14px;padding:22px!important}
+.cf-top{background:var(--ground-2);padding:28px!important;border-radius:var(--r-card)}
+.details>div,.gx-know>div{background:rgba(0,0,0,.04);border-radius:14px;padding:22px!important}
+.pillars>div{background:var(--ground-2);border-radius:14px;padding:24px!important}
+.dark .pillars>div{background:var(--night-2)}
+.stats{gap:16px}
+.stats .stat,.ch-stats>div{background:var(--ground-2);border-radius:var(--r-card);padding:24px!important}
+.foods{border:0!important;gap:2px;background:transparent}
+.food{background:var(--night-2);border:0!important;border-radius:14px}
+/* no resting shadows, no glass */
+.lang-menu{box-shadow:none}
+.lang-dd[open] .lang-menu{box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.shop-bar{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--ground)!important;box-shadow:none!important}
+.shop-bar.stuck{box-shadow:0 8px 24px rgba(0,0,0,.08)!important}
+/* nothing readable under 13px */
+.ptile-art span.ptile-aud,.ptile-aud,.ptile-meta,.dots+span,.cc-status,.vc-axis,.prow-n,.sub-h .cnt,.news-consent span,.consent span,.foot-copy,.foot-bottom,.int-chip,.nav-n{font-size:13px!important;letter-spacing:0!important;text-transform:none!important}
+.ptile-aud{font-weight:600}
+/* footer: the name returns at full width, links in sentence case */
+.foot-col a{font-size:16px}
+.foot-bottom{text-transform:none!important}
+:root{--grey:#5E6266}
+.dark{--grey:#A3A7AB}
+.site-foot{--grey:#A3A7AB;border-top:0!important}
+.foot-col h3,.foot-copy,.foot-bottom{color:#A3A7AB!important}
+.wa-float{box-shadow:none!important;background:var(--accent)!important;color:#fff!important;text-transform:none!important;letter-spacing:0!important;font-size:15px!important;border:0!important}
+.wa-float svg{color:#fff}
+.skip{box-shadow:none!important}
+.sec-head .body,.sec-head .lead{max-width:46ch}
+:root{--ground:#F1F0ED}
+.feature,.lang-menu{border:0!important}
+.feature{background:var(--night-2)}
+/* taste pass, round 2 */
+.lang-menu a.on{box-shadow:none!important;color:var(--accent)}
+.scrub-item .n,.chapters a b,.steps .n{display:none!important}
+.scrub-item{grid-template-columns:1fr!important}
+.scrub-list .scrub{font-size:clamp(20px,1.9vw,26px)!important}
+.vc-place{margin:4px 0 0!important;font-size:15px;color:var(--on-night-soft)}
+.who-btn span{color:#4A4844!important}
+.shop-q-l{text-transform:none!important;letter-spacing:0!important;font-size:16px!important;color:var(--on-night-soft)!important}
+.prow .ptile-body p,.ptile-body p{font-size:15px}
+.prow .ptile-meta,.ptile-meta{font-size:14px!important}
+.field label,.field>label,.rf span,label.consent span,.news-consent span{text-transform:none!important;letter-spacing:0!important;font-size:14px!important}
+.foot-copy,.foot-bottom,.foot-bottom a{font-size:14px!important}
+.faq,.faq-list,.faq details,.contact-list,.contact-list a{border:0!important}
+.faq details{background:var(--ground-2);border-radius:14px;margin-bottom:2px;padding:0 20px}
+.contact-list{display:grid;gap:2px}
+.contact-list a{background:var(--night-2);border-radius:14px;padding:18px 20px!important}
+.alt,.section.alt{background:#E7E6E2!important}
+.cf-grid p,.pillars p,.details p,.gx-know p,.food p{font-size:16px!important}
+@media (max-width:560px){.h-lg{font-size:28px!important}.h-xl,.cx-hero h1{font-size:40px}}
+.camps-hero .lead,.page-hero .lead{max-width:40em}
+.prose p,.camp-desc p,.cf-top p{max-width:68ch}
+@media (max-width:760px){.shop-status{display:none}}
+/* taste pass round 3 */
+.lang-menu a.on{color:var(--chalk)!important;font-weight:700}
+.lang-menu a.on b{color:var(--chalk)}
+.invite-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(32px,6vw,96px);align-items:start}
+.invite-grid .news-wrap{margin-top:0;padding-top:0}
+@media (max-width:860px){.invite-grid{grid-template-columns:minmax(0,1fr)}}
+.kn-h{font-size:22px;font-weight:800;line-height:1.2;letter-spacing:-.01em;margin:0}
+.gx-know .kn-h+p{margin-top:10px}
+.contact-list .label,#contact-form .field label,#contact-form .consent span{font-size:16px!important}
