@@ -1660,3 +1660,11 @@ html[lang="ka"] :is(.foot-col h3,.pcat-h,.ptile-cat,.ch-lists h4,.news-label){fo
 html[lang="ka"] :is(.shop-tabs button,.who-sel select,.lang-dd summary,.dept-all,.chips li,.news-int span,.cc-status,.pill){font-size:14px}
 html[lang="ka"] .ch-lists li b{font-size:17px}
 html[lang="ka"] .ptile-art span.ptile-aud{font-size:13px;letter-spacing:.04em}
+/* Georgian version: Gremi for all Georgian text (English words and numbers keep Archivo) */
+html[lang="ka"]{--font:'Gremi Web','Archivo','Noto Sans Georgian',system-ui,-apple-system,sans-serif}
+html[lang="ka"] body,html[lang="ka"] body *:not(svg):not(svg *){font-family:var(--font-ka)!important;font-synthesis:none}
+html[lang="ka"] :is(p,li,dd,.lead,.body,.note,.news-sub,.ptile-body p,.cc-sum,.food p,.cf-grid p,.pillars p,.details p){letter-spacing:.02em;line-height:1.6}
+html[lang="ka"] .body{font-size:17px}
+html[lang="ka"] :is(.note,.news-sub,.news-consent,.consent,.form-msg){font-size:14px}
+html[lang="ka"] :is(.ptile-body p,.cf-grid p,.pillars p,.details p,.gx-know p,.food p,.cc-sum,.stat span,.ch-stats span,.ch-lists li span,.prow-n,.ptile-meta,.hpick span){font-size:15px}
+html[lang="ka"] .lead{font-size:clamp(19px,1.7vw,23px)}
