@@ -16,6 +16,8 @@ The owner's decisions below override the skill's house rules where they conflict
 - Shop: Men / Women / Kids kept separate, WhatsApp ordering only. Camps: no deposits.
 - Do not use the Mulakhi venue photos on Why Georgia. Community and Journal stay hidden.
 When a skill rule would change one of these, propose it to the owner with a before/after instead of applying it.
+These overrides are also written into the skill itself (SKILL.md, "CHIDAOBA project overrides"), with the inspector's `--allow` list.
+Current design: the dense-tiles board (seed 346407868), notes in `.taste-skill/notes.md` (local only).
 
 ## Before saying "done"
 Check every touched page at 1400px and 390px, in English and Georgian: screenshots looked at, no sideways scrolling,

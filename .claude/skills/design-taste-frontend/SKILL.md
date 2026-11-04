@@ -41,6 +41,32 @@ In the commands below `<skill>` is this skill's folder. Run them from the projec
 working files land in `.taste-skill/` there. The scripts need Node 22+ and an installed Chrome, Edge
 or Chromium, and install nothing. `assets.mjs` also needs network access; it uses no API keys.
 
+## CHIDAOBA project overrides (read first)
+
+This copy of the skill is tuned for the CHIDAOBA site. These owner decisions win over the house rules
+and the dealt sheet wherever they disagree. Do not ask again about them; apply them.
+
+| Skill rule | CHIDAOBA override |
+| --- | --- |
+| Square or 6–10px corners | Soft corners "like Apple products": one panel radius of 18px (12px on a phone), controls fully round. |
+| No index numbering | The owner's section numbers ("01 · Our roots", "01 · ჩვენი ფესვები") are copy and stay, as part of the section heading. Never as an eyebrow above it. |
+| Dealt palette | Brand colours only: carbon #1E1E1E, chalk #F2F1EC, red #B5212F, plus tone steps of carbon and chalk. Red is for the action and one other thing per screen. |
+| Dealt or two typefaces | Latin: Schibsted Grotesk, self-hosted (`assets/fonts/schibsted.woff`). Georgian: Gremi Web (`assets/fonts/gremi-web.woff`) for every Georgian letter, digit and basic punctuation. Counts as one face per language. |
+| Find real pictures | The workspace has no network for open collections. Draw the subject in code (the ჭ mark, gear drawings, mat, mountains) and leave photo slots ready; ask the owner for photographs. Never the Mulakhi venue photos on Why Georgia. |
+| Brand name | CHIDAOBA only, never "CHIDAOBA CULTURE". |
+| Copy | Plain and professional. No slogans, no long dashes, no source lists, no repeated facts. |
+| Fixed content | Shop: Men / Women / Kids separate, WhatsApp ordering only. Camps: no deposits. Community and Journal stay hidden. |
+
+Run the inspector with the owner's allowances:
+
+```bash
+node <skill>/scripts/inspect.mjs <page> --allow numbering,font-count,radius-mix,few-pictures,no-real-pictures,no-footage,font-fallback
+```
+
+`few-pictures`, `no-real-pictures` and `no-footage` are allowed only until the owner supplies photographs;
+say so in every report. Build: `python3 _src/build.py`, bump `ASSET_V` for CSS/JS changes, check EN and
+`/ka/` at 1400 and 390.
+
 ## Page or app screen
 
 Decide first which of two kinds of work this is.
