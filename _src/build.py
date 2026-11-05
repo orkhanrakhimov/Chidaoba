@@ -165,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "61"
+ASSET_V = "62"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -390,6 +390,8 @@ def camps():
         ("Can I bring my team?", "Yes. Camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
     fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
+    faq_ld = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}, ensure_ascii=False) + '</script>'
     tabs = [("all", "All camps", "Every sport"), ("bjj", "BJJ &amp; Grappling", "Gi and no-gi"), ("wrestling", "Wrestling", "Freestyle &amp; Greco-Roman"), ("judo", "Judo", "Throws and groundwork")]
     tb = "".join(f'<button type="button" data-f="{k}" aria-pressed="{"true" if k == "all" else "false"}"><b>{t}</b><span>{sub}</span><em data-n="{k}"></em></button>' for k, t, sub in tabs)
     return f"""
@@ -461,7 +463,7 @@ def camps():
     <div class="sec-head" style="margin-bottom:24px">
       <h2 class="display h-md">FAQ</h2>
     </div>
-    <div class="faq">{fq}</div>
+    <div class="faq">{fq}</div>{faq_ld}
     <div class="team-cta">
       <div><h3 class="display h-md">Want a camp for your club?</h3>
       <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
@@ -878,21 +880,44 @@ def contact():
   </div>
 </section>"""
 
+LLMS = """# CHIDAOBA
+
+> CHIDAOBA is a sports brand from Georgia (the country), named after chidaoba, the traditional Georgian wrestling listed by UNESCO in 2018. It runs BJJ, grappling, wrestling and judo training camps in Georgia and sells BJJ gis, judogi, wrestling singlets and shoes, rashguards, fight shorts and training gear, ordered on WhatsApp. The site is in English and Georgian.
+
+## Camps
+- [Training camps in Georgia](https://chidaoba.com/camps/): BJJ and grappling, freestyle and Greco-Roman wrestling, and judo camps with local coaches, accommodation and meals. Requests are free, with no deposit.
+- [BJJ and Grappling Camp, Spring 2027](https://chidaoba.com/camps/camp/?c=bjj-grappling-spring-2027): in Svaneti, Georgia, at a mountain sports complex with an 800 m2 training hall, limited to 40 people. Dates and prices to be announced.
+- [Venue: Ilia Gabliani Sports Complex](https://chidaoba.com/camps/venue/?v=mulakhi): Mulakhi, Upper Svaneti. Training hall with tatami, 11 rooms for 40 people, three meals a day.
+
+## Shop
+- [Shop](https://chidaoba.com/shop/): BJJ gis and belts (men, women, kids), judogi and judo belts, wrestling singlets, shoes, headgear and knee pads, rashguards, fight shorts, spats and compression wear, bags and training gear, hoodies and T-shirts. Ordered on WhatsApp.
+
+## Georgia and the sport
+- [Why train in Georgia](https://chidaoba.com/georgia/): Georgia's Olympic, world and European champions in judo and wrestling, the growing BJJ scene, mountains, sea, food and practical travel information.
+- [About Chidaoba](https://chidaoba.com/culture/): the history and rules of chidaoba, Georgian folk wrestling, and why the brand carries its name.
+
+## Contact
+- Email: chidaobaculture@gmail.com
+- WhatsApp: +995 595 606 670
+- Instagram: https://www.instagram.com/chidaobaculture/
+- Georgian version of the site: https://chidaoba.com/ka/
+"""
+
 PAGES = [
     ("/", "index.html", "CHIDAOBA | Georgian wrestling culture, training camps and gear",
      "Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.", home),
-    ("/georgia/", "georgia/index.html", "Why Georgia | Training camps in Georgia, CHIDAOBA",
+    ("/georgia/", "georgia/index.html", "Why Train in Georgia: Judo, Wrestling and BJJ | CHIDAOBA",
      "Why train in Georgia: a wrestling culture centuries old, Olympic and world champions, booming BJJ, the Caucasus mountains, the Black Sea and the Georgian table.", georgia),
     ("/culture/", "culture/index.html", "Culture | Chidaoba and the CHIDAOBA brand",
      "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
-    ("/camps/", "camps/index.html", "Camps & Events | CHIDAOBA",
-     "Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo. Choose your sport and send a request in a minute.", camps),
+    ("/camps/", "camps/index.html", "BJJ, Wrestling and Judo Camps in Georgia | CHIDAOBA",
+     "Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo, with local coaches, accommodation and meals. Next camp: BJJ and grappling, spring 2027, Svaneti.", camps),
     ("/camps/camp/", "camps/camp/index.html", "Camp | CHIDAOBA",
      "Camp details, packages, schedule and registration | CHIDAOBA.", camp_detail),
     ("/camps/venue/", "camps/venue/index.html", "Venue | CHIDAOBA",
      "Where we train: Ilia Gabliani Sports Complex in Mulakhi, Svaneti. Training hall, rooms for 40, meals, pool and mountain views.", venue_page),
     ("/admin/", "admin/index.html", "Admin | CHIDAOBA", "Admin.", admin),
-    ("/shop/", "shop/index.html", "Shop | CHIDAOBA", "Rashguards, fight shorts, singlets, BJJ gis, judo kimonos, gear and lifestyle pieces from CHIDAOBA.", shop),
+    ("/shop/", "shop/index.html", "BJJ Gis, Rashguards and Wrestling Gear | CHIDAOBA Shop", "BJJ gis and belts, judogi, wrestling singlets and shoes, rashguards, fight shorts and training gear for men, women and kids. Order on WhatsApp, delivery in Georgia.", shop),
     ("/contact/", "contact/index.html", "Contact | CHIDAOBA",
      "Contact CHIDAOBA: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
     ("/privacy/", "privacy/index.html", "Privacy | CHIDAOBA", "Privacy information for chidaoba.com.", privacy),
@@ -935,6 +960,14 @@ if __name__ == "__main__":
             multi.append(path)
             for l, t in trs.items():
                 d = t.page(doc, path)
+                if l == "ka":  # FAQ data in Georgian, matching the visible answers
+                    def _faq(m):
+                        dd = json.loads(m.group(1))
+                        if dd.get("@type") == "FAQPage":
+                            for q in dd["mainEntity"]:
+                                q["name"] = _ka.get(q["name"], q["name"]); q["acceptedAnswer"]["text"] = _ka.get(q["acceptedAnswer"]["text"], q["acceptedAnswer"]["text"])
+                        return '<script type="application/ld+json">' + json.dumps(dd, ensure_ascii=False) + '</script>'
+                    d = re.sub(r'<script type="application/ld\+json">(.*?)</script>', _faq, d, flags=re.S)
                 if l == "ka":  # Georgian link previews
                     d = re.sub(r'/assets/img/og-(\w+)\.png', r'/assets/img/og-\1-ka.png', d)
                     d = d.replace('<meta property="og:locale" content="en_US">\n<meta property="og:locale:alternate" content="ka_GE">',
@@ -952,8 +985,15 @@ if __name__ == "__main__":
         miss = sorted(t.missing)
         json.dump(miss, open(f"/tmp/i18n-missing-{l}.json", "w"), ensure_ascii=False, indent=0)
         print(l, "missing", len(miss))
-    sm = "".join(f"<url><loc>https://chidaoba.com{pre}{p}</loc></url>" for p in multi if p not in ("/camps/camp/",) for pre in ("", "/ka"))
+    import datetime
+    today = datetime.date.today().isoformat()
+    urls = [pre + p for p in multi if p not in ("/camps/camp/",) for pre in ("", "/ka")]
+    urls += [pre + "/camps/camp/?c=bjj-grappling-spring-2027" for pre in ("", "/ka")]
+    sm = "".join(f"<url><loc>https://chidaoba.com{html.escape(u)}</loc><lastmod>{today}</lastmod></url>" for u in urls)
     open(os.path.join(ROOT, "sitemap.xml"), "w").write(
         f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>\n')
-    open(os.path.join(ROOT, "robots.txt"), "w").write("User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: https://chidaoba.com/sitemap.xml\n")
+    bots = ["Googlebot", "Bingbot", "GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-SearchBot", "PerplexityBot", "Google-Extended", "Applebot"]
+    open(os.path.join(ROOT, "robots.txt"), "w").write("".join(f"User-agent: {b}\nAllow: /\nDisallow: /admin/\n\n" for b in bots) +
+        "User-agent: *\nAllow: /\nDisallow: /admin/\n\nSitemap: https://chidaoba.com/sitemap.xml\n")
+    open(os.path.join(ROOT, "llms.txt"), "w", encoding="utf-8").write(LLMS)
     print("built", len(PAGES), "pages x", 1 + len(trs), "languages")
