@@ -165,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "69"
+ASSET_V = "62"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -960,8 +960,6 @@ if __name__ == "__main__":
             multi.append(path)
             for l, t in trs.items():
                 d = t.page(doc, path)
-                if l == "ka":  # Georgian pages load MS Block first
-                    d = d.replace('<link rel="preload" href="/assets/fonts/archivo-latin.woff2"', '<link rel="preload" href="/assets/fonts/ms-block.woff2"', 1).replace('archivo-latin.woff2" as="font" type="font/woff2"', 'archivo-latin.woff2" as="font" type="font/woff2"')
                 if l == "ka":  # FAQ data in Georgian, matching the visible answers
                     def _faq(m):
                         dd = json.loads(m.group(1))

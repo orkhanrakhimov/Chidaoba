@@ -1653,8 +1653,8 @@ html[lang="ka"] .hero h1.h-xl{font-size:clamp(34px,5.4vw,84px);max-width:none}@m
 .camp-main,.camp-side{min-width:0}.cmp-wrap{max-width:100%;overflow-x:auto}
 @media (max-width:1000px){.camp-grid{grid-template-columns:minmax(0,1fr)!important}}.camp-main{grid-template-columns:minmax(0,1fr)}
 /* Georgian display font: headings, menu, buttons, labels */
-@font-face{font-family:'MS Block';src:url(/assets/fonts/ms-block.woff2) format('woff2');font-display:swap}
-html[lang="ka"]{--font-ka:'MS Block','Archivo','Noto Sans Georgian',system-ui,sans-serif}
+@font-face{font-family:'Gremi Web';src:url(/assets/fonts/gremi-web.woff) format('woff');font-display:swap;unicode-range:U+10A0-10FF,U+1C90-1CBF,U+2D00-2D2F,U+0020-0021,U+0025,U+0028-0029,U+002C-002E,U+0030-003B,U+003F,U+00A0}
+html[lang="ka"]{--font-ka:'Gremi Web','Archivo','Noto Sans Georgian',system-ui,sans-serif}
 html[lang="ka"] :is(.display,h1,h2,h3,h4,.label,.btn,.nav a,.mobile-menu a,.chapters a,.lang-dd summary,.lang-dd a,.pcat-h,.prow-head h3,.dept-head h2,.who-btn b,.sport-tile b,.sport-pick button b,.news-label,.foot-col h3,.foot-col a,.foot-top,.ptile h3,.ptile-cat,.ptile-aud,.shop-tabs button,.who-sel select,.dept-all,.ch-lists h4,.ch-lists li b,.cf-grid b,.cf-top b,.pillars b,.details b,.gx-know b,.food h3,.steps h3,.chips li,.news-int span,.hpick b,.cc-cta,.cc-status,.pill,.camp-card h3,.pv-l,.pv-guide,.bagd h2,.faq summary,.disc-tabs button,.sched-tabs button,.hero-story,.link){font-family:var(--font-ka);font-weight:400;font-synthesis:none;letter-spacing:.02em}
 html[lang="ka"] :is(.label,.chapters a,.pcat-h,.ptile-cat,.ptile-aud,.foot-col h3,.ch-lists h4,.news-label){letter-spacing:.08em}
 html[lang="ka"] .nav a{font-size:15px;letter-spacing:.03em}
@@ -1665,8 +1665,8 @@ html[lang="ka"] :is(.foot-col h3,.pcat-h,.ptile-cat,.ch-lists h4,.news-label){fo
 html[lang="ka"] :is(.shop-tabs button,.who-sel select,.lang-dd summary,.dept-all,.chips li,.news-int span,.cc-status,.pill){font-size:14px}
 html[lang="ka"] .ch-lists li b{font-size:17px}
 html[lang="ka"] .ptile-art span.ptile-aud{font-size:13px;letter-spacing:.04em}
-/* Georgian version: MS Block for all text, Georgian, Latin and numbers (Archivo only for symbols MS Block lacks) */
-html[lang="ka"]{--font:'MS Block','Archivo','Noto Sans Georgian',system-ui,-apple-system,sans-serif}
+/* Georgian version: Gremi for all Georgian text (English words and numbers keep Archivo) */
+html[lang="ka"]{--font:'Gremi Web','Archivo','Noto Sans Georgian',system-ui,-apple-system,sans-serif}
 html[lang="ka"] body,html[lang="ka"] body *:not(svg):not(svg *){font-family:var(--font-ka)!important;font-synthesis:none}
 html[lang="ka"] :is(p,li,dd,.lead,.body,.note,.news-sub,.ptile-body p,.cc-sum,.food p,.cf-grid p,.pillars p,.details p){letter-spacing:.02em;line-height:1.6}
 html[lang="ka"] .body{font-size:17px}
@@ -1843,59 +1843,3 @@ html[lang="ka"] .btn{padding-top:0;padding-bottom:0}
 .co-camps{list-style:none;margin:0;padding:0;display:grid;gap:6px}.co-camps a{color:#1E1E1E;font-weight:600}
 html[lang="ka"] .co-tabs button{font-size:17px!important;letter-spacing:.05em}
 @media (max-width:600px){.co-grid{grid-template-columns:1fr}.co-dlg-in{padding:22px}}
-/* MS Block is a wide block face: no extra tracking, display sizes scaled to it, words never split */
-html[lang="ka"] body,html[lang="ka"] body *:not(svg):not(svg *){letter-spacing:0!important;word-break:normal;overflow-wrap:break-word;hyphens:none}
-html[lang="ka"] .h-xl{font-size:clamp(30px,6.2vw,96px)!important;line-height:1.05}
-html[lang="ka"] .h-lg{font-size:clamp(26px,4.2vw,64px)!important;line-height:1.08}
-html[lang="ka"] .h-md{font-size:clamp(22px,2.6vw,40px)!important;line-height:1.12}
-html[lang="ka"] :is(.btn,.hero-story,.link,.dept-all,.shop-tabs button,.who-sel select,.lang-dd summary,.chips li,.pill,.news-int span,.cc-cta,.cc-status,.sport-pick button b,.who-btn b,.disc-tabs button,.sched-tabs button,.foot-top,.pv-opts button,.prow-btn,.co-tabs button){font-size:15px!important;line-height:1.2}
-html[lang="ka"] .btn{white-space:nowrap;padding-left:22px;padding-right:22px}
-html[lang="ka"] :is(.lead,.scrub){font-size:clamp(16px,1.3vw,20px)!important;line-height:1.5}
-html[lang="ka"] :is(.stat b,.ch-stats b,.details b,.facts b,.v-facts b,.cc-price b){font-size:clamp(28px,3.4vw,56px)!important;white-space:nowrap}
-html[lang="ka"] body{font-size:15px}
-html[lang="ka"] :is(p,li,dd,.body){line-height:1.6}
-@media (max-width:600px){
-  html[lang="ka"] .h-xl{font-size:clamp(26px,8vw,40px)!important}
-  html[lang="ka"] .h-lg{font-size:clamp(22px,6.6vw,32px)!important}
-  html[lang="ka"] .h-md{font-size:clamp(20px,5.6vw,26px)!important}
-  html[lang="ka"] :is(.stat b,.ch-stats b,.details b,.facts b,.v-facts b){font-size:clamp(24px,7.4vw,34px)!important}
-  html[lang="ka"] .btn{white-space:normal;text-align:center;min-height:52px;height:auto;padding-top:12px;padding-bottom:12px}
-}
-html[lang="ka"] .hero h1,html[lang="ka"] .hero h1.h-xl,html[lang="ka"] .cx-hero h1{font-size:clamp(26px,4.6vw,72px)!important;line-height:1.12!important;max-width:none}
-html[lang="ka"] .hero h1 .ln{white-space:normal}
-@media (min-width:700px){html[lang="ka"] .hero h1 .ln{white-space:nowrap}}
-html[lang="ka"] :is(h1,h2,h3,h4,.display,.camp-card h3){line-height:1.15!important}
-html[lang="ka"] .camp-card h3{font-size:clamp(18px,1.6vw,22px)!important}
-html[lang="ka"] .cc-meta div{grid-template-columns:auto 1fr;gap:14px}
-html[lang="ka"] .ln{padding-bottom:.08em}
-@media (max-width:600px){html[lang="ka"] .hero h1,html[lang="ka"] .hero h1.h-xl,html[lang="ka"] .cx-hero h1{font-size:clamp(22px,7.4vw,32px)!important}}
-html[lang="ka"] .foot-cta h2{font-size:clamp(24px,4.4vw,64px)!important}
-html[lang="ka"] .who-btn{min-width:0}
-html[lang="ka"] .who-btn b{font-size:clamp(15px,1.5vw,20px)!important}
-html[lang="ka"] .contact-list b{font-size:clamp(15px,1.4vw,19px)!important;overflow-wrap:anywhere}
-html[lang="ka"] :is(.prose a,.privacy a){overflow-wrap:anywhere}
-@media (max-width:600px){
-  html[lang="ka"] .h-lg{font-size:clamp(20px,5.6vw,28px)!important}
-  html[lang="ka"] .foot-cta h2{font-size:clamp(20px,6vw,28px)!important}
-  html[lang="ka"] .who{grid-template-columns:1fr}
-  html[lang="ka"] .news-row{flex-wrap:wrap;border-radius:20px!important;gap:6px}
-  html[lang="ka"] .news-row input{flex:1 1 100%;min-width:0}
-  html[lang="ka"] .news-row .btn{flex:1 1 100%;white-space:normal}
-  html[lang="ka"] .hpick b{font-size:14px!important}
-}
-@media (max-width:600px){html[lang="ka"] .foot-grid{grid-template-columns:1fr 1fr;gap:28px 16px}html[lang="ka"] .foot-col a{font-size:14px!important}html[lang="ka"] .contact-list b{font-size:14px!important}}
-html[lang="ka"] .h-lg{font-size:clamp(20px,3.4vw,52px)!important}
-html[lang="ka"] :is(h1,h2,h3){overflow-wrap:anywhere}
-html[lang="ka"] :is(.why-grid,.intro,.reg,.sec-head,.stats,.ch-stats)>*{min-width:0}
-html[lang="ka"] #contact-form{grid-template-columns:repeat(2,minmax(0,1fr))}
-html[lang="ka"] .foot-col a{white-space:normal}
-@media (max-width:600px){html[lang="ka"] :is(.stats,.ch-stats){grid-template-columns:1fr!important}html[lang="ka"] #contact-form{grid-template-columns:minmax(0,1fr)}html[lang="ka"] .h-lg{font-size:clamp(20px,5.6vw,28px)!important}}
-html[lang="ka"] :is(.gx-split,.home-picks,.news,.news-consent,.foot-news,.cx-split,.split)>*{min-width:0}
-html[lang="ka"] .foot-col a{font-size:14px!important}@media (max-width:600px){html[lang="ka"] .foot-col a{overflow-wrap:anywhere}html[lang="ka"] .foot-grid>*{min-width:0}}
-@media (min-width:901px){html[lang="ka"] .foot-grid{grid-template-columns:minmax(0,1.4fr) auto auto auto!important;column-gap:48px}}
-html[lang="ka"] .ch-stats b{font-size:clamp(24px,2.6vw,44px)!important}
-html[lang="ka"] main :is(div,li,article,section,figure,a,dl)>*:not(.btn):not(svg):not(img):not(button):not(input):not(select){min-width:0}
-html[lang="ka"] :is(.stat b,.details b,.facts b,.v-facts b){font-size:clamp(24px,2.5vw,38px)!important}
-html[lang="ka"] :is(h1,h2,h3,h4,.display,.camp-card h3){line-height:1.25!important}
-html[lang="ka"] :is(.ptile-cat,.ptile-meta,.ptile-aud){font-size:12px!important}
-@media (max-width:600px){html[lang="ka"] :is(.stat b,.details b,.facts b,.v-facts b){font-size:clamp(24px,7vw,32px)!important}}
