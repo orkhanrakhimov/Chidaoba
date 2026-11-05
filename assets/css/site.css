@@ -1843,3 +1843,13 @@ html[lang="ka"] .btn{padding-top:0;padding-bottom:0}
 .co-camps{list-style:none;margin:0;padding:0;display:grid;gap:6px}.co-camps a{color:#1E1E1E;font-weight:600}
 html[lang="ka"] .co-tabs button{font-size:17px!important;letter-spacing:.05em}
 @media (max-width:600px){.co-grid{grid-template-columns:1fr}.co-dlg-in{padding:22px}}
+/* Gremi is a narrow capital face: Georgian small text gets a minimum size and a little air */
+html[lang="ka"] body{font-size:17px}
+html[lang="ka"] main :is(p,li,dd,dt,label,figcaption,small,span,a,em,td,th):not(.display):not(h1 *):not(h2 *):not(h3 *){letter-spacing:.04em}
+html[lang="ka"] .nav a{font-size:17px!important;letter-spacing:.06em!important}
+html[lang="ka"] :is(.label,dt,.news-label,.news-consent,.news-consent span,.foot-col h3,.foot-grid h3,h4,.cc-status,.ptile-cat,.chips li){font-size:15px!important;letter-spacing:.05em!important}
+html[lang="ka"] .ptile-aud{font-size:14px!important}
+/* Gremi: every small Georgian text at 16px or more (badges 14px) */
+html[lang="ka"] :is(.book-wa,.lang-menu a,.map-load,.cc-meta dd,.cc-meta dt,.ch-lists h4,.news-label,.news-sub,.news-consent,.news-consent span,.news-consent a,.cc-sum,.label,.ptile-body p,.vc-body p,.vc-place,.shop-count,.shop-how-s,.cc-spots span,.stat span,.stats span,.ch-stats span,.vc-facts span,.v-facts span,.who-btn span,.hpick span,.ptile-meta span,.foot-col h3,.foot-col a,.incl h3,.menu-grid b,.menu-grid p,.map-top span,.perks span,.disc-tabs button span,.chapters a,.co-empty p,.back,ul li span){font-size:16px!important}
+html[lang="ka"] :is(.disc-tabs button em,.ptile-sold,.ptile-aud){font-size:14px!important}
+html[lang="ka"] :is(.label,.ch-lists h4,.foot-col h3,.incl h3,.cc-meta dt){letter-spacing:.06em!important}
