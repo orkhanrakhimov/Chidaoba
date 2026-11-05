@@ -87,7 +87,7 @@
       var s = statsFor(c); if (c.status !== 'cancelled') { tot.people += s.people; tot.booked += s.booked; tot.received += s.received; tot.unpaid += s.unpaid; }
       var pct = c.capacity ? Math.min(100, Math.round(s.people / c.capacity * 100)) : 0;
       var cv = H.cover(c);
-      return '<tr><td class="cam-td">' + (cv ? '<img class="cam-th" src="' + e(cv.thumb) + '" alt="">' : '<span class="cam-th"></span>') + '<div><a href="#edit/' + c.id + '"><b>' + e(c.title) + '</b></a><span class="sub">' + e(H.DISC[c.discipline] || '') + ' · ' + e(H.dateRange(c.start_date, c.end_date)) + '</span></div></td>' +
+      return '<tr><td class="cam-td">' + (cv ? '<img class="cam-th" src="' + e(cv.thumb) + '" alt="">' : '<span class="cam-th"></span>') + '<div><a href="#edit/' + c.id + '"><b>' + e(c.title) + '</b></a><span class="sub">' + e(H.DISC[c.discipline] || '') + ' · ' + e((c.start_date ? H.dateRange(c.start_date, c.end_date) : (c.dates_note || H.dateRange()))) + '</span></div></td>' +
         '<td><span class="pill-s s-' + c.status + '">' + STATUS[c.status] + '</span></td>' +
         '<td><b>' + s.people + (c.capacity ? ' / ' + c.capacity : '') + '</b>' + (c.capacity ? '<i class="bar"><b style="width:' + pct + '%"></b></i>' : '') + (s.wl ? '<span class="sub">+' + s.wl + ' waitlist</span>' : '') + '</td>' +
         '<td>' + money(s.booked, c.currency) + '</td><td>' + money(s.received, c.currency) + (s.unpaid ? '<span class="sub warn">' + s.unpaid + ' new request' + (s.unpaid > 1 ? 's' : '') + '</span>' : '') + '</td>' +
@@ -215,9 +215,10 @@
       sec('Basics', '<div class="g2">' + inp('title', 'Title', c.title, 'text', ' required') + inp('slug', 'Web address (auto)', c.slug, 'text', ' pattern="[a-z0-9-]{3,80}"') +
         sel('discipline', 'Discipline', c.discipline, H.DISC) + sel('status', 'Status', c.status, STATUS) +
         inp('start_date', 'Start date', c.start_date, 'date') + inp('end_date', 'End date', c.end_date, 'date') +
+        inp('dates_note', 'Dates text until exact dates are set (e.g. Spring 2027)', c.dates_note || '') +
         inp('city', 'City', c.city) + inp('country', 'Country', c.country) + inp('venue', 'Venue', c.venue) + inp('level', 'Level', c.level) +
         '<label class="chk"><input type="checkbox" name="featured"' + (c.featured ? ' checked' : '') + '> Feature this camp</label></div>' +
-        '<div class="g2 ka-g">' + kaInp('title', 'Title', K.title) + kaInp('level', 'Level', K.level) + '</div>' +
+        '<div class="g2 ka-g">' + kaInp('title', 'Title', K.title) + kaInp('level', 'Level', K.level) + kaInp('dates_note', 'Dates text', K.dates_note) + '</div>' +
         area('summary', 'Card summary (1–2 sentences)', c.summary) + kaInp('summary', 'Card summary', K.summary, true) +
         area('description', 'Full description (blank line = new paragraph)', c.description) + kaInp('description', 'Full description', K.description, true)) +
 
@@ -353,6 +354,7 @@
     var lines = function (v) { return v.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); };
     var o = { id: c.id };
     ['title', 'slug', 'discipline', 'status', 'city', 'country', 'venue', 'level', 'summary', 'description', 'currency', 'address', 'map_url', 'venue_info'].forEach(function (k) { o[k] = E[k].value.trim(); });
+    o.dates_note = E.dates_note.value.trim() || null;
     o.venue_key = E.venue_key.value || null; o.cover_url = c.cover_url || null; o.gallery = c.gallery || [];
     ['start_date', 'end_date', 'early_bird_deadline', 'registration_deadline'].forEach(function (k) { o[k] = E[k].value || null; });
     o.capacity = num(E.capacity.value); o.deposit_pct = 0;
@@ -376,15 +378,15 @@
     o.reviews = read(form, 'reviews').filter(function (r) { return r.text; }).map(function (r) { r.rating = r.rating ? +r.rating : null; return r; });
     o.intensity = num(E.intensity.value); o.age_min = num(E.age_min.value); o.age_max = num(E.age_max.value);
     o.fit_for = lines(E.fit_for.value); o.show_urgency = E.show_urgency.checked;
-    o.ka = { title: E.ka_title.value.trim(), level: E.ka_level.value.trim(), summary: E.ka_summary.value.trim(), description: E.ka_description.value.trim(),
+    o.ka = { title: E.ka_title.value.trim(), level: E.ka_level.value.trim(), dates_note: E.ka_dates_note.value.trim(), summary: E.ka_summary.value.trim(), description: E.ka_description.value.trim(),
       venue_info: E.ka_venue_info.value.trim(), fit_for: lines(E.ka_fit_for.value), included: lines(E.ka_included.value), excluded: lines(E.ka_excluded.value) };
 
     var errs = [];
     if (!o.title) errs.push('Add a title.');
     if (!/^[a-z0-9-]{3,80}$/.test(o.slug)) errs.push('Web address: 3+ lowercase letters, numbers or dashes.');
     if (o.status === 'published') {
-      if (!o.start_date) errs.push('Published camps need a start date.');
-      if (!o.packages.length || o.packages.some(function (p) { return p.price == null; })) errs.push('Published camps need at least one package with a price.');
+      if (!o.start_date && !o.dates_note) errs.push('Published camps need a start date, or a dates text such as Spring 2027.');
+      if (o.packages.some(function (p) { return p.price == null; })) errs.push('Every package needs a price.');
     }
     if (o.end_date && o.start_date && o.end_date < o.start_date) errs.push('End date is before start date.');
     if (o.age_min && o.age_max && o.age_max < o.age_min) errs.push('Maximum age is below minimum age.');

@@ -55,7 +55,7 @@
       (cv ? '<div class="cc-img"><img src="' + e(cv.thumb) + '" alt="' + e(cv.alt || '') + '" loading="lazy"></div>' : '') + '<div class="cc-body">' +
       '<div class="cc-top"><span class="label">' + e(H.DISC[c.discipline] || '') + '</span><span class="cc-status">' + e(st.label) + '</span></div>' +
       '<h3>' + e(c.title) + '</h3>' +
-      '<dl class="cc-meta"><div><dt>Dates</dt><dd>' + e(H.dateRange(c.start_date, c.end_date)) + (n ? ' · ' + n + ' days' : '') + '</dd></div>' +
+      '<dl class="cc-meta"><div><dt>Dates</dt><dd>' + e((c.start_date ? H.dateRange(c.start_date, c.end_date) : (c.dates_note || H.dateRange()))) + (n ? ' · ' + n + ' days' : '') + '</dd></div>' +
       '<div><dt>Where</dt><dd>' + e([c.city, c.country].filter(Boolean).join(', ') || 'TBA') + '</dd></div>' +
       (c.level ? '<div><dt>Level</dt><dd>' + e(c.level) + '</dd></div>' : '') + '</dl>' +
       (c.summary ? '<p class="cc-sum">' + e(c.summary) + '</p>' : '') +
@@ -232,7 +232,7 @@
       '<a class="back label muted" href="/camps/">← All camps</a>' +
       '<h1 class="display h-lg">' + e(c.title) + '</h1>' +
       '<div class="facts-row">' +
-      fact('Dates', H.dateRange(c.start_date, c.end_date)) + (n ? fact('Duration', n + ' days') : '') +
+      fact('Dates', (c.start_date ? H.dateRange(c.start_date, c.end_date) : (c.dates_note || H.dateRange()))) + (n ? fact('Duration', n + ' days') : '') +
       fact('Where', [c.venue, c.city, c.country].filter(Boolean).join(', ') || 'TBA') + (c.level ? fact('Level', c.level) : '') +
       (s ? fact('Spots', s.left ? s.left + ' of ' + c.capacity + ' left' : 'Full (waitlist open)') : '') +
       '</div><span class="cc-status hero-status st-' + st.key + '">' + e(st.label) + '</span>' + (canBook ? urgency(c, s) : '') + '</div></section>';
