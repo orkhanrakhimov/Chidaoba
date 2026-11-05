@@ -1799,3 +1799,7 @@ body{font-size:var(--t-body);line-height:1.55;color:var(--ink)}
 .kn-h{font-size:22px;font-weight:800;line-height:1.2;letter-spacing:-.01em;margin:0}
 .gx-know .kn-h+p{margin-top:10px}
 .contact-list .label,#contact-form .field label,#contact-form .consent span{font-size:16px!important}
+/* Georgian: larger, airier words inside buttons, tabs and chips (button sizes unchanged) */
+html[lang="ka"] :is(.btn,.hero-story,.link,.dept-all,.shop-tabs button,.who-sel select,.lang-dd summary,.chips li,.pill,.news-int span,.cc-cta,.cc-status,.sport-pick button b,.who-btn b,.disc-tabs button,.sched-tabs button,.foot-top,.pv-opts button,.prow-btn){font-size:19px!important;letter-spacing:.05em!important;line-height:1.1}
+html[lang="ka"] :is(.chips li,.pill,.news-int span,.cc-status,.shop-tabs button,.lang-dd summary,.pv-opts button){font-size:17px!important}
+html[lang="ka"] .btn{padding-top:0;padding-bottom:0}
