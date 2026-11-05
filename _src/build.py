@@ -145,7 +145,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "57"
+ASSET_V = "58"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -401,6 +401,19 @@ def camps():
       <p class="body muted">Training halls, accommodation and meals in one place.</p>
     </div>
     <div id="venue-list" class="venue-list"></div>
+  </div>
+</section>
+
+<section class="section dark coaches-sec" id="coaches" aria-labelledby="co-title">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:32px">
+      <h2 id="co-title" class="display h-md">Coaches</h2>
+      <p class="body soft">The coaches who lead our camps, with their titles and experience.</p>
+    </div>
+    <div class="co-tabs" role="group" aria-label="Coaches by sport">
+      <button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="bjj" aria-pressed="false">BJJ &amp; grappling</button><button type="button" data-f="wrestling" aria-pressed="false">Wrestling</button><button type="button" data-f="judo" aria-pressed="false">Judo</button>
+    </div>
+    <div id="coach-list" class="co-grid" aria-live="polite"></div>
   </div>
 </section>
 

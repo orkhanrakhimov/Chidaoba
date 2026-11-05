@@ -38,6 +38,7 @@
   function state(c) {
     if (c.status === 'completed') return { key: 'done', label: 'Completed' };
     if (c.status === 'sold_out') return { key: 'full', label: 'Sold out, join waitlist' };
+    if (!(c.packages || []).length) return { key: 'soon', label: 'Dates coming soon' };
     if (c.registration_deadline && H.today() > H.d(c.registration_deadline)) return { key: 'closed', label: 'Registration closed' };
     var s = spots(c);
     if (s && s.left === 0) return { key: 'full', label: 'Full, join waitlist' };
@@ -91,7 +92,7 @@
     list.innerHTML = '<p class="body soft loading">Loading camps…</p>';
     function counts() {
       document.querySelectorAll('[data-n]').forEach(function (el) {
-        var k = el.dataset.n, n = all.filter(function (c) { return c.status !== 'completed' && (k === 'all' || c.discipline === k); }).length;
+        var k = el.dataset.n, n = all.filter(function (c) { return c.status !== 'completed' && (c.packages || []).length && (k === 'all' || c.discipline === k); }).length;
         el.textContent = n ? n + ' camp' + (n === 1 ? '' : 's') + ' open' : 'Coming soon';
       });
     }
@@ -110,6 +111,69 @@
         if (window.scrollY < top - 200 || window.scrollY > top + 200) window.scrollTo({ top: top, behavior: 'smooth' });
       });
     });
+  }
+
+
+  // ================= COACHES (camps page + camp page) =================
+  function coachIni(k) { return (k.name || '?').replace(/[\[\]]/g, '').split(/\s+/).map(function (w) { return w[0] || ''; }).join('').slice(0, 2).toUpperCase(); }
+  function coachTitles(k) { return Array.isArray(k.titles) ? k.titles : String(k.titles || '').split('\n').filter(Boolean); }
+  function coachCard(k, i) {
+    return '<button type="button" class="co-card" data-co="' + i + '">' +
+      (k.photo ? '<img class="co-ph" src="' + e(k.photo) + '" alt="" loading="lazy">' : '<span class="co-ph co-ini" aria-hidden="true">' + e(coachIni(k)) + '</span>') +
+      '<span class="co-txt"><b>' + e(k.name) + '</b>' + (k.role ? '<span>' + e(k.role) + '</span>' : '') +
+      (k.sport ? '<em>' + e(k.sport) + '</em>' : '') + '</span><span class="co-more" aria-hidden="true">+</span></button>';
+  }
+  var coDlg = null;
+  function openCoach(k) {
+    if (!coDlg) {
+      coDlg = document.createElement('dialog'); coDlg.className = 'co-dlg';
+      coDlg.addEventListener('click', function (ev) { if (ev.target === coDlg || ev.target.closest('.co-x')) coDlg.close(); });
+      document.body.appendChild(coDlg);
+    }
+    var t = coachTitles(k);
+    coDlg.setAttribute('aria-label', k.name || 'Coach');
+    coDlg.innerHTML = '<div class="co-dlg-in"><button type="button" class="co-x" aria-label="Close">×</button>' +
+      '<div class="co-dlg-top">' + (k.photo ? '<img class="co-dlg-ph" src="' + e(k.photo) + '" alt="' + e(k.name) + '">' : '<span class="co-dlg-ph co-ini" aria-hidden="true">' + e(coachIni(k)) + '</span>') +
+      '<div><h3>' + e(k.name) + '</h3>' + (k.role ? '<p class="co-role">' + e(k.role) + '</p>' : '') + (k.sport ? '<p class="co-sport">' + e(k.sport) + '</p>' : '') + '</div></div>' +
+      (t.length ? '<h4>Titles and achievements</h4><ul class="coach-t">' + t.map(function (x) { return '<li>' + e(x) + '</li>'; }).join('') + '</ul>' : '') +
+      (k.bio ? '<p class="co-bio">' + e(k.bio) + '</p>' : '') +
+      ((k.camps || []).length ? '<h4>Coaching at</h4><ul class="co-camps">' + k.camps.map(function (c) { return '<li><a href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '">' + e(c.title) + '</a></li>'; }).join('') + '</ul>' : '') +
+      '</div>';
+    if (coDlg.showModal) coDlg.showModal(); else coDlg.setAttribute('open', '');
+  }
+  function wireCoaches(scope, items) {
+    scope.querySelectorAll('[data-co]').forEach(function (b) { b.addEventListener('click', function () { openCoach(items[+b.dataset.co]); }); });
+  }
+  var coList = $('#coach-list');
+  if (coList) {
+    var coAll = [], coTabs = document.querySelectorAll('.co-tabs button');
+    function coRender(f) {
+      var items = coAll.filter(function (k) { return f === 'all' || k.discs.indexOf(f) >= 0; });
+      coTabs.forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.f === f ? 'true' : 'false'); });
+      if (!items.length) {
+        coList.innerHTML = '<div class="co-empty"><span class="co-ph co-ini" aria-hidden="true">?</span><div><b>' + (coAll.length ? 'No coaches for this sport yet' : 'Coaches will be announced soon') + '</b>' +
+          '<p>We are confirming the coaches for the spring 2027 camps. Their profiles will appear here.</p></div></div>';
+        return;
+      }
+      coList.innerHTML = items.map(coachCard).join('');
+      wireCoaches(coList, items);
+    }
+    H.api.listCamps().then(function (cs) {
+      var by = {};
+      (cs || []).map(loc).filter(function (c) { return c.status !== 'completed'; }).forEach(function (c) {
+        (c.coaches || []).forEach(function (k) {
+          if (!k.name) return;
+          var id = k.name.trim().toLowerCase();
+          var o = by[id] || (by[id] = Object.assign({}, k, { discs: [], camps: [], sport: '' }));
+          if (o.discs.indexOf(c.discipline) < 0) o.discs.push(c.discipline);
+          o.camps.push({ slug: c.slug, title: c.title });
+          if (!o.photo && k.photo) o.photo = k.photo;
+        });
+      });
+      coAll = Object.keys(by).map(function (id) { var o = by[id]; o.sport = o.discs.map(function (d) { return H.DISC[d] || d; }).join(', '); return o; });
+      coRender('all');
+    }).catch(function () { coRender('all'); });
+    coTabs.forEach(function (t) { t.addEventListener('click', function () { coRender(t.dataset.f); }); });
   }
 
   // ================= VENUES (list + page) =================
@@ -205,15 +269,11 @@
       html += block('What’s included', '<div class="incl"><div><h3>Included</h3><ul>' + (c.included || []).map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div>' +
         '<div><h3>Not included</h3><ul>' + (c.excluded || []).map(function (t) { return '<li><i>×</i>' + e(t) + '</li>'; }).join('') + '</ul></div></div>');
     }
-    if ((c.coaches || []).length) {
-      html += block('Coaches', '<div class="coaches">' + c.coaches.map(function (k) {
-        var ini = (k.name || '?').replace(/[\[\]]/g, '').split(/\s+/).map(function (w) { return w[0] || ''; }).join('').slice(0, 2).toUpperCase();
-        var titles = Array.isArray(k.titles) ? k.titles : String(k.titles || '').split('\n').filter(Boolean);
-        return '<div class="coach">' + (k.photo ? '<img class="coach-ph" src="' + e(k.photo) + '" alt="' + e(k.name) + '" loading="lazy">' : '<span class="ini">' + e(ini) + '</span>') +
-          '<div><b>' + e(k.name) + '</b><span class="label muted">' + e(k.role || '') + '</span>' +
-          (titles.length ? '<ul class="coach-t">' + titles.map(function (t) { return '<li>' + e(t) + '</li>'; }).join('') + '</ul>' : '') +
-          (k.bio ? '<p>' + e(k.bio) + '</p>' : '') + '</div></div>';
-      }).join('') + '</div>');
+    var coItems = (c.coaches || []).filter(function (k) { return k.name; });
+    if (coItems.length) {
+      html += block('Coaches', '<div class="co-grid">' + coItems.map(coachCard).join('') + '</div>');
+    } else if (c.status !== 'completed') {
+      html += block('Coaches', '<div class="co-empty"><span class="co-ph co-ini" aria-hidden="true">?</span><div><b>Coaches will be announced soon</b><p>We are confirming the coaches for this camp. Their profiles will appear here.</p></div></div>');
     }
     if ((c.bring || []).length) {
       var SHOP = window.CHD_SHOP || {};
@@ -251,18 +311,24 @@
         '<button class="btn btn-primary b-go" type="button" id="b-go">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + ' <span class="arr">→</span></button>' +
         '<p class="note">Free and takes a minute. No payment now. ' + (st.key === 'full' ? 'We’ll contact you if a spot opens.' : 'We confirm your spot on WhatsApp or email within 24 hours.') + '</p>';
     } else {
+      if (canBook) {
+        html += '<h3 class="book-h">Dates and prices coming soon</h3><p class="body">Leave your email and we will tell you first when registration opens.</p>' +
+          '<a class="btn btn-primary" href="#notify">Notify me</a>';
+      } else {
       html += '<h3 class="book-h">' + e(st.label) + '</h3><p class="body">' +
         (c.status === 'completed' ? 'This camp has finished. See upcoming camps.' : 'Registration is not open for this camp right now.') + '</p>' +
         '<a class="btn btn-primary" href="/camps/">Upcoming camps <span class="arr">→</span></a>';
+      }
     }
     if (c.start_date && c.status !== 'completed') html += calHtml(c);
     html += '<a class="book-wa" href="' + WA + '?text=' + encodeURIComponent('Hi CHIDAOBA, a question about ' + c.title + ': ') + '" rel="noopener">Questions? WhatsApp us</a></div></aside>';
     html += '</div></section>';
-    if (canBook) html += '<div class="book-bar dark" id="book-bar"><div><span>From</span><b>' + H.money(H.fromPrice(c), c.currency) + '</b></div><a class="btn btn-primary" href="#book">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + '</a></div>';
+    if (canBook && (c.packages || []).length) html += '<div class="book-bar dark" id="book-bar"><div><span>From</span><b>' + H.money(H.fromPrice(c), c.currency) + '</b></div><a class="btn btn-primary" href="#book">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + '</a></div>';
     html += modal(c, st);
     root.innerHTML = html;
 
     wireMedia(root);
+    wireCoaches(root, coItems);
     var ib = root.querySelector('.cal-ics'); if (ib) ib.addEventListener('click', function () { icsDownload(c); });
     // schedule tabs
     root.querySelectorAll('.sched-tabs button').forEach(function (b) {

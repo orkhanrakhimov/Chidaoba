@@ -1803,3 +1803,38 @@ body{font-size:var(--t-body);line-height:1.55;color:var(--ink)}
 html[lang="ka"] :is(.btn,.hero-story,.link,.dept-all,.shop-tabs button,.who-sel select,.lang-dd summary,.chips li,.pill,.news-int span,.cc-cta,.cc-status,.sport-pick button b,.who-btn b,.disc-tabs button,.sched-tabs button,.foot-top,.pv-opts button,.prow-btn){font-size:19px!important;letter-spacing:.05em!important;line-height:1.1}
 html[lang="ka"] :is(.chips li,.pill,.news-int span,.cc-status,.shop-tabs button,.lang-dd summary,.pv-opts button){font-size:17px!important}
 html[lang="ka"] .btn{padding-top:0;padding-bottom:0}
+/* coaches: cards that open a profile */
+.coaches-sec .co-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.co-tabs button{font:inherit;font-size:15px;font-weight:500;min-height:44px;padding:0 18px;border-radius:999px;border:0;background:#2B2B2B;color:#F2F1EC;cursor:pointer;transition:background .2s}
+.co-tabs button:hover{background:#3A3A3A}
+.co-tabs button[aria-pressed="true"]{background:#F2F1EC;color:#1E1E1E}
+.co-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.co-card{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:16px;align-items:center;text-align:left;font:inherit;color:inherit;padding:16px 18px;border:0;border-radius:var(--r-card,16px);background:#2B2B2B;cursor:pointer;transition:transform .2s,background .2s}
+.camp-body .co-card,.light .co-card{background:#E8E6DF;color:#1E1E1E}
+.co-card:hover{transform:translateY(-2px);background:#353535}
+.camp-body .co-card:hover,.light .co-card:hover{background:#DEDBD2}
+.co-card:focus-visible{outline:2px solid #B5212F;outline-offset:2px}
+.co-ph{width:64px;height:64px;border-radius:50%;object-fit:cover;display:block}
+.co-ini{display:grid;place-items:center;background:#1E1E1E;color:#F2F1EC;font-weight:800;font-size:20px;letter-spacing:.04em}
+.co-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.co-txt b{font-size:17px;font-weight:700}
+.co-txt span{font-size:14px;opacity:.8}
+.co-txt em{font-style:normal;font-size:13px;color:#B5212F;font-weight:600}
+.dark .co-txt em{color:#E8A0A7}
+.co-more{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(127,127,127,.18);font-size:20px;line-height:1}
+.co-empty{display:flex;gap:18px;align-items:center;padding:22px;border-radius:var(--r-card,16px);background:#2B2B2B;max-width:640px}
+.camp-body .co-empty{background:#E8E6DF;color:#1E1E1E}
+.co-empty b{font-size:17px}.co-empty p{margin:4px 0 0;font-size:15px;line-height:1.5;opacity:.85}
+.co-dlg{border:0;padding:0;border-radius:20px;max-width:min(560px,calc(100vw - 32px));width:100%;background:#F2F1EC;color:#1E1E1E;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.co-dlg::backdrop{background:rgba(20,20,20,.6)}
+.co-dlg-in{position:relative;padding:28px;max-height:80vh;overflow:auto}
+.co-x{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:0;background:#E3E0D8;font-size:26px;line-height:1;cursor:pointer;color:#1E1E1E}
+.co-dlg-top{display:flex;gap:18px;align-items:center;padding-right:48px;margin-bottom:18px}
+.co-dlg-ph{width:96px;height:96px;border-radius:50%;object-fit:cover;flex:none;font-size:28px}
+.co-dlg h3{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.co-role{margin:6px 0 0;font-size:16px}.co-sport{margin:4px 0 0;font-size:14px;color:#B5212F;font-weight:600}
+.co-dlg h4{margin:20px 0 8px;font-size:14px;font-weight:600;color:#55544F}
+.co-bio{margin:18px 0 0;font-size:16px;line-height:1.6}
+.co-camps{list-style:none;margin:0;padding:0;display:grid;gap:6px}.co-camps a{color:#1E1E1E;font-weight:600}
+html[lang="ka"] .co-tabs button{font-size:17px!important;letter-spacing:.05em}
+@media (max-width:600px){.co-grid{grid-template-columns:1fr}.co-dlg-in{padding:22px}}
