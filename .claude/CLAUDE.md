@@ -11,7 +11,7 @@ The owner's decisions below override the skill's house rules where they conflict
 - Brand name is **CHIDAOBA** only (never "CHIDAOBA CULTURE"). Colours: carbon #1E1E1E, chalk #F2F1EC, red #B5212F.
 - Rounded corners were requested ("soft, like Apple products"). Keep them unless the owner agrees to change.
 - Section numbering such as "01 · ჩემპიონები" is part of the owner's own copy; keep it unless the owner agrees to drop it.
-- Georgian pages use the Gremi Web font (`assets/fonts/gremi-web.woff`) for all Georgian letters, digits and basic punctuation.
+- Georgian pages use the MS Block font (`assets/fonts/ms-block.woff2`) for ALL text: Georgian, Latin, digits and punctuation (dashes, apostrophes and the middle dot are mapped to its own glyphs). No extra letter-spacing; sizes on `/ka/` are tuned for this wide face.
 - Copy: plain and professional, no slogans, no long dashes (—), no source lists, don't repeat the same fact.
 - Shop: Men / Women / Kids kept separate, WhatsApp ordering only. Camps: no deposits.
 - Do not use the Mulakhi venue photos on Why Georgia. Community and Journal stay hidden.
