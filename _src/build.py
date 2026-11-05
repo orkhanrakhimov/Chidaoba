@@ -44,11 +44,13 @@ def head(title, desc, path):
 <meta property="og:url" content="{url}">
 <meta property="og:image" content="https://chidaoba.com/assets/img/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#1E1E1E">
+<meta name="theme-color" content="#202020">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<link rel="preload" href="/assets/fonts/schibsted.woff" as="font" type="font/woff" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Noto+Sans+Georgian:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
 <!--ALT-->
 </head>
@@ -111,45 +113,31 @@ def newsletter_form(where, interests=("camps", "shop"), title="The Culture Lette
       <p class="form-msg" aria-live="polite"></p>
     </form>"""
 
-def block_mark():
-    letters = "CHIDAOBA"
-    hs = [100, 78, 92, 64, 100, 84, 70, 96]
-    fills = ["#B5212F", "#F2F1EC", "#3A3A3A", "#F2F1EC", "#B5212F", "#3A3A3A", "#F2F1EC", "#B5212F"]
-    W, H, g = 1000, 200, 6
-    w = (W - g * 7) / 8
-    out = '<svg class="blk" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true"><defs>'
-    for i, ch in enumerate(letters):
-        x, h = i * (w + g), H * hs[i] / 100
-        out += (f'<mask id="bm{i}"><rect x="{x:.1f}" y="{H-h:.1f}" width="{w:.1f}" height="{h:.1f}" fill="#fff"/>'
-                f'<text x="{x + w/2:.1f}" y="{H - 14}" text-anchor="middle" font-size="{min(w*1.25, h*0.9):.0f}" fill="#000">{ch}</text></mask>')
-    out += '</defs>'
-    for i in range(8):
-        x, h = i * (w + g), H * hs[i] / 100
-        out += f'<rect x="{x:.1f}" y="{H-h:.1f}" width="{w:.1f}" height="{h:.1f}" rx="14" fill="{fills[i]}" mask="url(#bm{i})"/>'
-    return out + '</svg>'
-
 def footer(path=""):
-    news = "" if path.startswith("/camps/") or path == "/admin/" else f"""
-  <section class="board bcta stagger" aria-labelledby="cta-title">
-    <div class="bt cta-l" aria-hidden="true">{sym_svg("cta-sym")}</div>
-    <div class="bt cta-m">
-      <h2 id="cta-title">Stay updated</h2>
-      {newsletter_form("home" if path == "/" else "foot")}
+    cta = "" if path.startswith("/camps/") or path == "/admin/" else f"""
+    <div class="foot-cta">
+      <h2 class="display">Train with us<br>in Georgia</h2>
+      <div class="foot-cta-btns">
+        <a class="btn btn-primary" href="/camps/">See camps {arrow()}</a>
+        <a class="btn btn-ghost" href="{WA}" rel="noopener">WhatsApp us {arrow()}</a>
+      </div>
+    </div>"""
+    news = "" if path == "/" else f'<div class="foot-news">{newsletter_form("foot")}</div>'
+    return f"""<footer class="site-foot">
+  <div class="wrap">{cta}
+    <div class="foot-grid">
+      {news}
+      <nav class="foot-col" aria-label="Explore"><h3>Explore</h3><ul>
+        <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
+        <li><a href="/georgia/">Why Georgia</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
+      <div class="foot-col"><h3>Connect</h3>{socials()}<ul style="margin-top:22px"><li><a href="/contact/">Contact</a></li></ul></div>
+      <div class="foot-col"><h3>Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
     </div>
-    <div class="bt cta-r" aria-hidden="true"></div>
-  </section>"""
-    return f"""{news}
-<footer class="site-foot board stagger">
-  <div class="bt foot-blk"><span class="sr">CHIDAOBA</span>{block_mark()}</div>
-  <div class="bt foot-links">
-    <nav class="foot-col" aria-label="Explore"><h3>Explore</h3><ul>
-      <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
-      <li><a href="/georgia/">Why Georgia</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
-    <div class="foot-col"><h3>Connect</h3><ul><li><a href="{WA}" rel="noopener">WhatsApp</a></li><li><a href="{IG}" rel="noopener">Instagram</a></li><li><a href="{FB}" rel="noopener">Facebook</a></li></ul></div>
-    <div class="foot-col"><h3>Contact</h3><ul><li><a href="/contact/">Contact</a></li><li><a href="/privacy/">Privacy</a></li></ul></div>
-    <div class="foot-col foot-contact"><h3>Write to us</h3><ul><li><a href="mailto:{EMAIL}">{EMAIL}</a></li><li><a href="{WA}" rel="noopener">{WA_SHOW}</a></li></ul></div>
   </div>
-  <div class="bt foot-bottom"><span class="foot-copy">© <span data-year>2026</span> CHIDAOBA {FLAG}</span><a class="bbtn bbtn-dark foot-top" href="#top">Back to top</a></div>
+  <div class="foot-mark" aria-hidden="true"><svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet"><text x="0" y="128" textLength="1000" lengthAdjust="spacingAndGlyphs">CHIDAOBA</text></svg></div>
+  <div class="wrap">
+    <div class="foot-bottom label"><span class="foot-copy">© <span data-year>2026</span> CHIDAOBA {FLAG}</span><a class="foot-top" href="#top">Back to top ↑</a></div>
+  </div>
 </footer>
 <a class="wa-float" href="{WA}" rel="noopener" aria-label="Message us on WhatsApp">{WA_ICON}<span>WhatsApp</span></a>
 <script src="/assets/js/site.js?v={ASSET_V}" defer></script>
@@ -157,7 +145,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "55"
+ASSET_V = "46"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -186,142 +174,84 @@ def home_picks():
         out += f'<a class="hpick" href="/shop/?sport={sp}#{slugify(name)}"><div class="hpick-art">{art(p[8], p[6][0])}</div><b>{name}</b><span>{dict((k, n) for k, n, _ in SPORTS)[sp]}</span></a>'
     return out
 
-def jacket_svg():
-    # the short chidaoba jacket and belt, flat, in brand colours
-    return ('<svg class="jacket" viewBox="0 0 200 200" aria-hidden="true">'
-            '<path fill="#1E1E1E" d="M70 34 L100 46 L130 34 L168 52 L190 112 L166 122 L150 86 L150 150 L50 150 L50 86 L34 122 L10 112 L32 52 Z"/>'
-            '<path fill="#F2F1EC" d="M86 38 L100 76 L114 38 L100 46 Z"/>'
-            '<path fill="none" stroke="#3A3A3A" stroke-width="3" d="M100 76 L100 150"/>'
-            '<rect x="46" y="118" width="108" height="14" rx="3" fill="#B5212F"/>'
-            '<path fill="#B5212F" d="M92 124 L76 168 L88 170 L100 130 L112 170 L124 168 L108 124 Z"/></svg>')
-
-def mark_board_svg(portrait=False):
-    # the mark on a carbon field with the red circle of the wrestling ring, for slicing across tiles
-    w, h = (900, 1800) if portrait else (1500, 1000)
-    s = (1500 / 670 * 0.6) if portrait else (1000 / 940 * 0.86)
-    s = min(s, h * 0.8 / 940)
-    mw, mh = 670 * s, 940 * s
-    x, y = (w - mw) / 2 - 130 * s, (h - mh) / 2 - 10 * s
-    r = min(w, h) * 0.42
-    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}"><rect width="{w}" height="{h}" fill="#2A2A2A"/>'
-           f'<circle cx="{w/2}" cy="{h/2}" r="{r:.0f}" fill="none" stroke="#B5212F" stroke-width="{r*0.09:.0f}"/>'
-           f'<path transform="translate({x:.1f} {y:.1f}) scale({s:.4f})" fill="#F2F1EC" fill-rule="evenodd" d="{SYM}"/></svg>')
-    return svg
-
-def board_hero():
-    from shop_art import art
-    golds = {"judo": 5, "wrestling": 4}
-    bjj_n = sum(1 for p in PRODUCTS if p[2] == "bjj")
-    sports = [
-        ("bjj", "BJJ &amp; Grappling", str(bjj_n), "Products for BJJ and grappling", art("gi", "Blue", "bh-art")),
-        ("wrestling", "Wrestling", str(golds["wrestling"]), "Olympic gold medals for Georgia in wrestling", art("singlet", "Red", "bh-art")),
-        ("judo", "Judo", str(golds["judo"]), "Olympic gold medals for Georgia in judo", art("gi", "White", "bh-art")),
-    ]
-    panels = "".join(
-        f'<div class="bh-panel" data-sport="{k}"{"" if k == "wrestling" else " hidden"}>{a}'
-        f'<div class="bh-fig"><b>{fig}</b><span>{cap}</span><a class="bh-gear" href="/shop/?sport={k}">See the gear</a></div></div>'
-        for k, n, fig, cap, a in sports)
-    picks = "".join(
-        f'<button type="button" class="bt bt-pick bt-t{i+1}" data-pick="{k}" aria-pressed="{"true" if k == "wrestling" else "false"}"><b>{n}</b></button>'
-        for i, (k, n, *_r) in enumerate(sports))
-    links = "".join(f'<a class="bt bt-link" href="{h}">{t}</a>' for h, t in NAV[1:])
-    return f"""
-<section class="board bhero" aria-labelledby="hero-title">
-  <div class="bt bt-band" aria-hidden="true"><span>CHIDAOBA</span></div>
-  {links}
-  <a class="bt bt-mark" href="/culture/" aria-label="Our story">{sym_svg("bm-sym")}</a>
-  <a class="bt bt-story" href="/culture/"><b>Our story</b><span>The traditional wrestling of Georgia</span></a>
-  <div class="bt bt-main" aria-live="polite">{panels}</div>
-  <div class="bt bt-state">
-    <h1 id="hero-title" class="bh-title"><span class="ln"><span>A culture</span></span> <span class="ln"><span>that moves</span></span></h1>
-    <p class="bh-sub">Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.</p>
-  </div>
-  <div class="bt-rail" role="group" aria-label="Choose your sport">{picks}
-    <a class="bt bt-t4" href="/shop/"><b>Shop</b></a>
-    <a class="bt bt-act" href="/camps/"><b>Explore camps</b></a>
-  </div>
-</section>"""
-
-def board_shop():
-    from shop_art import art
-    bars, arts = "", ""
-    for i, (k, n, line) in enumerate(SPORTS):
-        items = [p for p in PRODUCTS if p[2] == k]
-        rows = "".join(
-            f'<li><a href="/shop/?sport={k}#{slugify(p[0])}"><span>{p[0]}</span><em>{"One size" if p[5] == ONE else ("Ages 4 to 13" if p[5] == KIDS_AGE else (f"Sizes {p[5][0]} to {p[5][-1]}" if len(p[5]) > 1 else p[5][0]))}</em></a></li>'
-            for p in items)
-        bars += (f'<details class="sbar" data-dept="{k}"{" open" if i == 0 else ""}><summary><b>{n}</b><span>{len(items)}</span></summary>'
-                 f'<ul>{rows}</ul><a class="sbar-all" href="/shop/?sport={k}">See all</a></details>')
-        p0 = items[0]
-        arts += f'<div class="sart" data-dept="{k}"{"" if i == 0 else " hidden"}>{art(p0[8], p0[6][0], "sart-svg")}<p>{p0[0]}</p></div>'
-    return f"""
-<section class="board bshop stagger" aria-labelledby="drop-title">
-  <div class="bt bs-art" aria-hidden="true">{arts}</div>
-  <div class="bt bs-list">
-    <h2 id="drop-title" class="bs-word">Shop</h2>
-    <p class="bs-sub">Gis, training wear and gear for adults and kids. Order on WhatsApp.</p>
-    <div class="bs-bars">{bars}</div>
-  </div>
-</section>"""
-
 def home():
-    import urllib.parse
-    land = urllib.parse.quote(mark_board_svg())
-    port = urllib.parse.quote(mark_board_svg(True))
-    desk = {"head": (2, 0, 2), "f1": (0, 1, 1), "f2": (5, 1, 1), "f3": (1, 3, 1), "act": (4, 3, 1)}
-    phone = {"head": (0, 0, 2), "f1": (1, 1, 1), "f2": (2, 2, 1), "f3": (0, 3, 1), "act": (2, 4, 1)}
-    taken = {(c + k, r) for c, r, w in desk.values() for k in range(w)}
-    ptaken = {(c + k, r) for c, r, w in phone.values() for k in range(w)}
-    dimg = [(c, r) for r in range(4) for c in range(6) if (c, r) not in taken]
-    pimg = [(c, r) for r in range(6) for c in range(3) if (c, r) not in ptaken]
-    def pos(d, ph):
-        (c, r, w), (pc, pr, pw) = d, ph
-        return f"--gc:{c+1}/span {w};--gr:{r+1};--gcp:{pc+1}/span {pw};--grp:{pr+1};--c:{c};--r:{r};--pc:{pc};--pr:{pr}"
-    tiles = f'<div class="mt mt-head" style="{pos(desk["head"], phone["head"])}"><h2 id="camps-title">Training camps in Georgia</h2></div>'
-    for k, txt in (("f1", "BJJ &amp; grappling"), ("f2", "Wrestling"), ("f3", "Judo")):
-        tiles += f'<div class="mt mt-fact" style="{pos(desk[k], phone[k])}"><b>{txt}</b></div>'
-    tiles += f'<a class="mt mt-act" style="{pos(desk["act"], phone["act"])}" href="/camps/"><b>Explore camps</b></a>'
-    for i, (c, r) in enumerate(dimg):
-        if i < len(pimg):
-            pc, pr = pimg[i]; extra = ""
-        else:
-            pc, pr = 0, 0; extra = " mt-x"
-        tiles += f'<div class="mt mt-img{extra}" style="{pos((c, r, 1), (pc, pr, 1))}" aria-hidden="true"></div>'
-    return f"""{board_hero()}
-
-<section class="board bintro stagger" aria-labelledby="intro-title">
-  <div class="bt bi-a"><p class="bi-n">01 · The culture</p><h2 id="intro-title" class="bi-word">Our roots</h2></div>
-  <div class="bt bi-b" aria-hidden="true"><span>ჭ</span></div>
-  <figure class="bt bi-c">{jacket_svg()}<figcaption>The short jacket and belt worn for chidaoba</figcaption></figure>
-  <div class="bt bi-text">
-    <p>Chidaoba is the traditional wrestling of Georgia. Our brand takes its name and values from it.</p>
-    <p>We connect this heritage with the sports people train today: wrestling, judo, Brazilian jiu-jitsu and grappling.</p>
-    <a class="blink" href="/culture/">What is Chidaoba</a>
+    chips = "".join(f"<li>{c}</li>" for c in CATS)
+    jchips = "".join(f"<li>{c}</li>" for c in JCATS)
+    return f"""
+<section class="hero dark" aria-labelledby="hero-title">
+  {sym_svg("hero-sym")}
+  <div class="wrap">
+    <p class="hero-top fade-load"><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
+    <div>
+      <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
+      <p class="lead soft fade-load">Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.</p>
+      <div class="ctas fade-load">
+        <a class="btn btn-primary" href="/camps/">Explore camps {arrow()}</a>
+        <a class="btn btn-ghost" href="/shop/">Shop {arrow()}</a>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="board bstats stagger" aria-labelledby="stats-title">
-  <div class="bt st-a"><b data-count="9">9</b><span>Olympic gold medals for Georgia in judo and wrestling</span></div>
-  <h2 id="stats-title" class="st-h"><a href="/georgia/">Why train in Georgia</a></h2>
-  <div class="bt st-b"><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
-  <div class="bt st-c"><b data-count="2018" data-from="1900">2018</b><span>Chidaoba added to UNESCO’s list of intangible cultural heritage</span></div>
-</section>
-
-<section class="board bcamps" aria-labelledby="camps-title" style="--img-l:url('data:image/svg+xml,{land}');--img-p:url('data:image/svg+xml,{port}')">
-  <div class="mboard stagger">{tiles}</div>
-  <div class="bt bc-status" id="home-camps-soon">
-    <h3>The first camps are being planned</h3>
-    <p>We are preparing our first training camps and experiences in Georgia. Dates, coaches, locations and registration will be published here first.</p>
-    <a class="bbtn bbtn-light" href="/camps/#notify">Get dates by email</a>
+<section class="section light" aria-labelledby="intro-title">
+  <div class="wrap">
+    <div class="intro">
+      <h2 id="intro-title" class="display h-lg reveal">Our roots<span class="dot">.</span></h2>
+      <div class="text reveal">
+        <p class="scrub scrub-sm">Chidaoba is the traditional wrestling of Georgia. Our brand takes its name and values from it.</p>
+        <p class="body muted">We connect this heritage with the sports people train today: wrestling, judo, Brazilian jiu-jitsu and grappling.</p>
+        <a class="link" href="/culture/" style="align-self:start">What is Chidaoba</a>
+      </div>
+      <div class="stats stats-3 stagger">
+        <div class="stat"><b data-count="9">9</b><span>Olympic gold medals for Georgia in judo and wrestling</span></div>
+        <div class="stat"><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
+        <div class="stat"><b data-count="2018" data-from="1900">2018</b><span>Chidaoba added to UNESCO’s list of intangible cultural heritage</span></div>
+      </div>
+      <a class="link home-why" href="/georgia/">Why train in Georgia</a>
+    </div>
   </div>
-  <div id="home-camps" class="camp-list bt bc-list" hidden></div>
 </section>
 
-{board_shop()}
+<section class="section dark" aria-labelledby="camps-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="camps-title" class="display h-lg reveal">Training camps in Georgia</h2>
+      <p class="body soft reveal">Camps for BJJ and grappling, wrestling and judo, with local coaches, accommodation and meals.</p>
+    </div>
+    <div id="home-camps" class="camp-list" hidden></div>
+    <article class="feature reveal" id="home-camps-soon">
+      <div class="feature-visual" aria-hidden="true">{sym_svg("")}<div class="ring"></div></div>
+      <div class="feature-body">
+                <h3 class="display h-md">The first camps are being planned<span class="dot">.</span></h3>
+        <p class="body soft">We are preparing our first training camps and experiences in Georgia. Dates, coaches, locations and registration will be published here first.</p>
+        <ul class="chips"><li>BJJ &amp; grappling</li><li>Wrestling</li><li>Judo</li></ul>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px">
+          <a class="btn btn-primary" href="/camps/">Explore camps &amp; events {arrow()}</a>
+          <a class="btn btn-ghost" href="/camps/#notify">Get dates by email {arrow()}</a>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
 
-<div class="marquee" aria-hidden="true"><div class="mq-track"><span>CHIDAOBA</span><span lang="ka">ჭიდაობა</span><span>CHIDAOBA</span><span lang="ka">ჭიდაობა</span><span>CHIDAOBA</span><span lang="ka">ჭიდაობა</span><span>CHIDAOBA</span><span lang="ka">ჭიდაობა</span></div></div>
+<section class="section light home-shop" aria-labelledby="drop-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="drop-title" class="display h-lg reveal">Shop</h2>
+      <p class="body muted reveal">Gis, training wear and gear for adults and kids. Order on WhatsApp.</p>
+    </div>
+    <div class="home-picks stagger">{home_picks()}</div>
+    <a class="btn btn-primary" href="/shop/" style="margin-top:28px">View the shop {arrow()}</a>
+  </div>
+</section>
+
+<section class="section dark invite" aria-labelledby="invite-title" style="border-top:1px solid var(--carbon-line)">
+  <div class="wrap invite-grid">
+    <h2 id="invite-title" class="display h-lg reveal">Stay updated</h2>
+    <div class="news-wrap reveal">{newsletter_form("home")}</div>
+  </div>
+</section>
 """
-
 
 # ------------------------------------------------------------------ inner pages
 def inner(label, title, lead, what, what_items, cta_html, extra=""):
@@ -786,9 +716,9 @@ def shop():
             blocks += f'''<div class="pcat" data-cat="{c}" id="{k}-{c}">
           <div class="prow-head"><h3 class="pcat-h">{cn}</h3><span class="prow-n"></span>
             <div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div></div>
-          <div class="prow stagger">{"".join(tile(p) for p in items)}</div></div>'''
+          <div class="prow">{"".join(tile(p) for p in items)}</div></div>'''
         nav = '<div class="prow-nav"><button type="button" class="prow-btn" data-dir="-1" aria-label="Scroll left">‹</button><button type="button" class="prow-btn" data-dir="1" aria-label="Scroll right">›</button></div>'
-        depts += f'<section class="dept" id="{k}" data-sport="{k}"><div class="dept-head reveal"><h2 class="display h-md">{n}</h2><p class="lead">{line}</p><button type="button" class="dept-all" data-go="{k}">See all <span class="dept-n"></span></button>{nav}</div><div class="dept-rows">{blocks}</div></section>'
+        depts += f'<section class="dept" id="{k}" data-sport="{k}"><div class="dept-head"><h2 class="display h-md">{n}</h2><p class="lead">{line}</p><button type="button" class="dept-all" data-go="{k}">See all <span class="dept-n"></span></button>{nav}</div><div class="dept-rows">{blocks}</div></section>'
     who = "".join(f'<button type="button" class="who-btn" data-who="{a}"><b>{t}</b><span>{s}</span></button>' for a, t, s in
                   [("men", "Men", "Gis, rashguards, shorts and more"), ("women", "Women", "Cut and sized for women"), ("kids", "Kids", "Ages 4 to 13, kids' sizes")])
     tabs = '<button type="button" data-sport="all" aria-pressed="true">All</button>' + "".join(f'<button type="button" data-sport="{k}" aria-pressed="false">{n}</button>' for k, n, _ in SPORTS)

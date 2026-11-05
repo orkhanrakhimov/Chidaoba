@@ -222,28 +222,4 @@ document.addEventListener('click', function (ev) {
     var a = ev.target.closest && ev.target.closest('a[href*="wa.me/"]');
     if (a && a.id !== 'bag-send' && a.id !== 'pv-wa') window.CHD_TRACK('wa');
   }, true);
-
-  // ---------- board: sport picker in the hero ----------
-  var picks = [].slice.call(document.querySelectorAll('[data-pick]'));
-  picks.forEach(function (b) {
-    b.addEventListener('click', function () {
-      var k = b.getAttribute('data-pick');
-      picks.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
-      document.querySelectorAll('.bh-panel').forEach(function (p) { p.hidden = p.getAttribute('data-sport') !== k; });
-    });
-  });
-  // ---------- board: shop bars swap the drawing ----------
-  document.querySelectorAll('.sbar').forEach(function (d) {
-    d.addEventListener('toggle', function () {
-      if (!d.open) return;
-      var k = d.getAttribute('data-dept');
-      document.querySelectorAll('.sbar').forEach(function (o) { if (o !== d) o.open = false; });
-      document.querySelectorAll('.sart').forEach(function (a) { a.hidden = a.getAttribute('data-dept') !== k; });
-    });
-  });
-  // ---------- board: show the WhatsApp button after the hero ----------
-  if (document.querySelector('.bhero')) {
-    var onS = function () { body.classList.toggle('past-hero', window.scrollY > window.innerHeight * 0.7); };
-    window.addEventListener('scroll', onS, { passive: true }); onS();
-  }
 })();

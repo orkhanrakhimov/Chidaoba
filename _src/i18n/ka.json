@@ -124,7 +124,7 @@
  "Choose items": "აირჩიე ნივთები",
  "Choose options": "პარამეტრების არჩევა",
  "Choose size and colour: {x}": "ზომისა და ფერის არჩევა: {x}",
- "Choose your sport": "აირჩიეთ სახეობა",
+ "Choose your sport": "აირჩიე სახეობა",
  "Choose your sport, open a camp, pick a package and press Request a spot. Fill in a short form and send it. We reply within 24 hours by WhatsApp or email to confirm your place.": "აირჩიეთ სახეობა, გახსენით ბანაკი, აირჩიეთ პაკეტი და დააჭირეთ „ადგილის მოთხოვნას“. შეავსეთ მოკლე ფორმა და გამოგზავნეთ. 24 საათში გიპასუხებთ WhatsApp-ით ან ელფოსტით და დაგიდასტურებთ ადგილს.",
  "Churchkhela": "ჩურჩხელა",
  "Citizens of many countries, including the EU, UK and US, can stay without a visa for up to a year. Check the rules for your passport before you book.": "მრავალი ქვეყნის მოქალაქეს, მათ შორის ევროკავშირის წევრი ქვეყნების, გაერთიანებული სამეფოსა და აშშ-ის მოქალაქეებს, საქართველოში უვიზოდ ერთ წლამდე დარჩენა შეუძლიათ. დაჯავშნამდე გადაამოწმე შენს პასპორტზე მოქმედი სავიზო მოთხოვნები.",
@@ -865,15 +865,5 @@
  "New camps and new products, first. A few emails a year.": "ახალი ბანაკები და ახალი პროდუქცია, პირველ რიგში თქვენთვის. წელიწადში მხოლოდ რამდენიმე წერილი.",
  "Visitor counts": "ვიზიტების დათვლა",
  ": we count page views anonymously (the page, language, phone or computer, and which site you came from) to see how the site is used. No cookies, no IP addresses and nothing that identifies you is stored.": ": გვერდების ნახვებს ანონიმურად ვითვლით (გვერდი, ენა, ტელეფონი თუ კომპიუტერი და საიდან მოხვედით), რომ გავიგოთ, როგორ გამოიყენება საიტი. ქუქი-ფაილები, IP მისამართები ან თქვენი იდენტიფიცირებადი მონაცემები არ ინახება.",
- "We don’t sell or share your details, and there are no accounts or advertising cookies on this site.": "თქვენს მონაცემებს არ ვყიდით და არავის ვუზიარებთ. საიტზე არ არის ანგარიშები და სარეკლამო ქუქი-ფაილები.",
- "Back to top": "ზევით",
- "CHIDAOBA | Georgian wrestling culture, training camps and gear": "CHIDAOBA | ქართული ჭიდაობის კულტურა, სავარჯიშო ბანაკები და აღჭურვილობა",
- "Olympic gold medals for Georgia in judo": "საქართველოს ოლიმპიური ოქროს მედალი ძიუდოში",
- "Olympic gold medals for Georgia in wrestling": "საქართველოს ოლიმპიური ოქროს მედალი ჭიდაობაში",
- "Products for BJJ and grappling": "პროდუქტი BJJ-სა და გრეპლინგისთვის",
- "See the gear": "აღჭურვილობის ნახვა",
- "The short jacket and belt worn for chidaoba": "ჭიდაობის მოკლე ჩოხა და სარტყელი",
- "The story of Chidaoba": "ჭიდაობის ისტორია",
- "The traditional wrestling of Georgia": "საქართველოს ტრადიციული ჭიდაობა",
- "Write to us": "მოგვწერეთ"
+ "We don’t sell or share your details, and there are no accounts or advertising cookies on this site.": "თქვენს მონაცემებს არ ვყიდით და არავის ვუზიარებთ. საიტზე არ არის ანგარიშები და სარეკლამო ქუქი-ფაილები."
 }
