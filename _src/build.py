@@ -27,6 +27,20 @@ def sym_svg(cls, extra=""):
 BAG = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">'
        '<path d="M5 8h14l-1.2 12H6.2L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>')
 
+def og_img(path):
+    k = {"/": "home", "/camps/": "camps", "/camps/camp/": "camps", "/camps/venue/": "camps", "/shop/": "shop",
+         "/culture/": "culture", "/georgia/": "georgia"}.get(path)
+    return f"og-{k}.png" if k else "og.png"
+
+def org_ld():
+    d = {"@context": "https://schema.org", "@graph": [
+        {"@type": "Organization", "@id": "https://chidaoba.com/#org", "name": "CHIDAOBA", "url": "https://chidaoba.com/",
+         "logo": "https://chidaoba.com/assets/img/icon-512.png", "email": EMAIL, "telephone": WA_SHOW.replace(" ", ""),
+         "sameAs": [IG, FB], "address": {"@type": "PostalAddress", "addressCountry": "GE"}},
+        {"@type": "WebSite", "@id": "https://chidaoba.com/#site", "name": "CHIDAOBA", "url": "https://chidaoba.com/",
+         "inLanguage": ["en", "ka"], "publisher": {"@id": "https://chidaoba.com/#org"}}]}
+    return '\n<script type="application/ld+json">' + json.dumps(d, ensure_ascii=False) + '</script>'
+
 def head(title, desc, path):
     url = "https://chidaoba.com" + path
     return f"""<!DOCTYPE html>
@@ -42,15 +56,21 @@ def head(title, desc, path):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
-<meta property="og:image" content="https://chidaoba.com/assets/img/og.png">
+<meta property="og:image" content="https://chidaoba.com/assets/img/{og_img(path)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{title}">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ka_GE">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{desc}">
+<meta name="twitter:image" content="https://chidaoba.com/assets/img/{og_img(path)}">{org_ld() if path == "/" else ""}
 <meta name="theme-color" content="#202020">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&amp;family=Noto+Sans+Georgian:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
 <!--ALT-->
 </head>
@@ -145,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "59"
+ASSET_V = "61"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -915,6 +935,10 @@ if __name__ == "__main__":
             multi.append(path)
             for l, t in trs.items():
                 d = t.page(doc, path)
+                if l == "ka":  # Georgian link previews
+                    d = re.sub(r'/assets/img/og-(\w+)\.png', r'/assets/img/og-\1-ka.png', d)
+                    d = d.replace('<meta property="og:locale" content="en_US">\n<meta property="og:locale:alternate" content="ka_GE">',
+                                  '<meta property="og:locale" content="ka_GE">\n<meta property="og:locale:alternate" content="en_US">')
                 if l == "ka":  # numbers the text translator skips
                     d = d.replace("<b>3.9M</b>", "<b>3.9 მლნ</b>").replace("1 : 82,000", "1 : 82 000")
                 d = d.replace("<script ", f'<script src="/assets/i18n/{l}.js?v={ASSET_V}"></script>\n<script ', 1) if "<script " in d else d

@@ -326,6 +326,20 @@
     if (canBook && (c.packages || []).length) html += '<div class="book-bar dark" id="book-bar"><div><span>From</span><b>' + H.money(H.fromPrice(c), c.currency) + '</b></div><a class="btn btn-primary" href="#book">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + '</a></div>';
     html += modal(c, st);
     root.innerHTML = html;
+    // structured data for Google, once a camp has real dates
+    if (c.start_date) {
+      var V2 = H.venue(c), from2 = H.fromPrice(c), cv2 = H.cover(c);
+      var ev = { '@context': 'https://schema.org', '@type': 'Event', name: c.title, description: c.summary || undefined,
+        startDate: c.start_date, endDate: c.end_date || c.start_date,
+        eventStatus: c.status === 'cancelled' ? 'https://schema.org/EventCancelled' : 'https://schema.org/EventScheduled',
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        location: { '@type': 'Place', name: c.venue || (V2 && V2.name) || c.city || 'Georgia', address: { '@type': 'PostalAddress', addressLocality: c.city || undefined, addressCountry: 'GE', streetAddress: c.address || (V2 && V2.address) || undefined } },
+        image: cv2 ? [new URL(cv2.url, location.origin).href] : undefined,
+        organizer: { '@type': 'Organization', name: 'CHIDAOBA', url: 'https://chidaoba.com/' } };
+      if (from2 != null) ev.offers = { '@type': 'Offer', price: from2, priceCurrency: c.currency, url: location.href, availability: st.key === 'full' ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock' };
+      var ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.textContent = JSON.stringify(ev); document.head.appendChild(ld);
+    }
+    var md = document.querySelector('meta[name="description"]'); if (md && c.summary) md.setAttribute('content', c.summary);
 
     wireMedia(root);
     wireCoaches(root, coItems);
