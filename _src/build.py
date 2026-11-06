@@ -165,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "73"
+ASSET_V = "76"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -387,6 +387,9 @@ def camps():
         ("Do I need experience?", "Every camp shows its level. Many are open to all levels; tell us your experience when you book."),
         ("Do I need to speak Georgian?", "No. Sessions and communication for international guests are in English."),
         ("How do I get to Georgia?", "Georgia has international airports in Tbilisi, Kutaisi and Batumi. Each camp page says where it is and whether transfers are available as an add-on. Please check the visa rules for your passport."),
+        ("What if I cancel?", "If you cancel 60 days or more before the camp starts, we refund 80% of what you paid. From 59 to 30 days before, we refund 50%. Less than 30 days before, there is no refund. You can give your place to someone else at any time at no cost. If we cancel a camp, you get a full refund."),
+        ("Do I need to sign a waiver?", "Yes. Every participant signs a waiver before the first session: the adult waiver from 18, or the under 18 waiver signed by a parent or guardian. You can download and print both on the waivers page."),
+        ("Do I need insurance?", "We strongly recommend travel insurance that covers sports injuries. Medical costs are not included in the camp price."),
         ("Can I bring my team?", "Yes. Camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
     fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
@@ -464,6 +467,7 @@ def camps():
       <h2 class="display h-md">FAQ</h2>
     </div>
     <div class="faq">{fq}</div>{faq_ld}
+    <p class="body wv-link"><a class="link" href="/camps/waivers/">Camp waivers: download and print</a></p>
     <div class="team-cta">
       <div><h3 class="display h-md">Want a camp for your club?</h3>
       <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
@@ -810,6 +814,32 @@ def shop():
 <script id="shop-data" type="application/json">{json.dumps(data, ensure_ascii=False)}</script>
 """
 
+def waivers_page():
+    import waivers as W
+    cards = ""
+    for w in W.WAIVERS.values():
+        k = w["slug"]
+        cards += f"""<div class="wv-card" data-wv="{k}">
+      <h2 class="display h-md">{w["short"][0]}</h2>
+      <p class="body">{w["for"][0]}</p>
+      <div class="row-btns"><a class="btn btn-primary" href="/assets/docs/chidaoba-waiver-{k}.pdf" download>Download PDF</a>
+      <button type="button" class="btn btn-ghost" data-print="{k}">Print</button>
+      <a class="link" href="#wv-{k}">Read it here</a></div></div>"""
+    docs = "".join(W.doc_html(w) for w in W.WAIVERS.values())
+    return f"""
+<section class="page-hero dark"><div class="wrap">
+<a class="back label muted" href="/camps/">← All camps</a>
+<h1 class="display h-lg">Camp waivers</h1>
+<p class="lead">Every participant signs a waiver before training. Download it, print it, sign it and bring it with you, or send a signed copy before you arrive.</p>
+</div></section>
+<section class="section light"><div class="wrap">
+  <div class="wv-cards">{cards}</div>
+  <p class="body soft wv-note">Under 18: a parent or legal guardian fills in and signs the under 18 waiver. It includes permission for the child to travel and stay with CHIDAOBA during the camp.</p>
+  <div class="wv-docs">{docs}</div>
+</div></section>
+<script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-print]');if(!b)return;document.body.setAttribute('data-printing',b.dataset.print);window.print();}});window.addEventListener('afterprint',function(){{document.body.removeAttribute('data-printing')}});</script>
+"""
+
 def privacy():
     return f"""
 <section class="page-hero dark"><div class="wrap">
@@ -918,6 +948,8 @@ PAGES = [
      "Where we train: Ilia Gabliani Sports Complex in Mulakhi, Svaneti. Training hall, rooms for 40, meals, pool and mountain views.", venue_page),
     ("/admin/", "admin/index.html", "Admin | CHIDAOBA", "Admin.", admin),
     ("/shop/", "shop/index.html", "BJJ Gis, Rashguards and Wrestling Gear | CHIDAOBA Shop", "BJJ gis and belts, judogi, wrestling singlets and shoes, rashguards, fight shorts and training gear for men, women and kids. Order on WhatsApp, delivery in Georgia.", shop),
+    ("/camps/waivers/", "camps/waivers/index.html", "Camp waivers for adults and under 18s | CHIDAOBA",
+     "Download and print the CHIDAOBA camp waivers: the participant waiver for adults and the parent or guardian consent and waiver for participants under 18.", waivers_page),
     ("/contact/", "contact/index.html", "Contact | CHIDAOBA",
      "Contact CHIDAOBA: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
     ("/privacy/", "privacy/index.html", "Privacy | CHIDAOBA", "Privacy information for chidaoba.com.", privacy),
@@ -927,6 +959,8 @@ PAGES = [
 if __name__ == "__main__":
     import i18n
     trs = {l: i18n.Tr(l) for l in i18n.LANGS}
+    import waivers as _W
+    trs["ka"].d.update(_W.pairs())
     cat = {slugify(p[0]): {"name": p[0].replace("&amp;", "&"), "cat": {k: n for k, n, _ in SPORTS}[p[2]].replace("&amp;", "&")} for p in PRODUCTS}
     import shop_art
     _ka = json.load(open(os.path.join(ROOT, "_src", "i18n", "ka.json"), encoding="utf-8"))
@@ -960,6 +994,8 @@ if __name__ == "__main__":
             multi.append(path)
             for l, t in trs.items():
                 d = t.page(doc, path)
+                if l == "ka":  # Georgian waiver PDFs
+                    d = re.sub(r'/assets/docs/chidaoba-waiver-(\w+)\.pdf', r'/assets/docs/chidaoba-waiver-\1-ka.pdf', d)
                 if l == "ka":  # FAQ data in Georgian, matching the visible answers
                     def _faq(m):
                         dd = json.loads(m.group(1))

@@ -235,7 +235,7 @@
       fact('Dates', (c.start_date ? H.dateRange(c.start_date, c.end_date) : (c.dates_note || H.dateRange()))) + (n ? fact('Duration', n + ' days') : '') +
       fact('Where', [c.venue, c.city, c.country].filter(Boolean).join(', ') || 'TBA') + (c.level ? fact('Level', c.level) : '') +
       (s ? fact('Spots', s.left ? s.left + ' of ' + c.capacity + ' left' : 'Full (waitlist open)') : '') +
-      '</div><span class="cc-status hero-status st-' + st.key + '">' + e(st.label) + '</span>' + (canBook ? urgency(c, s) : '') + '</div></section>';
+      '</div><div class="hero-row"><span class="cc-status hero-status st-' + st.key + '">' + e(st.label) + '</span>' + shareHtml() + '</div>' + (canBook ? urgency(c, s) : '') + '</div></section>';
 
     html += '<section class="section light camp-body"><div class="wrap camp-grid"><div class="camp-main">';
     if (c.summary) html += '<p class="lead">' + e(c.summary) + '</p>';
@@ -289,6 +289,10 @@
           '<blockquote>' + e(r.text) + '</blockquote><figcaption><b>' + e(r.name) + '</b>' + (r.from ? '<span>' + e(r.from) + '</span>' : '') + '</figcaption></figure>';
       }).join('') + '</div>');
     }
+    if (c.status !== 'completed') html += block('Waivers', '<p class="body">Every participant signs a waiver before training. Download it, print it, sign it and bring it with you.</p>' +
+      '<div class="wv-mini"><a class="wv-dl" href="' + wvPdf('adult') + '" download><b>Adult waiver</b><span>18 and over · PDF</span></a>' +
+      '<a class="wv-dl" href="' + wvPdf('minor') + '" download><b>Under 18 waiver</b><span>Signed by a parent or guardian · PDF</span></a></div>' +
+      '<a class="link" href="' + (KA ? '/ka' : '') + '/camps/waivers/">Read the waivers</a>');
     if ((c.faq || []).length) html += block('Questions', '<div class="faq">' + c.faq.map(function (f) { return '<details><summary>' + e(f.q) + '</summary><p>' + e(f.a) + '</p></details>'; }).join('') + '</div>');
     html += '</div>';
 
@@ -343,6 +347,7 @@
 
     wireMedia(root);
     wireCoaches(root, coItems);
+    wireShare(root, c);
     var ib = root.querySelector('.cal-ics'); if (ib) ib.addEventListener('click', function () { icsDownload(c); });
     // schedule tabs
     root.querySelectorAll('.sched-tabs button').forEach(function (b) {
@@ -447,6 +452,42 @@
     document.body.appendChild(l); l.click(); l.remove();
   }
   function fact(k, v) { return '<div><span class="label muted">' + k + '</span><b>' + e(v) + '</b></div>'; }
+  function wvPdf(k) { return '/assets/docs/chidaoba-waiver-' + k + (KA ? '-ka' : '') + '.pdf'; }
+  // ---------- share a camp: native share on phones, otherwise copy and apps ----------
+  function shareHtml() {
+    return '<div class="share"><button type="button" class="share-btn" aria-expanded="false" aria-controls="share-pop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share</button>' +
+      '<div class="share-pop" id="share-pop" hidden><button type="button" class="share-copy">Copy link</button>' +
+      '<a class="share-wa" target="_blank" rel="noopener">WhatsApp</a><a class="share-tg" target="_blank" rel="noopener">Telegram</a>' +
+      '<a class="share-fb" target="_blank" rel="noopener">Facebook</a><a class="share-mail">Email</a></div></div>';
+  }
+  function wireShare(root, c) {
+    var box = root.querySelector('.share'); if (!box) return;
+    var url = location.origin + location.pathname + '?c=' + encodeURIComponent(c.slug);
+    var when = c.start_date ? H.dateRange(c.start_date, c.end_date) : (c.dates_note || '');
+    var msg = c.title + (when && c.title.indexOf(when) < 0 ? ' · ' + when : '');
+    var btn = box.querySelector('.share-btn'), pop = box.querySelector('.share-pop'), cp = box.querySelector('.share-copy');
+    box.querySelector('.share-wa').href = 'https://wa.me/?text=' + encodeURIComponent(msg + '\n' + url);
+    box.querySelector('.share-tg').href = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(msg);
+    box.querySelector('.share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+    box.querySelector('.share-mail').href = 'mailto:?subject=' + encodeURIComponent(msg) + '&body=' + encodeURIComponent(url);
+    function toggle(open) { pop.hidden = !open; btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+    btn.addEventListener('click', function () {
+      if (navigator.share && matchMedia('(pointer:coarse)').matches) {
+        navigator.share({ title: c.title, text: msg, url: url }).catch(function () { });
+        if (window.CHD_TRACK) window.CHD_TRACK('camp', 'share ' + c.slug);
+        return;
+      }
+      toggle(pop.hidden);
+    });
+    cp.addEventListener('click', function () {
+      var done = function () { cp.textContent = KA ? 'ბმული დაკოპირდა' : 'Link copied'; setTimeout(function () { cp.textContent = KA ? 'ბმულის კოპირება' : 'Copy link'; }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { prompt('Copy', url); });
+      else { prompt('Copy', url); }
+      if (window.CHD_TRACK) window.CHD_TRACK('camp', 'copy ' + c.slug);
+    });
+    document.addEventListener('click', function (ev) { if (!box.contains(ev.target)) toggle(false); });
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') toggle(false); });
+  }
   function block(t, inner) { return '<div class="camp-block reveal in"><h2 class="display h-md">' + t + '<span class="dot">.</span></h2>' + inner + '</div>'; }
 
   function modal(c, st) {

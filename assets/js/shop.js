@@ -180,7 +180,7 @@
     $$('#pv-cols button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.v === sel.colour ? 'true' : 'false'); });
     $('#pv-col-name').textContent = sel.colour || '';
     $('#pv-art').innerHTML = p.photo ? '<img src="' + esc(p.photo) + '" alt="">' : artSvg(p, sel.colour);
-    $('#pv-wa').href = WA + '?text=' + encodeURIComponent(T('Hi CHIDAOBA! I would like to order:', 'გამარჯობა CHIDAOBA! მინდა შევუკვეთო:') + '\n' + line(cur, sel) + '\n\n' + T('Name:\nCity / country:', 'სახელი:\nქალაქი / ქვეყანა:'));
+    $('#pv-wa').href = WA + '?text=' + encodeURIComponent(orderText([{ id: cur, size: sel.size, colour: sel.colour, q: 1 }]).text);
   }
   function fmt(n, cur) {
     if ((cur || 'GEL') === 'GEL') return (Math.round(n) === +n ? +n : (+n).toFixed(2)) + ' ₾';
@@ -189,6 +189,26 @@
   function line(id, o) {
     var p = P[id];
     return p.name + (o.size && !p.one ? ', ' + T('size ', 'ზომა ') + o.size : '') + (o.colour ? ', ' + o.colour : '') + ' x' + o.q;
+  }
+  // ---------- the WhatsApp order message: easy to read and to reply to ----------
+  function orderRef() { var a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', r = ''; for (var i = 0; i < 4; i++) r += a[Math.floor(Math.random() * a.length)]; return r; }
+  function orderLine(k, id, o) {
+    var p = P[id], who = BADGE[p.aud] ? ' (' + BADGE[p.aud].replace(/<[^>]+>/g, '') + ')' : '';
+    var bits = [];
+    if (o.size && !p.one) bits.push(T('Size ', 'ზომა ') + o.size);
+    if (o.colour) bits.push(o.colour);
+    bits.push(T('Qty ', 'რაოდენობა ') + o.q);
+    if (p.price != null) bits.push(fmt(p.price * o.q, p.currency));
+    return k + '. ' + p.name + who + '\n   ' + bits.join(' · ') + '\n   chidaoba.com/shop/#' + id;
+  }
+  function orderText(items) {
+    var ref = orderRef(), priced = items.filter(function (i) { return P[i.id].price != null; });
+    var tot = priced.reduce(function (s, i) { return s + P[i.id].price * i.q; }, 0);
+    var t = T('Hi CHIDAOBA! New order #', 'გამარჯობა CHIDAOBA! ახალი შეკვეთა #') + ref + '\n\n' +
+      items.map(function (i, k) { return orderLine(k + 1, i.id, i); }).join('\n\n');
+    if (priced.length) t += '\n\n' + T('Total: ', 'ჯამი: ') + fmt(tot, P[priced[0].id].currency) + (priced.length < items.length ? T(' (plus items with price on request)', ' (+ ნივთები, რომელთა ფასი მოთხოვნითაა)') : '');
+    t += '\n\n' + T('Name:\nCity / country:\nDelivery or pickup:', 'სახელი:\nქალაქი / ქვეყანა:\nმიწოდება თუ ადგილზე გატანა:');
+    return { ref: ref, text: t };
   }
   function ready() {
     if (!sel.size) { $('#pv-msg').textContent = T('Please choose a size.', 'აირჩიეთ ზომა.'); return false; }
@@ -238,7 +258,7 @@
     $('#bag-send').hidden = !b.length; $('#bag-clear').hidden = !b.length;
     var priced = b.filter(function (i) { return P[i.id].price != null; }), tot = priced.reduce(function (s, i) { return s + P[i.id].price * i.q; }, 0), cur = priced.length ? P[priced[0].id].currency : 'GEL';
     var te = $('#bag-total'); if (te) { te.hidden = !priced.length; te.innerHTML = '<span>' + T(priced.length < b.length ? 'Total for priced items' : 'Total', priced.length < b.length ? 'ჯამი ფასიანი ნივთებისთვის' : 'ჯამი') + '</span><b>' + fmt(tot, cur) + '</b>'; }
-    $('#bag-send').href = WA + '?text=' + encodeURIComponent(T('Hi CHIDAOBA! I would like to order:', 'გამარჯობა CHIDAOBA! მინდა შევუკვეთო:') + '\n' + b.map(function (i, k) { return (k + 1) + '. ' + line(i.id, i); }).join('\n') + '\n\n' + T('Name:\nCity / country:', 'სახელი:\nქალაქი / ქვეყანა:'));
+    $('#bag-send').href = WA + '?text=' + encodeURIComponent(orderText(b).text);
   }
   function openBag(added) {
     renderBag(); bagd.hidden = false; document.body.classList.add('modal-open');
