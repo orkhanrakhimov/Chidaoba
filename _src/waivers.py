@@ -54,7 +54,7 @@ WAIVERS = {
       ("Declaration", "განცხადება", [
         ("p", ("I am 18 or older. I have read and understood this waiver, I have had the chance to ask questions, and I sign it voluntarily.",
                "18 წლის ან უფროსი ვარ. წავიკითხე და გავიგე ეს ფორმა, მქონდა შესაძლებლობა, კითხვები დამესვა, და ხელს ნებაყოფლობით ვაწერ.")),
-        ("f", [("Signature", "ხელმოწერა"), ("Full name", "სახელი და გვარი"), ("Date", "თარიღი"), ("Place", "ადგილი")])]),
+        ("f", [("Signature", "ხელმოწერა"), ("Full name", "სახელი და გვარი"), ("Passport or ID number", "პასპორტის ან პირადობის ნომერი"), ("Date", "თარიღი"), ("Place", "ადგილი")])]),
     ],
   },
   "minor": {
@@ -66,6 +66,7 @@ WAIVERS = {
       ("Child", "ბავშვი", [("f", [("Full name", "სახელი და გვარი"), ("Date of birth", "დაბადების თარიღი"), ("Age", "ასაკი"),
                                   ("Nationality", "მოქალაქეობა"), ("Passport or ID number", "პასპორტის ან პირადობის ნომერი")])]),
       ("Parent or guardian", "მშობელი ან მეურვე", [("f", [("Full name", "სახელი და გვარი"), ("Relationship to the child", "კავშირი ბავშვთან"),
+                                                          ("Passport or ID number", "პასპორტის ან პირადობის ნომერი"), ("Date of birth", "დაბადების თარიღი"),
                                                           ("Phone", "ტელეფონი"), ("Email", "ელფოსტა"), ("Address", "მისამართი")])]),
       ("Emergency contacts", "საგანგებო კონტაქტები", [
         ("p", ("People we can call if we cannot reach you.", "ადამიანები, რომლებსაც დავუკავშირდებით, თუ თქვენ ვერ მოგაგნებთ.")),
@@ -106,9 +107,9 @@ WAIVERS = {
       ("Declaration", "განცხადება", [
         ("p", ("I am the parent or legal guardian of the child named above. I have read and understood this form and I sign it voluntarily.",
                "ვარ ზემოთ დასახელებული ბავშვის მშობელი ან კანონიერი მეურვე. წავიკითხე და გავიგე ეს ფორმა და ხელს ნებაყოფლობით ვაწერ.")),
-        ("f", [("Signature of parent or guardian", "მშობლის ან მეურვის ხელმოწერა"), ("Full name", "სახელი და გვარი"), ("Date", "თარიღი"), ("Place", "ადგილი")]),
+        ("f", [("Signature of parent or guardian", "მშობლის ან მეურვის ხელმოწერა"), ("Full name", "სახელი და გვარი"), ("Passport or ID number", "პასპორტის ან პირადობის ნომერი"), ("Date", "თარიღი"), ("Place", "ადგილი")]),
         ("p", ("Second parent or guardian, if required:", "მეორე მშობელი ან მეურვე, საჭიროების შემთხვევაში:")),
-        ("f", [("Signature", "ხელმოწერა"), ("Full name", "სახელი და გვარი"), ("Date", "თარიღი")])]),
+        ("f", [("Signature", "ხელმოწერა"), ("Full name", "სახელი და გვარი"), ("Passport or ID number", "პასპორტის ან პირადობის ნომერი"), ("Date", "თარიღი")])]),
     ],
   },
 }

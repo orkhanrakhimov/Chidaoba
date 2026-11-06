@@ -165,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "76"
+ASSET_V = "77"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -379,8 +379,7 @@ FORMATS = [
     ("Other Events", "Talks, screenings, team trips and collaborations with clubs and academies."),
 ]
 
-def camps():
-    faqs = [
+CAMP_FAQS = [
         ("How do I sign up?", "Choose your sport, open a camp, pick a package and press Request a spot. Fill in a short form and send it. We reply within 24 hours by WhatsApp or email to confirm your place."),
         ("Do I pay anything when I send a request?", "No. Sending a request is free and does not commit you to anything. We confirm your spot and the payment details with you personally."),
         ("What if the camp is full?", "Join the waitlist from the camp page. If a spot opens, we contact waitlisted people in order."),
@@ -392,6 +391,9 @@ def camps():
         ("Do I need insurance?", "We strongly recommend travel insurance that covers sports injuries. Medical costs are not included in the camp price."),
         ("Can I bring my team?", "Yes. Camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
+
+def camps():
+    faqs = CAMP_FAQS
     fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
     faq_ld = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}, ensure_ascii=False) + '</script>'
@@ -463,11 +465,11 @@ def camps():
 
 <section class="section light" style="padding-top:0">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:24px">
-      <h2 class="display h-md">FAQ</h2>
-    </div>
-    <div class="faq">{fq}</div>{faq_ld}
-    <p class="body wv-link"><a class="link" href="/camps/waivers/">Camp waivers: download and print</a></p>
+    <a class="prep-card" href="/camps/prepare/">
+      <div><h2 class="display h-md">Before you go</h2>
+      <p class="body">Six steps from request to arrival: payment, waivers to print, travel, a packing list and answers to common questions.</p></div>
+      <span class="btn btn-primary">See the steps</span>
+    </a>
     <div class="team-cta">
       <div><h3 class="display h-md">Want a camp for your club?</h3>
       <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
@@ -814,6 +816,72 @@ def shop():
 <script id="shop-data" type="application/json">{json.dumps(data, ensure_ascii=False)}</script>
 """
 
+def prepare_page():
+    import waivers as W
+    import urllib.parse
+    pack = [("BJJ gi, if your camp has gi sessions", "bjj-gi"), ("Rashguard", "rashguard-short-sleeve"), ("Fight shorts or spats", "fight-shorts"),
+            ("Slides for off the mat", "slides"), ("Water bottle", "water-bottle"), ("Mouthguard", "mouthguard"), ("Towel", "gym-towel"),
+            ("Warm layers and a rain jacket", ""), ("Passport or ID card", ""), ("Your signed waiver", ""), ("Insurance documents", ""),
+            ("Any personal medication", "")]
+    pk = "".join(f'<li><label><input type="checkbox" data-pack="{i}"><span>{t}</span></label>' +
+                 (f'<a class="link prep-shop" href="/shop/#{sh}">In the shop</a>' if sh else '') + '</li>' for i, (t, sh) in enumerate(pack))
+    wv = "".join(f"""<div class="prep-wv"><b>{w["short"][0]}</b><span>{w["for"][0]}</span>
+        <div class="row-btns"><a class="btn btn-primary" href="/assets/docs/chidaoba-waiver-{k}.pdf" download>Download PDF</a>
+        <a class="btn btn-ghost" href="/camps/waivers/?print={k}">Print</a><a class="link" href="/camps/waivers/#wv-{k}">Read it online</a></div></div>"""
+        for k, w in W.WAIVERS.items())
+    steps = [
+        ("request", "Request a spot",
+         """<p>Choose a camp and a package, then press Request a spot and fill in the short form. Sending a request is free and does not commit you to anything.</p>
+         <p>We reply within 24 hours by WhatsApp or email.</p><a class="btn btn-primary" href="/camps/">See camps</a>"""),
+        ("pay", "Confirm and pay",
+         """<p>We confirm your place and send you the payment details personally. There is no deposit.</p>
+         <p>If you cancel 60 days or more before the camp, you get 80% back. From 59 to 30 days before, 50%. Less than 30 days before, there is no refund. You can give your place to someone else at any time at no cost.</p>"""),
+        ("waiver", "Sign your waiver",
+         f"""<p>Every participant signs a waiver before the first session. Print it, sign it and bring it with you, or send us a photo of the signed copy before you arrive.</p>
+         <div class="prep-wvs">{wv}</div>
+         <p class="prep-note">Under 18: a parent or guardian signs the under 18 waiver. It includes permission for the child to travel and stay with CHIDAOBA. If the child travels to Georgia without one or both parents, border officers may ask for a notarised letter of consent.</p>"""),
+        ("travel", "Plan your trip",
+         """<p>Georgia has international airports in Tbilisi, Kutaisi and Batumi. Check the visa rules for your passport before you book.</p>
+         <p>Camps in Svaneti: Mestia can be reached by a short flight from Tbilisi or by road from Kutaisi or Zugdidi. Each camp page shows where it takes place, and we send travel details and transfer options to everyone registered.</p>
+         <p>We strongly recommend travel insurance that covers sports injuries.</p>"""),
+        ("pack", "Pack your bag",
+         f"""<p>Tick things off as you pack. Your list is saved on this device.</p><ul class="prep-pack">{pk}</ul>"""),
+        ("arrive", "Arrival day",
+         """<p>When you arrive, hand in your signed waiver and show your passport or ID card.</p>
+         <p>Tell the coaches about any injury or health condition before the first session.</p>"""),
+    ]
+    st = "".join(f"""<li class="prep-step" data-step="{k}"><details{' open' if i == 0 else ''}><summary><span class="prep-n">{i + 1}</span><b>{t}</b><span class="prep-ok" aria-hidden="true"></span></summary>
+      <div class="prep-body">{body}<label class="prep-done"><input type="checkbox" data-done="{k}"><span>Done</span></label></div></details></li>""" for i, (k, t, body) in enumerate(steps))
+    fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in CAMP_FAQS)
+    faq_ld = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in CAMP_FAQS]}, ensure_ascii=False) + '</script>'
+    ask = "https://wa.me/" + WA_NUM + "?text=" + urllib.parse.quote("Hi CHIDAOBA! I have a question about the camps:")
+    return f"""
+<section class="page-hero dark"><div class="wrap">
+<a class="back label muted" href="/camps/">← All camps</a>
+<h1 class="display h-lg">Before you go</h1>
+<p class="lead">Everything to do between choosing a camp and your first session, step by step.</p>
+<div class="prep-progress" aria-live="polite"><div class="prep-bar"><i></i></div><span><b data-prep-n>0</b> of {len(steps)} steps done</span></div>
+</div></section>
+<section class="section light"><div class="wrap prep-wrap">
+  <ol class="prep-steps">{st}</ol>
+</div></section>
+<section class="section light" style="padding-top:0" id="faq"><div class="wrap prep-wrap">
+  <div class="sec-head" style="margin-bottom:24px"><h2 class="display h-md">Questions</h2></div>
+  <div class="faq">{fq}</div>{faq_ld}
+  <div class="prep-ask"><div><h3 class="display h-md">Still have a question?</h3><p class="body">Write to us on WhatsApp. We usually reply the same day.</p></div>
+  <a class="btn btn-primary" href="{ask}" rel="noopener">Ask us on WhatsApp</a></div>
+</div></section>
+<script>(function(){{var K='chd_prep',S={{}};try{{S=JSON.parse(localStorage.getItem(K))||{{}}}}catch(e){{}}
+function save(){{try{{localStorage.setItem(K,JSON.stringify(S))}}catch(e){{}}}}
+function paint(){{var n=0,t=0;document.querySelectorAll('[data-done]').forEach(function(c){{t++;var on=!!(S.d||{{}})[c.dataset.done];c.checked=on;c.closest('.prep-step').classList.toggle('is-done',on);if(on)n++}});
+document.querySelectorAll('[data-pack]').forEach(function(c){{c.checked=!!(S.p||{{}})[c.dataset.pack]}});
+var b=document.querySelector('[data-prep-n]');if(b)b.textContent=n;var bar=document.querySelector('.prep-bar i');if(bar)bar.style.width=(t?n/t*100:0)+'%'}}
+document.addEventListener('change',function(e){{var c=e.target;if(c.dataset.done){{S.d=S.d||{{}};S.d[c.dataset.done]=c.checked;save();paint();
+if(c.checked){{var li=c.closest('.prep-step'),nx=li.nextElementSibling;li.querySelector('details').open=false;if(nx){{nx.querySelector('details').open=true;nx.scrollIntoView({{behavior:'smooth',block:'nearest'}})}}}}}}
+if(c.dataset.pack){{S.p=S.p||{{}};S.p[c.dataset.pack]=c.checked;save()}}}});paint()}})();</script>
+"""
+
 def waivers_page():
     import waivers as W
     cards = ""
@@ -837,7 +905,7 @@ def waivers_page():
   <p class="body soft wv-note">Under 18: a parent or legal guardian fills in and signs the under 18 waiver. It includes permission for the child to travel and stay with CHIDAOBA during the camp.</p>
   <div class="wv-docs">{docs}</div>
 </div></section>
-<script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-print]');if(!b)return;document.body.setAttribute('data-printing',b.dataset.print);window.print();}});window.addEventListener('afterprint',function(){{document.body.removeAttribute('data-printing')}});</script>
+<script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-print]');if(!b)return;document.body.setAttribute('data-printing',b.dataset.print);window.print();}});window.addEventListener('afterprint',function(){{document.body.removeAttribute('data-printing')}});var q=new URLSearchParams(location.search).get('print');if(q==='adult'||q==='minor')window.addEventListener('load',function(){{document.body.setAttribute('data-printing',q);setTimeout(function(){{window.print()}},400)}});</script>
 """
 
 def privacy():
@@ -948,6 +1016,8 @@ PAGES = [
      "Where we train: Ilia Gabliani Sports Complex in Mulakhi, Svaneti. Training hall, rooms for 40, meals, pool and mountain views.", venue_page),
     ("/admin/", "admin/index.html", "Admin | CHIDAOBA", "Admin.", admin),
     ("/shop/", "shop/index.html", "BJJ Gis, Rashguards and Wrestling Gear | CHIDAOBA Shop", "BJJ gis and belts, judogi, wrestling singlets and shoes, rashguards, fight shorts and training gear for men, women and kids. Order on WhatsApp, delivery in Georgia.", shop),
+    ("/camps/prepare/", "camps/prepare/index.html", "Before you go: steps to join a camp | CHIDAOBA",
+     "How to join a CHIDAOBA camp step by step: request a spot, payment and refunds, waivers to print, travel to Georgia and Svaneti, a packing list and answers to common questions.", prepare_page),
     ("/camps/waivers/", "camps/waivers/index.html", "Camp waivers for adults and under 18s | CHIDAOBA",
      "Download and print the CHIDAOBA camp waivers: the participant waiver for adults and the parent or guardian consent and waiver for participants under 18.", waivers_page),
     ("/contact/", "contact/index.html", "Contact | CHIDAOBA",

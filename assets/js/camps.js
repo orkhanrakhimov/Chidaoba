@@ -289,10 +289,7 @@
           '<blockquote>' + e(r.text) + '</blockquote><figcaption><b>' + e(r.name) + '</b>' + (r.from ? '<span>' + e(r.from) + '</span>' : '') + '</figcaption></figure>';
       }).join('') + '</div>');
     }
-    if (c.status !== 'completed') html += block('Waivers', '<p class="body">Every participant signs a waiver before training. Download it, print it, sign it and bring it with you.</p>' +
-      '<div class="wv-mini"><a class="wv-dl" href="' + wvPdf('adult') + '" download><b>Adult waiver</b><span>18 and over · PDF</span></a>' +
-      '<a class="wv-dl" href="' + wvPdf('minor') + '" download><b>Under 18 waiver</b><span>Signed by a parent or guardian · PDF</span></a></div>' +
-      '<a class="link" href="' + (KA ? '/ka' : '') + '/camps/waivers/">Read the waivers</a>');
+    if (c.status !== 'completed') html += block('Before you go', '<a class="prep-card prep-card-s" href="' + (KA ? '/ka' : '') + '/camps/prepare/"><div><p class="body">Steps from request to arrival, waivers to print and a packing list.</p></div><span class="btn btn-primary">See the steps</span></a>');
     if ((c.faq || []).length) html += block('Questions', '<div class="faq">' + c.faq.map(function (f) { return '<details><summary>' + e(f.q) + '</summary><p>' + e(f.a) + '</p></details>'; }).join('') + '</div>');
     html += '</div>';
 
