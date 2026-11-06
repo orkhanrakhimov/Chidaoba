@@ -1956,3 +1956,19 @@ html[lang="ka"] :is(.prep-progress span,.prep-wv span,.prep-note,.prep-shop){fon
 .ch-history-t p:last-child{margin:0}
 @media (max-width:800px){.ch-history{grid-template-columns:minmax(0,1fr);margin-top:40px}}
 .hero-links{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-top:26px}
+/* camps page: one clear block per topic */
+.cz{scroll-margin-top:calc(var(--head,64px) + 64px)}
+.cz-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 32px;margin-bottom:32px}
+.cz-head h2{margin:0}.cz-head p{margin:0;max-width:440px}
+.camps-list-sec.cz{padding-top:clamp(56px,7vw,96px)!important}
+.cz-notify{margin-top:40px;padding:clamp(22px,3vw,36px);border-radius:var(--r-card,18px);background:#2B2B2B}
+.cz-notify .news{margin:0}
+.cz-before{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:28px}
+.cz-before a{display:flex;flex-direction:column;gap:6px;padding:22px;border-radius:var(--r-card,18px);background:#2B2B2B;color:#F2F1EC;text-decoration:none;transition:transform .2s,background .2s}
+.cz-before a:hover{transform:translateY(-2px);background:#353535}
+.cz-before b{font-size:19px}.cz-before span{font-size:15px;color:#C9C6BD;line-height:1.5}
+#how .steps{margin-top:0}
+#club .team-cta{margin:0}
+.camps-nav{z-index:20}
+@media (max-width:800px){.cz-before{grid-template-columns:minmax(0,1fr)}.cz-head{margin-bottom:24px}}
+html[lang="ka"] :is(.cz-before span){font-size:16px!important}

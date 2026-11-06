@@ -165,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "79"
+ASSET_V = "80"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -398,45 +398,39 @@ def camps():
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}, ensure_ascii=False) + '</script>'
     tabs = [("all", "All camps", "Every sport"), ("bjj", "BJJ &amp; Grappling", "Gi and no-gi"), ("wrestling", "Wrestling", "Freestyle &amp; Greco-Roman"), ("judo", "Judo", "Throws and groundwork")]
     tb = "".join(f'<button type="button" data-f="{k}" aria-pressed="{"true" if k == "all" else "false"}"><b>{t}</b><span>{sub}</span><em data-n="{k}"></em></button>' for k, t, sub in tabs)
+    chapters = [("camps", "Camps"), ("venues", "Venues"), ("coaches", "Coaches"), ("how", "How to sign up"), ("before", "Before you go"), ("club", "Club camps")]
+    ch = "".join(f'<a href="#{k}"><b>{i+1:02d}</b> {t}</a>' for i, (k, t) in enumerate(chapters))
     return f"""
 <section class="page-hero dark camps-hero">
   {sym_svg("ghost")}
   <div class="wrap" style="position:relative">
     <h1 class="display h-xl"><span class="ln"><span>Training camps</span></span></h1>
     <p class="lead soft fade-load">Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo, with experienced local coaches.</p>
-    <div class="hero-links fade-load"><a class="btn btn-primary" href="/camps/prepare/">Before you go: steps and waivers</a>
-    <a class="hero-story" href="/georgia/">Why train in Georgia {arrow()}</a></div>
+    <a class="hero-story fade-load" href="/georgia/" style="margin-top:22px">Why train in Georgia {arrow()}</a>
   </div>
 </section>
 
-<section class="section dark camps-list-sec" id="camps" style="padding-top:0">
+<nav class="chapters camps-nav" aria-label="On this page"><div class="wrap">{ch}</div></nav>
+
+<section class="section dark camps-list-sec cz" id="camps" aria-labelledby="cz-camps">
   <div class="wrap">
-    <div class="pick-head"><h2 class="display h-md">Choose your sport</h2></div>
+    <div class="cz-head"><h2 id="cz-camps" class="display h-lg">Upcoming camps</h2><p class="body soft">Choose your sport to see its camps.</p></div>
     <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport">{tb}</div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
+    <div class="cz-notify" id="notify">{newsletter_form("camps", interests=("bjj", "wrestling", "judo"), title="Get new camp dates by email", sub="Choose your sports. We email you when a new camp opens, before anyone else.", btn="Notify me", hidden=("camps",))}</div>
   </div>
 </section>
 
-<section class="section dark notify-sec" id="notify">
-  <div class="wrap notify-in">{newsletter_form("camps", interests=("bjj", "wrestling", "judo"), title="Get new camp dates by email", sub="Choose your sports. We email you when a new camp opens, before anyone else.", btn="Notify me", hidden=("camps",))}</div>
-</section>
-
-<section class="section light venues-sec">
+<section class="section light venues-sec cz" id="venues" aria-labelledby="cz-venues">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:40px">
-      <h2 class="display h-md">Our venues</h2>
-      <p class="body muted">Training halls, accommodation and meals in one place.</p>
-    </div>
+    <div class="cz-head"><h2 id="cz-venues" class="display h-lg">Venues</h2><p class="body muted">Where we train: halls, accommodation and meals in one place.</p></div>
     <div id="venue-list" class="venue-list"></div>
   </div>
 </section>
 
-<section class="section dark coaches-sec" id="coaches" aria-labelledby="co-title">
+<section class="section dark coaches-sec cz" id="coaches" aria-labelledby="co-title">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:32px">
-      <h2 id="co-title" class="display h-md">Coaches</h2>
-      <p class="body soft">The coaches who lead our camps, with their titles and experience.</p>
-    </div>
+    <div class="cz-head"><h2 id="co-title" class="display h-lg">Coaches</h2><p class="body soft">The coaches who lead our camps, with their titles and experience.</p></div>
     <div class="co-tabs" role="group" aria-label="Coaches by sport">
       <button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="bjj" aria-pressed="false">BJJ &amp; grappling</button><button type="button" data-f="wrestling" aria-pressed="false">Wrestling</button><button type="button" data-f="judo" aria-pressed="false">Judo</button>
     </div>
@@ -444,11 +438,9 @@ def camps():
   </div>
 </section>
 
-<section class="section light" style="padding-top:0">
+<section class="section light cz" id="how" aria-labelledby="cz-how">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:48px">
-      <h2 class="display h-md">How to sign up</h2>
-    </div>
+    <div class="cz-head"><h2 id="cz-how" class="display h-lg">How to sign up</h2><p class="body muted">Three steps, and nothing to pay when you send a request.</p></div>
     <div class="steps stagger">
       <div><span class="n">01</span><h3>Choose</h3><p>Pick your sport, then the camp and package that suit you: training only, with accommodation, or all-inclusive.</p></div>
       <div><span class="n">02</span><h3>Request</h3><p>Fill in a short form and send it. It takes a minute and there is no payment.</p></div>
@@ -463,15 +455,22 @@ def camps():
   </div>
 </section>
 
-<section class="section light" style="padding-top:0">
+<section class="section dark cz" id="before" aria-labelledby="cz-before">
   <div class="wrap">
-    <a class="prep-card" href="/camps/prepare/">
-      <div><h2 class="display h-md">Before you go</h2>
-      <p class="body">Six steps from request to arrival: payment, waivers to print, travel, a packing list and answers to common questions.</p></div>
-      <span class="btn btn-primary">See the steps</span>
-    </a>
+    <div class="cz-head"><h2 id="cz-before" class="display h-lg">Before you go</h2><p class="body soft">Everything to prepare between your request and the first session.</p></div>
+    <div class="cz-before">
+      <a href="/camps/prepare/"><b>Six steps</b><span>From request to arrival, with a progress tracker.</span></a>
+      <a href="/camps/waivers/"><b>Waivers</b><span>Adult and under 18, ready to download and print.</span></a>
+      <a href="/camps/prepare/#faq"><b>Questions</b><span>Payment, cancellation, insurance and travel.</span></a>
+    </div>
+    <a class="btn btn-primary" href="/camps/prepare/">See the steps</a>
+  </div>
+</section>
+
+<section class="section light cz" id="club" aria-labelledby="cz-club">
+  <div class="wrap">
     <div class="team-cta">
-      <div><h3 class="display h-md">Want a camp for your club?</h3>
+      <div><h2 id="cz-club" class="display h-lg">Camps for your club</h2>
       <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
       <a class="btn btn-primary" href="/contact/">Get in touch {arrow()}</a>
     </div>

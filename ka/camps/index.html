@@ -26,7 +26,7 @@
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=79">
+<link rel="stylesheet" href="/assets/css/site.css?v=80">
 <link rel="alternate" hreflang="en" href="https://chidaoba.com/camps/">
 <link rel="alternate" hreflang="ka" href="https://chidaoba.com/ka/camps/">
 <link rel="alternate" hreflang="x-default" href="https://chidaoba.com/camps/">
@@ -54,21 +54,18 @@
   <div class="wrap" style="position:relative">
     <h1 class="display h-xl"><span class="ln"><span>სავარჯიშო ბანაკები</span></span></h1>
     <p class="lead soft fade-load">სავარჯიშო ბანაკები საქართველოში BJJ-სა და გრეპლინგში, თავისუფალ და ბერძნულ-რომაულ ჭიდაობასა და ძიუდოში, გამოცდილი ადგილობრივი მწვრთნელებით.</p>
-    <div class="hero-links fade-load"><a class="btn btn-primary" href="/ka/camps/prepare/">მომზადება: ნაბიჯები და ფორმები</a>
-    <a class="hero-story" href="/ka/georgia/">რატომ უნდა ივარჯიშო საქართველოში? </a></div>
+    <a class="hero-story fade-load" href="/ka/georgia/" style="margin-top:22px">რატომ უნდა ივარჯიშო საქართველოში? </a>
   </div>
 </section>
 
-<section class="section dark camps-list-sec" id="camps" style="padding-top:0">
+<nav class="chapters camps-nav" aria-label="ამ გვერდზე"><div class="wrap"><a href="#camps"><b>01</b> ბანაკები</a><a href="#venues"><b>02</b> ობიექტები</a><a href="#coaches"><b>03</b> მწვრთნელები</a><a href="#how"><b>04</b> როგორ დავრეგისტრირდე</a><a href="#before"><b>05</b> მომზადება</a><a href="#club"><b>06</b> კლუბის ბანაკები</a></div></nav>
+
+<section class="section dark camps-list-sec cz" id="camps" aria-labelledby="cz-camps">
   <div class="wrap">
-    <div class="pick-head"><h2 class="display h-md">აირჩიე სახეობა</h2></div>
+    <div class="cz-head"><h2 id="cz-camps" class="display h-lg">მომავალი ბანაკები</h2><p class="body soft">აირჩიეთ სახეობა მისი ბანაკების სანახავად.</p></div>
     <div class="disc-tabs sport-pick" role="group" aria-label="აირჩიე სახეობა"><button type="button" data-f="all" aria-pressed="true"><b>ყველა ბანაკი</b><span>ყველა სახეობა</span><em data-n="all"></em></button><button type="button" data-f="bjj" aria-pressed="false"><b>BJJ და გრეპლინგი</b><span>Gi და no-gi</span><em data-n="bjj"></em></button><button type="button" data-f="wrestling" aria-pressed="false"><b>ჭიდაობა</b><span>თავისუფალი და ბერძნულ-რომაული</span><em data-n="wrestling"></em></button><button type="button" data-f="judo" aria-pressed="false"><b>ძიუდო</b><span>ჩაგდებები და პარტერი</span><em data-n="judo"></em></button></div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
-  </div>
-</section>
-
-<section class="section dark notify-sec" id="notify">
-  <div class="wrap notify-in"><form class="js-form news news-big" data-db="subscribe" data-source="camps" data-key="" data-ok-text="გმადლობთ. თქვენ სიაში ხართ." novalidate>
+    <div class="cz-notify" id="notify"><form class="js-form news news-big" data-db="subscribe" data-source="camps" data-key="" data-ok-text="გმადლობთ. თქვენ სიაში ხართ." novalidate>
       <input type="hidden" name="subject" value="Email signup, chidaoba.com">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="hidden" name="interest" value="camps">
       <label class="news-label" for="nl-camps">მიიღეთ ახალი ბანაკების თარიღები ელფოსტით</label>
@@ -79,24 +76,19 @@
       <label class="news-consent"><input type="checkbox" name="consent" value="yes" required><span>ვეთანხმები, მივიღო ელექტრონული წერილები და ვიღებ <a href="/ka/privacy/">კონფიდენციალურობის პოლიტიკას</a>.</span></label>
       <p class="form-msg" aria-live="polite"></p>
     </form></div>
+  </div>
 </section>
 
-<section class="section light venues-sec">
+<section class="section light venues-sec cz" id="venues" aria-labelledby="cz-venues">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:40px">
-      <h2 class="display h-md">ჩვენი ადგილები</h2>
-      <p class="body muted">სავარჯიშო დარბაზები, საცხოვრებელი და კვება ერთ ადგილას.</p>
-    </div>
+    <div class="cz-head"><h2 id="cz-venues" class="display h-lg">ობიექტები</h2><p class="body muted">სად ვვარჯიშობთ: დარბაზი, საცხოვრებელი და კვება ერთ ადგილას.</p></div>
     <div id="venue-list" class="venue-list"></div>
   </div>
 </section>
 
-<section class="section dark coaches-sec" id="coaches" aria-labelledby="co-title">
+<section class="section dark coaches-sec cz" id="coaches" aria-labelledby="co-title">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:32px">
-      <h2 id="co-title" class="display h-md">მწვრთნელები</h2>
-      <p class="body soft">მწვრთნელები, რომლებიც ჩვენს ბანაკებს უძღვებიან, მათი ტიტულებითა და გამოცდილებით.</p>
-    </div>
+    <div class="cz-head"><h2 id="co-title" class="display h-lg">მწვრთნელები</h2><p class="body soft">მწვრთნელები, რომლებიც ჩვენს ბანაკებს უძღვებიან, მათი ტიტულებითა და გამოცდილებით.</p></div>
     <div class="co-tabs" role="group" aria-label="მწვრთნელები სახეობების მიხედვით">
       <button type="button" data-f="all" aria-pressed="true">ყველა</button><button type="button" data-f="bjj" aria-pressed="false">BJJ და გრეპლინგი</button><button type="button" data-f="wrestling" aria-pressed="false">ჭიდაობა</button><button type="button" data-f="judo" aria-pressed="false">ძიუდო</button>
     </div>
@@ -104,11 +96,9 @@
   </div>
 </section>
 
-<section class="section light" style="padding-top:0">
+<section class="section light cz" id="how" aria-labelledby="cz-how">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:48px">
-      <h2 class="display h-md">როგორ დავრეგისტრირდე</h2>
-    </div>
+    <div class="cz-head"><h2 id="cz-how" class="display h-lg">როგორ დავრეგისტრირდე</h2><p class="body muted">სამი ნაბიჯი, და მოთხოვნის გაგზავნისას არაფერს იხდით.</p></div>
     <div class="steps stagger">
       <div><span class="n">01</span><h3>აირჩიე</h3><p>აირჩიეთ სახეობა, შემდეგ თქვენთვის შესაფერისი ბანაკი და პაკეტი: მხოლოდ ვარჯიში, საცხოვრებლით ან ყველაფერი ჩათვლით.</p></div>
       <div><span class="n">02</span><h3>მოთხოვნა</h3><p>შეავსეთ მოკლე ფორმა და გამოგზავნეთ. ერთ წუთს მოითხოვს და გადახდა არ არის საჭირო.</p></div>
@@ -123,15 +113,22 @@
   </div>
 </section>
 
-<section class="section light" style="padding-top:0">
+<section class="section dark cz" id="before" aria-labelledby="cz-before">
   <div class="wrap">
-    <a class="prep-card" href="/ka/camps/prepare/">
-      <div><h2 class="display h-md">მომზადება</h2>
-      <p class="body">ექვსი ნაბიჯი მოთხოვნიდან ჩამოსვლამდე: გადახდა, დასაბეჭდი ფორმები, მგზავრობა, ჩანთის სია და ხშირი კითხვები.</p></div>
-      <span class="btn btn-primary">ნაბიჯების ნახვა</span>
-    </a>
+    <div class="cz-head"><h2 id="cz-before" class="display h-lg">მომზადება</h2><p class="body soft">ყველაფერი, რაც მოთხოვნიდან პირველ ვარჯიშამდე უნდა მოამზადოთ.</p></div>
+    <div class="cz-before">
+      <a href="/ka/camps/prepare/"><b>ექვსი ნაბიჯი</b><span>მოთხოვნიდან ჩამოსვლამდე, პროგრესის თვალყურის დევნებით.</span></a>
+      <a href="/ka/camps/waivers/"><b>ფორმები</b><span>ზრდასრულისა და 18 წლამდე, ჩამოსატვირთად და დასაბეჭდად.</span></a>
+      <a href="/ka/camps/prepare/#faq"><b>კითხვები</b><span>გადახდა, გაუქმება, დაზღვევა და მგზავრობა.</span></a>
+    </div>
+    <a class="btn btn-primary" href="/ka/camps/prepare/">ნაბიჯების ნახვა</a>
+  </div>
+</section>
+
+<section class="section light cz" id="club" aria-labelledby="cz-club">
+  <div class="wrap">
     <div class="team-cta">
-      <div><h3 class="display h-md">გსურთ ბანაკი თქვენი კლუბისთვის?</h3>
+      <div><h2 id="cz-club" class="display h-lg">ბანაკები თქვენი კლუბისთვის</h2>
       <p class="body muted">შეგვიძლია შევქმნათ კერძო ბანაკი თქვენი გუნდის დონის, თარიღებისა და ბიუჯეტის მიხედვით.</p></div>
       <a class="btn btn-primary" href="/ka/contact/">დაგვიკავშირდით </a>
     </div>
@@ -165,7 +162,7 @@
   </div>
 </footer>
 <a class="wa-float" href="https://wa.me/995595606670?text=Hi%20CHIDAOBA%2C%20" rel="noopener" aria-label="მოგვწერეთ WhatsApp-ზე"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg><span>WhatsApp</span></a>
-<script src="/assets/i18n/ka.js?v=79"></script>
-<script src="/assets/js/config.js?v=79" defer></script><script src="/assets/js/venues.js?v=79" defer></script><script src="/assets/js/data.js?v=79" defer></script><script src="/assets/js/camps.js?v=79" defer></script><script src="/assets/js/site.js?v=79" defer></script>
+<script src="/assets/i18n/ka.js?v=80"></script>
+<script src="/assets/js/config.js?v=80" defer></script><script src="/assets/js/venues.js?v=80" defer></script><script src="/assets/js/data.js?v=80" defer></script><script src="/assets/js/camps.js?v=80" defer></script><script src="/assets/js/site.js?v=80" defer></script>
 </body>
 </html>
