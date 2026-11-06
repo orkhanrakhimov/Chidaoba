@@ -1955,3 +1955,4 @@ html[lang="ka"] :is(.prep-progress span,.prep-wv span,.prep-note,.prep-shop){fon
 .ch-history-t p{margin:0 0 14px;font-size:17px;line-height:1.6;max-width:640px}
 .ch-history-t p:last-child{margin:0}
 @media (max-width:800px){.ch-history{grid-template-columns:minmax(0,1fr);margin-top:40px}}
+.hero-links{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-top:26px}

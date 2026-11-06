@@ -148,7 +148,7 @@ def footer(path=""):
     <div class="foot-grid">
       {news}
       <nav class="foot-col" aria-label="Explore"><h3>Explore</h3><ul>
-        <li><a href="/culture/">Our story</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
+        <li><a href="/culture/">Our story</a></li><li><a href="/camps/">Camps &amp; Events</a></li><li><a href="/camps/prepare/">Before you go</a></li>
         <li><a href="/georgia/">Why Georgia</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
       <div class="foot-col"><h3>Connect</h3>{socials()}<ul style="margin-top:22px"><li><a href="/contact/">Contact</a></li></ul></div>
       <div class="foot-col"><h3>Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
@@ -165,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "78"
+ASSET_V = "79"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -404,7 +404,8 @@ def camps():
   <div class="wrap" style="position:relative">
     <h1 class="display h-xl"><span class="ln"><span>Training camps</span></span></h1>
     <p class="lead soft fade-load">Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo, with experienced local coaches.</p>
-    <a class="hero-story fade-load" href="/georgia/" style="margin-top:22px">Why train in Georgia {arrow()}</a>
+    <div class="hero-links fade-load"><a class="btn btn-primary" href="/camps/prepare/">Before you go: steps and waivers</a>
+    <a class="hero-story" href="/georgia/">Why train in Georgia {arrow()}</a></div>
   </div>
 </section>
 
