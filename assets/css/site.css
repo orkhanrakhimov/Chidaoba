@@ -1973,3 +1973,18 @@ html[lang="ka"] :is(.prep-progress span,.prep-wv span,.prep-note,.prep-shop){fon
 @media (max-width:800px){.cz-before{grid-template-columns:minmax(0,1fr)}.cz-head{margin-bottom:24px}}
 html[lang="ka"] :is(.cz-before span){font-size:16px!important}
 .btn-wa{display:inline-flex;align-items:center;gap:10px}.btn-wa svg{width:20px;height:20px;fill:currentColor;flex:none}
+/* A day at camp: a vertical timeline, mat sessions marked in red */
+.day-line{list-style:none;margin:8px 0 0;padding:0;border:0!important;position:relative}
+.day-line::before{content:"";position:absolute;left:79px;top:14px;bottom:14px;width:2px;background:#D3CFC4;border-radius:2px}
+.day-line li{display:grid!important;grid-template-columns:64px 32px minmax(0,1fr)!important;gap:0!important;padding:0 0 22px!important;border:0!important;position:relative}
+.day-line li::before{content:"";grid-column:2;grid-row:1;justify-self:center;margin-top:7px;width:14px;height:14px;border-radius:50%;background:#F2F1EC;border:3px solid #9C998F;z-index:1}
+.day-line li.mat::before{background:#B5212F;border-color:#B5212F;box-shadow:0 0 0 5px rgba(181,33,47,.15)}
+.day-line time{grid-column:1;grid-row:1;font-size:17px!important;font-weight:700;color:#4A4A48;padding-top:2px}
+.day-line li>div{grid-column:3;grid-row:1;padding-left:12px}
+.day-line b{font-size:18px!important;font-weight:700;color:#1E1E1E}
+.day-line li.mat b{color:#B5212F}
+.day-line p{margin:4px 0 0;font-size:16px;line-height:1.55;color:#4A4A48;max-width:560px}
+.day-line li.mat>div{background:#F6E7E8;border-radius:14px;padding:12px 16px;margin-top:-8px;margin-left:12px}
+.day-line li:last-child{padding-bottom:0!important}
+html[lang="ka"] .day-line p{font-size:16px!important;letter-spacing:.04em}
+@media (max-width:600px){.day-line::before{left:63px}.day-line li{grid-template-columns:52px 24px minmax(0,1fr)!important}.day-line time{font-size:15px!important}}

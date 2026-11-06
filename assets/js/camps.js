@@ -262,8 +262,10 @@
         (c.group_min && c.group_discount_pct ? '<p class="note">Groups of ' + c.group_min + '+ save ' + c.group_discount_pct + '%.</p>' : ''));
     }
     if (sched.length) {
-      html += block('Schedule', '<div class="sched-tabs" role="tablist">' + sched.map(function (d, i) { return '<button role="tab" aria-selected="' + (i === 0) + '" data-i="' + i + '">' + e(d.day || 'Day ' + (i + 1)) + '</button>'; }).join('') + '</div>' +
-        sched.map(function (d, i) { return '<ol class="timeline sched-panel"' + (i ? ' hidden' : '') + ' data-i="' + i + '">' + (d.items || []).map(function (it) { return '<li><time>' + e(it.time) + '</time><div><b>' + e(it.title) + '</b></div></li>'; }).join('') + '</ol>'; }).join(''));
+      var MAT = /bjj|grappl|wrestl|judo|session|sparr|open mat|ვარჯიშ|ჭიდაობ|ძიუდო|გრეპლ|სპარინგ|ტატამ/i;
+      html += block(sched.length === 1 ? 'A day at camp' : 'Schedule', (sched.length > 1 ? '<div class="sched-tabs" role="tablist">' + sched.map(function (d, i) { return '<button role="tab" aria-selected="' + (i === 0) + '" data-i="' + i + '">' + e(d.day || 'Day ' + (i + 1)) + '</button>'; }).join('') + '</div>' : '') +
+        sched.map(function (d, i) { return '<ol class="timeline sched-panel day-line"' + (i ? ' hidden' : '') + ' data-i="' + i + '">' + (d.items || []).map(function (it) {
+          return '<li' + (MAT.test(it.title) ? ' class="mat"' : '') + '><time>' + e(it.time) + '</time><div><b>' + e(it.title) + '</b>' + (it.note ? '<p>' + e(it.note) + '</p>' : '') + '</div></li>'; }).join('') + '</ol>'; }).join(''));
     }
     if ((c.included || []).length || (c.excluded || []).length) {
       html += block('What’s included', '<div class="incl"><div><h3>Included</h3><ul>' + (c.included || []).map(function (t) { return '<li class="yes"><i>✓</i>' + e(t) + '</li>'; }).join('') + '</ul></div>' +

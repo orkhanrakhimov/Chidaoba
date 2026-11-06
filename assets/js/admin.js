@@ -194,7 +194,7 @@
     addons: [['name', 'Add-on', 'text', '', KA], ['price', 'Price', 'number', 's']],
     coaches: [['photo', 'Photo', 'photo'], ['name', 'Name'], ['role', 'Role / rank (e.g. BJJ black belt)', 'text', '', KA], ['titles', 'Titles and achievements (one per line)', 'lines', 'w', KA], ['bio', 'Short bio', 'area', '', KA]],
     faq: [['q', 'Question', 'text', 'w', KA], ['a', 'Answer', 'area', '', KA]],
-    schedule: [['day', 'Day / label', 'text', 's', KA], ['items', 'One line per item: “09:30 Morning technique”', 'area'], ['items_ka', 'Same lines in Georgian (titles only, same order)', 'area', 'ka-f']],
+    schedule: [['day', 'Day / label', 'text', 's', KA], ['items', 'One line per item: “09:30 Morning technique | short description (optional)”', 'area'], ['items_ka', 'Same lines in Georgian, same order (title | description)', 'area', 'ka-f']],
     bring: [['item', 'Item', 'text', '', KA], ['shop', 'Link to shop product', 'select', '', { opts: shopOpts() }]],
     reviews: [['name', 'Name'], ['from', 'Country / club'], ['rating', 'Stars', 'select', 's', { opts: { '5': '★★★★★', '4': '★★★★', '3': '★★★', '': 'No stars' } }], ['text', 'Review', 'area', '', KA]]
   };
@@ -202,7 +202,7 @@
   function editor(id) {
     var c = id ? state.camps.filter(function (k) { return k.id === id; })[0] : blank();
     if (!c) { location.hash = 'dash'; return; }
-    var sched = (c.schedule || []).map(function (d) { return { day: d.day, day_ka: d.day_ka, items: (d.items || []).map(function (i) { return (i.time ? i.time + ' ' : '') + i.title; }).join('\n'), items_ka: (d.items || []).map(function (i) { return i.title_ka || ''; }).join('\n').replace(/^\n+$/, '') }; });
+    var sched = (c.schedule || []).map(function (d) { return { day: d.day, day_ka: d.day_ka, items: (d.items || []).map(function (i) { return (i.time ? i.time + ' ' : '') + i.title + (i.note ? ' | ' + i.note : ''); }).join('\n'), items_ka: (d.items || []).map(function (i) { return (i.title_ka || '') + (i.note_ka ? ' | ' + i.note_ka : ''); }).join('\n').replace(/^\n+$/, '') }; });
     var K = c.ka || {}, kaOn = localStorage.getItem('chd_adm_ka') === '1';
     var INT = { '': 'Not set', '1': '1 · Light', '2': '2 · Moderate', '3': '3 · Hard', '4': '4 · Very hard', '5': '5 · Competition level' };
     var s = id ? statsFor(c) : null;
@@ -369,7 +369,11 @@
     o.addons = read(form, 'addons').filter(function (a) { return a.name; }).map(function (a) { var id = slugify(a.name) || 'addon'; while (used[id]) id += '-2'; used[id] = 1; return { id: id, name: a.name, name_ka: a.name_ka, price: num(a.price) || 0 }; });
     o.schedule = read(form, 'schedule').filter(function (d) { return d.day || d.items; }).map(function (d) {
       var kl = (d.items_ka || '').split('\n').map(function (x) { return x.trim().replace(/^\d{1,2}[:.]\d{2}\s+/, ''); });
-      return { day: d.day, day_ka: d.day_ka, items: lines(d.items || '').map(function (l, i) { var m = l.match(/^(\d{1,2}[:.]\d{2})\s+(.*)$/); var it = m ? { time: m[1].replace('.', ':'), title: m[2] } : { time: '', title: l }; if (kl[i]) it.title_ka = kl[i]; return it; }) };
+      return { day: d.day, day_ka: d.day_ka, items: lines(d.items || '').map(function (l, i) {
+        var m = l.match(/^(\d{1,2}[:.]\d{2})\s+(.*)$/); var it = m ? { time: m[1].replace('.', ':'), title: m[2] } : { time: '', title: l };
+        var p = it.title.split(/\s+\|\s+/); it.title = p[0]; if (p[1]) it.note = p.slice(1).join(' | ');
+        if (kl[i]) { var q = kl[i].split(/\s+\|\s+/); it.title_ka = q[0]; if (q[1]) it.note_ka = q.slice(1).join(' | '); }
+        return it; }) };
     });
     o.included = lines(E.included.value); o.excluded = lines(E.excluded.value);
     o.coaches = read(form, 'coaches').filter(function (k) { return k.name; });
