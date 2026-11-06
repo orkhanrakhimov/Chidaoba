@@ -18,7 +18,7 @@ WA_SHOW = "+995 595 606 670"
 WA = "https://wa.me/" + WA_NUM + "?text=" + "Hi%20CHIDAOBA%2C%20"
 UNESCO = "https://ich.unesco.org/en/RL/chidaoba-wrestling-in-georgia-01371"
 
-NAV = [("/", "Home"), ("/culture/", "Culture"), ("/camps/", "Camps &amp; Events"),
+NAV = [("/", "Home"), ("/culture/", "Our story"), ("/camps/", "Camps &amp; Events"),
        ("/georgia/", "Why Georgia"), ("/shop/", "Shop")]
 
 def sym_svg(cls, extra=""):
@@ -148,7 +148,7 @@ def footer(path=""):
     <div class="foot-grid">
       {news}
       <nav class="foot-col" aria-label="Explore"><h3>Explore</h3><ul>
-        <li><a href="/culture/">Culture</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
+        <li><a href="/culture/">Our story</a></li><li><a href="/camps/">Camps &amp; Events</a></li>
         <li><a href="/georgia/">Why Georgia</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
       <div class="foot-col"><h3>Connect</h3>{socials()}<ul style="margin-top:22px"><li><a href="/contact/">Contact</a></li></ul></div>
       <div class="foot-col"><h3>Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
@@ -165,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "77"
+ASSET_V = "78"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -201,7 +201,6 @@ def home():
 <section class="hero dark" aria-labelledby="hero-title">
   {sym_svg("hero-sym")}
   <div class="wrap">
-    <p class="hero-top fade-load"><a class="hero-story" href="/culture/">Our story {arrow()}</a></p>
     <div>
       <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
       <p class="lead soft fade-load">Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.</p>
@@ -575,6 +574,14 @@ def georgia():
       <div class="ch-lists ch-lists-eu">
         <div><h4>Judo</h4><ul><li><b>Tato Grigalashvili</b><span>81 kg</span><em>2022, 2024</em></li><li><b>Luka Maisuradze</b><span>90 kg</span><em>2022, 2026</em></li><li><b>Vazha Margvelashvili</b><span>66 kg</span><em>2024</em></li><li><b>Giorgi Sardalashvili</b><span>60 kg</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>100 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Mixed team</span><em>2023, 2025</em></li><li><b>Eteri Liparteliani</b><span>57 kg</span><em>2026</em></li><li><b>Lasha Shavdatuashvili</b><span>73 kg</span><em>2026</em></li><li><b>Guram Tushishvili</b><span>Over 100 kg</span><em>2026</em></li></ul></div>
         <div><h4>Wrestling</h4><ul><li><b>Leri Abuladze</b><span>Greco-Roman, 63 kg</span><em>2022, 2023</em></li><li><b>Zurabi Iakobishvili</b><span>Freestyle, 70 kg</span><em>2022</em></li><li><b>Givi Matcharashvili</b><span>Freestyle, 97 kg</span><em>2023, 2024, 2025</em></li></ul></div>
+      </div>
+    </div>
+    <div class="ch-history">
+      <h3 class="display h-md">Judo and wrestling are national sports</h3>
+      <div class="ch-history-t">
+        <p>Wrestling has been part of Georgian life for centuries. Chidaoba, the traditional wrestling, was the highlight of village festivals, and its grips and throws carried over into sambo, judo and Olympic wrestling.</p>
+        <p>In the Soviet era Georgians were among the strongest wrestlers and judoka of the whole union. Anzor Kiknadze and Parnaoz Chikviladze won bronze at the first Olympic judo event in 1964, and Levan Tediashvili won Olympic freestyle gold in 1972 and 1976.</p>
+        <p>Today judo and wrestling are national sports. There are clubs in towns and villages across the country, children start young, and every Olympic or world medal is national news.</p>
       </div>
     </div>
   </div>
@@ -1006,7 +1013,7 @@ PAGES = [
      "Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.", home),
     ("/georgia/", "georgia/index.html", "Why Train in Georgia: Judo, Wrestling and BJJ | CHIDAOBA",
      "Why train in Georgia: a wrestling culture centuries old, Olympic and world champions, booming BJJ, the Caucasus mountains, the Black Sea and the Georgian table.", georgia),
-    ("/culture/", "culture/index.html", "Culture | Chidaoba and the CHIDAOBA brand",
+    ("/culture/", "culture/index.html", "Our story | Chidaoba and the CHIDAOBA brand",
      "The story of Chidaoba, Georgia’s traditional wrestling (UNESCO Intangible Cultural Heritage, 2018), and why we chose the name: a Georgian-rooted brand for wrestling, grappling, BJJ and judo.", culture),
     ("/camps/", "camps/index.html", "BJJ, Wrestling and Judo Camps in Georgia | CHIDAOBA",
      "Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo, with local coaches, accommodation and meals. Next camp: BJJ and grappling, spring 2027, Svaneti.", camps),

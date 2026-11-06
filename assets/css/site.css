@@ -1949,3 +1949,9 @@ html[lang="ka"] :is(.prep-progress span,.prep-wv span,.prep-note,.prep-shop){fon
   .prep-n{width:38px;height:38px;font-size:15px}
   .prep-wvs,.prep-pack{grid-template-columns:minmax(0,1fr)}
 }
+/* Why Georgia: history of judo and wrestling, under the champions */
+.ch-history{margin-top:56px;padding:clamp(24px,3vw,40px);border-radius:var(--r-card,18px);background:#E8E6DF;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:20px 48px;align-items:start}
+.ch-history h3{margin:0}
+.ch-history-t p{margin:0 0 14px;font-size:17px;line-height:1.6;max-width:640px}
+.ch-history-t p:last-child{margin:0}
+@media (max-width:800px){.ch-history{grid-template-columns:minmax(0,1fr);margin-top:40px}}
