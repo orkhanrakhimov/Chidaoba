@@ -41,6 +41,14 @@ def org_ld():
          "inLanguage": ["en", "ka"], "publisher": {"@id": "https://chidaoba.com/#org"}}]}
     return '\n<script type="application/ld+json">' + json.dumps(d, ensure_ascii=False) + '</script>'
 
+def supa_hint(path):
+    # pages that read camps or products: open the connection to the database early, and start the venue cover at once
+    if path not in ("/", "/camps/", "/camps/camp/", "/camps/venue/", "/shop/"): return ""
+    out = '<link rel="preconnect" href="https://tptxyvslbdkyypkmemig.supabase.co" crossorigin>\n'
+    if path in ("/camps/camp/", "/camps/venue/"):
+        out += '<link rel="preload" as="image" href="/assets/venues/mulakhi/summer-pitch.webp" fetchpriority="high">\n'
+    return out
+
 def head(title, desc, path):
     url = "https://chidaoba.com" + path
     return f"""<!DOCTYPE html>
@@ -71,7 +79,7 @@ def head(title, desc, path):
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
+{supa_hint(path)}<link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
 <!--ALT-->
 </head>
 <body id="top">
@@ -165,7 +173,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "81"
+ASSET_V = "82"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):

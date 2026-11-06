@@ -181,7 +181,7 @@
   if (vlist) {
     vlist.innerHTML = Object.keys(V_ALL).map(function (k) {
       var v = V_ALL[k];
-      return '<a class="venue-card" href="/camps/venue/?v=' + encodeURIComponent(k) + '"><div class="vc-img"><img src="' + e(v.cover.url) + '" alt="' + e(v.cover.alt) + '" loading="lazy"></div>' +
+      return '<a class="venue-card" href="/camps/venue/?v=' + encodeURIComponent(k) + '"><div class="vc-img"><img src="' + e(v.cover.thumb || v.cover.url) + '"' + (v.cover.thumb ? ' srcset="' + e(v.cover.thumb) + ' 640w, ' + e(v.cover.url) + ' 1600w" sizes="(max-width: 800px) 100vw, 50vw"' : '') + ' alt="' + e(v.cover.alt) + '" loading="lazy"></div>' +
         '<div class="vc-body"><h3>' + e(v.name) + '</h3><p class="vc-place">' + e(v.place) + '</p><p>' + e(v.intro) + '</p>' +
         '<div class="vc-facts">' + v.facts.map(function (f) { return '<span><b>' + e(f[0]) + '</b> ' + e(f[1]) + '</span>'; }).join('') + '</div>' +
         '<span class="cc-cta">See the venue <span class="arr">→</span></span></div></a>';
@@ -194,7 +194,7 @@
     else {
       document.title = V1.name + ', ' + V1.place + ' | CHIDAOBA';
       galleryData = V1.gallery;
-      vroot.innerHTML = '<section class="camp-hero dark has-img"><img class="camp-hero-img" src="' + e(V1.cover.url) + '" alt="' + e(V1.cover.alt) + '"><div class="wrap">' +
+      vroot.innerHTML = '<section class="camp-hero dark has-img"><img class="camp-hero-img" fetchpriority="high" decoding="async" src="' + e(V1.cover.url) + '" alt="' + e(V1.cover.alt) + '"><div class="wrap">' +
         '<a class="back label muted" href="/camps/">← All camps</a><p class="label muted" style="margin-top:28px">Venue · ' + e(V1.place) + '</p>' +
         '<h1 class="display h-lg">' + e(V1.name) + '</h1><p class="lead soft" style="margin-top:20px;max-width:34em">' + e(V1.intro) + '</p></div></section>' +
         '<section class="section light"><div class="wrap venue-page"><div class="camp-block">' + venueHtml(V1, {}, V1.gallery) + '</div>' +
@@ -228,7 +228,7 @@
     var sched = (c.schedule || []).filter(function (d) { return d && (d.day || (d.items || []).length); });
     var html = '';
     var cv = H.cover(c), V = H.venue(c);
-    html += '<section class="camp-hero dark' + (cv ? ' has-img' : '') + '">' + (cv ? '<img class="camp-hero-img" src="' + e(cv.url) + '" alt="' + e(cv.alt || '') + '">' : '') + '<div class="wrap">' +
+    html += '<section class="camp-hero dark' + (cv ? ' has-img' : '') + '">' + (cv ? '<img class="camp-hero-img" fetchpriority="high" decoding="async" src="' + e(cv.url) + '" alt="' + e(cv.alt || '') + '">' : '') + '<div class="wrap">' +
       '<a class="back label muted" href="/camps/">← All camps</a>' +
       '<h1 class="display h-lg">' + e(c.title) + '</h1>' +
       '<div class="facts-row">' +

@@ -3,7 +3,7 @@
 // facilities, meals and map. A camp's own photos / address override these.
 (function () {
   var M = '/assets/venues/mulakhi/';
-  function g(n, alt) { return { url: M + n + '.jpg', thumb: M + n + '-sm.jpg', alt: alt }; }
+  function g(n, alt) { return { url: M + n + '.webp', thumb: M + n + '-sm.webp', alt: alt }; }
   window.CHD_VENUES = {
     mulakhi: {
       name: 'Ilia Gabliani Sports Complex',
