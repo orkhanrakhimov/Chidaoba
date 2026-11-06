@@ -165,7 +165,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "80"
+ASSET_V = "81"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -472,7 +472,7 @@ def camps():
     <div class="team-cta">
       <div><h2 id="cz-club" class="display h-lg">Camps for your club</h2>
       <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
-      <a class="btn btn-primary" href="/contact/">Get in touch {arrow()}</a>
+      <a class="btn btn-primary btn-wa" href="https://wa.me/{WA_NUM}?text=Hi%20CHIDAOBA%21%20I%20would%20like%20a%20private%20camp%20for%20my%20club.%20Club%3A%20%2C%20sport%3A%20%2C%20people%3A%20%2C%20dates%3A%20" rel="noopener">{WA_ICON}Get in touch on WhatsApp</a>
     </div>
   </div>
 </section>
@@ -1071,6 +1071,8 @@ if __name__ == "__main__":
             multi.append(path)
             for l, t in trs.items():
                 d = t.page(doc, path)
+                if l == "ka":  # WhatsApp messages written in Georgian
+                    d = d.replace("?text=Hi%20CHIDAOBA%2C%20", "?text=%E1%83%92%E1%83%90%E1%83%9B%E1%83%90%E1%83%A0%E1%83%AF%E1%83%9D%E1%83%91%E1%83%90%20CHIDAOBA%2C%20").replace("Hi%20CHIDAOBA%21%20I%20would%20like%20a%20private%20camp%20for%20my%20club.%20Club%3A%20%2C%20sport%3A%20%2C%20people%3A%20%2C%20dates%3A%20", "%E1%83%92%E1%83%90%E1%83%9B%E1%83%90%E1%83%A0%E1%83%AF%E1%83%9D%E1%83%91%E1%83%90%20CHIDAOBA%21%20%E1%83%9B%E1%83%98%E1%83%9C%E1%83%93%E1%83%90%20%E1%83%99%E1%83%94%E1%83%A0%E1%83%AB%E1%83%9D%20%E1%83%91%E1%83%90%E1%83%9C%E1%83%90%E1%83%99%E1%83%98%20%E1%83%A9%E1%83%94%E1%83%9B%E1%83%98%20%E1%83%99%E1%83%9A%E1%83%A3%E1%83%91%E1%83%98%E1%83%A1%E1%83%97%E1%83%95%E1%83%98%E1%83%A1.%20%E1%83%99%E1%83%9A%E1%83%A3%E1%83%91%E1%83%98%3A%20%2C%20%E1%83%A1%E1%83%90%E1%83%AE%E1%83%94%E1%83%9D%E1%83%91%E1%83%90%3A%20%2C%20%E1%83%A0%E1%83%90%E1%83%9D%E1%83%93%E1%83%94%E1%83%9C%E1%83%9D%E1%83%91%E1%83%90%3A%20%2C%20%E1%83%97%E1%83%90%E1%83%A0%E1%83%98%E1%83%A6%E1%83%94%E1%83%91%E1%83%98%3A%20").replace("Hi%20CHIDAOBA%21%20I%20have%20a%20question%20about%20the%20camps%3A", "%E1%83%92%E1%83%90%E1%83%9B%E1%83%90%E1%83%A0%E1%83%AF%E1%83%9D%E1%83%91%E1%83%90%20CHIDAOBA%21%20%E1%83%99%E1%83%98%E1%83%97%E1%83%AE%E1%83%95%E1%83%90%20%E1%83%9B%E1%83%90%E1%83%A5%E1%83%95%E1%83%A1%20%E1%83%91%E1%83%90%E1%83%9C%E1%83%90%E1%83%99%E1%83%94%E1%83%91%E1%83%98%E1%83%A1%20%E1%83%A8%E1%83%94%E1%83%A1%E1%83%90%E1%83%AE%E1%83%94%E1%83%91%3A")
                 if l == "ka":  # Georgian waiver PDFs
                     d = re.sub(r'/assets/docs/chidaoba-waiver-(\w+)\.pdf', r'/assets/docs/chidaoba-waiver-\1-ka.pdf', d)
                 if l == "ka":  # FAQ data in Georgian, matching the visible answers

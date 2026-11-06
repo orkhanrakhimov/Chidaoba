@@ -84,7 +84,7 @@
           '<h3 class="display h-md">' + (all.length ? 'No camps in this discipline yet' : 'The first camps are being planned') + '<span class="dot">.</span></h3>' +
           '<p class="body soft">New dates are published here first. Message us and we’ll tell you as soon as registration opens.</p>' +
           '<div class="row-btns"><a class="btn btn-primary" href="' + WA + '?text=' + encodeURIComponent('Hi CHIDAOBA, please tell me when camps open.') + '" rel="noopener">Notify me on WhatsApp <span class="arr">→</span></a>' +
-          '<a class="btn btn-ghost" href="/contact/">Ask about a team camp <span class="arr">→</span></a></div></div>';
+          '<a class="btn btn-ghost" href="https://wa.me/995595606670?text=' + encodeURIComponent(KA ? 'გამარჯობა CHIDAOBA! მაინტერესებს გუნდის ბანაკი.' : 'Hi CHIDAOBA! I would like to ask about a team camp.') + '" rel="noopener">Ask about a team camp on WhatsApp</a></div></div>';
         return;
       }
       list.innerHTML = up.map(card).join('') + (past.length ? '<p class="label muted past-label">Past camps</p>' + past.map(card).join('') : '');

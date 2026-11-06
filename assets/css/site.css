@@ -1972,3 +1972,4 @@ html[lang="ka"] :is(.prep-progress span,.prep-wv span,.prep-note,.prep-shop){fon
 .camps-nav{z-index:20}
 @media (max-width:800px){.cz-before{grid-template-columns:minmax(0,1fr)}.cz-head{margin-bottom:24px}}
 html[lang="ka"] :is(.cz-before span){font-size:16px!important}
+.btn-wa{display:inline-flex;align-items:center;gap:10px}.btn-wa svg{width:20px;height:20px;fill:currentColor;flex:none}
