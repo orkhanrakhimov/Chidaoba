@@ -68,6 +68,8 @@ def report():
         "storage policies": "select policyname || ' ' || cmd as x from pg_policies where schemaname = 'storage' order by 1",
         "camps": "select slug || ' ' || status as x from public.camps order by created_at",
         "updates applied": "select string_agg(name, ' ' order by name) as x from public._migrations",
+        "welcome email key set (yes/no only)": "select case when exists (select 1 from vault.secrets where name = 'resend_api_key') then 'yes' else 'no' end as x",
+        "admin sign-in": "select count(*) || ' admin login(s), password last changed ' || to_char(max(updated_at), 'YYYY-MM-DD') as x from public.admin_users",
     }
     for label, sql in q.items():
         try:
