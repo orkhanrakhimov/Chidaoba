@@ -23,4 +23,7 @@ no JS errors, no untranslated English on Georgian pages. Confirm the GitHub Page
 
 ## Security
 Only the Supabase anon key goes on the site. Never ask for the service_role key, database password or third-party API keys.
-Database changes ship as numbered `update-00X.sql` files tested locally first.
+Database changes ship as numbered files in `_src/migrations/` (`012_short_name.sql`, next number up), safe to run twice,
+tested locally first. Pushing to main applies them automatically (`.github/workflows/supabase-updates.yml` runs
+`_src/migrate.py`, which records each one in `public._migrations`). The owner never pastes SQL by hand; check the
+Actions run succeeded. The token lives only in the GitHub secret SUPABASE_ACCESS_TOKEN; never ask for it.

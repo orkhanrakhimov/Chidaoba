@@ -1,0 +1,26 @@
+name: Apply database updates
+
+# Runs when a new file lands in _src/migrations/ on main, or by hand from the Actions tab.
+on:
+  push:
+    branches: [main]
+    paths: ["_src/migrations/**", "_src/migrate.py"]
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-updates
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply new updates to Supabase
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: tptxyvslbdkyypkmemig
+        run: python3 _src/migrate.py
