@@ -1988,3 +1988,64 @@ html[lang="ka"] :is(.cz-before span){font-size:16px!important}
 .day-line li:last-child{padding-bottom:0!important}
 html[lang="ka"] .day-line p{font-size:16px!important;letter-spacing:.04em}
 @media (max-width:600px){.day-line::before{left:63px}.day-line li{grid-template-columns:52px 24px minmax(0,1fr)!important}.day-line time{font-size:15px!important}}
+
+/* ===== admin polish (Nov 2026) ===== */
+.adm .adm-main .field input,.adm .adm-main .field select,.adm .adm-main .field textarea,.adm-reauth .field input{background-color:#fff!important;border:1px solid var(--chalk-line)!important;border-radius:var(--r-in);padding:10px 12px;min-height:44px;color:var(--carbon)}
+.adm .adm-main .field select{padding-right:32px}
+.adm .adm-main .field input:focus,.adm .adm-main .field select:focus,.adm .adm-main .field textarea:focus,.adm-reauth .field input:focus{border-color:var(--carbon)!important;outline:2px solid rgba(30,30,30,.12);outline-offset:1px}
+.adm .adm-main .field.ka-f input,.adm .adm-main .field.ka-f textarea{background-color:#FFFDF6!important}
+.adm .adm-main .rf input,.adm .adm-main .rf textarea,.adm .adm-main .rf select{background:#fff;border:1px solid var(--chalk-line)!important}
+.adm textarea{overflow:hidden}
+.adm .field label{letter-spacing:.04em;text-transform:none;font-size:13px}
+.kpis{background:transparent;border:0;gap:10px}
+.kpis>div{border:1px solid var(--chalk-line);border-radius:var(--r-card)}
+.adm-acc{display:flex;align-items:center;gap:14px;margin-left:auto}
+.adm-acc a{color:#CFCCC4;font-size:13px;text-decoration:none}
+.adm-acc a.on,.adm-acc a:hover{color:var(--chalk)}
+.adm-out{border-radius:var(--r-in)}
+.adm-foot{position:sticky;bottom:0;z-index:15;background:rgba(247,246,242,.96);backdrop-filter:blur(6px);padding:12px 0 14px;border-top:1px solid var(--chalk-line);margin-bottom:40px}
+.lnk.rdel{display:block;margin-top:8px;font-size:12px}
+.adm-pw{max-width:520px}
+.adm-reauth{position:fixed;inset:0;z-index:100;background:rgba(20,20,20,.55);display:grid;place-items:center;padding:20px}
+.adm-reauth-box{background:#fff;color:var(--carbon);border-radius:var(--r-card);padding:28px;width:min(420px,100%);display:grid;gap:16px}
+.adm-reauth-box h2{font-size:20px;font-weight:800}
+.adm-reauth .field label{color:var(--ink-soft);font-size:13px;letter-spacing:.04em;text-transform:none}
+.adm-reauth .form-msg.err{color:var(--red)}
+@media (max-width:800px){
+  .adm-head{flex-wrap:wrap;height:auto;padding-top:10px;gap:6px 14px}
+  .adm-head nav{order:3;flex:1 1 100%;overflow-x:auto;gap:18px;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .adm-head nav::-webkit-scrollbar{display:none}
+  .adm-head nav a{white-space:nowrap;flex:0 0 auto;padding:8px 0 10px}
+  .adm-out{padding:7px 10px}
+  .adm-filters input{min-width:0;flex:1 1 100%}
+  .adm-filters select{flex:1 1 auto}
+  .adm-top .btn{min-height:42px}
+}
+@media (max-width:700px){
+  .tbl-wrap{overflow:visible;background:transparent;border:0}
+  .tbl{min-width:0;font-size:14px}
+  .tbl thead{display:none}
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tbl tr{background:#fff;border:1px solid var(--chalk-line);border-radius:var(--r-card);margin-bottom:10px;padding:8px 0}
+  .tbl td{border:0;padding:6px 16px}
+  .tbl td:empty{display:none}
+  .tbl .act{padding-top:10px}
+  .tbl .act a{margin-right:16px;padding:6px 0}
+  .tbl .rs,.tbl .rn{width:100%;margin-top:6px}
+  .prod-tbl tr{display:grid;grid-template-columns:64px 1fr;align-items:start}
+  .prod-tbl td{padding:4px 12px}
+  .prod-tbl td.pt-art{grid-row:span 6;padding-left:14px}
+  .prod-tbl td:not(.pt-art){grid-column:2}
+}
+@media (max-width:700px){
+  .tbl td[data-l]{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .tbl td[data-l]::before{content:attr(data-l);flex:0 0 84px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+  .tbl td[data-l] .bar{flex:1 1 100%;margin-left:94px;width:auto;max-width:140px}
+  .tbl td[data-l] .sub{flex:1 1 100%;margin-left:94px}
+}
+.adm-edit{grid-template-columns:minmax(0,1fr)}
+.adm-edit .field,.adm-edit .rf{min-width:0}
+.adm-edit .field input,.adm-edit .field select,.adm-edit .field textarea{width:100%;max-width:100%;min-width:0}
+@media (max-width:700px){.adm-edit .g2,.adm-edit .g3{grid-template-columns:minmax(0,1fr)!important}.prod-ed{grid-template-columns:minmax(0,1fr)!important}}
+.adm-reauth .btn-ghost{background:var(--ground-2);color:var(--carbon);box-shadow:none}
+@media (max-width:800px){.adm-head nav{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:40px}}

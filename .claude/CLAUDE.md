@@ -26,4 +26,4 @@ Only the Supabase anon key goes on the site. Never ask for the service_role key,
 Database changes ship as numbered files in `_src/migrations/` (`012_short_name.sql`, next number up), safe to run twice,
 tested locally first. Pushing to main applies them automatically (`.github/workflows/supabase-updates.yml` runs
 `_src/migrate.py`, which records each one in `public._migrations`). The owner never pastes SQL by hand; check the
-Actions run succeeded. The token lives only in the GitHub secret SUPABASE_ACCESS_TOKEN; never ask for it.
+Actions run succeeded; its log ends with a "Database health" report (structure and counts, no personal data) that shows the live database. The token lives only in the GitHub secret SUPABASE_ACCESS_TOKEN; never ask for it.

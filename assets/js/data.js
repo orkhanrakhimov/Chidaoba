@@ -98,10 +98,18 @@
       body: JSON.stringify({ refresh_token: s.refresh_token })
     }).then(function (r) { return r.json().then(function (j) { if (!r.ok) { setSession(null); throw new Error('Session expired. Please sign in again.'); } setSession(j); }); });
   }
-  function rpcA(fn, args) {
+  function rpcA(fn, args, again) {
     var s = session();
-    if (!s || !s.token) return Promise.reject(new Error('Session expired. Please sign in again.'));
-    return req('/rest/v1/rpc/' + fn, { method: 'POST', body: Object.assign({ p_token: s.token }, args) });
+    var go = (!s || !s.token) ? Promise.reject(new Error('Session expired. Please sign in again.'))
+      : req('/rest/v1/rpc/' + fn, { method: 'POST', body: Object.assign({ p_token: s.token }, args) });
+    return go.then(function (j) {
+      var cur = session(); if (cur && cur.token) { cur.expires_at = new Date(Date.now() + 12 * 36e5).toISOString(); setSession(cur); }
+      return j;
+    }, function (err) {
+      // session ran out while working: ask for the password again, then repeat the same action
+      if (!again && /Session expired/i.test(err.message) && window.CHD_REAUTH) return window.CHD_REAUTH().then(function () { return rpcA(fn, args, true); });
+      throw err;
+    });
   }
   function u5(err) {
     if (/Could not find|schema cache|does not exist|404/i.test(err.message)) throw new Error('NEEDS_UPDATE_005');
@@ -125,9 +133,9 @@
       return req('/rest/v1/rpc/admin_login', { method: 'POST', body: { p_email: email, p_password: pw } })
         .then(function (j) {
           if (!j || j.error || !j.token) throw new Error((j && j.error) || 'Wrong email or password.');
-          setSession(j); return true;
+          setSession(j); try { localStorage.setItem('chd_adm_email', j.email || email); } catch (x) { } return true;
         }, function (err) {
-          if (/admin_login|schema cache|Could not find/i.test(err.message)) throw new Error('The database update is not installed yet. Run admin-login.sql in Supabase.');
+          if (/admin_login|schema cache|Could not find/i.test(err.message)) throw new Error('The admin login is not installed in the database yet.');
           throw err;
         });
     },
@@ -141,6 +149,8 @@
     deleteCamp: function (id) { return rpcA('admin_delete_camp', { p_id: id }); },
     regs: function (campId) { return rpcA('admin_regs', { p_camp: campId || null }); },
     updateReg: function (id, patch) { return rpcA('admin_update_reg', { p_id: id, p: patch }); },
+    changePassword: function (oldPw, newPw) { return rpcA('admin_change_password', { p_old: oldPw, p_new: newPw }).then(function (j) { if (j && j.error) throw new Error(j.error); return true; }); },
+    adminEmail: function () { var s = session(); return (s && s.email) || (function () { try { return localStorage.getItem('chd_adm_email') || ''; } catch (x) { return ''; } })(); },
     // shop, email signups, contact messages (Update 005)
     products: function () { return req('/rest/v1/products?select=*&status=neq.hidden&order=sort.asc'); },
     adminProducts: function () { return rpcA('admin_products', {}).catch(u5); },
@@ -258,7 +268,9 @@
     },
     deleteCamp: function (id) { var x = db(); x.camps = x.camps.filter(function (c) { return c.id !== id; }); x.regs = x.regs.filter(function (r) { return r.camp_id !== id; }); save(x); return wait(true); },
     regs: function (campId) { var x = db(); return wait(x.regs.filter(function (r) { return !campId || r.camp_id === campId; })); },
-    updateReg: function (id, patch) { var x = db(); x.regs.forEach(function (r) { if (r.id === id) Object.assign(r, patch); }); save(x); return wait(true); },
+    updateReg: function (id, patch) { var x = db(); if (patch.delete) x.regs = x.regs.filter(function (r) { return r.id !== id; }); else x.regs.forEach(function (r) { if (r.id === id) Object.assign(r, patch); }); save(x); return wait(true); },
+    changePassword: function () { return Promise.reject(new Error('Not available in the demo.')); },
+    adminEmail: function () { return 'demo@chidaoba.com'; },
     products: function () { var x = db(); return wait(prods(x).filter(function (p) { return p.status !== 'hidden'; })); },
     adminProducts: function () { return wait(prods(db())); },
     saveProduct: function (p) {

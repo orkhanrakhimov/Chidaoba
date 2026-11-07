@@ -43,14 +43,40 @@ def main():
     todo = [f for f in files if os.path.basename(f).split("_")[0] not in done]
     if not todo:
         print("Database is up to date. Nothing to apply.")
-        return
     for f in todo:
         name = os.path.basename(f).split("_")[0]
         sql = open(f, encoding="utf-8").read()
         print(f"Applying {os.path.basename(f)} ...")
         run("begin;\n" + sql + f"\n;insert into public._migrations(name) values ('{name}');\ncommit;")
         print(f"  done: {name}")
-    print(f"Applied {len(todo)} update(s).")
+    if todo:
+        print(f"Applied {len(todo)} update(s).")
+    report()
+
+
+def report():
+    """Structure and counts only, never row contents: safe for a public log."""
+    print("\n--- Database health ---")
+    q = {
+        "tables (rls on?)": "select c.relname || ' rls=' || c.relrowsecurity || ' rows=' || (xpath('/row/c/text()', query_to_xml('select count(*) as c from public.' || quote_ident(c.relname), false, true, '')))[1]::text as x "
+                            "from pg_class c join pg_namespace n on n.oid = c.relnamespace "
+                            "where n.nspname = 'public' and c.relkind = 'r' order by 1",
+        "tables without rls": "select c.relname as x from pg_class c join pg_namespace n on n.oid = c.relnamespace "
+                              "where n.nspname = 'public' and c.relkind = 'r' and not c.relrowsecurity",
+        "definer functions without search_path": "select p.proname as x from pg_proc p join pg_namespace n on n.oid = p.pronamespace "
+                                                 "where n.nspname = 'public' and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')",
+        "storage policies": "select policyname || ' ' || cmd as x from pg_policies where schemaname = 'storage' order by 1",
+        "camps": "select slug || ' ' || status as x from public.camps order by created_at",
+        "updates applied": "select string_agg(name, ' ' order by name) as x from public._migrations",
+    }
+    for label, sql in q.items():
+        try:
+            rows = [r.get("x") for r in run(sql) if r.get("x") is not None]
+        except SystemExit as e:
+            rows = [f"(could not read: {str(e)[:120]})"]
+        print(f"{label}: " + ("none" if not rows else ""))
+        for r in rows:
+            print(f"  {r}")
 
 
 if __name__ == "__main__":

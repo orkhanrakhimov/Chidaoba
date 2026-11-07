@@ -48,7 +48,7 @@
         var n = t[0] === 'msgs' ? (state.msgs || []).filter(function (m) { return m.status === 'new'; }).length : t[0] === 'regs' ? state.regs.filter(function (r) { return r.status === 'pending'; }).length : 0;
         return '<a href="#' + t[0] + '"' + (tab === t[0] ? ' class="on"' : '') + '>' + t[1] + (n ? '<i class="nav-n">' + n + '</i>' : '') + '</a>';
       }).join('') + '<a href="/" target="_blank">View site ↗</a></nav>' +
-      '<button type="button" class="adm-out">Sign out</button></header><main class="adm-main">' + inner + '</main>';
+      '<div class="adm-acc"><a href="#account"' + (tab === 'account' ? ' class="on"' : '') + '>Password</a><button type="button" class="adm-out">Sign out</button></div></header><main class="adm-main">' + inner + '</main>';
   }
   function route() {
     var h = location.hash.replace('#', '');
@@ -61,9 +61,42 @@
     if (h === 'subs') return subsView();
     if (h === 'msgs') return msgsView();
     if (h === 'vis') return visView();
+    if (h === 'account') return accountView();
     return dash();
   }
-  window.addEventListener('hashchange', function () { if (H.api.signedIn()) route(); });
+  // unsaved changes: warn before leaving an editor
+  var dirty = false, lastHash = location.hash, skipHash = false;
+  function setDirty(v) { dirty = v; }
+  window.addEventListener('hashchange', function () {
+    if (skipHash) { skipHash = false; return; }
+    if (dirty && !confirm('You have changes that are not saved. Leave without saving?')) { skipHash = true; location.hash = lastHash; return; }
+    dirty = false; lastHash = location.hash;
+    if (H.api.signedIn()) route();
+  });
+  window.addEventListener('beforeunload', function (ev) { if (dirty) { ev.preventDefault(); ev.returnValue = ''; } });
+  function grow(t) { t.style.height = 'auto'; t.style.height = (t.scrollHeight + 2) + 'px'; }
+  function autoGrow(root) { $$('textarea', root).forEach(grow); root.addEventListener('input', function (ev) { if (ev.target.tagName === 'TEXTAREA') grow(ev.target); }); }
+
+  // session ran out: ask for the password in a small window, keep everything on the page
+  window.CHD_REAUTH = function () {
+    if (window.CHD_REAUTH.p) return window.CHD_REAUTH.p;
+    window.CHD_REAUTH.p = new Promise(function (res, rej) {
+      var d = document.createElement('div'); d.className = 'adm-reauth';
+      d.innerHTML = '<form class="adm-reauth-box" novalidate><h2>Sign in again</h2><p class="body">Your session ended. Enter your password to continue. Nothing on this page is lost.</p>' +
+        '<div class="field"><label for="ra-e">Email</label><input id="ra-e" type="email" autocomplete="username" value="' + e(H.api.adminEmail()) + '"></div>' +
+        '<div class="field"><label for="ra-p">Password</label><input id="ra-p" type="password" autocomplete="current-password"></div>' +
+        '<div class="row-btns"><button class="btn btn-primary" type="submit">Continue</button><button class="btn btn-ghost" type="button" id="ra-x">Cancel</button></div><p class="form-msg"></p></form>';
+      document.body.appendChild(d); setTimeout(function () { (d.querySelector('#ra-e').value ? d.querySelector('#ra-p') : d.querySelector('#ra-e')).focus(); }, 30);
+      var done = function (ok, err) { d.remove(); window.CHD_REAUTH.p = null; ok ? res() : rej(err); };
+      d.querySelector('#ra-x').addEventListener('click', function () { done(false, new Error('Session expired. Please sign in again.')); });
+      d.querySelector('form').addEventListener('submit', function (ev) {
+        ev.preventDefault(); var m = d.querySelector('.form-msg'); m.className = 'form-msg'; m.textContent = 'Signing in…';
+        H.api.signIn(d.querySelector('#ra-e').value.trim(), d.querySelector('#ra-p').value).then(function () { done(true); })
+          .catch(function (err) { m.className = 'form-msg err'; m.textContent = err.message; });
+      });
+    });
+    return window.CHD_REAUTH.p;
+  };
   app.addEventListener('click', function (ev) {
     if (ev.target.closest('.adm-out')) { H.api.signOut().then(login); }
   });
@@ -89,8 +122,8 @@
       var cv = H.cover(c);
       return '<tr><td class="cam-td">' + (cv ? '<img class="cam-th" src="' + e(cv.thumb) + '" alt="">' : '<span class="cam-th"></span>') + '<div><a href="#edit/' + c.id + '"><b>' + e(c.title) + '</b></a><span class="sub">' + e(H.DISC[c.discipline] || '') + ' · ' + e((c.start_date ? H.dateRange(c.start_date, c.end_date) : (c.dates_note || H.dateRange()))) + '</span></div></td>' +
         '<td><span class="pill-s s-' + c.status + '">' + STATUS[c.status] + '</span></td>' +
-        '<td><b>' + s.people + (c.capacity ? ' / ' + c.capacity : '') + '</b>' + (c.capacity ? '<i class="bar"><b style="width:' + pct + '%"></b></i>' : '') + (s.wl ? '<span class="sub">+' + s.wl + ' waitlist</span>' : '') + '</td>' +
-        '<td>' + money(s.booked, c.currency) + '</td><td>' + money(s.received, c.currency) + (s.unpaid ? '<span class="sub warn">' + s.unpaid + ' new request' + (s.unpaid > 1 ? 's' : '') + '</span>' : '') + '</td>' +
+        '<td data-l="Signed up"><b>' + s.people + (c.capacity ? ' / ' + c.capacity : '') + '</b>' + (c.capacity ? '<i class="bar"><b style="width:' + pct + '%"></b></i>' : '') + (s.wl ? '<span class="sub">+' + s.wl + ' waitlist</span>' : '') + '</td>' +
+        '<td data-l="Value">' + money(s.booked, c.currency) + '</td><td data-l="Paid">' + money(s.received, c.currency) + (s.unpaid ? '<span class="sub warn">' + s.unpaid + ' new request' + (s.unpaid > 1 ? 's' : '') + '</span>' : '') + '</td>' +
         '<td class="act"><a href="#regs/' + c.id + '">Requests</a><a href="#edit/' + c.id + '">Edit</a>' + (c.status !== 'draft' ? '<a href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '" target="_blank">View ↗</a>' : '') + '</td></tr>';
     }).join('');
     app.innerHTML = shell(
@@ -116,9 +149,9 @@
       return '<tr data-id="' + r.id + '"><td><b>' + e(r.full_name) + '</b><span class="sub">' + e(r.ref) + ' · ' + new Date(r.created_at).toLocaleDateString('en-GB') + '</span>' + (camp ? '' : '<span class="sub">' + e(name(r.camp_id)) + '</span>') + '</td>' +
         '<td><a href="mailto:' + e(r.email) + '?subject=' + encodeURIComponent('Your camp request ' + r.ref) + '">' + e(r.email) + '</a>' + (wa ? '<span class="sub"><a href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + e(r.phone) + '</a></span>' : '') + '<span class="sub">' + e([r.country, r.age ? r.age + ' y' : '', r.experience, r.level, r.club].filter(Boolean).join(' · ')) + '</span></td>' +
         '<td>' + e(r.package_name) + (r.addons && r.addons.length ? '<span class="sub">+ ' + r.addons.map(function (a) { return e(a.name); }).join(', ') + '</span>' : '') + '<span class="sub">' + r.people + ' ' + (r.people > 1 ? 'people' : 'person') + '</span></td>' +
-        '<td><b>' + money(r.total, cur(r.camp_id)) + '</b></td>' +
+        '<td data-l="Amount"><b>' + money(r.total, cur(r.camp_id)) + '</b></td>' +
         '<td><select class="rs s-' + r.status + '">' + Object.keys(RSTATUS).map(function (k) { return '<option value="' + k + '"' + (r.status === k ? ' selected' : '') + '>' + RSTATUS[k] + '</option>'; }).join('') + '</select>' +
-        '<input class="rn" placeholder="Note…" value="' + e(r.admin_note || '') + '">' + (r.notes ? '<span class="sub">“' + e(r.notes) + '”</span>' : '') + '</td></tr>';
+        '<input class="rn" placeholder="Note…" value="' + e(r.admin_note || '') + '">' + (r.notes ? '<span class="sub">“' + e(r.notes) + '”</span>' : '') + '<button type="button" class="lnk danger rdel">Delete</button></td></tr>';
     }).join('');
     app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Requests<span class="dot">.</span></h1><button class="btn btn-ghost" type="button" id="csv">Export CSV</button></div>' +
       '<div class="adm-filters"><select id="fc">' + opts + '</select><select id="fs">' + fopts + '</select><input id="fq" type="search" placeholder="Search name, email, code…" value="' + e(state.q) + '"><span class="sub">' + list.length + ' shown</span></div>' +
@@ -137,6 +170,13 @@
       i.addEventListener('change', function () {
         var id = i.closest('tr').dataset.id, v = i.value;
         H.api.updateReg(id, { admin_note: v }).then(function () { state.regs.forEach(function (r) { if (r.id === id) r.admin_note = v; }); toast('Note saved'); }).catch(function (err) { toast(err.message, true); });
+      });
+    });
+    $$('.rdel').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.closest('tr').dataset.id, r = state.regs.filter(function (x) { return x.id === id; })[0];
+        if (!confirm('Delete the request from ' + (r ? r.full_name : 'this person') + '? This cannot be undone. Use it for spam or when someone asks to have their details removed.')) return;
+        H.api.updateReg(id, { delete: true }).then(function () { state.regs = state.regs.filter(function (x) { return x.id !== id; }); toast('Request deleted'); regsView(campId); }).catch(function (err) { toast(err.message, true); });
       });
     });
     $('#csv').addEventListener('click', function () { csv(list, name); });
@@ -253,11 +293,13 @@
       '<div class="adm-foot"><button class="btn btn-primary" type="submit">Save camp</button>' + (id ? '<button type="button" class="btn btn-ghost danger" id="del">Delete camp</button>' : '') + '<p class="form-msg"></p></div></form>', 'dash');
 
     var form = $('#ef');
+    setDirty(false); lastHash = location.hash; autoGrow(form);
+    form.addEventListener('input', function () { setDirty(true); }); form.addEventListener('change', function () { setDirty(true); });
     wirePhotos(c);
     var title = form.elements.title, slug = form.elements.slug, touched = !!c.slug;
     slug.addEventListener('input', function () { touched = true; });
     title.addEventListener('input', function () { if (!touched) slug.value = slugify(title.value); });
-    $$('.add-row').forEach(function (b) { b.addEventListener('click', function () { var k = b.dataset.key; $('.rep[data-key="' + k + '"]').insertAdjacentHTML('beforeend', repRow(F[k], {})); }); });
+    $$('.add-row').forEach(function (b) { b.addEventListener('click', function () { var k = b.dataset.key; $('.rep[data-key="' + k + '"]').insertAdjacentHTML('beforeend', repRow(F[k], {})); setDirty(true); var last = $('.rep[data-key="' + k + '"]').lastElementChild; var fi = last && last.querySelector('input:not([type=hidden]),textarea'); if (fi) fi.focus(); }); });
     var jump = document.createElement('nav'); jump.className = 'adm-jump';
     jump.innerHTML = $$('.adm-sec', form).map(function (x) { return '<button type="button">' + e(x.dataset.sec) + '</button>'; }).join('');
     form.querySelector('.ka-toggle').after(jump);
@@ -265,7 +307,8 @@
     $('#ka-on').addEventListener('change', function () { form.classList.toggle('show-ka', this.checked); try { localStorage.setItem('chd_adm_ka', this.checked ? '1' : '0'); } catch (x) { } });
     form.addEventListener('click', function (ev) {
       var t = ev.target, row = t.closest('.rep-row');
-      if (t.classList.contains('rep-x')) row.remove();
+      if (t.closest('.rep-tools')) setDirty(true);
+      if (t.classList.contains('rep-x')) { if (row.querySelector('[data-f]') && [].some.call(row.querySelectorAll('[data-f]'), function (i) { return i.value.trim(); }) && !confirm('Remove this item?')) return; row.remove(); }
       else if (t.classList.contains('rep-up') && row.previousElementSibling) row.parentNode.insertBefore(row, row.previousElementSibling);
       else if (t.classList.contains('rep-dn') && row.nextElementSibling) row.parentNode.insertBefore(row.nextElementSibling, row);
       else if (t.classList.contains('rph-x')) { var w = t.closest('.rf-ph'); w.querySelector('[data-f]').value = ''; w.querySelector('.rph').innerHTML = '<i>No photo</i>'; t.remove(); }
@@ -283,7 +326,7 @@
       $('#del').addEventListener('click', function () {
         var n = statsFor(c).count;
         if (!confirm('Delete “' + c.title + '”' + (n ? ' and its ' + n + ' registrations' : '') + '? This cannot be undone. (Tip: set status to Cancelled or Completed instead.)')) return;
-        H.api.deleteCamp(c.id).then(function () { toast('Camp deleted'); location.hash = 'dash'; return load(); }).catch(function (err) { toast(err.message, true); });
+        H.api.deleteCamp(c.id).then(function () { setDirty(false); toast('Camp deleted'); location.hash = 'dash'; return load(); }).catch(function (err) { toast(err.message, true); });
       });
       $('#dup').addEventListener('click', function () {
         var copy = JSON.parse(JSON.stringify(c)); delete copy.id; copy.title += ' (copy)'; copy.slug = (c.slug + '-copy').slice(0, 80); copy.status = 'draft';
@@ -324,7 +367,7 @@
     }
     $('#ph-cover-in').addEventListener('change', function () {
       var f = this.files[0]; if (!f) return; msg.className = 'form-msg'; msg.textContent = 'Uploading…';
-      up(f).then(function (u) { c.cover_url = u; redraw(); msg.textContent = 'Cover uploaded. Remember to save the camp.'; })
+      up(f).then(function (u) { c.cover_url = u; redraw(); setDirty(true); msg.textContent = 'Cover uploaded. Remember to save the camp.'; })
         .catch(function (err) { msg.className = 'form-msg err'; msg.textContent = err.message; });
       this.value = '';
     });
@@ -338,14 +381,14 @@
     app.querySelector('.ph-wrap').addEventListener('click', function (ev) {
       var x = ev.target.closest('.ph-x'); if (!x) return;
       if (x.hasAttribute('data-cover')) c.cover_url = null; else { var i = +x.closest('figure').dataset.i; c.gallery = c.gallery.filter(function (_, k) { return k !== i; }); }
-      redraw();
+      redraw(); setDirty(true);
     });
   }
   function sec(t, inner) { return '<section class="adm-sec" data-sec="' + e(t) + '"><h2>' + t + '</h2>' + inner + '</section>'; }
 
   function read(form, key) {
     return $$('.rep[data-key="' + key + '"] .rep-row', form).map(function (row) {
-      var o = {}; $$('[data-f]', row).forEach(function (i) { var v = i.value.trim(); o[i.dataset.f] = i.hasAttribute('data-lines') ? v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean) : v; }); return o;
+      var o = {}; $$('[data-f]', row).forEach(function (i) { var v = i.value.trim(); if (i.hasAttribute('data-lines')) o[i.dataset.f] = v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); else if (v !== '') o[i.dataset.f] = v; }); return o;
     });
   }
   function save(c, form) {
@@ -382,8 +425,10 @@
     o.reviews = read(form, 'reviews').filter(function (r) { return r.text; }).map(function (r) { r.rating = r.rating ? +r.rating : null; return r; });
     o.intensity = num(E.intensity.value); o.age_min = num(E.age_min.value); o.age_max = num(E.age_max.value);
     o.fit_for = lines(E.fit_for.value); o.show_urgency = E.show_urgency.checked;
-    o.ka = { title: E.ka_title.value.trim(), level: E.ka_level.value.trim(), dates_note: E.ka_dates_note.value.trim(), summary: E.ka_summary.value.trim(), description: E.ka_description.value.trim(),
-      venue_info: E.ka_venue_info.value.trim(), fit_for: lines(E.ka_fit_for.value), included: lines(E.ka_included.value), excluded: lines(E.ka_excluded.value) };
+    o.ka = Object.assign({}, c.ka || {}, { title: E.ka_title.value.trim(), level: E.ka_level.value.trim(), dates_note: E.ka_dates_note.value.trim(), summary: E.ka_summary.value.trim(), description: E.ka_description.value.trim(),
+      venue_info: E.ka_venue_info.value.trim(), fit_for: lines(E.ka_fit_for.value), included: lines(E.ka_included.value), excluded: lines(E.ka_excluded.value) });
+    Object.keys(o.ka).forEach(function (k) { if (o.ka[k] === '') delete o.ka[k]; });
+    ['city', 'country', 'venue', 'level', 'summary', 'description', 'address', 'map_url', 'venue_info'].forEach(function (k) { if (o[k] === '') o[k] = null; });
 
     var errs = [];
     if (!o.title) errs.push('Add a title.');
@@ -397,7 +442,7 @@
     if (errs.length) { msg.className = 'form-msg err'; msg.textContent = errs.join(' '); toast(errs[0], true); return; }
     msg.className = 'form-msg'; msg.textContent = 'Saving…';
     H.api.saveCamp(o).then(function (saved) {
-      toast('Camp saved'); return load().then(function () { location.hash = 'edit/' + saved.id; route(); });
+      setDirty(false); toast('Camp saved'); return load().then(function () { location.hash = 'edit/' + saved.id; route(); });
     }).catch(function (err) {
       var m = /duplicate|unique/i.test(err.message) ? 'That web address is already used by another camp.' : err.message;
       msg.className = 'form-msg err'; msg.textContent = m; toast(m, true);
@@ -408,7 +453,7 @@
   var META = window.CHD_SHOP_META || { sports: [], cats: {}, audience: {}, guides: {}, drawings: [], colours: {}, dark: [], sizesets: {}, art: {} };
   function needUpdate(title) {
     return shell('<div class="adm-top"><h1 class="display h-md">' + title + '<span class="dot">.</span></h1></div>' +
-      '<div class="adm-sec"><h2>One database update needed</h2><p class="body">This section needs <b>update-005.sql</b>. Open Supabase → SQL Editor → New query, paste the file and press Run. Then reload this page.</p></div>',
+      '<div class="adm-sec"><h2>Database update missing</h2><p class="body">This section is not installed in the database yet. Database updates install automatically from GitHub (Actions → Apply database updates). Check that the last run has a green tick, then reload this page.</p></div>',
       title === 'Shop' ? 'shop' : title === 'Signups' ? 'subs' : 'msgs');
   }
   function fail(title) { return function (err) { if (err.message === 'NEEDS_UPDATE_005') app.innerHTML = needUpdate(title); else if (/sign in|expired/i.test(err.message)) { H.api.signOut(); login(); } else toast(err.message, true); }; }
@@ -492,6 +537,8 @@
       '</div><aside class="prod-prev"><span class="rf-l">Preview</span><div class="pp-card"><div class="pp-art" id="pp-art"></div><b id="pp-name"></b><span id="pp-meta"></span></div></aside></div>' +
       '<div class="adm-foot"><button class="btn btn-primary" type="submit">Save product</button>' + (id ? '<button type="button" class="btn btn-ghost danger" id="pdel">Delete product</button>' : '') + '<p class="form-msg"></p></div></form>', 'shop');
     var form = $('#pf'), E = form.elements, touched = !!p.id;
+    setDirty(false); lastHash = location.hash; autoGrow(form);
+    form.addEventListener('input', function () { setDirty(true); });
     function cats() { var sp = E.sport.value, list = META.cats[sp] || []; E.category.innerHTML = list.map(function (c) { return '<option value="' + c[0] + '"' + (c[0] === p.category ? ' selected' : '') + '>' + e(c[1]) + '</option>'; }).join(''); }
     function cur() {
       return { id: E.id.value.trim(), name: E.name.value.trim(), name_ka: E.name_ka.value.trim(), description: E.description.value.trim(), description_ka: E.description_ka.value.trim(),
@@ -517,7 +564,7 @@
     $('#pp-in').addEventListener('change', function () {
       var f = this.files[0], m = $('#pp-msg'); if (!f) return; m.className = 'form-msg'; m.textContent = 'Uploading…';
       shrink(f, H.mode === 'demo' ? 900 : 1600).then(function (b) { return H.api.upload(b, 'product.jpg'); })
-        .then(function (u) { p.photo_url = u; preview(); m.textContent = 'Photo uploaded. Remember to save.'; })
+        .then(function (u) { p.photo_url = u; preview(); setDirty(true); m.textContent = 'Photo uploaded. Remember to save.'; })
         .catch(function (err) { m.className = 'form-msg err'; m.textContent = err.message; });
       this.value = '';
     });
@@ -533,12 +580,12 @@
       if (errs.length) { msg.className = 'form-msg err'; msg.textContent = errs.join(' '); toast(errs[0], true); return; }
       msg.className = 'form-msg'; msg.textContent = 'Saving…';
       H.api.saveProduct(o).then(function () {
-        toast('Product saved'); return H.api.adminProducts().then(function (l) { state.products = l || []; location.hash = 'product/' + encodeURIComponent(o.id); route(); });
-      }).catch(function (err) { msg.className = 'form-msg err'; msg.textContent = err.message === 'NEEDS_UPDATE_005' ? 'Run update-005.sql in Supabase first.' : err.message; toast(msg.textContent, true); });
+        setDirty(false); toast('Product saved'); return H.api.adminProducts().then(function (l) { state.products = l || []; location.hash = 'product/' + encodeURIComponent(o.id); route(); });
+      }).catch(function (err) { msg.className = 'form-msg err'; msg.textContent = err.message === 'NEEDS_UPDATE_005' ? 'The shop is not installed in the database yet.' : err.message; toast(msg.textContent, true); });
     });
     if (id) $('#pdel').addEventListener('click', function () {
       if (!confirm('Delete “' + p.name + '”? This cannot be undone. Tip: set the status to Hidden instead.')) return;
-      H.api.deleteProduct(p.id).then(function () { state.products = state.products.filter(function (x) { return x.id !== p.id; }); toast('Product deleted'); location.hash = 'shop'; }).catch(function (err) { toast(err.message, true); });
+      H.api.deleteProduct(p.id).then(function () { setDirty(false); state.products = state.products.filter(function (x) { return x.id !== p.id; }); toast('Product deleted'); location.hash = 'shop'; }).catch(function (err) { toast(err.message, true); });
     });
   }
 
@@ -630,11 +677,11 @@
   function visView() {
     app.innerHTML = shell('<p class="adm-loading">Loading visitor stats…</p>', 'vis');
     H.api.stats(state.visDays).then(drawVis).catch(function (err) {
-      if (err.message === 'NEEDS_UPDATE_007') app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Visitors<span class="dot">.</span></h1></div><div class="adm-sec"><h2>One database update needed</h2><p class="body">Run <b>update-007.sql</b> in Supabase (SQL Editor → New query → paste → Run), then reload this page. Stats start counting from that moment.</p></div>', 'vis');
+      if (err.message === 'NEEDS_UPDATE_007') app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Visitors<span class="dot">.</span></h1></div><div class="adm-sec"><h2>Database update missing</h2><p class="body">Visitor stats are not installed in the database yet. Database updates install automatically from GitHub (Actions → Apply database updates). Check that the last run has a green tick, then reload this page.</p></div>', 'vis');
       else if (/sign in|expired/i.test(err.message)) { H.api.signOut(); login(); } else toast(err.message, true);
     });
   }
-  var PAGE = { '/': 'Home', '/shop/': 'Shop', '/camps/': 'Camps', '/camps/camp/': 'A camp page', '/camps/venue/': 'Venue', '/georgia/': 'Why Georgia', '/culture/': 'Culture', '/contact/': 'Contact', '/privacy/': 'Privacy' };
+  var PAGE = { '/': 'Home', '/shop/': 'Shop', '/camps/': 'Camps', '/camps/camp/': 'A camp page', '/camps/venue/': 'Venue', '/camps/prepare/': 'Before you go', '/camps/waivers/': 'Waivers', '/georgia/': 'Why Georgia', '/culture/': 'Our story', '/contact/': 'Contact', '/privacy/': 'Privacy' };
   function pageName(p) { var ka = /^\/ka(\/|$)/.test(p || ''), k = (p || '/').replace(/^\/ka/, '') || '/'; return (PAGE[k] || k) + (ka ? ' (Georgian)' : ''); }
   function refName(r) { if (!r) return 'Direct, or link without source'; var m = { 'instagram.com': 'Instagram', instagram: 'Instagram', ig: 'Instagram', 'facebook.com': 'Facebook', facebook: 'Facebook', fb: 'Facebook', google: 'Google', tiktok: 'TikTok', 'google.com': 'Google', 't.co': 'X / Twitter', 'youtube.com': 'YouTube', 'tiktok.com': 'TikTok', 'wa.me': 'WhatsApp', 'web.whatsapp.com': 'WhatsApp' }; return m[r] || (/google\./.test(r) ? 'Google' : r); }
   function bars(rows, total, label) {
@@ -664,6 +711,27 @@
         '<p class="note">Camp requests sent: <b>' + (s.camps || 0) + '</b>. WhatsApp clicks by page: ' + ((s.wa_pages || []).map(function (r) { return e(pageName(r[0])) + ' ' + r[1]; }).join(', ') || 'none yet') + '.</p></section></div>' +
       '<p class="note">Counted without cookies and without storing anything personal. Your own visits are not counted on any browser where you have opened this admin page.</p>', 'vis');
     $('#vd').addEventListener('change', function () { state.visDays = +this.value; visView(); });
+  }
+
+  // ================= password =================
+  function accountView() {
+    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Password<span class="dot">.</span></h1></div>' +
+      '<form id="pwf" class="adm-sec adm-pw" novalidate><h2>Change your password</h2><p class="sub">Signed in as ' + e(H.api.adminEmail()) + '. Changing it signs you out on every other device.</p>' +
+      '<input type="email" autocomplete="username" value="' + e(H.api.adminEmail()) + '" hidden>' +
+      '<div class="field"><label for="pw-o">Current password</label><input id="pw-o" type="password" autocomplete="current-password"></div>' +
+      '<div class="field"><label for="pw-n">New password (at least 10 characters)</label><input id="pw-n" type="password" autocomplete="new-password" minlength="10"></div>' +
+      '<div class="field"><label for="pw-r">New password again</label><input id="pw-r" type="password" autocomplete="new-password"></div>' +
+      '<div class="row-btns"><button class="btn btn-primary" type="submit">Change password</button></div><p class="form-msg"></p></form>', 'account');
+    $('#pwf').addEventListener('submit', function (ev) {
+      ev.preventDefault(); var m = $('#pwf .form-msg'), o = $('#pw-o').value, n = $('#pw-n').value, r = $('#pw-r').value;
+      m.className = 'form-msg err';
+      if (!o) { m.textContent = 'Enter your current password.'; return; }
+      if (n.length < 10) { m.textContent = 'The new password needs at least 10 characters.'; return; }
+      if (n !== r) { m.textContent = 'The two new passwords are not the same.'; return; }
+      m.className = 'form-msg'; m.textContent = 'Saving…';
+      H.api.changePassword(o, n).then(function () { $('#pwf').reset(); m.textContent = 'Password changed.'; toast('Password changed'); })
+        .catch(function (err) { m.className = 'form-msg err'; m.textContent = err.message; });
+    });
   }
 
   if (H.api.signedIn()) load(); else login();
