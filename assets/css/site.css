@@ -2049,3 +2049,45 @@ html[lang="ka"] .day-line p{font-size:16px!important;letter-spacing:.04em}
 @media (max-width:700px){.adm-edit .g2,.adm-edit .g3{grid-template-columns:minmax(0,1fr)!important}.prod-ed{grid-template-columns:minmax(0,1fr)!important}}
 .adm-reauth .btn-ghost{background:var(--ground-2);color:var(--carbon);box-shadow:none}
 @media (max-width:800px){.adm-head nav{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:40px}}
+
+/* ===== polish, 11 Nov 2026 ===== */
+/* phone stats: the two short figures share a row, the long one gets the full row */
+@media (max-width:560px){
+  .stats-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .stats-3 .stat:last-child{grid-column:auto}
+  .stats-3 .stat:nth-child(2){grid-column:1/-1;order:3}
+}
+/* WhatsApp button steps aside while a form, the footer or another WhatsApp button is on screen */
+.wa-float{transition:opacity .2s,transform .2s}
+.wa-float.wa-away{opacity:0;pointer-events:none;transform:translateY(8px)}
+@media (max-width:600px){.wa-float{width:48px;height:48px;min-height:0}}
+/* scrolling tab rows: fade at the edge shows there is more */
+@media (max-width:700px){
+  .chapters .wrap,.shop-tabs{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);padding-right:44px}
+}
+/* headings: two lines at most */
+.gx .sec-head h2{grid-column:1 / span 9;font-size:clamp(24px,3.9vw,58px)}
+.gx .sec-head p{grid-column:10 / -1}
+@media (max-width:900px){.gx .sec-head h2,.gx .sec-head p{grid-column:1/-1}}
+@media (max-width:560px){.gx .sec-head h2.h-lg{font-size:24px!important}}
+.ch-history{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}
+.ch-history h3{font-size:clamp(21px,2.2vw,32px)}
+@media (max-width:800px){.ch-history{grid-template-columns:minmax(0,1fr)}}
+.foot-cta h2{font-size:clamp(31px,6.4vw,104px)}
+@media (max-width:560px){.cx-hero h1.h-lg{font-size:25px!important}}
+/* type: nothing under 13px, small captions at 15px */
+.lang-dd summary,.lang-menu a b,.sport-pick button em,.sport-tile em,.ptile-art span.ptile-sold,.bring li a,.menu-grid b,.cc-price em{font-size:13px!important}
+.stat span,.ch-stats span,.ptile-cat,.ptile-meta span,.cc-meta dt,.cc-meta dd,.news-consent,.news-consent span,.foot-copy,.foot-copy span,.foot-col h3,.foot-grid h3,.news-label,.news-sub,.ch-lists h4,.ch-lists li span,.foot-top{font-size:15px!important}
+.label{font-size:15px}
+.gx-split h2.h-lg{font-size:clamp(24px,3.3vw,48px)}
+.team-cta h3.h-md{font-size:clamp(21px,2.5vw,36px)}
+.feature-body h3.h-md{font-size:clamp(21px,2.5vw,36px)}
+@media (max-width:560px){
+  .gx .sec-head h2.h-lg{font-size:22px!important}
+  .ch-history h3{font-size:19px}
+  .camp-hero h1.h-lg{font-size:24px!important}
+  .team-cta h3.h-md,.feature-body h3.h-md{font-size:21px}
+}
+.incl.v-list h3{font-size:13px}
+.label{font-size:15px!important}
+@media (max-width:560px){.team-cta h3.h-md{font-size:19px}}

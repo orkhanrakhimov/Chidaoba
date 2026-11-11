@@ -223,3 +223,19 @@ document.addEventListener('click', function (ev) {
     if (a && a.id !== 'bag-send' && a.id !== 'pv-wa') window.CHD_TRACK('wa');
   }, true);
 })();
+// the floating WhatsApp button steps aside while a form, the footer or another WhatsApp button is on screen
+(function () {
+  var f = document.querySelector('.wa-float');
+  if (!f || !('IntersectionObserver' in window)) return;
+  var seen = [];
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (en) { var i = seen.indexOf(en.target); if (en.isIntersecting && i < 0) seen.push(en.target); else if (!en.isIntersecting && i >= 0) seen.splice(i, 1); });
+    f.classList.toggle('wa-away', seen.length > 0);
+  }, { rootMargin: '0px 0px -40px 0px' });
+  function watch() {
+    [].forEach.call(document.querySelectorAll('.site-foot, main form, .foot-cta, a.btn[href*="wa.me/"], .btn-wa, .feature-body .row-btns, .book'), function (el) {
+      if (el !== f && !el._waW) { el._waW = 1; io.observe(el); }
+    });
+  }
+  watch(); setTimeout(watch, 2500);
+})();
