@@ -262,3 +262,21 @@ document.addEventListener('click', function (ev) {
     });
   });
 })();
+// home hero: the symbol writes itself when it comes into view, and leans a little toward the pointer
+(function () {
+  var s = document.querySelector('.hero-draw'); if (!s) return;
+  var hero = s.closest('.hero'), still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function play() { s.classList.remove('go'); void s.getBoundingClientRect(); s.classList.add('go'); }
+  if (still) return;
+  if ('IntersectionObserver' in window) {
+    var seen = false;
+    new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting && !seen) { seen = true; play(); } else if (!en.isIntersecting) seen = false; }); }, { threshold: .35 }).observe(hero);
+  } else play();
+  if (window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    hero.addEventListener('pointermove', function (ev) {
+      var r = hero.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width - .5, y = (ev.clientY - r.top) / r.height - .5;
+      s.style.transform = 'translate(' + (x * -26).toFixed(1) + 'px,' + (y * -18).toFixed(1) + 'px)';
+    });
+    hero.addEventListener('pointerleave', function () { s.style.transform = ''; });
+  }
+})();

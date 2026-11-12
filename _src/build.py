@@ -21,6 +21,16 @@ UNESCO = "https://ich.unesco.org/en/RL/chidaoba-wrestling-in-georgia-01371"
 NAV = [("/", "Home"), ("/culture/", "Our story"), ("/camps/", "Camps &amp; Events"),
        ("/georgia/", "Why Georgia"), ("/shop/", "Shop")]
 
+def hero_draw():
+    # two pen strokes under a mask of the exact symbol: the letter is written, then the real shape takes over
+    s1 = "M760,208 L344,208 C250,208 200,262 200,330 C200,405 275,460 375,460 C450,460 525,425 560,345"
+    s2 = "M556,0 L556,300 C556,350 585,395 620,442 L662,498 C700,550 724,600 724,664 C724,790 630,875 489,875 C340,875 240,800 240,720 L240,600"
+    return (f'<svg class="hero-sym hero-draw" viewBox="130 10 670 940" aria-hidden="true" focusable="false">'
+            f'<defs><mask id="hs-m" maskUnits="userSpaceOnUse" x="130" y="10" width="670" height="940"><path d="{SYM}" fill="#fff" fill-rule="evenodd"/></mask></defs>'
+            f'<g mask="url(#hs-m)"><path class="hs-s hs-1" pathLength="1" d="{s1}"/><path class="hs-s hs-2" pathLength="1" d="{s2}"/>'
+            f'<path class="hs-p hs-1" pathLength="1" d="{s1}"/><path class="hs-p hs-2" pathLength="1" d="{s2}"/></g>'
+            f'<path class="hs-full" d="{SYM}" fill-rule="evenodd"/></svg>')
+
 def sym_svg(cls, extra=""):
     return f'<svg class="{cls}" viewBox="130 10 670 940" aria-hidden="true" focusable="false"{extra}><path d="{SYM}" fill-rule="evenodd"/></svg>'
 
@@ -142,7 +152,7 @@ def newsletter_form(where, interests=("camps", "shop"), title="The Culture Lette
     </form>"""
 
 def footer(path=""):
-    cta = "" if path.startswith("/camps/") or path == "/admin/" else f"""
+    cta = "" if path.startswith("/camps/") or path in ("/admin/", "/") else f"""
     <div class="foot-cta">
       <h2 class="display">Train with us<br>in Georgia</h2>
       <div class="foot-cta-btns">
@@ -151,7 +161,8 @@ def footer(path=""):
       </div>
     </div>"""
     news = "" if path == "/" else f'<div class="foot-news">{newsletter_form("foot")}</div>'
-    return f"""<footer class="site-foot">
+    home = " is-home" if path == "/" else ""
+    return f"""<footer class="site-foot{home}">
   <div class="wrap">{cta}
     <div class="foot-grid">
       {news}
@@ -173,7 +184,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "89"
+ASSET_V = "90"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -207,7 +218,7 @@ def home():
     jchips = "".join(f"<li>{c}</li>" for c in JCATS)
     return f"""
 <section class="hero dark" aria-labelledby="hero-title">
-  {sym_svg("hero-sym")}
+  {hero_draw()}
   <div class="wrap">
     <div>
       <h1 id="hero-title" class="display h-xl"><span class="ln"><span>A culture</span></span><span class="ln"><span>that moves<span class="dot">.</span></span></span></h1>
@@ -248,7 +259,7 @@ def home():
     </div>
     <div id="home-camps" class="camp-list" hidden></div>
     <article class="feature reveal" id="home-camps-soon">
-      <div class="feature-visual" aria-hidden="true">{sym_svg("")}<div class="ring"></div></div>
+      <div class="feature-visual feature-photo"><img src="/assets/venues/mulakhi/exterior.webp" srcset="/assets/venues/mulakhi/exterior-sm.webp 800w, /assets/venues/mulakhi/exterior.webp 1600w" sizes="(max-width:900px) 100vw, 50vw" alt="" loading="lazy" decoding="async"></div>
       <div class="feature-body">
                 <h3 class="display h-md">The first camps are being planned<span class="dot">.</span></h3>
         <p class="body soft">We are preparing our first training camps and experiences in Georgia. Dates, coaches, locations and registration will be published here first.</p>
@@ -263,19 +274,22 @@ def home():
 </section>
 
 <section class="section light home-shop" aria-labelledby="drop-title">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2 id="drop-title" class="display h-lg reveal">Shop</h2>
-      <p class="body muted reveal">Gis, training wear and gear for adults and kids. Order on WhatsApp.</p>
-    </div>
-    <div class="home-picks stagger">{home_picks()}</div>
-    <a class="btn btn-primary" href="/shop/" style="margin-top:28px">View the shop {arrow()}</a>
+  <div class="wrap home-shop-band reveal">
+    <h2 id="drop-title" class="display h-md">Shop</h2>
+    <p class="body muted">Gis, training wear and gear for adults and kids. Order on WhatsApp.</p>
+    <a class="btn btn-primary" href="/shop/">View the shop {arrow()}</a>
   </div>
 </section>
 
 <section class="section dark invite" aria-labelledby="invite-title" style="border-top:1px solid var(--carbon-line)">
   <div class="wrap invite-grid">
-    <h2 id="invite-title" class="display h-lg reveal">Stay updated</h2>
+    <div class="invite-l reveal">
+      <h2 id="invite-title" class="display h-lg">Train with us<br>in Georgia</h2>
+      <div class="foot-cta-btns">
+        <a class="btn btn-primary" href="/camps/">See camps {arrow()}</a>
+        <a class="btn btn-ghost" href="{WA}" rel="noopener">WhatsApp us {arrow()}</a>
+      </div>
+    </div>
     <div class="news-wrap reveal">{newsletter_form("home")}</div>
   </div>
 </section>

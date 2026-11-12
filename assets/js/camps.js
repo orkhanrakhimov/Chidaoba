@@ -52,7 +52,7 @@
     var n = H.days(c.start_date, c.end_date);
     var cv = H.cover(c), v = H.venue(c);
     return '<a class="camp-card st-' + st.key + (c.featured ? ' featured' : '') + (cv ? ' has-img' : '') + '" href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '">' +
-      (cv ? '<div class="cc-img"><img src="' + e(cv.thumb) + '" alt="' + e(cv.alt || '') + '" loading="lazy"></div>' : '') + '<div class="cc-body">' +
+      (cv ? '<div class="cc-img"><img src="' + e(cv.thumb) + '"' + (cv.url && cv.url !== cv.thumb ? ' srcset="' + e(cv.thumb) + ' 640w, ' + e(cv.url) + ' 1600w" sizes="(min-width:900px) 55vw, 100vw"' : '') + ' alt="' + e(cv.alt || '') + '" loading="lazy"></div>' : '') + '<div class="cc-body">' +
       '<div class="cc-top"><span class="label">' + e(H.DISC[c.discipline] || '') + '</span><span class="cc-status">' + e(st.label) + '</span></div>' +
       '<h3>' + e(c.title) + '</h3>' +
       '<dl class="cc-meta"><div><dt>Dates</dt><dd>' + e((c.start_date ? H.dateRange(c.start_date, c.end_date) : (c.dates_note || H.dateRange()))) + (n ? ' · ' + n + ' days' : '') + '</dd></div>' +

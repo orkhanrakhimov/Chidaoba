@@ -2162,3 +2162,57 @@ html[lang="ka"] .hx-grid figcaption,html[lang="ka"] .roots-pic figcaption{font-s
 .link.link-go:hover::after{transform:translateX(4px);background-color:var(--red)}
 .section.dark .link.link-go::after,.dark .link.link-go::after{background-color:var(--chalk);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none' stroke='%231E1E1E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 7h10M8 3l4 4-4 4'/%3E%3C/svg%3E")}
 html[lang="ka"] .link.link-go{font-size:17px!important}
+
+/* ===== home page, 12 Nov 2026 ===== */
+/* hero: the symbol writes itself */
+.hero-sym.hero-draw{right:max(-3vw,-40px);top:6vh;height:104%;pointer-events:none;transition:transform .5s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.hero-draw path{fill:none}
+.hero-draw .hs-s{stroke:#343434;stroke-width:150;stroke-dasharray:1;stroke-dashoffset:1}
+.hero-draw .hs-p{stroke:var(--red);stroke-width:150;stroke-dasharray:.035 1;stroke-dashoffset:.035;opacity:0}
+.hero-draw .hs-full{fill:#343434;opacity:0}
+.hero-draw.go .hs-s.hs-1{animation:hs-draw 1s cubic-bezier(.6,0,.3,1) .25s forwards}
+.hero-draw.go .hs-s.hs-2{animation:hs-draw 1.5s cubic-bezier(.6,0,.3,1) 1.05s forwards}
+.hero-draw.go .hs-p.hs-1{animation:hs-pen 1s cubic-bezier(.6,0,.3,1) .25s forwards}
+.hero-draw.go .hs-p.hs-2{animation:hs-pen 1.5s cubic-bezier(.6,0,.3,1) 1.05s forwards}
+.hero-draw.go .hs-full{animation:hs-in .25s linear 2.55s forwards}
+@keyframes hs-draw{to{stroke-dashoffset:0}}
+@keyframes hs-pen{0%{stroke-dashoffset:.035;opacity:1}92%{opacity:1}100%{stroke-dashoffset:-1;opacity:0}}
+@keyframes hs-in{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hero-draw .hs-full{opacity:1!important;animation:none!important}.hero-draw .hs-s,.hero-draw .hs-p{display:none}}
+@media (max-width:800px){.hero-sym.hero-draw{right:-18%;top:auto;bottom:-6%;height:62%}}
+/* our roots: statement under the heading, text beside it */
+.intro h2{grid-column:1/-1}
+.intro .text{grid-column:1/-1;grid-template-columns:minmax(0,7fr) minmax(0,5fr);column-gap:clamp(32px,6vw,96px);align-items:start}
+.intro .text .scrub{grid-row:1 / span 2}
+.intro .text .link-go{grid-column:2}
+@media (max-width:800px){.intro .text{grid-template-columns:minmax(0,1fr)}.intro .text .scrub{grid-row:auto}.intro .text .link-go{grid-column:1}}
+/* stats: one line each */
+.intro .stat b{white-space:nowrap;font-size:clamp(40px,4.3vw,60px)!important}
+/* camps fallback shows the venue */
+.feature-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* shop: one band */
+.home-shop{padding-top:clamp(56px,7vw,96px);padding-bottom:clamp(56px,7vw,96px)}
+.home-shop-band{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:20px clamp(24px,4vw,56px)}
+.home-shop-band p{max-width:34em;margin:0}
+@media (max-width:800px){.home-shop-band{grid-template-columns:minmax(0,1fr);justify-items:start}}
+/* closing block */
+.invite-l{display:grid;gap:32px;align-content:start}
+.invite-l .foot-cta-btns{display:flex;gap:12px;flex-wrap:wrap}
+.site-foot.is-home .foot-mark{display:none}
+.site-foot.is-home{padding-top:clamp(40px,5vw,72px)}
+/* WhatsApp: a round icon at every width */
+.wa-float{width:56px;height:56px;min-height:0;padding:0;justify-content:center;border-radius:50%!important}
+.wa-float span{display:none}
+@media (max-width:600px){.wa-float{width:48px;height:48px}}
+.hero-draw mask path{fill:#fff!important;stroke:none}
+/* one camp listed: a wide card with the photo beside the details */
+@media (min-width:900px){
+  .camp-list>.camp-card:only-child{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+  .camp-list>.camp-card:only-child .cc-img{aspect-ratio:auto;height:100%;min-height:440px}
+  .camp-list>.camp-card:only-child .cc-body{padding:clamp(28px,3vw,48px);align-content:center}
+}
+/* closing block: heading fits, no dead space before the links */
+.invite-grid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+.section.invite{padding-bottom:clamp(48px,6vw,88px)}
+.site-foot.is-home .foot-grid{margin-top:0;padding-top:clamp(32px,4vw,56px)}
+@media (max-width:860px){.invite-grid{grid-template-columns:minmax(0,1fr)}}
