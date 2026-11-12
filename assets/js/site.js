@@ -239,3 +239,26 @@ document.addEventListener('click', function (ev) {
   }
   watch(); setTimeout(watch, 2500);
 })();
+// tabs: [data-tabs] with role=tab buttons and role=tabpanel panels. Without script every panel stays visible.
+(function () {
+  [].forEach.call(document.querySelectorAll('[data-tabs]'), function (box) {
+    var tabs = [].slice.call(box.querySelectorAll('[role="tab"]'));
+    if (!tabs.length) return;
+    function pick(t, focus) {
+      tabs.forEach(function (x) {
+        var on = x === t, p = document.getElementById(x.getAttribute('aria-controls'));
+        x.setAttribute('aria-selected', on ? 'true' : 'false'); x.tabIndex = on ? 0 : -1;
+        if (p) p.hidden = !on;
+      });
+      if (focus) t.focus();
+    }
+    box.classList.add('tabs-on'); pick(tabs[0]);
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { pick(t); });
+      t.addEventListener('keydown', function (ev) {
+        var d = ev.key === 'ArrowRight' ? 1 : ev.key === 'ArrowLeft' ? -1 : 0;
+        if (d) { ev.preventDefault(); pick(tabs[(i + d + tabs.length) % tabs.length], true); }
+      });
+    });
+  });
+})();

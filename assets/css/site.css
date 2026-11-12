@@ -2066,28 +2066,66 @@ html[lang="ka"] .day-line p{font-size:16px!important;letter-spacing:.04em}
   .chapters .wrap,.shop-tabs{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);padding-right:44px}
 }
 /* headings: two lines at most */
-.gx .sec-head h2{grid-column:1 / span 9;font-size:clamp(24px,3.9vw,58px)}
-.gx .sec-head p{grid-column:10 / -1}
-@media (max-width:900px){.gx .sec-head h2,.gx .sec-head p{grid-column:1/-1}}
-@media (max-width:560px){.gx .sec-head h2.h-lg{font-size:24px!important}}
 .ch-history{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}
-.ch-history h3{font-size:clamp(21px,2.2vw,32px)}
 @media (max-width:800px){.ch-history{grid-template-columns:minmax(0,1fr)}}
 .foot-cta h2{font-size:clamp(31px,6.4vw,104px)}
-@media (max-width:560px){.cx-hero h1.h-lg{font-size:25px!important}}
 /* type: nothing under 13px, small captions at 15px */
 .lang-dd summary,.lang-menu a b,.sport-pick button em,.sport-tile em,.ptile-art span.ptile-sold,.bring li a,.menu-grid b,.cc-price em{font-size:13px!important}
 .stat span,.ch-stats span,.ptile-cat,.ptile-meta span,.cc-meta dt,.cc-meta dd,.news-consent,.news-consent span,.foot-copy,.foot-copy span,.foot-col h3,.foot-grid h3,.news-label,.news-sub,.ch-lists h4,.ch-lists li span,.foot-top{font-size:15px!important}
 .label{font-size:15px}
-.gx-split h2.h-lg{font-size:clamp(24px,3.3vw,48px)}
-.team-cta h3.h-md{font-size:clamp(21px,2.5vw,36px)}
-.feature-body h3.h-md{font-size:clamp(21px,2.5vw,36px)}
 @media (max-width:560px){
-  .gx .sec-head h2.h-lg{font-size:22px!important}
-  .ch-history h3{font-size:19px}
-  .camp-hero h1.h-lg{font-size:24px!important}
-  .team-cta h3.h-md,.feature-body h3.h-md{font-size:21px}
 }
 .incl.v-list h3{font-size:13px}
 .label{font-size:15px!important}
-@media (max-width:560px){.team-cta h3.h-md{font-size:19px}}
+
+/* champions tabs */
+.ch-tablist{display:flex;gap:8px;margin-top:clamp(40px,5vw,64px);flex-wrap:wrap}
+.ch-tablist button{font:inherit;font-size:15px;font-weight:600;min-height:44px;padding:0 20px;border-radius:999px;border:0;background:#E7E6E2;color:var(--carbon);cursor:pointer;transition:background .2s,color .2s}
+.ch-tablist button:hover{background:#DAD8D2}
+.ch-tablist button[aria-selected="true"]{background:var(--carbon);color:var(--chalk)}
+.ch-tablist button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.ch-tabs:not(.tabs-on) .ch-tablist{display:none}
+.ch-tabs.tabs-on .ch-eu{margin-top:28px}
+.ch-tabs.tabs-on .ch-eu[hidden]{display:none}
+.ch-tabs.tabs-on .ch-eu>h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.ch-tabs.tabs-on .ch-eu>.body{margin:0}
+@media (max-width:560px){.ch-tablist button{padding:0 16px;flex:1 1 auto}}
+html[lang="ka"] .ch-tablist button{font-size:17px!important}
+
+/* ===== one type scale (12 Nov 2026) =====
+   desktop: 13 tag · 15 caption · 17 text · 22 lead · 28 title · 43 heading · 66 section heading · hero
+   phone:   13 · 15 · 17 · 20 lead · 22/24 long heading · 28 heading · 40 hero */
+:root{--fs-tag:13px;--fs-cap:15px;--fs-text:17px;--fs-lead:22px;--fs-title:28px;--fs-h:43px;--fs-sec:66px}
+@media (max-width:1100px){:root{--fs-h:36px;--fs-sec:52px}}
+@media (max-width:800px){:root{--fs-lead:20px;--fs-h:28px;--fs-sec:28px}}
+.incl h3{font-size:var(--fs-tag)!important}
+/* captions */
+.lang-menu a,.foot-top,.cf-grid .label,.prep-shop,.menu-grid p,.perks span,.prep-wv span,.wv-brand,.fit-facts .label,.map-top span{font-size:var(--fs-cap)!important}
+/* text */
+body,.body,.foot-col a,.foot-grid a,.ptile h3,.wv-s p,.wv-s li,.wv-tick span,.wv-for,.faq details p,.prep-body p,.prep-pack label span,.prep-done span,.btn,.gx-know p,.details p,.day-line p,.bring li span,.cf-grid p,.ch-lists li b,.food p,.foods p,.hpick b,.contact-list .label,.field label,.field legend,.field em,.pillars p,.steps p,.fit-list li,.fit-list li i,.consent,.consent span,.consent a,.shop-q-l,.day-line b,.facts-row b,.map-top b,.prose p,.prose li,.ch-history-t p,.yes,.yes li,.prep-n,time{font-size:var(--fs-text)!important}
+.day-line b,.facts-row b,.map-top b{font-weight:700}
+/* lead */
+.lead,.wv-s h2,.wv-s h2 em,.cz-before b,.fit-facts b,.co-ph,.book-h,.cf-top p,.cf-grid b,.faq summary,.prep details>summary b,.contact-list b,.kn-h,.gx-know b,.food b,.foods b,.ch-eu>h3{font-size:var(--fs-lead)!important}
+/* title */
+.scrub .w,.scrub,.who-btn b,.cc-body h3,.cc-price b,.prose h2,.wv-head h1,.vc-body h3,.ch-history h3.h-md,.feature-body h3.h-md,.team-cta h3.h-md{font-size:var(--fs-title)!important}
+@media (max-width:800px){.scrub .w,.scrub{font-size:var(--fs-lead)!important}.ch-history h3.h-md,.feature-body h3.h-md,.team-cta h3.h-md{font-size:20px!important}}
+/* headings and figures */
+.h-md,.pillars b,.steps h3,.v-facts b,.gx-split h2.h-lg{font-size:var(--fs-h)!important}
+.h-lg,.ch-stats b,.stat b{font-size:var(--fs-sec)!important}
+@media (max-width:800px){.pillars b,.steps h3,.v-facts b{font-size:28px!important}.ch-stats b,.stat b{font-size:40px!important}.foot-cta h2{font-size:28px!important}}
+/* long section headings get the full row so they keep the section size */
+.gx .sec-head h2.h-lg{grid-column:1/-1}
+.gx .sec-head h2.h-lg+p{grid-column:1 / span 6}
+@media (max-width:560px){.gx .sec-head h2.h-lg{font-size:22px!important}.camp-hero h1.h-lg{font-size:24px!important}}
+.foot-bottom .foot-top{font-size:var(--fs-cap)!important}
+form.js-form .field label,form.js-form .consent span,form.js-form .consent{font-size:var(--fs-text)!important}
+.prow-btn{font-size:var(--fs-lead)!important}
+details>summary b{font-size:var(--fs-lead)!important}
+.contact-list .label,#contact-form .field label,#contact-form .consent span{font-size:var(--fs-text)!important}
+@media (max-width:800px){.cc-body h3,.vc-body h3{font-size:20px!important}}
+@media (max-width:560px){.team-cta{padding-left:18px!important;padding-right:18px!important}}
+.ch-stats b{font-size:var(--fs-h)!important}
+@media (max-width:800px){.ch-stats b{font-size:28px!important}}
+@media (max-width:900px){.gx .sec-head h2.h-lg+p{grid-column:1/-1}}
+#home-camps-soon[hidden]{display:none!important}
+@media (max-width:560px){.stats-3 .stat+.stat{margin-top:0}.stats-3{gap:12px}}

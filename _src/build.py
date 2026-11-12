@@ -173,7 +173,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "85"
+ASSET_V = "86"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -395,7 +395,7 @@ CAMP_FAQS = [
         ("How do I get to Georgia?", "Georgia has international airports in Tbilisi, Kutaisi and Batumi. Each camp page says where it is and whether transfers are available as an add-on. Please check the visa rules for your passport."),
         ("What if I cancel?", "If you cancel 60 days or more before the camp starts, we refund 80% of what you paid. From 59 to 30 days before, we refund 50%. Less than 30 days before, there is no refund. You can give your place to someone else at any time at no cost. If we cancel a camp, you get a full refund."),
         ("Do I need to sign a waiver?", "Yes. Every participant signs a waiver before the first session: the adult waiver from 18, or the under 18 waiver signed by a parent or guardian. You can download and print both on the waivers page."),
-        ("Do I need insurance?", "We strongly recommend travel insurance that covers sports injuries. Medical costs are not included in the camp price."),
+        ("Do I need insurance?", "Yes, if you come from abroad. Since 1 January 2026 Georgia requires every foreign visitor to have health and accident insurance for the whole stay, with cover of at least 30,000 GEL. Choose a policy that also covers sports injuries. Medical costs are not included in the camp price."),
         ("Can I bring my team?", "Yes. Camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
 
@@ -518,7 +518,7 @@ def georgia():
     ]
     rt = "".join(f'<div class="scrub-item"><span class="n">{i+1:02d}</span><p class="scrub">{t}</p></div>' for i, t in enumerate(roots))
     chapters = [("champions", "Champions"), ("newwave", "BJJ and grappling"), ("land", "Nature"),
-                ("table", "Food"), ("people", "Hospitality"), ("know", "Practical info")]
+                ("table", "Food"), ("people", "Hospitality"), ("know", "Travel and safety")]
     ch = "".join(f'<a href="#{k}"><b>{i+1:02d}</b> {t}</a>' for i, (k, t) in enumerate(chapters))
     day = [("08:00", "Breakfast"), ("10:00", "Morning session: technique"),
            ("13:00", "Lunch"), ("14:00", "Rest and free time"),
@@ -531,12 +531,15 @@ def georgia():
             ("Lobio", "Bean stew cooked in a clay pot, served with cornbread."),
             ("Churchkhela", "Walnuts coated in thickened grape juice. A traditional snack.")]
     fd = "".join(f'<div class="food"><h3>{n}</h3><p>{d}</p></div>' for n, d in food)
-    know = [("Visa", "Citizens of many countries, including the EU, UK and US, can stay without a visa for up to a year. Check the rules for your passport before you book."),
+    know = [("Is it safe?", "Yes. Georgia is a safe country for visitors. The US State Department rates it Level 1, the lowest of its four risk levels. Foreign governments advise against travel to the two Russian-occupied regions, Abkhazia and South Ossetia. No camp takes place there. Use the same care you would in any country you do not know."),
+            ("Insurance", "Required. Since 1 January 2026 every foreign visitor needs health and accident insurance for the whole stay, with cover of at least 30,000 GEL. Border officers can ask for the policy, in English or Georgian; a PDF on your phone is accepted. For a camp, choose a policy that also covers sports injuries."),
+            ("Visa", "Citizens of many countries, including the EU, UK and US, can stay without a visa for up to a year. Check the rules for your passport before you book."),
             ("Flights", "International airports in Tbilisi, Kutaisi and Batumi, with direct routes from across Europe and the Middle East."),
+            ("Getting to camp", "Every camp page shows where the camp takes place. Everyone registered gets travel details and transfer options from us before the camp."),
+            ("Health and emergencies", "The emergency number is 112, for police, ambulance and fire. Larger towns have hospitals and pharmacies. If you take prescription medicine, check Georgia's rules before you travel and carry the prescription."),
             ("Money", "The Georgian lari (GEL). Cards work almost everywhere in cities. Bring some cash for villages and markets."),
             ("Language", "Georgian, with its own alphabet. Many young people speak English, and our team is with you the whole camp."),
-            ("Best time", "Late spring to early autumn for mountain camps. Tbilisi works all year."),
-            ("Time zone", "GMT+4, all year round.")]
+            ("When to come", "Late spring to early autumn for mountain camps. Tbilisi works all year. The time zone is GMT+4, with no clock changes.")]
     kn = "".join(f'<div><h3 class="kn-h">{t}</h3><p>{d}</p></div>' for t, d in know)
     return f"""
 <div class="cx gx">
@@ -563,26 +566,33 @@ def georgia():
       <div><b data-count="9">9</b><span>Olympic gold medals in judo and wrestling</span></div>
       <div><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
     </div>
-    <div class="ch-eu ch-first">
+    <div class="ch-tabs" data-tabs>
+    <div class="ch-tablist" role="tablist" aria-label="Champions">
+      <button type="button" role="tab" id="cht-1" aria-controls="chp-1" aria-selected="true">Olympic</button>
+      <button type="button" role="tab" id="cht-2" aria-controls="chp-2" aria-selected="false" tabindex="-1">World</button>
+      <button type="button" role="tab" id="cht-3" aria-controls="chp-3" aria-selected="false" tabindex="-1">European</button>
+    </div>
+    <div class="ch-eu ch-first" role="tabpanel" id="chp-1" aria-labelledby="cht-1">
       <h3>Olympic champions</h3><p class="body muted">All Olympic titles in judo and wrestling</p>
       <div class="ch-lists ch-lists-eu">
         <div><h4>Judo</h4><ul><li><b>Zurab Zviadauri</b><span>90 kg</span><em>2004</em></li><li><b>Irakli Tsirekidze</b><span>90 kg</span><em>2008</em></li><li><b>Lasha Shavdatuashvili</b><span>66 kg</span><em>2012</em></li><li><b>Lasha Bekauri</b><span>90 kg</span><em>2020, 2024</em></li></ul></div>
         <div><h4>Wrestling</h4><ul><li><b>Manuchar Kvirkvelia</b><span>Greco-Roman, 74 kg</span><em>2008</em></li><li><b>Revaz Mindorashvili</b><span>Freestyle, 84 kg</span><em>2008</em></li><li><b>Vladimer Khinchegashvili</b><span>Freestyle, 57 kg</span><em>2016</em></li><li><b>Geno Petriashvili</b><span>Freestyle, 125 kg</span><em>2024</em></li></ul></div>
       </div>
     </div>
-    <div class="ch-eu">
+    <div class="ch-eu" role="tabpanel" id="chp-2" aria-labelledby="cht-2">
       <h3>World champions</h3><p class="body muted">Senior world titles, 2022 to 2026</p>
       <div class="ch-lists ch-lists-eu">
         <div><h4>Judo</h4><ul><li><b>Tato Grigalashvili</b><span>81 kg</span><em>2022, 2023, 2024, 2026</em></li><li><b>Luka Maisuradze</b><span>90 kg</span><em>2023</em></li><li><b>Giorgi Sardalashvili</b><span>60 kg</span><em>2024</em></li><li><b>Eteri Liparteliani</b><span>57 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Mixed team</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>100 kg</span><em>2026</em></li></ul></div>
         <div><h4>Wrestling</h4><ul><li><b>Leri Abuladze</b><span>Greco-Roman, 63 kg</span><em>2023</em></li><li><b>Vakhtang Lolua</b><span>Greco-Roman, 55 kg</span><em>2025</em></li></ul></div>
       </div>
     </div>
-    <div class="ch-eu">
+    <div class="ch-eu" role="tabpanel" id="chp-3" aria-labelledby="cht-3">
       <h3>European champions</h3><p class="body muted">Senior European titles, 2022 to 2026</p>
       <div class="ch-lists ch-lists-eu">
         <div><h4>Judo</h4><ul><li><b>Tato Grigalashvili</b><span>81 kg</span><em>2022, 2024</em></li><li><b>Luka Maisuradze</b><span>90 kg</span><em>2022, 2026</em></li><li><b>Vazha Margvelashvili</b><span>66 kg</span><em>2024</em></li><li><b>Giorgi Sardalashvili</b><span>60 kg</span><em>2025</em></li><li><b>Ilia Sulamanidze</b><span>100 kg</span><em>2025</em></li><li><b>Georgia national team</b><span>Mixed team</span><em>2023, 2025</em></li><li><b>Eteri Liparteliani</b><span>57 kg</span><em>2026</em></li><li><b>Lasha Shavdatuashvili</b><span>73 kg</span><em>2026</em></li><li><b>Guram Tushishvili</b><span>Over 100 kg</span><em>2026</em></li></ul></div>
         <div><h4>Wrestling</h4><ul><li><b>Leri Abuladze</b><span>Greco-Roman, 63 kg</span><em>2022, 2023</em></li><li><b>Zurabi Iakobishvili</b><span>Freestyle, 70 kg</span><em>2022</em></li><li><b>Givi Matcharashvili</b><span>Freestyle, 97 kg</span><em>2023, 2024, 2025</em></li></ul></div>
       </div>
+    </div>
     </div>
     <div class="ch-history">
       <h3 class="display h-md">Judo and wrestling are national sports</h3>
@@ -653,7 +663,7 @@ def georgia():
 <section class="section alt" id="know" aria-labelledby="know-title">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px">
-      <h2 id="know-title" class="display h-md">Practical information</h2>
+      <h2 id="know-title" class="display h-md">Travel and safety</h2>
     </div>
     <div class="details gx-know stagger">{kn}</div>
   </div>
@@ -858,7 +868,7 @@ def prepare_page():
         ("travel", "Plan your trip",
          """<p>Georgia has international airports in Tbilisi, Kutaisi and Batumi. Check the visa rules for your passport before you book.</p>
          <p>Camps in Svaneti: Mestia can be reached by a short flight from Tbilisi or by road from Kutaisi or Zugdidi. Each camp page shows where it takes place, and we send travel details and transfer options to everyone registered.</p>
-         <p>We strongly recommend travel insurance that covers sports injuries.</p>"""),
+         <p>Insurance is required to enter Georgia: health and accident cover of at least 30,000 GEL for your whole stay. Choose a policy that also covers sports injuries. See <a class="link" href="/georgia/#know">travel and safety</a> for the details.</p>"""),
         ("pack", "Pack your bag",
          f"""<p>Tick things off as you pack. Your list is saved on this device.</p><ul class="prep-pack">{pk}</ul>"""),
         ("arrive", "Arrival day",
