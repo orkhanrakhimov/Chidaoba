@@ -173,7 +173,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "86"
+ASSET_V = "87"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -229,6 +229,7 @@ def home():
         <p class="body muted">We connect this heritage with the sports people train today: wrestling, judo, Brazilian jiu-jitsu and grappling.</p>
         <a class="link" href="/culture/" style="align-self:start">What is Chidaoba</a>
       </div>
+      <figure class="roots-pic reveal"><img src="/assets/img/heritage/championship-today.webp" srcset="/assets/img/heritage/championship-today-sm.webp 720w, /assets/img/heritage/championship-today.webp 1600w" sizes="(max-width:800px) 100vw, 92vw" width="1600" height="900" alt="Wrestlers in a circle of straw surrounded by spectators" loading="lazy" decoding="async"><figcaption>An open-air chidaoba championship in Georgia.</figcaption></figure>
       <div class="stats stats-3 stagger">
         <div class="stat"><b data-count="9">9</b><span>Olympic gold medals for Georgia in judo and wrestling</span></div>
         <div class="stat"><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
@@ -343,6 +344,21 @@ def culture():
   <div class="wrap">
     <h2 id="story-title" class="display h-md story-h">The story of Chidaoba</h2>
     <div class="scrub-list">{st}</div>
+  </div>
+</section>
+
+
+<section class="section alt hx" aria-labelledby="hx-title">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:48px">
+      <h2 id="hx-title" class="display h-lg">Chidaoba through the centuries</h2>
+    </div>
+    <div class="hx-grid stagger">
+      <figure class="hx-a"><img src="/assets/img/heritage/fresco-alaverdi.webp" srcset="/assets/img/heritage/fresco-alaverdi-sm.webp 720w, /assets/img/heritage/fresco-alaverdi.webp 954w" sizes="(max-width:800px) 100vw, 62vw" width="954" height="655" alt="Fresco of two wrestlers gripping each other" loading="lazy" decoding="async"><figcaption><b>15th century</b><span>Two wrestlers on a fresco at Alaverdi Monastery in Kakheti.</span></figcaption></figure>
+      <figure class="hx-b"><img src="/assets/img/heritage/wrestlers-ermakov.webp" srcset="/assets/img/heritage/wrestlers-ermakov-sm.webp 720w, /assets/img/heritage/wrestlers-ermakov.webp 719w" sizes="(max-width:800px) 100vw, 32vw" width="719" height="913" alt="Two Georgian wrestlers posing in a photo studio" loading="lazy" decoding="async"><figcaption><b>Late 19th century</b><span>Georgian wrestlers, photographed in the studio of Dmitri Ermakov.</span></figcaption></figure>
+      <figure class="hx-c"><img src="/assets/img/heritage/festival-archive.webp" srcset="/assets/img/heritage/festival-archive-sm.webp 720w, /assets/img/heritage/festival-archive.webp 1145w" sizes="(max-width:800px) 100vw, 40vw" width="1145" height="800" alt="A large crowd around two wrestlers, with people watching from the trees" loading="lazy" decoding="async"><figcaption><b>20th century</b><span>A bout at a village festival. People climb the trees to see it.</span></figcaption></figure>
+      <figure class="hx-d"><img src="/assets/img/heritage/championship-today.webp" srcset="/assets/img/heritage/championship-today-sm.webp 720w, /assets/img/heritage/championship-today.webp 1600w" sizes="(max-width:800px) 100vw, 55vw" width="1600" height="900" alt="Wrestlers in a circle of straw surrounded by spectators" loading="lazy" decoding="async"><figcaption><b>Today</b><span>An open-air chidaoba championship.</span></figcaption></figure>
+    </div>
   </div>
 </section>
 
