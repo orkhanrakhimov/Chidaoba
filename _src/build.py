@@ -173,7 +173,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "88"
+ASSET_V = "89"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
@@ -227,7 +227,7 @@ def home():
       <div class="text reveal">
         <p class="scrub scrub-sm">Chidaoba is the traditional wrestling of Georgia. Our brand takes its name and values from it.</p>
         <p class="body muted">We connect this heritage with the sports people train today: wrestling, judo, Brazilian jiu-jitsu and grappling.</p>
-        <a class="link" href="/culture/" style="align-self:start">What is Chidaoba</a>
+        <a class="link link-go" href="/culture/">What is Chidaoba</a>
       </div>
       <figure class="roots-pic reveal"><img src="/assets/img/heritage/championship-today.webp" srcset="/assets/img/heritage/championship-today-sm.webp 720w, /assets/img/heritage/championship-today.webp 1600w" sizes="(max-width:800px) 100vw, 92vw" width="1600" height="900" alt="Wrestlers in a circle of straw surrounded by spectators" loading="lazy" decoding="async"><figcaption>An open-air chidaoba championship in Georgia.</figcaption></figure>
       <div class="stats stats-3 stagger">
@@ -235,7 +235,7 @@ def home():
         <div class="stat"><b>1 : 82,000</b><span>One Olympic medal for every 82,000 people</span></div>
         <div class="stat"><b data-count="2018" data-from="1900">2018</b><span>Chidaoba added to UNESCO’s list of intangible cultural heritage</span></div>
       </div>
-      <a class="link home-why" href="/georgia/">Why train in Georgia</a>
+      <a class="link link-go home-why" href="/georgia/">Why train in Georgia</a>
     </div>
   </div>
 </section>

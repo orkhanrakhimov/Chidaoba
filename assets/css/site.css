@@ -2154,3 +2154,11 @@ details>summary b{font-size:var(--fs-lead)!important}
 html[lang="ka"] .hx-grid figcaption,html[lang="ka"] .roots-pic figcaption{font-size:16px}
 .hx .sec-head h2.h-lg{grid-column:1/-1}
 @media (max-width:560px){.hx .sec-head h2.h-lg{font-size:22px!important}}
+
+/* links that lead to another page: text plus an arrow chip, never a full-width bar */
+.link.link-go{display:inline-flex!important;align-items:center;gap:12px;width:auto!important;max-width:100%;align-self:start;justify-self:start;border:0!important;padding:6px 0;min-height:44px;font-size:var(--fs-text)!important;font-weight:700;color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:7px}
+.link.link-go::after{content:"";flex:0 0 auto;width:34px;height:34px;border-radius:50%;background-color:var(--carbon);background-repeat:no-repeat;background-position:center;background-size:14px 14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none' stroke='%23F2F1EC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 7h10M8 3l4 4-4 4'/%3E%3C/svg%3E");transition:transform .2s,background-color .2s}
+.link.link-go:hover{text-decoration-color:var(--red)}
+.link.link-go:hover::after{transform:translateX(4px);background-color:var(--red)}
+.section.dark .link.link-go::after,.dark .link.link-go::after{background-color:var(--chalk);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none' stroke='%231E1E1E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 7h10M8 3l4 4-4 4'/%3E%3C/svg%3E")}
+html[lang="ka"] .link.link-go{font-size:17px!important}
