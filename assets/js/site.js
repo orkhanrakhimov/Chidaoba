@@ -262,21 +262,46 @@ document.addEventListener('click', function (ev) {
     });
   });
 })();
-// home hero: the symbol writes itself when it comes into view, and leans a little toward the pointer
+// home hero: the symbol writes itself. First visit of a session: it is written large in the middle of a clear
+// screen, then moves to its place while the page appears. Later: a quiet redraw. Desktop: it leans toward the pointer.
 (function () {
   var s = document.querySelector('.hero-draw'); if (!s) return;
-  var hero = s.closest('.hero'), still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function play() { s.classList.remove('go'); void s.getBoundingClientRect(); s.classList.add('go'); }
-  if (still) return;
-  if ('IntersectionObserver' in window) {
-    var seen = false;
-    new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting && !seen) { seen = true; play(); } else if (!en.isIntersecting) seen = false; }); }, { threshold: .35 }).observe(hero);
-  } else play();
-  if (window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  var root = document.documentElement, hero = s.closest('.hero');
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function play() { s.classList.remove('go'); s.classList.remove('drawn'); void s.getBoundingClientRect(); s.classList.add('go'); }
+  function lean() {
+    if (!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches)) return;
     hero.addEventListener('pointermove', function (ev) {
       var r = hero.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width - .5, y = (ev.clientY - r.top) / r.height - .5;
       s.style.transform = 'translate(' + (x * -26).toFixed(1) + 'px,' + (y * -18).toFixed(1) + 'px)';
     });
     hero.addEventListener('pointerleave', function () { s.style.transform = ''; });
   }
+  function watch() {
+    if (!('IntersectionObserver' in window)) return;
+    var seen = true;
+    new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting && !seen) { seen = true; play(); } else if (!en.isIntersecting) seen = false; }); }, { threshold: .35 }).observe(hero);
+  }
+  if (still) { root.classList.remove('op-in'); return; }
+  if (!root.classList.contains('op-in')) { play(); watch(); lean(); return; }
+  // intro
+  var done = false;
+  function finish() {
+    if (done) return; done = true;
+    try { sessionStorage.setItem('chd_intro', '1'); } catch (e) { }
+    var a = s.getBoundingClientRect();
+    s.style.transition = 'none';
+    root.classList.add('op-out'); root.classList.remove('op-in');
+    var b = s.getBoundingClientRect();
+    if (b.height > 0 && a.height > 0) {
+      s.style.transformOrigin = '50% 50%';
+      s.style.transform = 'translate(' + ((a.left + a.width / 2) - (b.left + b.width / 2)).toFixed(1) + 'px,' + ((a.top + a.height / 2) - (b.top + b.height / 2)).toFixed(1) + 'px) scale(' + (a.height / b.height).toFixed(4) + ')';
+      void s.getBoundingClientRect();
+    }
+    s.style.transition = ''; s.style.transform = '';
+    setTimeout(function () { s.classList.add('drawn'); s.classList.remove('go'); root.classList.remove('op-out'); watch(); lean(); }, 1500);
+  }
+  play();
+  setTimeout(finish, 2350);
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (t) { window.addEventListener(t, finish, { once: true, passive: true }); });
 })();

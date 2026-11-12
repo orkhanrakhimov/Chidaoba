@@ -91,6 +91,7 @@ def head(title, desc, path):
 <link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 {supa_hint(path)}<link rel="stylesheet" href="/assets/css/site.css?v={ASSET_V}">
 <!--ALT-->
+{'<script>try{if(!sessionStorage.getItem("chd_intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("op-in")}catch(e){}</script>' if path == "/" else ""}
 </head>
 <body id="top">
 <a class="skip" href="#main">Skip to content</a>
@@ -184,7 +185,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "90"
+ASSET_V = "91"
 EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
