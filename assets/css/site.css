@@ -2153,3 +2153,4 @@ details>summary b{font-size:var(--fs-lead)!important}
 }
 html[lang="ka"] .hx-grid figcaption,html[lang="ka"] .roots-pic figcaption{font-size:16px}
 .hx .sec-head h2.h-lg{grid-column:1/-1}
+@media (max-width:560px){.hx .sec-head h2.h-lg{font-size:22px!important}}
