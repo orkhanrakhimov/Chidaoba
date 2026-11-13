@@ -512,8 +512,8 @@
       f('full_name', 'Full name', 'text', true, 'name') + f('email', 'Email', 'email', true, 'email') +
       f('phone', 'Phone / WhatsApp', 'tel', true, 'tel') + f('country', 'Country', 'text', true, 'country-name') +
       '<div class="field"><label for="b-experience">Experience</label><select id="b-experience" name="experience" required><option value="">Select…</option><option>Beginner</option><option>Under 1 year</option><option>1 to 3 years</option><option>3 to 5 years</option><option>5+ years</option><option>Competitive athlete</option><option>Coach</option></select></div>' +
-      f('age', 'Age', 'number', false) + f('level', 'Belt / level', 'text', false) +
-      '<div class="field full"><label for="b-notes">Message <em>optional</em></label><textarea id="b-notes" name="notes" placeholder="Questions, people in your group, dietary needs…"></textarea></div>' +
+      f('age', 'Age', 'number', false) + f('level', 'Belt / level', 'text', false) + f('club', 'Club or academy', 'text', false, 'organization') +
+      '<div class="field full"><label for="b-notes">Why do you want to come? <em>optional</em></label><textarea id="b-notes" name="notes" placeholder="What you hope to get from the camp, people in your group, dietary needs, any questions."></textarea></div>' +
       '<input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<label class="consent"><input type="checkbox" name="consent" required><span>I agree that CHIDAOBA stores these details to organise this camp and contact me, as described in the <a href="/privacy/" target="_blank">privacy notice</a>.</span></label>' +
       '</div><div class="form-foot"><button class="btn btn-primary" type="submit" id="b-submit">' + (st.key === 'full' ? 'Join waitlist' : 'Send request') + ' <span class="arr">→</span></button><p class="form-msg" aria-live="polite"></p></div></form>' +
@@ -569,7 +569,7 @@
       if (!form.checkValidity()) { form.reportValidity(); return; }
       var fd = new FormData(form), s = sel(), btn = $('#b-submit');
       var p = { camp: c.slug, package: s.package, addons: s.addons, people: s.people, consent: !!fd.get('consent'), website: fd.get('website') || '' };
-      ['full_name', 'email', 'phone', 'country', 'age', 'experience', 'level', 'notes'].forEach(function (k) { p[k] = (fd.get(k) || '').toString().trim(); });
+      ['full_name', 'email', 'phone', 'country', 'age', 'experience', 'level', 'club', 'notes'].forEach(function (k) { p[k] = (fd.get(k) || '').toString().trim(); });
       btn.disabled = true; msg.className = 'form-msg'; msg.textContent = 'Sending…';
       H.api.register(p).then(function (r) { if (window.CHD_TRACK) window.CHD_TRACK('camp', c.slug); done(c, r, p); })
         .catch(function (err) { btn.disabled = false; msg.className = 'form-msg err'; msg.textContent = (err && err.message) || 'Something went wrong. Please try again.'; });

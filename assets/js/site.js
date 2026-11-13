@@ -144,7 +144,7 @@
           ['name', 'email', 'phone', 'topic', 'message'].forEach(function (k) { body[k] = data.get(k) || ''; });
         }
         btn.disabled = true; say(TT('Sending…', 'იგზავნება…'));
-        if (kind === 'interest') body.camp = data.get('camp') || '';
+        if (kind === 'interest') ['camp', 'country', 'experience', 'level', 'club'].forEach(function (k) { body[k] = data.get(k) || ''; });
         rpc(kind === 'subscribe' ? 'subscribe' : kind === 'interest' ? 'camp_interest' : 'send_message', body).then(function (j) {
           if (j.error) { btn.disabled = false; say(KA ? (KA_ERR[j.error] || j.error) : j.error, 'err'); return; }
           ok();

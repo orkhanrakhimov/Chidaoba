@@ -185,7 +185,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "92"
+ASSET_V = "93"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
@@ -460,13 +460,18 @@ def camps():
     <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport">{tb}</div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
     <div class="cz-interest" id="interest">
-      <div class="ci-t"><h3 class="display h-md">Interested in a camp?</h3><p class="body soft">Leave your name and WhatsApp number. We write to you with the details and you decide later. Nothing to pay and no commitment.</p></div>
+      <div class="ci-t"><h3 class="display h-md">Interested in a camp?</h3><p class="body soft">Tell us a little about yourself. We write to you on WhatsApp with the details and you decide later. Nothing to pay and no commitment.</p></div>
       <form class="js-form ci-form" data-db="interest" data-done="interest-done" novalidate>
         <input type="hidden" name="subject" value="Camp interest, chidaoba.com">
         <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="field"><label for="ci-name">Name</label><input id="ci-name" name="name" autocomplete="name" required></div>
         <div class="field"><label for="ci-phone">WhatsApp number</label><input id="ci-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+995 ..." required pattern=".*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*"></div>
         <div class="field full"><label for="ci-camp">Camp</label><select id="ci-camp" name="camp"><option value="Any camp">Any camp</option><option value="BJJ and grappling">BJJ and grappling</option><option value="Wrestling">Wrestling</option><option value="Judo">Judo</option></select></div>
+        <div class="field"><label for="ci-country">Country</label><input id="ci-country" name="country" autocomplete="country-name" required></div>
+        <div class="field"><label for="ci-exp">Experience</label><select id="ci-exp" name="experience" required><option value="">Select…</option><option>Beginner</option><option>Under 1 year</option><option>1 to 3 years</option><option>3 to 5 years</option><option>5+ years</option><option>Competitive athlete</option></select></div>
+        <div class="field"><label for="ci-level">Belt / level <em>optional</em></label><input id="ci-level" name="level"></div>
+        <div class="field"><label for="ci-club">Club or academy <em>optional</em></label><input id="ci-club" name="club" autocomplete="organization"></div>
+        <div class="field full"><label for="ci-why">Why do you want to come? <em>optional</em></label><textarea id="ci-why" name="message" rows="3" maxlength="1500" placeholder="What you hope to get from the camp, who you are coming with, any questions."></textarea></div>
         <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
         <div class="form-foot"><button class="btn btn-primary" type="submit">I am interested</button><p class="form-msg" aria-live="polite"></p></div>
       </form>

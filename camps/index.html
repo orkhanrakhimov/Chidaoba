@@ -27,7 +27,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://tptxyvslbdkyypkmemig.supabase.co" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=92">
+<link rel="stylesheet" href="/assets/css/site.css?v=93">
 <link rel="alternate" hreflang="en" href="https://chidaoba.com/camps/">
 <link rel="alternate" hreflang="ka" href="https://chidaoba.com/ka/camps/">
 <link rel="alternate" hreflang="x-default" href="https://chidaoba.com/camps/">
@@ -68,13 +68,18 @@
     <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport"><button type="button" data-f="all" aria-pressed="true"><b>All camps</b><span>Every sport</span><em data-n="all"></em></button><button type="button" data-f="bjj" aria-pressed="false"><b>BJJ &amp; Grappling</b><span>Gi and no-gi</span><em data-n="bjj"></em></button><button type="button" data-f="wrestling" aria-pressed="false"><b>Wrestling</b><span>Freestyle &amp; Greco-Roman</span><em data-n="wrestling"></em></button><button type="button" data-f="judo" aria-pressed="false"><b>Judo</b><span>Throws and groundwork</span><em data-n="judo"></em></button></div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
     <div class="cz-interest" id="interest">
-      <div class="ci-t"><h3 class="display h-md">Interested in a camp?</h3><p class="body soft">Leave your name and WhatsApp number. We write to you with the details and you decide later. Nothing to pay and no commitment.</p></div>
+      <div class="ci-t"><h3 class="display h-md">Interested in a camp?</h3><p class="body soft">Tell us a little about yourself. We write to you on WhatsApp with the details and you decide later. Nothing to pay and no commitment.</p></div>
       <form class="js-form ci-form" data-db="interest" data-done="interest-done" novalidate>
         <input type="hidden" name="subject" value="Camp interest, chidaoba.com">
         <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="field"><label for="ci-name">Name</label><input id="ci-name" name="name" autocomplete="name" required></div>
         <div class="field"><label for="ci-phone">WhatsApp number</label><input id="ci-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+995 ..." required pattern=".*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*"></div>
         <div class="field full"><label for="ci-camp">Camp</label><select id="ci-camp" name="camp"><option value="Any camp">Any camp</option><option value="BJJ and grappling">BJJ and grappling</option><option value="Wrestling">Wrestling</option><option value="Judo">Judo</option></select></div>
+        <div class="field"><label for="ci-country">Country</label><input id="ci-country" name="country" autocomplete="country-name" required></div>
+        <div class="field"><label for="ci-exp">Experience</label><select id="ci-exp" name="experience" required><option value="">Select…</option><option>Beginner</option><option>Under 1 year</option><option>1 to 3 years</option><option>3 to 5 years</option><option>5+ years</option><option>Competitive athlete</option></select></div>
+        <div class="field"><label for="ci-level">Belt / level <em>optional</em></label><input id="ci-level" name="level"></div>
+        <div class="field"><label for="ci-club">Club or academy <em>optional</em></label><input id="ci-club" name="club" autocomplete="organization"></div>
+        <div class="field full"><label for="ci-why">Why do you want to come? <em>optional</em></label><textarea id="ci-why" name="message" rows="3" maxlength="1500" placeholder="What you hope to get from the camp, who you are coming with, any questions."></textarea></div>
         <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
         <div class="form-foot"><button class="btn btn-primary" type="submit">I am interested</button><p class="form-msg" aria-live="polite"></p></div>
       </form>
@@ -177,6 +182,6 @@
   </div>
 </footer>
 <a class="wa-float" href="https://wa.me/995595606670?text=Hi%20CHIDAOBA%2C%20" rel="noopener" aria-label="Message us on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg><span>WhatsApp</span></a>
-<script src="/assets/js/config.js?v=92" defer></script><script src="/assets/js/venues.js?v=92" defer></script><script src="/assets/js/data.js?v=92" defer></script><script src="/assets/js/camps.js?v=92" defer></script><script src="/assets/js/site.js?v=92" defer></script>
+<script src="/assets/js/config.js?v=93" defer></script><script src="/assets/js/venues.js?v=93" defer></script><script src="/assets/js/data.js?v=93" defer></script><script src="/assets/js/camps.js?v=93" defer></script><script src="/assets/js/site.js?v=93" defer></script>
 </body>
 </html>
