@@ -606,7 +606,7 @@
       return '<tr data-id="' + s.id + '"><td><a href="mailto:' + e(s.email) + '"><b>' + e(s.email) + '</b></a>' + (s.name ? '<span class="sub">' + e(s.name) + '</span>' : '') + '</td>' +
         '<td>' + (s.interests || []).map(function (i) { return '<span class="int-chip">' + e(INT[i] || i) + '</span>'; }).join(' ') + '</td>' +
         '<td><span class="sub">' + e(SRC[s.source] || s.source || '') + ' · ' + e((s.lang || '').toUpperCase()) + '</span></td>' +
-        '<td><span class="sub">' + new Date(s.created_at).toLocaleDateString('en-GB') + '</span></td>' +
+        '<td><span class="sub">' + new Date(s.created_at).toLocaleDateString('en-GB') + (s.welcomed_at ? ' · welcome email sent' : '') + '</span></td>' +
         '<td class="act">' + (s.status === 'active' ? '<button type="button" class="lnk su-off">Unsubscribe</button>' : '<span class="pill-s s-cancelled">Unsubscribed</span> <button type="button" class="lnk su-on">Re-add</button>') + '<button type="button" class="lnk danger su-del">Delete</button></td></tr>';
     }).join('');
     var io = '<option value="all">Any interest</option>' + Object.keys(INT).map(function (k) { return '<option value="' + k + '"' + (f.int === k ? ' selected' : '') + '>' + INT[k] + '</option>'; }).join('');
@@ -650,7 +650,9 @@
     H.api.messages().then(function (l) { state.msgs = l || []; drawMsgs(); }).catch(fail('Messages'));
   }
   function drawMsgs() {
-    var f = state.msgF, list = state.msgs.filter(function (m) { return f === 'all' || (f === 'open' ? m.status !== 'closed' : m.status === f); });
+    var f = state.msgF, tp = state.msgT || 'all', isInt = function (m) { return m.topic === 'Camp interest'; };
+    var list = state.msgs.filter(function (m) { return (f === 'all' || (f === 'open' ? m.status !== 'closed' : m.status === f)) && (tp === 'all' || (tp === 'interest') === isInt(m)); });
+    var nInt = state.msgs.filter(isInt).length;
     var cards = list.map(function (m) {
       var first = (m.name || '').split(' ')[0];
       var wa = m.phone ? 'https://wa.me/' + m.phone.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent('Hi ' + first + ', this is CHIDAOBA. Thank you for your message.') : null;
@@ -662,13 +664,19 @@
         '<span class="sub">' + e(m.email) + '</span><input class="mn" placeholder="Note…" value="' + e(m.admin_note || '') + '"><button type="button" class="lnk danger md">Delete</button></div></article>';
     }).join('');
     var fo = [['open', 'Open (new and replied)'], ['new', 'New'], ['replied', 'Replied'], ['closed', 'Closed'], ['all', 'All']].map(function (o) { return '<option value="' + o[0] + '"' + (f === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
-    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Messages<span class="dot">.</span></h1></div>' +
-      '<div class="adm-filters"><select id="mf">' + fo + '</select><span class="sub">' + list.length + ' shown</span></div>' +
+    var to = [['all', 'All messages'], ['interest', 'Camp interest (' + nInt + ')'], ['contact', 'Contact form']].map(function (o) { return '<option value="' + o[0] + '"' + (tp === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+    app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Messages<span class="dot">.</span></h1><div class="row-btns"><button class="btn btn-ghost" type="button" id="mcsv">Export CSV</button></div></div>' +
+      '<div class="adm-filters"><select id="mt">' + to + '</select><select id="mf">' + fo + '</select><span class="sub">' + list.length + ' shown</span></div>' +
       (list.length ? '<div class="msgs">' + cards + '</div>' : '<p class="body">No messages here. Messages from the contact form and the camp interest form appear here.</p>') +
       '<p class="note">Reply by email or WhatsApp, then set the status to Replied. Closed messages are hidden from the default view.</p>', 'msgs');
     $('#mf').addEventListener('change', function () { state.msgF = this.value; drawMsgs(); });
     $$('.ms').forEach(function (s) { s.addEventListener('change', function () { var id = s.closest('.msg').dataset.id, v = s.value; H.api.updateMessage(id, { status: v }).then(function () { state.msgs.forEach(function (m) { if (m.id === id) m.status = v; }); toast('Saved'); drawMsgs(); }).catch(function (err) { toast(err.message, true); }); }); });
     $$('.mn').forEach(function (i) { i.addEventListener('change', function () { var id = i.closest('.msg').dataset.id; H.api.updateMessage(id, { admin_note: i.value }).then(function () { state.msgs.forEach(function (m) { if (m.id === id) m.admin_note = i.value; }); toast('Note saved'); }).catch(function (err) { toast(err.message, true); }); }); });
+    $('#mt').addEventListener('change', function () { state.msgT = this.value; drawMsgs(); });
+    $('#mcsv').addEventListener('click', function () {
+      dl('chidaoba-messages-' + new Date().toISOString().slice(0, 10) + '.csv', [csvLine(['date', 'topic', 'name', 'phone', 'email', 'message', 'language', 'status', 'note'])].concat(list.map(function (m) {
+        return csvLine([(m.created_at || '').slice(0, 10), m.topic, m.name, m.phone, m.email, (m.message || '').replace(/\n/g, ' | '), m.lang, m.status, m.admin_note]); })).join('\n'));
+    });
     $$('.md').forEach(function (b) { b.addEventListener('click', function () { if (!confirm('Delete this message?')) return; var id = b.closest('.msg').dataset.id; H.api.updateMessage(id, { delete: true }).then(function () { state.msgs = state.msgs.filter(function (m) { return m.id !== id; }); toast('Deleted'); drawMsgs(); }).catch(function (err) { toast(err.message, true); }); }); });
   }
 

@@ -153,7 +153,7 @@ def newsletter_form(where, interests=("camps", "shop"), title="The Culture Lette
     </form>"""
 
 def footer(path=""):
-    cta = "" if path.startswith("/camps/") or path in ("/admin/", "/") else f"""
+    cta = "" if path.startswith("/camps/") or path in ("/admin/", "/", "/unsubscribe/") else f"""
     <div class="foot-cta">
       <h2 class="display">Train with us<br>in Georgia</h2>
       <div class="foot-cta-btns">
@@ -161,7 +161,7 @@ def footer(path=""):
         <a class="btn btn-ghost" href="{WA}" rel="noopener">WhatsApp us {arrow()}</a>
       </div>
     </div>"""
-    news = "" if path == "/" else f'<div class="foot-news">{newsletter_form("foot")}</div>'
+    news = "" if path in ("/", "/unsubscribe/") else f'<div class="foot-news">{newsletter_form("foot")}</div>'
     home = " is-home" if path == "/" else ""
     return f"""<footer class="site-foot{home}">
   <div class="wrap">{cta}
@@ -185,7 +185,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "93"
+ASSET_V = "94"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
@@ -198,6 +198,8 @@ def page(path, title, desc, main):
     out = head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
     if path == "/admin/":
         out = head(title, desc, path).replace('<meta name="viewport"', '<meta name="robots" content="noindex,nofollow">\n<meta name="viewport"') + f'<main id="admin" class="adm"></main>' + f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script></body></html>'
+    if path == "/unsubscribe/":
+        out = out.replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"', 1)
     tag = f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script>'
     return out.replace(tag, js + tag)
 
@@ -994,7 +996,7 @@ def privacy():
 <h2>What this website collects</h2>
 <p>We only collect what you choose to send us through the forms on this site:</p>
 <p><b>Camp request form</b>: name, email, country, age, training experience and the optional details you add (phone or WhatsApp, level, club, accommodation needs, message). Used to arrange your place at a camp.</p>
-<p><b>Email signups</b> (The Culture Letter and “Get new camp dates”): your email and the topics you choose, such as camp dates for your sport, shop news or stories. Used to send you those emails. You can unsubscribe at any time by replying “unsubscribe” or writing to us.</p>
+<p><b>Email signups</b> (The Culture Letter and “Get new camp dates”): your email and the topics you choose, such as camp dates for your sport, shop news or stories. Used to send you those emails. You can unsubscribe at any time with the link at the bottom of every email, or by writing to us.</p>
 <p><b>Contact form</b>: name, email, topic, message and optional phone. Used to reply to you.</p>
 <p><b>Shop orders</b> are sent by you on WhatsApp. Your bag is saved only in your own browser until you send it.</p>
 <p><b>Visitor counts</b>: we count page views anonymously (the page, language, phone or computer, and which site you came from) to see how the site is used. No cookies, no IP addresses and nothing that identifies you is stored.</p>
@@ -1014,6 +1016,24 @@ def notfound():
 <h1 class="display h-xl">Page not found</h1>
 <p class="lead soft">This page does not exist.</p>
 <div style="margin-top:36px"><a class="btn btn-primary" href="/">Back to home {arrow()}</a></div></div></section>"""
+
+def unsubscribe():
+    return f"""
+<section class="page-hero dark unsub" style="min-height:70vh"><div class="wrap" style="position:relative">
+<div id="un-ask"><h1 class="display h-lg">Unsubscribe from CHIDAOBA emails?</h1>
+<p class="lead soft">You will stop receiving emails about camps, shop news and stories.</p>
+<div class="row-btns" style="margin-top:32px"><button class="btn btn-primary" type="button" id="un-yes">Unsubscribe</button><a class="btn btn-ghost" href="/">Keep my subscription</a></div>
+<p class="form-msg" id="un-msg" aria-live="polite"></p></div>
+<div id="un-done" hidden role="status"><h1 class="display h-lg">You are unsubscribed</h1>
+<p class="lead soft">We will not send you any more emails. Thank you for following CHIDAOBA.</p>
+<div class="row-btns" style="margin-top:32px"><a class="btn btn-primary" href="/">Back to home</a><button class="btn btn-ghost" type="button" id="un-again">Subscribe again</button></div></div>
+<div id="un-back" hidden role="status"><h1 class="display h-lg">You are subscribed again</h1>
+<p class="lead soft">You will keep receiving our emails.</p>
+<div style="margin-top:32px"><a class="btn btn-primary" href="/">Back to home</a></div></div>
+<div id="un-bad" hidden><h1 class="display h-lg">This link does not work</h1>
+<p class="lead soft">Open the unsubscribe link from your latest email, or write to us and we will remove you.</p>
+<div class="row-btns" style="margin-top:32px"><a class="btn btn-primary" href="mailto:{EMAIL}?subject=Unsubscribe">Email us</a><a class="btn btn-ghost" href="/">Back to home</a></div></div>
+</div></section>"""
 
 def contact():
     topics = ["General question", "Camps &amp; events", "Coach / athlete / club", "Partnership or collaboration", "Press", "Shop &amp; apparel"]
@@ -1103,6 +1123,7 @@ PAGES = [
     ("/contact/", "contact/index.html", "Contact | CHIDAOBA",
      "Contact CHIDAOBA: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
     ("/privacy/", "privacy/index.html", "Privacy | CHIDAOBA", "Privacy information for chidaoba.com.", privacy),
+    ("/unsubscribe/", "unsubscribe/index.html", "Unsubscribe | CHIDAOBA", "Unsubscribe from CHIDAOBA emails.", unsubscribe),
     ("/404.html", "404.html", "Not found | CHIDAOBA", "Page not found.", notfound),
 ]
 
@@ -1175,7 +1196,7 @@ if __name__ == "__main__":
         print(l, "missing", len(miss))
     import datetime
     today = datetime.date.today().isoformat()
-    urls = [pre + p for p in multi if p not in ("/camps/camp/",) for pre in ("", "/ka")]
+    urls = [pre + p for p in multi if p not in ("/camps/camp/", "/unsubscribe/") for pre in ("", "/ka")]
     urls += [pre + "/camps/camp/?c=bjj-grappling-spring-2027" for pre in ("", "/ka")]
     sm = "".join(f"<url><loc>https://chidaoba.com{html.escape(u)}</loc><lastmod>{today}</lastmod></url>" for u in urls)
     open(os.path.join(ROOT, "sitemap.xml"), "w").write(

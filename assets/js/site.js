@@ -306,3 +306,20 @@ document.addEventListener('click', function (ev) {
   setTimeout(finish, 2350);
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (t) { window.addEventListener(t, finish, { once: true, passive: true }); });
 })();
+
+// unsubscribe page: the link in our emails carries a private code (?t=...)
+(function () {
+  var ask = document.getElementById('un-ask'); if (!ask) return;
+  var t = new URLSearchParams(location.search).get('t'), msg = document.getElementById('un-msg');
+  function show(id) { ['un-ask', 'un-done', 'un-back', 'un-bad'].forEach(function (k) { document.getElementById(k).hidden = k !== id; }); }
+  if (!t) { show('un-bad'); return; }
+  function go(again, btn) {
+    btn.disabled = true;
+    window.CHD_RPC('unsubscribe', again ? { t: t, again: true } : { t: t }).then(function (j) {
+      if (j.error) { show('un-bad'); return; }
+      show(again ? 'un-back' : 'un-done');
+    }).catch(function () { btn.disabled = false; if (msg) { msg.className = 'form-msg err'; msg.textContent = document.documentElement.lang === 'ka' ? 'ვერ მოხერხდა. სცადეთ ხელახლა.' : 'That did not work. Please try again.'; } });
+  }
+  document.getElementById('un-yes').addEventListener('click', function () { go(false, this); });
+  document.getElementById('un-again').addEventListener('click', function () { go(true, this); });
+})();

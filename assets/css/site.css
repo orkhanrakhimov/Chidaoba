@@ -2268,3 +2268,5 @@ html.op-in body,html.op-out body{background:var(--carbon)}
 .cz-interest :is(input:not([type=checkbox]),select){border-radius:12px;padding:12px 14px;min-height:48px;width:100%;font-size:15px}
 .cz-interest textarea{background:#1E1E1E;border:1px solid rgba(242,241,236,.18);color:var(--chalk,#F2F1EC);border-radius:12px;padding:12px 14px;width:100%;font-size:15px;min-height:96px;resize:vertical}
 .cz-interest textarea:focus-visible{border-color:rgba(242,241,236,.6)}
+.unsub .h-lg{max-width:18ch}.unsub .lead{margin-top:18px;max-width:46ch}.unsub [hidden]{display:none!important}
+.unsub .h-lg{max-width:22ch}@media(max-width:600px){.unsub .h-lg{max-width:none;font-size:24px;line-height:1.15}}
