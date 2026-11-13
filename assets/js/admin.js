@@ -657,14 +657,14 @@
       return '<article class="msg s-' + m.status + '" data-id="' + m.id + '"><header><div><b>' + e(m.name) + '</b><span class="sub">' + e(m.topic || 'General') + ' · ' + new Date(m.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + (m.lang ? ' · ' + e(m.lang.toUpperCase()) : '') + '</span></div>' +
         '<select class="ms">' + Object.keys(MSTATUS).map(function (k) { return '<option value="' + k + '"' + (m.status === k ? ' selected' : '') + '>' + MSTATUS[k] + '</option>'; }).join('') + '</select></header>' +
         '<p class="msg-t">' + e(m.message).replace(/\n/g, '<br>') + '</p>' +
-        '<div class="msg-act"><a class="btn btn-primary sm" href="mailto:' + e(m.email) + '?subject=' + encodeURIComponent('Re: ' + (m.topic || 'your message') + ' | CHIDAOBA') + '">Reply by email</a>' +
-        (wa ? '<a class="btn btn-ghost sm" href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + e(m.phone) + '</a>' : '') +
+        '<div class="msg-act">' + (m.email ? '<a class="btn btn-primary sm" href="mailto:' + e(m.email) + '?subject=' + encodeURIComponent('Re: ' + (m.topic || 'your message') + ' | CHIDAOBA') + '">Reply by email</a>' : '') +
+        (wa ? '<a class="btn ' + (m.email ? 'btn-ghost' : 'btn-primary') + ' sm" href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + e(m.phone) + '</a>' : '') +
         '<span class="sub">' + e(m.email) + '</span><input class="mn" placeholder="Note…" value="' + e(m.admin_note || '') + '"><button type="button" class="lnk danger md">Delete</button></div></article>';
     }).join('');
     var fo = [['open', 'Open (new and replied)'], ['new', 'New'], ['replied', 'Replied'], ['closed', 'Closed'], ['all', 'All']].map(function (o) { return '<option value="' + o[0] + '"' + (f === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
     app.innerHTML = shell('<div class="adm-top"><h1 class="display h-md">Messages<span class="dot">.</span></h1></div>' +
       '<div class="adm-filters"><select id="mf">' + fo + '</select><span class="sub">' + list.length + ' shown</span></div>' +
-      (list.length ? '<div class="msgs">' + cards + '</div>' : '<p class="body">No messages here. Messages from the contact form appear here.</p>') +
+      (list.length ? '<div class="msgs">' + cards + '</div>' : '<p class="body">No messages here. Messages from the contact form and the camp interest form appear here.</p>') +
       '<p class="note">Reply by email or WhatsApp, then set the status to Replied. Closed messages are hidden from the default view.</p>', 'msgs');
     $('#mf').addEventListener('change', function () { state.msgF = this.value; drawMsgs(); });
     $$('.ms').forEach(function (s) { s.addEventListener('change', function () { var id = s.closest('.msg').dataset.id, v = s.value; H.api.updateMessage(id, { status: v }).then(function () { state.msgs.forEach(function (m) { if (m.id === id) m.status = v; }); toast('Saved'); drawMsgs(); }).catch(function (err) { toast(err.message, true); }); }); });

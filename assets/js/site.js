@@ -103,7 +103,7 @@
   var CFG = window.CHD_CONFIG || {};
   var KA = document.documentElement.lang === 'ka';
   var TT = function (en, ka) { return KA ? ka : en; };
-  var KA_ERR = { 'Please enter a valid email address.': 'შეიყვანეთ სწორი ელფოსტა.', 'Please accept the privacy notice.': 'დაეთანხმეთ კონფიდენციალურობის პოლიტიკას.',
+  var KA_ERR = { 'Please fill in your name.': 'შეიყვანეთ სახელი.', 'Please enter your WhatsApp number with the country code.': 'შეიყვანეთ WhatsApp-ის ნომერი ქვეყნის კოდით.', 'Please enter a valid email address.': 'შეიყვანეთ სწორი ელფოსტა.', 'Please accept the privacy notice.': 'დაეთანხმეთ კონფიდენციალურობის პოლიტიკას.',
     'Please fill in your name and message.': 'შეავსეთ სახელი და შეტყობინება.', 'Too many messages. Please try again later or write to us on WhatsApp.': 'ძალიან ბევრი შეტყობინებაა. სცადეთ მოგვიანებით ან მოგვწერეთ WhatsApp-ზე.' };
   function rpc(fn, body) {
     if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) return Promise.reject(new Error('offline'));
@@ -144,7 +144,8 @@
           ['name', 'email', 'phone', 'topic', 'message'].forEach(function (k) { body[k] = data.get(k) || ''; });
         }
         btn.disabled = true; say(TT('Sending…', 'იგზავნება…'));
-        rpc(kind === 'subscribe' ? 'subscribe' : 'send_message', body).then(function (j) {
+        if (kind === 'interest') body.camp = data.get('camp') || '';
+        rpc(kind === 'subscribe' ? 'subscribe' : kind === 'interest' ? 'camp_interest' : 'send_message', body).then(function (j) {
           if (j.error) { btn.disabled = false; say(KA ? (KA_ERR[j.error] || j.error) : j.error, 'err'); return; }
           ok();
         }).catch(function () {

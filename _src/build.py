@@ -38,7 +38,7 @@ BAG = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=
        '<path d="M5 8h14l-1.2 12H6.2L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>')
 
 def og_img(path):
-    k = {"/": "home", "/camps/": "camps", "/camps/camp/": "camps", "/camps/venue/": "camps", "/shop/": "shop",
+    k = {"/": "home", "/camps/": "camps", "/camps/camp/": "camps", "/camps/spring-2027/": "spring", "/camps/venue/": "camps", "/shop/": "shop",
          "/culture/": "culture", "/georgia/": "georgia"}.get(path)
     return f"og-{k}.png" if k else "og.png"
 
@@ -53,9 +53,9 @@ def org_ld():
 
 def supa_hint(path):
     # pages that read camps or products: open the connection to the database early, and start the venue cover at once
-    if path not in ("/", "/camps/", "/camps/camp/", "/camps/venue/", "/shop/"): return ""
+    if path not in ("/", "/camps/", "/camps/camp/", "/camps/spring-2027/", "/camps/venue/", "/shop/"): return ""
     out = '<link rel="preconnect" href="https://tptxyvslbdkyypkmemig.supabase.co" crossorigin>\n'
-    if path in ("/camps/camp/", "/camps/venue/"):
+    if path in ("/camps/camp/", "/camps/spring-2027/", "/camps/venue/"):
         out += '<link rel="preload" as="image" href="/assets/venues/mulakhi/summer-pitch.webp" fetchpriority="high">\n'
     return out
 
@@ -80,7 +80,7 @@ def head(title, desc, path):
 <meta property="og:image:alt" content="{title}">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="ka_GE">
-<meta name="twitter:card" content="summary_large_image">
+{GOOGLE_TAG}<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
 <meta name="twitter:image" content="https://chidaoba.com/assets/img/{og_img(path)}">{org_ld() if path == "/" else ""}
@@ -185,8 +185,11 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "91"
-EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
+ASSET_V = "92"
+# Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
+GOOGLE_VERIFY = ""
+GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
+EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/spring-2027/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
     names = EXTRA_JS.get(path, [])
@@ -426,7 +429,7 @@ CAMP_FAQS = [
         ("How do I get to Georgia?", "Georgia has international airports in Tbilisi, Kutaisi and Batumi. Each camp page says where it is and whether transfers are available as an add-on. Please check the visa rules for your passport."),
         ("What if I cancel?", "If you cancel 60 days or more before the camp starts, we refund 80% of what you paid. From 59 to 30 days before, we refund 50%. Less than 30 days before, there is no refund. You can give your place to someone else at any time at no cost. If we cancel a camp, you get a full refund."),
         ("Do I need to sign a waiver?", "Yes. Every participant signs a waiver before the first session: the adult waiver from 18, or the under 18 waiver signed by a parent or guardian. You can download and print both on the waivers page."),
-        ("Do I need insurance?", "Yes, if you come from abroad. Since 1 January 2026 Georgia requires every foreign visitor to have health and accident insurance for the whole stay, with cover of at least 30,000 GEL. Choose a policy that also covers sports injuries. Medical costs are not included in the camp price."),
+        ("Do I need insurance?", "We strongly recommend travel insurance that covers sports injuries. Medical costs are not included in the camp price. Georgia's entry rules also call for health and accident cover of at least 30,000 GEL for foreign visitors, so check them before you fly."),
         ("Can I bring my team?", "Yes. Camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
 
@@ -456,6 +459,19 @@ def camps():
     <div class="cz-head"><h2 id="cz-camps" class="display h-lg">Upcoming camps</h2><p class="body soft">Choose your sport to see its camps.</p></div>
     <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport">{tb}</div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
+    <div class="cz-interest" id="interest">
+      <div class="ci-t"><h3 class="display h-md">Interested in a camp?</h3><p class="body soft">Leave your name and WhatsApp number. We write to you with the details and you decide later. Nothing to pay and no commitment.</p></div>
+      <form class="js-form ci-form" data-db="interest" data-done="interest-done" novalidate>
+        <input type="hidden" name="subject" value="Camp interest, chidaoba.com">
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="field"><label for="ci-name">Name</label><input id="ci-name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="ci-phone">WhatsApp number</label><input id="ci-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+995 ..." required pattern=".*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*"></div>
+        <div class="field full"><label for="ci-camp">Camp</label><select id="ci-camp" name="camp"><option value="Any camp">Any camp</option><option value="BJJ and grappling">BJJ and grappling</option><option value="Wrestling">Wrestling</option><option value="Judo">Judo</option></select></div>
+        <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
+        <div class="form-foot"><button class="btn btn-primary" type="submit">I am interested</button><p class="form-msg" aria-live="polite"></p></div>
+      </form>
+      <div class="done" id="interest-done" role="status"><h3 class="display h-md">Thank you<span class="dot">.</span></h3><p class="body soft">We will write to you on WhatsApp, usually within a day.</p></div>
+    </div>
     <div class="cz-notify" id="notify">{newsletter_form("camps", interests=("bjj", "wrestling", "judo"), title="Get new camp dates by email", sub="Choose your sports. We email you when a new camp opens, before anyone else.", btn="Notify me", hidden=("camps",))}</div>
   </div>
 </section>
@@ -563,7 +579,7 @@ def georgia():
             ("Churchkhela", "Walnuts coated in thickened grape juice. A traditional snack.")]
     fd = "".join(f'<div class="food"><h3>{n}</h3><p>{d}</p></div>' for n, d in food)
     know = [("Is it safe?", "Yes. Georgia is a safe country for visitors. The US State Department rates it Level 1, the lowest of its four risk levels. Foreign governments advise against travel to the two Russian-occupied regions, Abkhazia and South Ossetia. No camp takes place there. Use the same care you would in any country you do not know."),
-            ("Insurance", "Required. Since 1 January 2026 every foreign visitor needs health and accident insurance for the whole stay, with cover of at least 30,000 GEL. Border officers can ask for the policy, in English or Georgian; a PDF on your phone is accepted. For a camp, choose a policy that also covers sports injuries."),
+            ("Insurance", "Strongly recommended. Choose a policy that covers sports injuries. Since 1 January 2026 Georgia's entry rules call for health and accident cover of at least 30,000 GEL for the whole stay, and border officers can ask for the policy. A PDF on your phone, in English or Georgian, is accepted."),
             ("Visa", "Citizens of many countries, including the EU, UK and US, can stay without a visa for up to a year. Check the rules for your passport before you book."),
             ("Flights", "International airports in Tbilisi, Kutaisi and Batumi, with direct routes from across Europe and the Middle East."),
             ("Getting to camp", "Every camp page shows where the camp takes place. Everyone registered gets travel details and transfer options from us before the camp."),
@@ -899,7 +915,7 @@ def prepare_page():
         ("travel", "Plan your trip",
          """<p>Georgia has international airports in Tbilisi, Kutaisi and Batumi. Check the visa rules for your passport before you book.</p>
          <p>Camps in Svaneti: Mestia can be reached by a short flight from Tbilisi or by road from Kutaisi or Zugdidi. Each camp page shows where it takes place, and we send travel details and transfer options to everyone registered.</p>
-         <p>Insurance is required to enter Georgia: health and accident cover of at least 30,000 GEL for your whole stay. Choose a policy that also covers sports injuries. See <a class="link" href="/georgia/#know">travel and safety</a> for the details.</p>"""),
+         <p>We strongly recommend travel insurance that covers sports injuries. For Georgia's entry rules on insurance, see <a class="link" href="/georgia/#know">travel and safety</a>.</p>"""),
         ("pack", "Pack your bag",
          f"""<p>Tick things off as you pack. Your list is saved on this device.</p><ul class="prep-pack">{pk}</ul>"""),
         ("arrive", "Arrival day",
@@ -1041,7 +1057,7 @@ LLMS = """# CHIDAOBA
 ## Camps
 - [Training camps in Georgia](https://chidaoba.com/camps/): BJJ and grappling, freestyle and Greco-Roman wrestling, and judo camps with local coaches, accommodation and meals. Requests are free, with no deposit.
 - [BJJ and Grappling Camp, Spring 2027](https://chidaoba.com/camps/camp/?c=bjj-grappling-spring-2027): in Svaneti, Georgia, at a mountain sports complex with an 800 m2 training hall, limited to 40 people. Dates and prices to be announced.
-- [Venue: Ilia Gabliani Sports Complex](https://chidaoba.com/camps/venue/?v=mulakhi): Mulakhi, Upper Svaneti. Training hall with tatami, 11 rooms for 40 people, three meals a day.
+- [Venue: Ilia Gabliani Sports Complex](https://chidaoba.com/camps/venue/?v=mulakhi): Mulakhi, Upper Svaneti. Training hall with tatami, 11 rooms for 40 people, three to four meals a day.
 
 ## Shop
 - [Shop](https://chidaoba.com/shop/): BJJ gis and belts (men, women, kids), judogi and judo belts, wrestling singlets, shoes, headgear and knee pads, rashguards, fight shorts, spats and compression wear, bags and training gear, hoodies and T-shirts. Ordered on WhatsApp.
@@ -1068,7 +1084,10 @@ PAGES = [
      "Training camps in Georgia for BJJ and grappling, freestyle and Greco-Roman wrestling, and judo, with local coaches, accommodation and meals. Next camp: BJJ and grappling, spring 2027, Svaneti.", camps),
     ("/camps/camp/", "camps/camp/index.html", "Camp | CHIDAOBA",
      "Camp details, packages, schedule and registration | CHIDAOBA.", camp_detail),
-    ("/camps/venue/", "camps/venue/index.html", "Venue | CHIDAOBA",
+    ("/camps/spring-2027/", "camps/spring-2027/index.html", "BJJ and Grappling Camp in Svaneti, Spring 2027 | CHIDAOBA",
+     "BJJ and no-gi grappling in the mountains of Svaneti, Georgia, in spring 2027. Training, accommodation and meals in one sports complex.",
+     lambda: '<script>window.CHD_CAMP_SLUG="bjj-grappling-spring-2027"</script>' + camp_detail()),
+    ("/camps/venue/", "camps/venue/index.html", "Ilia Gabliani Sports Complex, Svaneti | CHIDAOBA",
      "Where we train: Ilia Gabliani Sports Complex in Mulakhi, Svaneti. Training hall, rooms for 40, meals, pool and mountain views.", venue_page),
     ("/admin/", "admin/index.html", "Admin | CHIDAOBA", "Admin.", admin),
     ("/shop/", "shop/index.html", "BJJ Gis, Rashguards and Wrestling Gear | CHIDAOBA Shop", "BJJ gis and belts, judogi, wrestling singlets and shoes, rashguards, fight shorts and training gear for men, women and kids. Order on WhatsApp, delivery in Georgia.", shop),

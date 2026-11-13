@@ -13,6 +13,9 @@
 
   // On the Georgian site, use the Georgian text the admin entered (falls back to English).
   var KA = document.documentElement.lang === 'ka';
+  // camps with a short address of their own (and their own link preview)
+  var NICE = { 'bjj-grappling-spring-2027': '/camps/spring-2027/' };
+  function campUrl(s) { return NICE[s] || '/camps/camp/?c=' + encodeURIComponent(s); }
   function locItem(o) {
     if (Array.isArray(o)) return o.map(locItem);
     if (!o || typeof o !== 'object') return o;
@@ -51,7 +54,7 @@
     var st = state(c), s = spots(c), from = H.fromPrice(c), early = H.isEarly(c);
     var n = H.days(c.start_date, c.end_date);
     var cv = H.cover(c), v = H.venue(c);
-    return '<a class="camp-card st-' + st.key + (c.featured ? ' featured' : '') + (cv ? ' has-img' : '') + '" href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '">' +
+    return '<a class="camp-card st-' + st.key + (c.featured ? ' featured' : '') + (cv ? ' has-img' : '') + '" href="' + campUrl(c.slug) + '">' +
       (cv ? '<div class="cc-img"><img src="' + e(cv.thumb) + '"' + (cv.url && cv.url !== cv.thumb ? ' srcset="' + e(cv.thumb) + ' 640w, ' + e(cv.url) + ' 1600w" sizes="(min-width:900px) 55vw, 100vw"' : '') + ' alt="' + e(cv.alt || '') + '" loading="lazy"></div>' : '') + '<div class="cc-body">' +
       '<div class="cc-top"><span class="label">' + e(H.DISC[c.discipline] || '') + '</span><span class="cc-status">' + e(st.label) + '</span></div>' +
       '<h3>' + e(c.title) + '</h3>' +
@@ -90,6 +93,15 @@
       list.innerHTML = up.map(card).join('') + (past.length ? '<p class="label muted past-label">Past camps</p>' + past.map(card).join('') : '');
     }
     list.innerHTML = '<p class="body soft loading">Loading camps…</p>';
+    function fillInterest() {
+      var sel = document.getElementById('ci-camp'); if (!sel) return;
+      var want = new URLSearchParams(location.search).get('camp');
+      all.filter(function (c) { return c.status !== 'completed'; }).reverse().forEach(function (c) {
+        var o = document.createElement('option'); o.value = c.title; o.textContent = c.title;
+        if (want && want === c.slug) o.selected = true; sel.insertBefore(o, sel.firstChild);
+      });
+      if (!want && sel.options.length === 5) sel.selectedIndex = 0;
+    }
     function counts() {
       document.querySelectorAll('[data-n]').forEach(function (el) {
         var k = el.dataset.n, n = all.filter(function (c) { return c.status !== 'completed' && (c.packages || []).length && (k === 'all' || c.discipline === k); }).length;
@@ -101,7 +113,7 @@
       tabs.forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.f === k ? 'true' : 'false'); });
       render(k);
     }
-    H.api.listCamps().then(function (c) { all = (c || []).map(loc); counts(); pick(start && document.querySelector('.disc-tabs [data-f="' + start + '"]') ? start : 'all'); })
+    H.api.listCamps().then(function (c) { all = (c || []).map(loc); counts(); fillInterest(); pick(start && document.querySelector('.disc-tabs [data-f="' + start + '"]') ? start : 'all'); })
       .catch(function () { list.innerHTML = '<p class="body soft">Camps could not be loaded. Please refresh, or message us on WhatsApp.</p>'; });
     tabs.forEach(function (t) {
       t.addEventListener('click', function () {
@@ -137,7 +149,7 @@
       '<div><h3>' + e(k.name) + '</h3>' + (k.role ? '<p class="co-role">' + e(k.role) + '</p>' : '') + (k.sport ? '<p class="co-sport">' + e(k.sport) + '</p>' : '') + '</div></div>' +
       (t.length ? '<h4>Titles and achievements</h4><ul class="coach-t">' + t.map(function (x) { return '<li>' + e(x) + '</li>'; }).join('') + '</ul>' : '') +
       (k.bio ? '<p class="co-bio">' + e(k.bio) + '</p>' : '') +
-      ((k.camps || []).length ? '<h4>Coaching at</h4><ul class="co-camps">' + k.camps.map(function (c) { return '<li><a href="/camps/camp/?c=' + encodeURIComponent(c.slug) + '">' + e(c.title) + '</a></li>'; }).join('') + '</ul>' : '') +
+      ((k.camps || []).length ? '<h4>Coaching at</h4><ul class="co-camps">' + k.camps.map(function (c) { return '<li><a href="' + campUrl(c.slug) + '">' + e(c.title) + '</a></li>'; }).join('') + '</ul>' : '') +
       '</div>';
     if (coDlg.showModal) coDlg.showModal(); else coDlg.setAttribute('open', '');
   }
@@ -208,7 +220,7 @@
   // ================= DETAIL =================
   var root = $('#camp-root');
   if (!root) return;
-  var slug = new URLSearchParams(location.search).get('c');
+  var slug = window.CHD_CAMP_SLUG || new URLSearchParams(location.search).get('c');
   if (!slug) { notFound(); return; }
   H.api.getCamp(slug).then(function (c) { if (!c) return notFound(); renderCamp(loc(c)); })
     .catch(function () { root.innerHTML = '<div class="wrap section"><p class="body">This camp could not be loaded. Please refresh.</p></div>'; });
@@ -316,7 +328,7 @@
     } else {
       if (canBook) {
         html += '<h3 class="book-h">Dates and prices coming soon</h3><p class="body">Leave your email and we will tell you first when registration opens.</p>' +
-          '<a class="btn btn-primary" href="#notify">Notify me</a>';
+          '<a class="btn btn-primary" href="#notify">Notify me</a><a class="btn btn-ghost book-int-b" href="/camps/?camp=' + encodeURIComponent(c.slug) + '#interest">I am interested</a>';
       } else {
       html += '<h3 class="book-h">' + e(st.label) + '</h3><p class="body">' +
         (c.status === 'completed' ? 'This camp has finished. See upcoming camps.' : 'Registration is not open for this camp right now.') + '</p>' +
@@ -324,6 +336,7 @@
       }
     }
     if (c.start_date && c.status !== 'completed') html += calHtml(c);
+    if (canBook && (c.packages || []).length) html += '<a class="book-wa book-int" href="/camps/?camp=' + encodeURIComponent(c.slug) + '#interest">Not ready to request? Tell us you are interested</a>';
     html += '<a class="book-wa" href="' + WA + '?text=' + encodeURIComponent('Hi CHIDAOBA, a question about ' + c.title + ': ') + '" rel="noopener">Questions? WhatsApp us</a></div></aside>';
     html += '</div></section>';
     if (canBook && (c.packages || []).length) html += '<div class="book-bar dark" id="book-bar"><div><span>From</span><b>' + H.money(H.fromPrice(c), c.currency) + '</b></div><a class="btn btn-primary" href="#book">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + '</a></div>';
@@ -461,7 +474,7 @@
   }
   function wireShare(root, c) {
     var box = root.querySelector('.share'); if (!box) return;
-    var url = location.origin + location.pathname + '?c=' + encodeURIComponent(c.slug);
+    var url = location.origin + (NICE[c.slug] ? location.pathname : location.pathname + '?c=' + encodeURIComponent(c.slug));
     var when = c.start_date ? H.dateRange(c.start_date, c.end_date) : (c.dates_note || '');
     var msg = c.title + (when && c.title.indexOf(when) < 0 ? ' · ' + when : '');
     var btn = box.querySelector('.share-btn'), pop = box.querySelector('.share-pop'), cp = box.querySelector('.share-copy');
