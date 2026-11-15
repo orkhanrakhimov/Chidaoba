@@ -2303,3 +2303,6 @@ html.op-in body,html.op-out body{background:var(--carbon)}
 .ptile-meta>span:first-child{display:flex;flex-direction:column;gap:2px;min-width:0}
 .ptile-price{color:var(--carbon,#1E1E1E);font-size:15px}
 .ig-page h1{font-size:28px!important;white-space:nowrap;letter-spacing:.02em}
+/* line breaks: headings split into even lines, so no single word or letter is left alone on the last line */
+h1,h2,h3,h4,.display,.lead,.cc-status,summary,.btn,.ig-row b{text-wrap:balance}
+p,li,dd,.body,label span{text-wrap:pretty}

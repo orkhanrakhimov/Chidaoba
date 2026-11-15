@@ -185,7 +185,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "97"
+ASSET_V = "98"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""

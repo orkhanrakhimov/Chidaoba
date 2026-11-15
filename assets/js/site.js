@@ -327,3 +327,46 @@ document.addEventListener('click', function (ev) {
   document.getElementById('un-yes').addEventListener('click', function () { go(false, this); });
   document.getElementById('un-again').addEventListener('click', function () { go(true, this); });
 })();
+
+// phones: never let a word split across lines. If a word in a heading, button or label is wider
+// than its line, the text is made slightly smaller until every word fits on one line.
+(function () {
+  var SEL = 'h1,h2,h3,h4,.display,.btn,.label,.lead,.cc-status,.ig-row b,a[href^="mailto:"] b,a[href^="tel:"] b,.stat b,.ch-stats b,summary,th,dt';
+  function split(el) {
+    var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, re = /[^\s\-\/–·]+/g, m, r = document.createRange();
+    while ((n = w.nextNode())) {
+      re.lastIndex = 0;
+      while ((m = re.exec(n.nodeValue))) {
+        if (m[0].length < 2) continue;
+        r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
+        var rs = r.getClientRects(), top = null;
+        for (var i = 0; i < rs.length; i++) { if (rs[i].width < 0.5) continue; var t = Math.round(rs[i].top); if (top === null) top = t; else if (Math.abs(t - top) > 2) return true; }
+      }
+    }
+    return false;
+  }
+  function fit(el) {
+    if (el.dataset.fit) { el.style.removeProperty('font-size'); el.style.removeProperty('max-width'); delete el.dataset.fit; }
+    if (!el.offsetParent || !el.textContent.trim()) return;
+    if (!split(el)) return;
+    // first let the text use the full width of its container (some headings are capped in characters)
+    el.style.setProperty('max-width', 'none', 'important'); el.dataset.fit = '1';
+    for (var i = 0; i < 8 && split(el); i++) {
+      el.style.setProperty('font-size', (parseFloat(getComputedStyle(el).fontSize) * 0.94).toFixed(2) + 'px', 'important');
+      el.dataset.fit = '1';
+    }
+  }
+  var busy = false, timer;
+  function run() {
+    if (window.innerWidth > 820) return;
+    busy = true;
+    try { document.querySelectorAll(SEL).forEach(fit); } catch (e) { }
+    setTimeout(function () { busy = false; }, 0);
+  }
+  function later() { clearTimeout(timer); timer = setTimeout(run, 200); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', later); else later();
+  window.addEventListener('load', later);
+  window.addEventListener('resize', later);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(later);
+  if ('MutationObserver' in window) new MutationObserver(function () { if (!busy) later(); }).observe(document.documentElement, { childList: true, subtree: true });
+})();
