@@ -294,7 +294,7 @@
     return '<article class="ptile' + (p.soldOut ? ' sold' : '') + '" id="' + id + '" data-id="' + id + '" data-sport="' + p.sport + '" data-cat="' + p.cat + '" data-aud="' + p.aud + '">' +
       '<button type="button" class="ptile-open" aria-label="' + esc(p.name) + '"><div class="ptile-art">' + art + badge + (p.soldOut ? '<span class="ptile-sold">' + T('Sold out', 'გაყიდულია') + '</span>' : '') + '</div>' +
       '<div class="ptile-body"><p class="ptile-cat">' + esc(p.catName) + '</p><h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p>' +
-      '<div class="ptile-meta"><span>' + (p.price != null ? '<b class="ptile-price">' + fmt(p.price, p.currency) + '</b> · ' : '') + esc(szSum(p.sizes)) + '</span><span class="dots">' + dots + '</span></div></div></button></article>';
+      '<div class="ptile-meta"><span>' + (p.price != null ? '<b class="ptile-price">' + fmt(p.price, p.currency) + '</b>' : '') + '<span class="ptile-sz">' + esc(szSum(p.sizes)) + '</span></span><span class="dots">' + dots + '</span></div></div></button></article>';
   }
   function useRows(rows) {
     var NP = {}, by = {};

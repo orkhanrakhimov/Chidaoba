@@ -2286,3 +2286,20 @@ html.op-in body,html.op-out body{background:var(--carbon)}
 .camp-chapters+.camp-body .camp-block{scroll-margin-top:calc(var(--head) + 70px)}
 .camp-chapters .wrap{gap:26px}
 .camp-chapters+.camp-body .book{top:calc(var(--head) + 72px)}
+
+/* /ig/: the page behind the Instagram bio link */
+.ig-page{min-height:78vh;padding-top:clamp(40px,7vw,90px)}
+.ig-page .wrap{max-width:560px}
+.ig-page .body{margin-top:12px}
+.ig-list{display:grid;gap:10px;margin-top:30px}
+.ig-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-radius:var(--r-card,18px);background:#2B2B2B;color:#F2F1EC;text-decoration:none;transition:background .2s,transform .2s}
+.ig-row:hover{background:#353535;transform:translateY(-1px)}
+.ig-row span{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ig-row b{font-size:17px;line-height:1.25}
+.ig-row em{font-style:normal;font-size:15px;color:#C9C6BD;line-height:1.4}
+.ig-row i{flex:none;width:34px;height:34px;border-radius:50%;background:#F2F1EC;color:#1E1E1E;display:grid;place-items:center;font-style:normal;font-size:16px}
+.ig-row.ig-main{background:var(--red,#B5212F)}.ig-row.ig-main:hover{background:#C42838}.ig-row.ig-main em{color:#F6DDE0}
+/* shop cards: price on its own line above the sizes */
+.ptile-meta>span:first-child{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ptile-price{color:var(--carbon,#1E1E1E);font-size:15px}
+.ig-page h1{font-size:28px!important;white-space:nowrap;letter-spacing:.02em}

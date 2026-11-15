@@ -216,6 +216,7 @@ document.addEventListener('click', function (ev) {
   try {
     var q = new URLSearchParams(location.search).get('utm_source');
     if (q) ref = q.toLowerCase();
+    else if (/^(\/ka)?\/ig\/$/.test(location.pathname)) ref = 'instagram';   // the link in the Instagram bio
     else if (document.referrer) { var h = new URL(document.referrer).hostname; if (h !== host) ref = h.replace(/^(www|l|lm|m|mobile)\./, ''); }
   } catch (e) { }
   var first = false;

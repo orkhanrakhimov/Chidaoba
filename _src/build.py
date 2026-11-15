@@ -153,7 +153,7 @@ def newsletter_form(where, interests=("camps", "shop"), title="The Culture Lette
     </form>"""
 
 def footer(path=""):
-    cta = "" if path.startswith("/camps/") or path in ("/admin/", "/", "/unsubscribe/") else f"""
+    cta = "" if path.startswith("/camps/") or path in ("/admin/", "/", "/unsubscribe/", "/ig/") else f"""
     <div class="foot-cta">
       <h2 class="display">Train with us<br>in Georgia</h2>
       <div class="foot-cta-btns">
@@ -161,7 +161,7 @@ def footer(path=""):
         <a class="btn btn-ghost" href="{WA}" rel="noopener">WhatsApp us {arrow()}</a>
       </div>
     </div>"""
-    news = "" if path in ("/", "/unsubscribe/") else f'<div class="foot-news">{newsletter_form("foot")}</div>'
+    news = "" if path in ("/", "/unsubscribe/", "/ig/") else f'<div class="foot-news">{newsletter_form("foot")}</div>'
     home = " is-home" if path == "/" else ""
     return f"""<footer class="site-foot{home}">
   <div class="wrap">{cta}
@@ -185,7 +185,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "96"
+ASSET_V = "97"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
@@ -198,7 +198,7 @@ def page(path, title, desc, main):
     out = head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
     if path == "/admin/":
         out = head(title, desc, path).replace('<meta name="viewport"', '<meta name="robots" content="noindex,nofollow">\n<meta name="viewport"') + f'<main id="admin" class="adm"></main>' + f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script></body></html>'
-    if path == "/unsubscribe/":
+    if path in ("/unsubscribe/", "/ig/"):
         out = out.replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"', 1)
     tag = f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script>'
     return out.replace(tag, js + tag)
@@ -1005,6 +1005,20 @@ def notfound():
 <p class="lead soft">This page does not exist.</p>
 <div style="margin-top:36px"><a class="btn btn-primary" href="/">Back to home {arrow()}</a></div></div></section>"""
 
+def ig_links():
+    rows = [("/camps/spring-2027/", "BJJ and grappling camp", "Spring 2027, Svaneti", " ig-main"),
+            ("/camps/#interest", "I am interested in a camp", "Leave your name and WhatsApp number", ""),
+            ("/shop/", "Shop", "Gis, training wear and gear", ""),
+            ("/culture/", "Our story", "What chidaoba is and where the name comes from", ""),
+            (f"https://wa.me/{WA_NUM}?text=Hi%20CHIDAOBA%2C%20", "Write to us on WhatsApp", "We usually reply the same day", "")]
+    li = "".join(f'<a class="ig-row{cls}" href="{h}"{" rel=noopener" if h.startswith("http") else ""}><span><b>{t}</b><em>{s}</em></span><i aria-hidden="true">→</i></a>' for h, t, s, cls in rows)
+    return f"""
+<section class="page-hero dark ig-page"><div class="wrap">
+<h1 class="display h-md">CHIDAOBA</h1>
+<p class="body soft">Training camps in Georgia for BJJ, grappling, wrestling and judo.</p>
+<nav class="ig-list" aria-label="Links">{li}</nav>
+</div></section>"""
+
 def unsubscribe():
     return f"""
 <section class="page-hero dark unsub" style="min-height:70vh"><div class="wrap" style="position:relative">
@@ -1111,6 +1125,7 @@ PAGES = [
     ("/contact/", "contact/index.html", "Contact | CHIDAOBA",
      "Contact CHIDAOBA: email chidaobaculture@gmail.com, WhatsApp +995 595 606 670 or Instagram @chidaobaculture.", contact),
     ("/privacy/", "privacy/index.html", "Privacy | CHIDAOBA", "Privacy information for chidaoba.com.", privacy),
+    ("/ig/", "ig/index.html", "CHIDAOBA | Camps, shop and contact", "Training camps in Georgia for BJJ, grappling, wrestling and judo. Camps, shop and contact in one place.", ig_links),
     ("/unsubscribe/", "unsubscribe/index.html", "Unsubscribe | CHIDAOBA", "Unsubscribe from CHIDAOBA emails.", unsubscribe),
     ("/404.html", "404.html", "Not found | CHIDAOBA", "Page not found.", notfound),
 ]
@@ -1184,7 +1199,7 @@ if __name__ == "__main__":
         print(l, "missing", len(miss))
     import datetime
     today = datetime.date.today().isoformat()
-    urls = [pre + p for p in multi if p not in ("/camps/camp/", "/unsubscribe/") for pre in ("", "/ka")]
+    urls = [pre + p for p in multi if p not in ("/camps/camp/", "/unsubscribe/", "/ig/") for pre in ("", "/ka")]
     urls += [pre + "/camps/camp/?c=bjj-grappling-spring-2027" for pre in ("", "/ka")]
     sm = "".join(f"<url><loc>https://chidaoba.com{html.escape(u)}</loc><lastmod>{today}</lastmod></url>" for u in urls)
     open(os.path.join(ROOT, "sitemap.xml"), "w").write(

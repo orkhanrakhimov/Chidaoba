@@ -689,7 +689,7 @@
       else if (/sign in|expired/i.test(err.message)) { H.api.signOut(); login(); } else toast(err.message, true);
     });
   }
-  var PAGE = { '/': 'Home', '/shop/': 'Shop', '/camps/': 'Camps', '/camps/camp/': 'A camp page', '/camps/venue/': 'Venue', '/camps/prepare/': 'Before you go', '/camps/waivers/': 'Waivers', '/georgia/': 'Why Georgia', '/culture/': 'Our story', '/contact/': 'Contact', '/privacy/': 'Privacy' };
+  var PAGE = { '/': 'Home', '/shop/': 'Shop', '/camps/': 'Camps', '/camps/camp/': 'A camp page', '/camps/spring-2027/': 'Spring camp 2027', '/ig/': 'Instagram links page', '/unsubscribe/': 'Unsubscribe', '/camps/venue/': 'Venue', '/camps/prepare/': 'Before you go', '/camps/waivers/': 'Waivers', '/georgia/': 'Why Georgia', '/culture/': 'Our story', '/contact/': 'Contact', '/privacy/': 'Privacy' };
   function pageName(p) { var ka = /^\/ka(\/|$)/.test(p || ''), k = (p || '/').replace(/^\/ka/, '') || '/'; return (PAGE[k] || k) + (ka ? ' (Georgian)' : ''); }
   function refName(r) { if (!r) return 'Direct, or link without source'; var m = { 'instagram.com': 'Instagram', instagram: 'Instagram', ig: 'Instagram', 'facebook.com': 'Facebook', facebook: 'Facebook', fb: 'Facebook', google: 'Google', tiktok: 'TikTok', 'google.com': 'Google', 't.co': 'X / Twitter', 'youtube.com': 'YouTube', 'tiktok.com': 'TikTok', 'wa.me': 'WhatsApp', 'web.whatsapp.com': 'WhatsApp' }; return m[r] || (/google\./.test(r) ? 'Google' : r); }
   function bars(rows, total, label) {
