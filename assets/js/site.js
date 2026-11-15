@@ -103,7 +103,7 @@
   var CFG = window.CHD_CONFIG || {};
   var KA = document.documentElement.lang === 'ka';
   var TT = function (en, ka) { return KA ? ka : en; };
-  var KA_ERR = { 'Please fill in your name.': 'შეიყვანეთ სახელი.', 'Please enter your WhatsApp number with the country code.': 'შეიყვანეთ WhatsApp-ის ნომერი ქვეყნის კოდით.', 'Please enter a valid email address.': 'შეიყვანეთ სწორი ელფოსტა.', 'Please accept the privacy notice.': 'დაეთანხმეთ კონფიდენციალურობის პოლიტიკას.',
+  var KA_ERR = { 'Please tell us why you want to come.': 'მოგვწერეთ, რატომ გსურთ მონაწილეობა.', 'Please fill in your name.': 'შეიყვანეთ სახელი.', 'Please enter your WhatsApp number with the country code.': 'შეიყვანეთ WhatsApp-ის ნომერი ქვეყნის კოდით.', 'Please enter a valid email address.': 'შეიყვანეთ სწორი ელფოსტა.', 'Please accept the privacy notice.': 'დაეთანხმეთ კონფიდენციალურობის პოლიტიკას.',
     'Please fill in your name and message.': 'შეავსეთ სახელი და შეტყობინება.', 'Too many messages. Please try again later or write to us on WhatsApp.': 'ძალიან ბევრი შეტყობინებაა. სცადეთ მოგვიანებით ან მოგვწერეთ WhatsApp-ზე.' };
   function rpc(fn, body) {
     if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) return Promise.reject(new Error('offline'));

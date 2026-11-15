@@ -185,7 +185,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "95"
+ASSET_V = "96"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
@@ -505,7 +505,7 @@ def camps():
         <div class="field"><label for="ci-exp">Experience</label><select id="ci-exp" name="experience" required><option value="">Select…</option><option>Beginner</option><option>Under 1 year</option><option>1 to 3 years</option><option>3 to 5 years</option><option>5+ years</option><option>Competitive athlete</option></select></div>
         <div class="field"><label for="ci-level">Belt / level <em>optional</em></label><input id="ci-level" name="level"></div>
         <div class="field"><label for="ci-club">Club or academy <em>optional</em></label><input id="ci-club" name="club" autocomplete="organization"></div>
-        <div class="field full"><label for="ci-why">Why do you want to come? <em>optional</em></label><textarea id="ci-why" name="message" rows="3" maxlength="1500" placeholder="What you hope to get from the camp, who you are coming with, any questions."></textarea></div>
+        <div class="field full"><label for="ci-why">Why do you want to come?</label><textarea id="ci-why" name="message" rows="3" maxlength="1500" required minlength="10" placeholder="What you hope to get from the camp, who you are coming with, any questions."></textarea></div>
         <div class="field full" id="notify"><label for="ci-email">Email <em>optional</em></label><input id="ci-email" name="email" type="email" autocomplete="email"></div>
         <label class="consent"><input type="checkbox" name="camp_news" value="yes"><span>Also email me new camp dates. You can unsubscribe at any time.</span></label>
         <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
