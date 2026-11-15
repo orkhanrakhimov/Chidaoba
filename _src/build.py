@@ -185,7 +185,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "94"
+ASSET_V = "95"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
@@ -454,43 +454,23 @@ def camps():
   </div>
 </section>
 
-<nav class="chapters camps-nav" aria-label="On this page"><div class="wrap">{ch}</div></nav>
-
 <section class="section dark camps-list-sec cz" id="camps" aria-labelledby="cz-camps">
   <div class="wrap">
-    <div class="cz-head"><h2 id="cz-camps" class="display h-lg">Upcoming camps</h2><p class="body soft">Choose your sport to see its camps.</p></div>
-    <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport">{tb}</div>
+    <div class="cz-head"><h2 id="cz-camps" class="display h-lg">Upcoming camps</h2><p class="body soft sport-hint" hidden>Choose your sport to see its camps.</p></div>
+    <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport" hidden>{tb}</div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
-    <div class="cz-interest" id="interest">
-      <div class="ci-t"><h3 class="display h-md">Interested in a camp?</h3><p class="body soft">Tell us a little about yourself. We write to you on WhatsApp with the details and you decide later. Nothing to pay and no commitment.</p></div>
-      <form class="js-form ci-form" data-db="interest" data-done="interest-done" novalidate>
-        <input type="hidden" name="subject" value="Camp interest, chidaoba.com">
-        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <div class="field"><label for="ci-name">Name</label><input id="ci-name" name="name" autocomplete="name" required></div>
-        <div class="field"><label for="ci-phone">WhatsApp number</label><input id="ci-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+995 ..." required pattern=".*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*"></div>
-        <div class="field full"><label for="ci-camp">Camp</label><select id="ci-camp" name="camp"><option value="Any camp">Any camp</option><option value="BJJ and grappling">BJJ and grappling</option><option value="Wrestling">Wrestling</option><option value="Judo">Judo</option></select></div>
-        <div class="field"><label for="ci-country">Country</label><input id="ci-country" name="country" autocomplete="country-name" required></div>
-        <div class="field"><label for="ci-exp">Experience</label><select id="ci-exp" name="experience" required><option value="">Select…</option><option>Beginner</option><option>Under 1 year</option><option>1 to 3 years</option><option>3 to 5 years</option><option>5+ years</option><option>Competitive athlete</option></select></div>
-        <div class="field"><label for="ci-level">Belt / level <em>optional</em></label><input id="ci-level" name="level"></div>
-        <div class="field"><label for="ci-club">Club or academy <em>optional</em></label><input id="ci-club" name="club" autocomplete="organization"></div>
-        <div class="field full"><label for="ci-why">Why do you want to come? <em>optional</em></label><textarea id="ci-why" name="message" rows="3" maxlength="1500" placeholder="What you hope to get from the camp, who you are coming with, any questions."></textarea></div>
-        <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
-        <div class="form-foot"><button class="btn btn-primary" type="submit">I am interested</button><p class="form-msg" aria-live="polite"></p></div>
-      </form>
-      <div class="done" id="interest-done" role="status"><h3 class="display h-md">Thank you<span class="dot">.</span></h3><p class="body soft">We will write to you on WhatsApp, usually within a day.</p></div>
-    </div>
-    <div class="cz-notify" id="notify">{newsletter_form("camps", interests=("bjj", "wrestling", "judo"), title="Get new camp dates by email", sub="Choose your sports. We email you when a new camp opens, before anyone else.", btn="Notify me", hidden=("camps",))}</div>
+    <div id="venue-strip" class="cz-vstrip" hidden></div>
   </div>
 </section>
 
-<section class="section light venues-sec cz" id="venues" aria-labelledby="cz-venues">
+<section class="section light venues-sec cz" id="venues" aria-labelledby="cz-venues" hidden>
   <div class="wrap">
     <div class="cz-head"><h2 id="cz-venues" class="display h-lg">Venues</h2><p class="body muted">Where we train: halls, accommodation and meals in one place.</p></div>
     <div id="venue-list" class="venue-list"></div>
   </div>
 </section>
 
-<section class="section dark coaches-sec cz" id="coaches" aria-labelledby="co-title">
+<section class="section dark coaches-sec cz" id="coaches" aria-labelledby="co-title" hidden>
   <div class="wrap">
     <div class="cz-head"><h2 id="co-title" class="display h-lg">Coaches</h2><p class="body soft">The coaches who lead our camps, with their titles and experience.</p></div>
     <div class="co-tabs" role="group" aria-label="Coaches by sport">
@@ -508,33 +488,41 @@ def camps():
       <div><span class="n">02</span><h3>Request</h3><p>Fill in a short form and send it. It takes a minute and there is no payment.</p></div>
       <div><span class="n">03</span><h3>Train</h3><p>We confirm your spot on WhatsApp or email within 24 hours and send everything you need before you arrive.</p></div>
     </div>
-    <div class="perks stagger">
-      <div><b>Early-bird prices</b><span>Book early, pay less.</span></div>
-      <div><b>Group discounts</b><span>Bring your team and save.</span></div>
-      <div><b>Waitlist</b><span>Full? Get the next free spot.</span></div>
-      <div><b>No payment now</b><span>Requests are free.</span></div>
+  </div>
+</section>
+
+<section class="section dark cz cz-int-sec" id="interest" aria-labelledby="cz-int">
+  <div class="wrap">
+    <div class="cz-interest">
+      <div class="ci-t"><h2 id="cz-int" class="display h-md">Interested in a camp?</h2><p class="body soft">Tell us a little about yourself. We write to you on WhatsApp with the details and you decide later. Nothing to pay and no commitment.</p></div>
+      <form class="js-form ci-form" data-db="interest" data-done="interest-done" novalidate>
+        <input type="hidden" name="subject" value="Camp interest, chidaoba.com">
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="field"><label for="ci-name">Name</label><input id="ci-name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="ci-phone">WhatsApp number</label><input id="ci-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+995 ..." required pattern=".*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*"></div>
+        <div class="field full"><label for="ci-camp">Camp</label><select id="ci-camp" name="camp"><optgroup label="Future camps" id="ci-future"><option value="Any camp">Any camp</option><option value="Future BJJ and grappling camps">BJJ and grappling</option><option value="Future wrestling camps">Wrestling</option><option value="Future judo camps">Judo</option></optgroup></select></div>
+        <div class="field"><label for="ci-country">Country</label><input id="ci-country" name="country" autocomplete="country-name" required></div>
+        <div class="field"><label for="ci-exp">Experience</label><select id="ci-exp" name="experience" required><option value="">Select…</option><option>Beginner</option><option>Under 1 year</option><option>1 to 3 years</option><option>3 to 5 years</option><option>5+ years</option><option>Competitive athlete</option></select></div>
+        <div class="field"><label for="ci-level">Belt / level <em>optional</em></label><input id="ci-level" name="level"></div>
+        <div class="field"><label for="ci-club">Club or academy <em>optional</em></label><input id="ci-club" name="club" autocomplete="organization"></div>
+        <div class="field full"><label for="ci-why">Why do you want to come? <em>optional</em></label><textarea id="ci-why" name="message" rows="3" maxlength="1500" placeholder="What you hope to get from the camp, who you are coming with, any questions."></textarea></div>
+        <div class="field full" id="notify"><label for="ci-email">Email <em>optional</em></label><input id="ci-email" name="email" type="email" autocomplete="email"></div>
+        <label class="consent"><input type="checkbox" name="camp_news" value="yes"><span>Also email me new camp dates. You can unsubscribe at any time.</span></label>
+        <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree that CHIDAOBA may use these details to reply to me, as described in the <a href="/privacy/">privacy notice</a>.</span></label>
+        <div class="form-foot"><button class="btn btn-primary" type="submit">I am interested</button><p class="form-msg" aria-live="polite"></p></div>
+      </form>
+      <div class="done" id="interest-done" role="status"><h3 class="display h-md">Thank you<span class="dot">.</span></h3><p class="body soft">We will write to you on WhatsApp, usually within a day.</p></div>
     </div>
   </div>
 </section>
 
-<section class="section dark cz" id="before" aria-labelledby="cz-before">
+<section class="section light cz" id="before" aria-labelledby="cz-before">
   <div class="wrap">
-    <div class="cz-head"><h2 id="cz-before" class="display h-lg">Before you go</h2><p class="body soft">Everything to prepare between your request and the first session.</p></div>
-    <div class="cz-before">
-      <a href="/camps/prepare/"><b>Six steps</b><span>From request to arrival, with a progress tracker.</span></a>
+    <div class="cz-head"><h2 id="cz-before" class="display h-lg">Good to know</h2></div>
+    <div class="cz-before cz-more">
+      <a href="/camps/prepare/"><b>Before you go</b><span>From request to arrival: steps, payment, travel and questions.</span></a>
       <a href="/camps/waivers/"><b>Waivers</b><span>Adult and under 18, ready to download and print.</span></a>
-      <a href="/camps/prepare/#faq"><b>Questions</b><span>Payment, cancellation, insurance and travel.</span></a>
-    </div>
-    <a class="btn btn-primary" href="/camps/prepare/">See the steps</a>
-  </div>
-</section>
-
-<section class="section light cz" id="club" aria-labelledby="cz-club">
-  <div class="wrap">
-    <div class="team-cta">
-      <div><h2 id="cz-club" class="display h-lg">Camps for your club</h2>
-      <p class="body muted">We can build a private camp around your team’s level, dates and budget.</p></div>
-      <a class="btn btn-primary btn-wa" href="https://wa.me/{WA_NUM}?text=Hi%20CHIDAOBA%21%20I%20would%20like%20a%20private%20camp%20for%20my%20club.%20Club%3A%20%2C%20sport%3A%20%2C%20people%3A%20%2C%20dates%3A%20" rel="noopener">{WA_ICON}Get in touch on WhatsApp</a>
+      <a href="https://wa.me/{WA_NUM}?text=Hi%20CHIDAOBA%21%20I%20would%20like%20a%20private%20camp%20for%20my%20club.%20Club%3A%20%2C%20sport%3A%20%2C%20people%3A%20%2C%20dates%3A%20" rel="noopener"><b>Camps for your club</b><span>We can build a private camp around your team’s level, dates and budget.</span></a>
     </div>
   </div>
 </section>

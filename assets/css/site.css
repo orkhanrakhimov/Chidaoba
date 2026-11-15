@@ -2270,3 +2270,19 @@ html.op-in body,html.op-out body{background:var(--carbon)}
 .cz-interest textarea:focus-visible{border-color:rgba(242,241,236,.6)}
 .unsub .h-lg{max-width:18ch}.unsub .lead{margin-top:18px;max-width:46ch}.unsub [hidden]{display:none!important}
 .unsub .h-lg{max-width:22ch}@media(max-width:600px){.unsub .h-lg{max-width:none;font-size:24px;line-height:1.15}}
+
+/* camps page, simplified: one camp first, sections appear when there is something in them */
+.cz[hidden],.sport-pick[hidden],.sport-hint[hidden],.cz-vstrip[hidden]{display:none!important}
+.cz-int-sec .cz-interest{margin-top:0}
+.cz-vstrip{margin-top:18px;padding:22px clamp(20px,2.4vw,30px);border-radius:var(--r-card,18px);background:#2B2B2B;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.6fr) auto;gap:18px 32px;align-items:center}
+.cz-vstrip .vs-t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.cz-vstrip .vs-t b{font-size:20px;line-height:1.2}
+.cz-vstrip .vs-p{font-size:15px;color:#C9C6BD}
+.cz-vstrip .vc-facts{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:15px;color:#C9C6BD}
+.cz-vstrip .vc-facts b{color:#F2F1EC}
+.cz-vstrip .link-go{color:#F2F1EC;white-space:nowrap}
+.cz-more{margin-bottom:0}
+@media(max-width:900px){.cz-vstrip{grid-template-columns:minmax(0,1fr)}}
+.camp-chapters+.camp-body .camp-block{scroll-margin-top:calc(var(--head) + 70px)}
+.camp-chapters .wrap{gap:26px}
+.camp-chapters+.camp-body .book{top:calc(var(--head) + 72px)}

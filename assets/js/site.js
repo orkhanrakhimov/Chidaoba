@@ -143,10 +143,13 @@
         } else {
           ['name', 'email', 'phone', 'topic', 'message'].forEach(function (k) { body[k] = data.get(k) || ''; });
         }
+        var wantNews = kind === 'interest' && data.get('camp_news');
+        if (wantNews && !body.email) { say(TT('Add your email to get new camp dates.', 'ახალი თარიღების მისაღებად მიუთითეთ ელფოსტა.'), 'err'); var em = form.querySelector('[name="email"]'); if (em) em.focus(); return; }
         btn.disabled = true; say(TT('Sending…', 'იგზავნება…'));
         if (kind === 'interest') ['camp', 'country', 'experience', 'level', 'club'].forEach(function (k) { body[k] = data.get(k) || ''; });
         rpc(kind === 'subscribe' ? 'subscribe' : kind === 'interest' ? 'camp_interest' : 'send_message', body).then(function (j) {
           if (j.error) { btn.disabled = false; say(KA ? (KA_ERR[j.error] || j.error) : j.error, 'err'); return; }
+          if (wantNews) rpc('subscribe', { email: body.email, name: body.name, source: 'camps', interests: ['camps'], consent: 'yes', lang: body.lang }).catch(function () { });
           ok();
         }).catch(function () {
           btn.disabled = false; mailto(data, subject);

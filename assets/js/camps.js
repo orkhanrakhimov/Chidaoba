@@ -96,11 +96,21 @@
     function fillInterest() {
       var sel = document.getElementById('ci-camp'); if (!sel) return;
       var want = new URLSearchParams(location.search).get('camp');
-      all.filter(function (c) { return c.status !== 'completed'; }).reverse().forEach(function (c) {
+      var fut = document.getElementById('ci-future'); if (fut) fut.label = KA ? 'მომავალი ბანაკები, თარიღის გარეშე' : 'Future camps, no dates yet';
+      var up = all.filter(function (c) { return c.status !== 'completed'; });
+      if (!up.length) return;
+      var g = document.createElement('optgroup'); g.label = KA ? 'გამოცხადებული ბანაკები' : 'Announced camps';
+      up.forEach(function (c, i) {
         var o = document.createElement('option'); o.value = c.title; o.textContent = c.title;
-        if (want && want === c.slug) o.selected = true; sel.insertBefore(o, sel.firstChild);
+        if (want ? want === c.slug : i === 0) o.selected = true; g.appendChild(o);
       });
-      if (!want && sel.options.length === 5) sel.selectedIndex = 0;
+      sel.insertBefore(g, sel.firstChild);
+    }
+    // sport tabs only help when there are camps in more than one sport
+    function showTabs() {
+      var sports = {}; all.forEach(function (c) { if (c.status !== 'completed') sports[c.discipline] = 1; });
+      var many = Object.keys(sports).length > 1;
+      document.querySelectorAll('.sport-pick, .sport-hint').forEach(function (x) { x.hidden = !many; });
     }
     function counts() {
       document.querySelectorAll('[data-n]').forEach(function (el) {
@@ -113,7 +123,7 @@
       tabs.forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.f === k ? 'true' : 'false'); });
       render(k);
     }
-    H.api.listCamps().then(function (c) { all = (c || []).map(loc); counts(); fillInterest(); pick(start && document.querySelector('.disc-tabs [data-f="' + start + '"]') ? start : 'all'); })
+    H.api.listCamps().then(function (c) { all = (c || []).map(loc); counts(); fillInterest(); showTabs(); pick(start && document.querySelector('.disc-tabs [data-f="' + start + '"]') ? start : 'all'); })
       .catch(function () { list.innerHTML = '<p class="body soft">Camps could not be loaded. Please refresh, or message us on WhatsApp.</p>'; });
     tabs.forEach(function (t) {
       t.addEventListener('click', function () {
@@ -183,6 +193,7 @@
         });
       });
       coAll = Object.keys(by).map(function (id) { var o = by[id]; o.sport = o.discs.map(function (d) { return H.DISC[d] || d; }).join(', '); return o; });
+      var coSec = document.getElementById('coaches'); if (coSec) coSec.hidden = !coAll.length;   // the section appears when a camp has coaches
       coRender('all');
     }).catch(function () { coRender('all'); });
     coTabs.forEach(function (t) { t.addEventListener('click', function () { coRender(t.dataset.f); }); });
@@ -191,6 +202,16 @@
   // ================= VENUES (list + page) =================
   var vlist = $('#venue-list'), V_ALL = window.CHD_VENUES || {};
   if (vlist) {
+    // one venue: a single line under the camp; two or more: the full Venues section
+    var vKeys = Object.keys(V_ALL), vSec = document.getElementById('venues'), vStrip = document.getElementById('venue-strip');
+    if (vSec) vSec.hidden = vKeys.length < 2;
+    if (vStrip && vKeys.length === 1) {
+      var v0 = V_ALL[vKeys[0]];
+      vStrip.innerHTML = '<div class="vs-t"><span class="label">The venue</span><b>' + e(v0.name) + '</b><span class="vs-p">' + e(v0.place) + '</span></div>' +
+        '<div class="vc-facts">' + v0.facts.map(function (f) { return '<span><b>' + e(f[0]) + '</b> ' + e(f[1]) + '</span>'; }).join('') + '</div>' +
+        '<a class="link link-go" href="/camps/venue/?v=' + encodeURIComponent(vKeys[0]) + '">See the venue</a>';
+      vStrip.hidden = false;
+    }
     vlist.innerHTML = Object.keys(V_ALL).map(function (k) {
       var v = V_ALL[k];
       return '<a class="venue-card" href="/camps/venue/?v=' + encodeURIComponent(k) + '"><div class="vc-img"><img src="' + e(v.cover.thumb || v.cover.url) + '"' + (v.cover.thumb ? ' srcset="' + e(v.cover.thumb) + ' 640w, ' + e(v.cover.url) + ' 1600w" sizes="(max-width: 800px) 100vw, 50vw"' : '') + ' alt="' + e(v.cover.alt) + '" loading="lazy"></div>' +
@@ -342,6 +363,29 @@
     if (canBook && (c.packages || []).length) html += '<div class="book-bar dark" id="book-bar"><div><span>From</span><b>' + H.money(H.fromPrice(c), c.currency) + '</b></div><a class="btn btn-primary" href="#book">' + (st.key === 'full' ? 'Join waitlist' : 'Request a spot') + '</a></div>';
     html += modal(c, st);
     root.innerHTML = html;
+    // section menu under the photo: one link per section of this page, built from the headings
+    setTimeout(function () {
+      var hs = root.querySelectorAll('.camp-main > .camp-block > h2'), body = root.querySelector('.camp-body');
+      if (hs.length < 3 || !body) return;
+      var nav = document.createElement('nav'); nav.className = 'chapters camp-chapters'; nav.setAttribute('aria-label', KA ? 'ამ გვერდზე' : 'On this page');
+      var wrap = document.createElement('div'); wrap.className = 'wrap'; nav.appendChild(wrap);
+      var links = [];
+      hs.forEach(function (h, i) {
+        var sec = h.parentNode; sec.id = sec.id || 'cs-' + (i + 1);
+        var a = document.createElement('a'); a.href = '#' + sec.id; a.textContent = h.textContent.replace(/\.\s*$/, '');
+        wrap.appendChild(a); links.push(a);
+      });
+      body.parentNode.insertBefore(nav, body);
+      if (!('IntersectionObserver' in window)) return;
+      var io = new IntersectionObserver(function (en) {
+        en.forEach(function (x) {
+          if (!x.isIntersecting) return;
+          links.forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + x.target.id); });
+          var on = wrap.querySelector('a.on'); if (on) wrap.scrollTo({ left: on.offsetLeft - 40, behavior: 'smooth' });
+        });
+      }, { rootMargin: '-30% 0px -60% 0px' });
+      hs.forEach(function (h) { io.observe(h.parentNode); });
+    }, 700);
     // structured data for Google, once a camp has real dates
     if (c.start_date) {
       var V2 = H.venue(c), from2 = H.fromPrice(c), cv2 = H.cover(c);
