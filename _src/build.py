@@ -37,8 +37,10 @@ def sym_svg(cls, extra=""):
 BAG = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">'
        '<path d="M5 8h14l-1.2 12H6.2L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>')
 
+SITE = "https://chidaoba.com"
+
 def og_img(path):
-    k = {"/": "home", "/camps/": "camps", "/camps/camp/": "camps", "/camps/spring-2027/": "spring", "/camps/venue/": "camps", "/shop/": "shop",
+    k = {"/": "home", "/camps/": "camps", "/camps/camp/": "camps", "/camps/spring-2027/": "spring", "/camps/bjj-grappling-georgia/": "spring", "/camps/wrestling-georgia/": "camps", "/camps/judo-georgia/": "camps", "/camps/venue/": "camps", "/shop/": "shop",
          "/culture/": "culture", "/georgia/": "georgia"}.get(path)
     return f"og-{k}.png" if k else "og.png"
 
@@ -168,7 +170,7 @@ def footer(path=""):
     <div class="foot-grid">
       {news}
       <nav class="foot-col" aria-label="Explore"><h3>Explore</h3><ul>
-        <li><a href="/culture/">Our story</a></li><li><a href="/camps/">Camps &amp; Events</a></li><li><a href="/camps/prepare/">Before you go</a></li>
+        <li><a href="/culture/">Our story</a></li><li><a href="/camps/">Camps &amp; Events</a></li><li><a href="/camps/bjj-grappling-georgia/">BJJ and grappling camps</a></li><li><a href="/camps/wrestling-georgia/">Wrestling camps</a></li><li><a href="/camps/judo-georgia/">Judo camps</a></li><li><a href="/camps/prepare/">Before you go</a></li>
         <li><a href="/georgia/">Why Georgia</a></li><li><a href="/shop/">Shop</a></li></ul></nav>
       <div class="foot-col"><h3>Connect</h3>{socials()}<ul style="margin-top:22px"><li><a href="/contact/">Contact</a></li></ul></div>
       <div class="foot-col"><h3>Legal</h3><ul><li><a href="/privacy/">Privacy</a></li></ul></div>
@@ -185,11 +187,11 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "99"
+ASSET_V = "100"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
-EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/spring-2027/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
+EXTRA_JS = {"/": ["config", "venues", "data", "camps"], "/camps/": ["config", "venues", "data", "camps"], "/camps/camp/": ["config", "venues", "catalog", "data", "camps"], "/camps/spring-2027/": ["config", "venues", "catalog", "data", "camps"], "/camps/venue/": ["config", "venues", "data", "camps"], "/camps/bjj-grappling-georgia/": ["config", "venues", "data", "camps"], "/camps/wrestling-georgia/": ["config", "venues", "data", "camps"], "/camps/judo-georgia/": ["config", "venues", "data", "camps"], "/admin/": ["config", "venues", "catalog", "data", "admin"], "/shop/": ["config", "catalog", "shop"]}
 
 def page(path, title, desc, main):
     names = EXTRA_JS.get(path, [])
@@ -435,6 +437,109 @@ CAMP_FAQS = [
         ("Can I bring my team?", "Yes. Camps with a group discount show it on the camp page, and we can build a private camp for your club. Get in touch."),
     ]
 
+# One page per sport, each written for the search "<sport> camps in Georgia".
+SPORT_PAGES = {
+  "wrestling": dict(path="/camps/wrestling-georgia/", disc="wrestling",
+    title="Wrestling Camps in Georgia: Freestyle and Greco-Roman | CHIDAOBA",
+    desc="Freestyle and Greco-Roman wrestling camps in Georgia, the country of chidaoba. Train with Georgian coaches, with accommodation and meals in one place.",
+    h1="Wrestling camps in Georgia",
+    lead="Freestyle and Greco-Roman wrestling camps in the country of chidaoba, with experienced local coaches. Training, accommodation and meals in one place.",
+    why_h="Why train wrestling in Georgia",
+    why=[("A wrestling country", "Wrestling has been part of Georgian life for centuries. Chidaoba, the traditional Georgian wrestling, is on the UNESCO list of intangible cultural heritage, and almost every town and village has a wrestling club."),
+         ("Olympic champions", "Georgian wrestlers have won Olympic gold in freestyle and Greco-Roman, from Levan Tediashvili in 1972 and 1976 to Geno Petriashvili in Paris 2024."),
+         ("Two sessions a day", "A camp day has technique in the morning and live wrestling in the evening, with rest, meals and recovery in between.")],
+    champ_h="Georgian Olympic champions in wrestling",
+    champs=[("Manuchar Kvirkvelia", "Greco-Roman, 74 kg", "2008"), ("Revaz Mindorashvili", "Freestyle, 84 kg", "2008"), ("Vladimer Khinchegashvili", "Freestyle, 57 kg", "2016"), ("Geno Petriashvili", "Freestyle, 125 kg", "2024")],
+    empty_h="No wrestling camp dates yet", interest="Future wrestling camps",
+    when="Dates are not set yet. Leave your details and we write to you first when registration opens."),
+  "judo": dict(path="/camps/judo-georgia/", disc="judo",
+    title="Judo Camps in Georgia | CHIDAOBA",
+    desc="Judo camps in Georgia, home of Olympic and world judo champions. Train with Georgian coaches, with accommodation and meals in one place.",
+    h1="Judo camps in Georgia",
+    lead="Judo camps in one of the strongest judo countries in the world, with experienced local coaches. Training, accommodation and meals in one place.",
+    why_h="Why train judo in Georgia",
+    why=[("World champions every year", "Georgian judoka won world titles every year from 2022 to 2026. Tato Grigalashvili alone won four at 81 kg."),
+         ("Olympic gold", "Five Olympic judo titles since 2004, most recently Lasha Bekauri at 90 kg in 2020 and 2024."),
+         ("Grips and throws", "Chidaoba, the traditional Georgian jacket wrestling, shaped the grips and throws of Georgian judo. A camp day has technique in the morning and randori in the evening.")],
+    champ_h="Georgian Olympic champions in judo",
+    champs=[("Zurab Zviadauri", "90 kg", "2004"), ("Irakli Tsirekidze", "90 kg", "2008"), ("Lasha Shavdatuashvili", "66 kg", "2012"), ("Lasha Bekauri", "90 kg", "2020, 2024")],
+    empty_h="No judo camp dates yet", interest="Future judo camps",
+    when="Dates are not set yet. Leave your details and we write to you first when registration opens."),
+  "bjj": dict(path="/camps/bjj-grappling-georgia/", disc="bjj",
+    title="BJJ and Grappling Camps in Georgia | Jiu-Jitsu Camp | CHIDAOBA",
+    desc="Brazilian jiu-jitsu and no-gi grappling camps in Georgia. Spring 2027 camp in the mountains of Svaneti, with training, accommodation and meals in one sports complex.",
+    h1="BJJ and grappling camps in Georgia",
+    lead="Brazilian jiu-jitsu and no-gi grappling camps in Georgia. The next camp is in spring 2027 in the mountains of Svaneti, with training, accommodation and meals in one sports complex.",
+    why_h="Why train jiu-jitsu in Georgia",
+    why=[("A growing BJJ community", "Brazilian jiu-jitsu and no-gi grappling are growing quickly in Georgia. New academies are opening in Tbilisi, and international tournaments are now held in the city."),
+         ("Wrestlers and judoka", "Many Georgian grapplers come from wrestling or judo, so training is technical and physically demanding, with strong takedowns."),
+         ("A camp in the mountains", "The spring camp venue in Svaneti has an 800 m² hall with tatami, a gym, sauna and pool, with rooms and 3-4 meals a day on site.")],
+    champ_h="", champs=[],
+    empty_h="No BJJ camp dates yet", interest="Future BJJ and grappling camps",
+    when="The next camp is in spring 2027. The exact dates are published on the camp page as soon as they are set."),
+}
+SPORT_NAV = [("bjj", "BJJ and grappling"), ("wrestling", "Wrestling"), ("judo", "Judo")]
+
+def sport_page(key):
+    s = SPORT_PAGES[key]
+    why = "".join(f'<div><h3>{t}</h3><p>{d}</p></div>' for t, d in s["why"])
+    champs = ""
+    if s["champs"]:
+        li = "".join(f'<li><b>{n}</b><span>{w}</span><em>{y}</em></li>' for n, w, y in s["champs"])
+        champs = f'<div class="sp-champs"><h3 class="display h-md">{s["champ_h"]}</h3><ul>{li}</ul><a class="link link-go" href="/georgia/#champions">All Georgian champions</a></div>'
+    faqs = [("When are the camps?", s["when"]),
+            ("Where do the camps take place?", "Each camp page shows where the camp takes place. The spring 2027 camp is at a sports complex in Svaneti, in the mountains of north-west Georgia."),
+            CAMP_FAQS[3], CAMP_FAQS[4],
+            ("Is Georgia safe to visit?", "Yes. The US State Department rates Georgia Level 1, the lowest of its four risk levels. Visas, insurance and flights are covered on the Why Georgia page."),
+            CAMP_FAQS[0], CAMP_FAQS[1]]
+    fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
+    ld = [{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+              {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]},
+          {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+              {"@type": "ListItem", "position": 1, "name": "Camps", "item": SITE + "/camps/"},
+              {"@type": "ListItem", "position": 2, "name": s["h1"], "item": SITE + s["path"]}]}]
+    ld_html = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False) + '</script>' for x in ld)
+    others = "".join(f'<a href="{SPORT_PAGES[k]["path"]}"><b>{SPORT_PAGES[k]["h1"]}</b><span>{SPORT_PAGES[k]["lead"].split(".")[0]}.</span></a>' for k, _ in SPORT_NAV if k != key)
+    return f"""
+<section class="page-hero dark camps-hero sp-hero">
+  {sym_svg("ghost")}
+  <div class="wrap" style="position:relative">
+    <p class="label soft sp-crumb"><a href="/camps/">Camps</a></p>
+    <h1 class="display h-xl"><span class="ln"><span>{s["h1"]}</span></span></h1>
+    <p class="lead soft fade-load">{s["lead"]}</p>
+  </div>
+</section>
+
+<section class="section dark cz" aria-labelledby="sp-camps">
+  <div class="wrap">
+    <div class="cz-head"><h2 id="sp-camps" class="display h-lg">Upcoming camps</h2></div>
+    <div id="sport-camps" class="camp-list" data-sport="{s["disc"]}" data-interest="{s["interest"]}" aria-live="polite"><p class="sp-empty-h" hidden>{s["empty_h"]}</p></div>
+  </div>
+</section>
+
+<section class="section light" aria-labelledby="sp-why">
+  <div class="wrap">
+    <div class="cz-head"><h2 id="sp-why" class="display h-lg">{s["why_h"]}</h2></div>
+    <div class="sp-why stagger">{why}</div>
+    {champs}
+  </div>
+</section>
+
+<section class="section light sp-faq-sec" aria-labelledby="sp-faq">
+  <div class="wrap">
+    <div class="cz-head"><h2 id="sp-faq" class="display h-lg">Questions</h2></div>
+    <div class="faq sp-faq">{fq}</div>{ld_html}
+  </div>
+</section>
+
+<section class="section dark cz" aria-labelledby="sp-more">
+  <div class="wrap">
+    <div class="cz-head"><h2 id="sp-more" class="display h-lg">Other camps</h2></div>
+    <div class="cz-before cz-more">{others}<a href="/georgia/"><b>Why train in Georgia</b><span>Champions, food, travel and safety.</span></a></div>
+  </div>
+</section>
+"""
+
 def camps():
     faqs = CAMP_FAQS
     fq = "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in faqs)
@@ -460,6 +565,7 @@ def camps():
     <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport" hidden>{tb}</div>
     <div id="camp-list" class="camp-list" aria-live="polite"></div>
     <div id="venue-strip" class="cz-vstrip" hidden></div>
+    <nav class="sp-bysport" aria-label="Camps by sport"><span class="label soft">Camps by sport</span><a href="/camps/bjj-grappling-georgia/">BJJ and grappling</a><a href="/camps/wrestling-georgia/">Wrestling</a><a href="/camps/judo-georgia/">Judo</a></nav>
   </div>
 </section>
 
@@ -1101,7 +1207,7 @@ LLMS = """# CHIDAOBA
 """
 
 PAGES = [
-    ("/", "index.html", "CHIDAOBA | Georgian wrestling culture, training camps and gear",
+    ("/", "index.html", "CHIDAOBA | BJJ, Wrestling and Judo Camps in Georgia",
      "Born in Georgia, CHIDAOBA brings wrestling heritage into modern grappling culture through training camps, apparel and a growing community of athletes.", home),
     ("/georgia/", "georgia/index.html", "Why Train in Georgia: Judo, Wrestling and BJJ | CHIDAOBA",
      "Why train in Georgia: a wrestling culture centuries old, Olympic and world champions, booming BJJ, the Caucasus mountains, the Black Sea and the Georgian table.", georgia),
@@ -1114,6 +1220,9 @@ PAGES = [
     ("/camps/spring-2027/", "camps/spring-2027/index.html", "BJJ and Grappling Camp in Svaneti, Spring 2027 | CHIDAOBA",
      "BJJ and no-gi grappling in the mountains of Svaneti, Georgia, in spring 2027. Training, accommodation and meals in one sports complex.",
      lambda: '<script>window.CHD_CAMP_SLUG="bjj-grappling-spring-2027"</script>' + camp_detail()),
+    ("/camps/bjj-grappling-georgia/", "camps/bjj-grappling-georgia/index.html", SPORT_PAGES["bjj"]["title"], SPORT_PAGES["bjj"]["desc"], lambda: sport_page("bjj")),
+    ("/camps/wrestling-georgia/", "camps/wrestling-georgia/index.html", SPORT_PAGES["wrestling"]["title"], SPORT_PAGES["wrestling"]["desc"], lambda: sport_page("wrestling")),
+    ("/camps/judo-georgia/", "camps/judo-georgia/index.html", SPORT_PAGES["judo"]["title"], SPORT_PAGES["judo"]["desc"], lambda: sport_page("judo")),
     ("/camps/venue/", "camps/venue/index.html", "Ilia Gabliani Sports Complex, Svaneti | CHIDAOBA",
      "Where we train: Ilia Gabliani Sports Complex in Mulakhi, Svaneti. Training hall, rooms for 40, meals, pool and mountain views.", venue_page),
     ("/admin/", "admin/index.html", "Admin | CHIDAOBA", "Admin.", admin),

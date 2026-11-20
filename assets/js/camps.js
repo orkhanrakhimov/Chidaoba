@@ -74,6 +74,23 @@
     hc.innerHTML = up.map(card).join(''); hc.hidden = false;
     var soon = $('#home-camps-soon'); if (soon) soon.hidden = true;
   }).catch(function () { });
+  // sport pages: the camps of one sport, or a short note with a link to the interest form
+  var sc = $('#sport-camps');
+  if (sc) {
+    var spEmpty = (sc.querySelector('.sp-empty-h') || {}).textContent || '';
+    var spIntro = function () {
+      var lk = (KA ? '/ka' : '') + '/camps/?interest=' + encodeURIComponent(sc.dataset.interest) + '#interest';
+      sc.innerHTML = '<div class="camp-empty"><h3 class="display h-md">' + e(spEmpty) + '</h3>' +
+        '<p class="body soft">' + (KA ? 'დაგვიტოვეთ თქვენი მონაცემები და რეგისტრაციის გახსნისას პირველს მოგწერთ.' : 'Leave your details and we write to you first when registration opens.') + '</p>' +
+        '<div class="row-btns"><a class="btn btn-primary" href="' + lk + '">' + (KA ? 'მაინტერესებს' : 'I am interested') + '</a></div></div>';
+    };
+    sc.innerHTML = '<p class="body soft loading">' + (KA ? 'იტვირთება…' : 'Loading camps…') + '</p>';
+    H.api.listCamps().then(function (c) {
+      var up = (c || []).map(loc).filter(function (x) { return x.discipline === sc.dataset.sport && x.status !== 'completed'; });
+      if (!up.length) return spIntro();
+      sc.innerHTML = up.map(card).join('');
+    }).catch(spIntro);
+  }
   var list = $('#camp-list');
   if (list) {
     var tabs = document.querySelectorAll('.disc-tabs button');
@@ -95,16 +112,18 @@
     list.innerHTML = '<p class="body soft loading">Loading camps…</p>';
     function fillInterest() {
       var sel = document.getElementById('ci-camp'); if (!sel) return;
-      var want = new URLSearchParams(location.search).get('camp');
+      var want = new URLSearchParams(location.search).get('camp'), wantI = new URLSearchParams(location.search).get('interest');
+      if (wantI) [].forEach.call(sel.options, function (o) { if (o.value === wantI) o.selected = true; });
       var fut = document.getElementById('ci-future'); if (fut) fut.label = KA ? 'მომავალი ბანაკები, თარიღის გარეშე' : 'Future camps, no dates yet';
       var up = all.filter(function (c) { return c.status !== 'completed'; });
       if (!up.length) return;
       var g = document.createElement('optgroup'); g.label = KA ? 'გამოცხადებული ბანაკები' : 'Announced camps';
       up.forEach(function (c, i) {
         var o = document.createElement('option'); o.value = c.title; o.textContent = c.title;
-        if (want ? want === c.slug : i === 0) o.selected = true; g.appendChild(o);
+        if (want ? want === c.slug : (i === 0 && !wantI)) o.selected = true; g.appendChild(o);
       });
       sel.insertBefore(g, sel.firstChild);
+      if (wantI) [].forEach.call(sel.options, function (o) { o.selected = o.value === wantI; });
     }
     // sport tabs only help when there are camps in more than one sport
     function showTabs() {
