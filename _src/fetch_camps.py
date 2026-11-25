@@ -13,6 +13,7 @@ camps = json.load(urllib.request.urlopen(req, timeout=30))
 # keep only what the public pages show; drop timestamps so the file only changes when the content does
 DROP = {"created_at", "updated_at"}
 camps = [{k: v for k, v in c.items() if k not in DROP} for c in camps]
+os.makedirs(os.path.join(ROOT, "_src", "data"), exist_ok=True)
 path = os.path.join(ROOT, "_src", "data", "camps.json")
 new = json.dumps(camps, ensure_ascii=False, indent=1, sort_keys=True) + "\n"
 old = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
