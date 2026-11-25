@@ -86,7 +86,7 @@ def head(title, desc, path):
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
 <meta name="twitter:image" content="https://chidaoba.com/assets/img/{og_img(path)}">{org_ld() if path == "/" else ""}
-<meta name="theme-color" content="#202020">
+<meta name="theme-color" content="#0A0A0A">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
@@ -187,7 +187,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "101"
+ASSET_V = "102"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
