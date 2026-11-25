@@ -1,0 +1,39 @@
+name: Refresh camp pages
+
+# Every two hours (and by hand from the Actions tab): copy the public camp details from the database
+# into the pages, so search engines can read dates, packages and questions without running scripts.
+# Nothing is committed when nothing changed.
+on:
+  schedule:
+    - cron: "23 */2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: camp-pages
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Copy camp details from the database
+        run: python3 _src/fetch_camps.py
+      - name: Rebuild and publish if anything changed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- _src/data/camps.json && git ls-files --error-unmatch _src/data/camps.json >/dev/null 2>&1; then
+            echo "No camp changes."; exit 0; fi
+          python3 _src/build.py
+          git config user.name "chidaoba-bot"
+          git config user.email "chidaoba-bot@users.noreply.github.com"
+          git add -A
+          git commit -m "Update camp pages from the database"
+          git push
+          # ask GitHub Pages to publish the new version (pushes made by this job do not start it on their own)
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" || true

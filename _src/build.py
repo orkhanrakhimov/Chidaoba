@@ -187,7 +187,7 @@ def footer(path=""):
 </html>
 """
 
-ASSET_V = "100"
+ASSET_V = "101"
 # Google Search Console: paste the code from the "HTML tag" method between the quotes (it is not a secret).
 GOOGLE_VERIFY = ""
 GOOGLE_TAG = f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else ""
@@ -200,7 +200,7 @@ def page(path, title, desc, main):
     out = head(title, desc, path) + header(path) + f'<main id="main">{main}</main>\n' + footer(path)
     if path == "/admin/":
         out = head(title, desc, path).replace('<meta name="viewport"', '<meta name="robots" content="noindex,nofollow">\n<meta name="viewport"') + f'<main id="admin" class="adm"></main>' + f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script></body></html>'
-    if path in ("/unsubscribe/", "/ig/"):
+    if path in ("/unsubscribe/", "/ig/", "/camps/camp/"):
         out = out.replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"', 1)
     tag = f'<script src="/assets/js/site.js?v={ASSET_V}" defer></script>'
     return out.replace(tag, js + tag)
@@ -513,7 +513,7 @@ def sport_page(key):
 <section class="section dark cz" aria-labelledby="sp-camps">
   <div class="wrap">
     <div class="cz-head"><h2 id="sp-camps" class="display h-lg">Upcoming camps</h2></div>
-    <div id="sport-camps" class="camp-list" data-sport="{s["disc"]}" data-interest="{s["interest"]}" aria-live="polite"><p class="sp-empty-h" hidden>{s["empty_h"]}</p></div>
+    <div id="sport-camps" class="camp-list" data-sport="{s["disc"]}" data-interest="{s["interest"]}" aria-live="polite"><p class="sp-empty-h" hidden>{s["empty_h"]}</p><!--CAMPLIST:{s["disc"]}--></div>
   </div>
 </section>
 
@@ -563,7 +563,7 @@ def camps():
   <div class="wrap">
     <div class="cz-head"><h2 id="cz-camps" class="display h-lg">Upcoming camps</h2><p class="body soft sport-hint" hidden>Choose your sport to see its camps.</p></div>
     <div class="disc-tabs sport-pick" role="group" aria-label="Choose your sport" hidden>{tb}</div>
-    <div id="camp-list" class="camp-list" aria-live="polite"></div>
+    <div id="camp-list" class="camp-list" aria-live="polite"><!--CAMPLIST:all--></div>
     <div id="venue-strip" class="cz-vstrip" hidden></div>
     <nav class="sp-bysport" aria-label="Camps by sport"><span class="label soft">Camps by sport</span><a href="/camps/bjj-grappling-georgia/">BJJ and grappling</a><a href="/camps/wrestling-georgia/">Wrestling</a><a href="/camps/judo-georgia/">Judo</a></nav>
   </div>
@@ -634,8 +634,86 @@ def camps():
 </section>
 """
 
+# ---- camp details written into the HTML (from _src/data/camps.json, refreshed by a GitHub job) ----
+def _camps():
+    p = os.path.join(ROOT, "_src", "data", "camps.json")
+    try:
+        return json.load(open(p, encoding="utf-8"))
+    except Exception:
+        return []
+CAMP_URLS = {"bjj-grappling-spring-2027": "/camps/spring-2027/"}
+MONTHS = {"en": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+          "ka": ["იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი"]}
+SL = {"en": {"all": "All camps", "dates": "Dates", "where": "Where", "level": "Level", "soon": "Dates coming soon", "inc": "Included", "exc": "Not included",
+             "what": "What’s included", "day": "A day at camp", "faq": "Questions", "view": "View camp"},
+      "ka": {"all": "ყველა ბანაკი", "dates": "თარიღები", "where": "სად", "level": "დონე", "soon": "თარიღები მალე გამოცხადდება", "inc": "შედის", "exc": "არ შედის",
+             "what": "რა შედის", "day": "ბანაკის დღე", "faq": "კითხვები", "view": "ბანაკის ნახვა"}}
+def _loc(c, lang):
+    if lang != "ka":
+        return c
+    def li(o):
+        if isinstance(o, list): return [li(x) for x in o]
+        if not isinstance(o, dict): return o
+        r = {k: li(v) for k, v in o.items() if not k.endswith("_ka")}
+        for k, v in o.items():
+            if k.endswith("_ka") and (v if isinstance(v, list) else (v is not None and str(v).strip())):
+                r[k[:-3]] = li(v)
+        return r
+    r = li(c)
+    for f, v in (c.get("ka") or {}).items():
+        if v if isinstance(v, list) else (v is not None and str(v).strip()):
+            r[f] = v
+    return r
+def _date(d, lang):
+    y, m, dd = (int(x) for x in d[:10].split("-")); return f"{dd} {MONTHS[lang][m-1]} {y}"
+def _dates(c, lang):
+    s, e2 = c.get("start_date"), c.get("end_date")
+    if not s: return c.get("dates_note") or SL[lang]["soon"]
+    return _date(s, lang) + (" – " + _date(e2, lang) if e2 and e2 != s else "")
+def _url(c, lang):
+    u = CAMP_URLS.get(c["slug"], "/camps/camp/?c=" + c["slug"])
+    return ("/ka" + u) if lang == "ka" else u
+def _e(s): return html.escape(str(s or ""))
+def camp_static(slug, lang):
+    """The main facts of one camp as plain HTML. The camp script replaces it with the full page."""
+    c = next((x for x in _camps() if x.get("slug") == slug), None)
+    if not c: return ""
+    c, L = _loc(c, lang), SL[lang]
+    where = ", ".join(x for x in (c.get("venue"), c.get("city"), c.get("country")) if x)
+    facts = f'<div class="facts-row"><div class="fact"><span class="label">{L["dates"]}</span><b>{_e(_dates(c, lang))}</b></div>' + \
+            (f'<div class="fact"><span class="label">{L["where"]}</span><b>{_e(where)}</b></div>' if where else "") + \
+            (f'<div class="fact"><span class="label">{L["level"]}</span><b>{_e(c.get("level"))}</b></div>' if c.get("level") else "") + "</div>"
+    out = f'<section class="camp-hero dark"><div class="wrap"><a class="back label muted" href="{"/ka" if lang == "ka" else ""}/camps/">← {L["all"]}</a><h1 class="display h-lg">{_e(c.get("title"))}</h1>{facts}</div></section>'
+    body = ""
+    if c.get("summary"): body += f'<p class="lead">{_e(c["summary"])}</p>'
+    if c.get("description"): body += "".join(f"<p>{_e(p)}</p>" for p in str(c["description"]).split("\n") if p.strip())
+    inc, exc = c.get("included") or [], c.get("excluded") or []
+    if inc or exc:
+        body += f'<div class="camp-block"><h2 class="display h-md">{L["what"]}</h2><h3>{L["inc"]}</h3><ul>' + "".join(f"<li>{_e(t)}</li>" for t in inc) + \
+                f'</ul><h3>{L["exc"]}</h3><ul>' + "".join(f"<li>{_e(t)}</li>" for t in exc) + "</ul></div>"
+    day = next((d for d in (c.get("schedule") or []) if d and d.get("items")), None)
+    if day:
+        body += f'<div class="camp-block"><h2 class="display h-md">{L["day"]}</h2><ul>' + "".join(f'<li>{_e(i.get("time"))} {_e(i.get("title"))}</li>' for i in day["items"]) + "</ul></div>"
+    if c.get("faq"):
+        body += f'<div class="camp-block"><h2 class="display h-md">{L["faq"]}</h2><div class="faq">' + "".join(f'<details><summary>{_e(f.get("q"))}</summary><p>{_e(f.get("a"))}</p></details>' for f in c["faq"]) + "</div></div>"
+    out += f'<section class="section light camp-body"><div class="wrap"><div class="camp-main">{body}</div></div></section>'
+    if c.get("start_date"):
+        ev = {"@context": "https://schema.org", "@type": "Event", "name": c.get("title"), "startDate": c["start_date"][:10], "endDate": (c.get("end_date") or c["start_date"])[:10],
+              "eventStatus": "https://schema.org/EventScheduled", "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+              "location": {"@type": "Place", "name": c.get("venue") or where, "address": where}, "description": c.get("summary") or "",
+              "organizer": {"@type": "Organization", "name": "CHIDAOBA", "url": SITE}, "url": SITE + _url(c, lang)}
+        out += '<script type="application/ld+json">' + json.dumps(ev, ensure_ascii=False) + "</script>"
+    return out
+def camps_static_list(lang, disc=None):
+    """Plain links to the upcoming camps, replaced by the camp cards once the page script runs."""
+    L = SL[lang]
+    cs = [_loc(c, lang) for c in _camps() if c.get("status") != "completed" and (not disc or c.get("discipline") == disc)]
+    return "".join(f'<a class="camp-card camp-pre" href="{_url(c, lang)}"><div class="cc-body"><h3 class="display h-md">{_e(c.get("title"))}</h3>'
+                   f'<p class="body">{_e(_dates(c, lang))}{(" · " + _e(", ".join(x for x in (c.get("venue"), c.get("city")) if x))) if c.get("venue") or c.get("city") else ""}</p>'
+                   f'<span class="link link-go">{L["view"]}</span></div></a>' for c in cs)
+
 def camp_detail():
-    return '<div id="camp-root"><section class="page-hero dark"><div class="wrap"><p class="body soft">Loading camp…</p></div></section></div>' + \
+    return '<div id="camp-root"><!--CAMPSTATIC--></div>' + \
         f'<section class="section dark notify-sec" id="notify"><div class="wrap notify-in">{newsletter_form("camp", interests=("bjj", "wrestling", "judo"), title="Hear about the next camps", sub="We email you when new dates open for your sports.", btn="Notify me", hidden=("camps",))}</div></section>'
 
 def venue_page():
@@ -1270,6 +1348,10 @@ if __name__ == "__main__":
         doc = page(path, html.escape(title, quote=False), html.escape(desc), fn())
         ml = path not in ("/admin/", "/404.html")
         def fin(d, lang):
+            # camp details from the database copy, in the page's language (placed after translation)
+            slug = re.search(r'CHD_CAMP_SLUG="([^"]+)"', d)
+            d = d.replace("<!--CAMPSTATIC-->", camp_static(slug.group(1), lang) if slug else "")
+            d = re.sub(r"<!--CAMPLIST:(\w+)-->", lambda m: camps_static_list(lang, None if m.group(1) == "all" else m.group(1)), d)
             d = d.replace("<!--LANGSW-->", i18n.switcher(path, lang) if ml else "")
             return d.replace("<!--ALT-->", i18n.alternates(path) if ml else "")
         outs = [(out, fin(doc, "en"))]
@@ -1309,7 +1391,6 @@ if __name__ == "__main__":
     import datetime
     today = datetime.date.today().isoformat()
     urls = [pre + p for p in multi if p not in ("/camps/camp/", "/unsubscribe/", "/ig/") for pre in ("", "/ka")]
-    urls += [pre + "/camps/camp/?c=bjj-grappling-spring-2027" for pre in ("", "/ka")]
     sm = "".join(f"<url><loc>https://chidaoba.com{html.escape(u)}</loc><lastmod>{today}</lastmod></url>" for u in urls)
     open(os.path.join(ROOT, "sitemap.xml"), "w").write(
         f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>\n')
