@@ -8,7 +8,7 @@ For any design, redesign or polish task, load the **design-taste-frontend** skil
 github.com/Leonxlnx/taste-skill, MIT) and follow its run: brief, direction, build, inspect, look at screenshots, fix.
 
 The owner's decisions below override the skill's house rules where they conflict:
-- Brand name is **CHIDAOBA** only (never "CHIDAOBA CULTURE"). Colours: carbon #1E1E1E, chalk #F2F1EC, red #B5212F.
+- Brand name is **CHIDAOBA** only (never "CHIDAOBA CULTURE"). Colours (changed 25 Nov 2026 by the owner): black #0A0A0A, white #FFFFFF, red #E0201B for buttons and details. Black is the main colour; red stays an accent, not a page colour.
 - Rounded corners were requested ("soft, like Apple products"). Keep them unless the owner agrees to change.
 - Section numbering such as "01 · ჩემპიონები" is part of the owner's own copy; keep it unless the owner agrees to drop it.
 - Georgian pages use the Gremi Web font (`assets/fonts/gremi-web.woff`) for all Georgian letters, digits and basic punctuation.
