@@ -17,6 +17,13 @@ The owner's decisions below override the skill's house rules where they conflict
 - Do not use the Mulakhi venue photos on Why Georgia. Community and Journal stay hidden.
 When a skill rule would change one of these, propose it to the owner with a before/after instead of applying it.
 
+## Camp pages and search engines
+Camp details are written into the page HTML from `_src/data/camps.json` so Google can read them without scripts.
+That file is a copy of the public camp data, refreshed every two hours by `.github/workflows/camp-pages.yml`
+(`_src/fetch_camps.py`), which rebuilds and publishes when it changes. Always `git pull` before building so the
+local copy is current; never commit a camps.json made from the local test database.
+Search Console belongs to the CHIDAOBA Google account (sitemap: /sitemap.xml).
+
 ## Before saying "done"
 Check every touched page at 1400px and 390px, in English and Georgian: screenshots looked at, no sideways scrolling,
 no JS errors, no untranslated English on Georgian pages. Confirm the GitHub Pages deploy finished.
