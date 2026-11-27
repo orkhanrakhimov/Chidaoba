@@ -123,9 +123,9 @@
     var btn = form.querySelector('button[type="submit"]');
     var done = form.dataset.done ? document.getElementById(form.dataset.done) : null;
     function say(t, cls) { if (msg) { msg.className = 'form-msg' + (cls ? ' ' + cls : ''); msg.textContent = t; } }
-    function ok() {
+    function ok(text) {
       if (done) { form.style.display = 'none'; done.classList.add('show'); done.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-      else { form.reset(); form.querySelectorAll('input[name="interest"]').forEach(function (c) { c.checked = true; }); btn.disabled = false; say(TT(form.dataset.okText || 'Thank you.', 'გმადლობთ. თქვენ სიაში ხართ.'), 'ok'); }
+      else { form.reset(); form.querySelectorAll('input[name="interest"]').forEach(function (c) { c.checked = true; }); btn.disabled = false; say(text || TT(form.dataset.okText || 'Thank you.', 'გმადლობთ. თქვენ სიაში ხართ.'), 'ok'); }
     }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -150,6 +150,13 @@
         rpc(kind === 'subscribe' ? 'subscribe' : kind === 'interest' ? 'camp_interest' : 'send_message', body).then(function (j) {
           if (j.error) { btn.disabled = false; say(KA ? (KA_ERR[j.error] || j.error) : j.error, 'err'); return; }
           if (wantNews) rpc('subscribe', { email: body.email, name: body.name, source: 'camps', interests: ['camps'], consent: 'yes', lang: body.lang }).catch(function () { });
+          if (kind === 'subscribe') {
+            var em = j.email || String(body.email || '').trim().toLowerCase();
+            ok(j.already
+              ? TT(em + ' is already subscribed.', em + ' უკვე გამოწერილია.')
+              : TT('Subscribed: ' + em + '. A welcome email is on its way. Wrong address? Enter it again.', 'გამოწერილია: ' + em + '. მისასალმებელი წერილი უკვე გზაშია. მისამართი არასწორია? შეიყვანეთ ხელახლა.'));
+            return;
+          }
           ok();
         }).catch(function () {
           btn.disabled = false; mailto(data, subject);

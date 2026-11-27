@@ -290,7 +290,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 .form-foot { grid-column: 1 / -1; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 .form-foot .btn { cursor: pointer; font-family: var(--font); }
 .form-foot .btn[disabled] { opacity: .45; cursor: not-allowed; }
-.form-msg { font-size: 15px; line-height: 1.5; }
+.form-msg { font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
 .form-msg.ok { color: var(--chalk); }
 .form-msg.err { color: #E7A3A9; }
 .hp { position: absolute; left: -9999px; }

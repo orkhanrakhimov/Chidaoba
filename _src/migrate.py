@@ -69,6 +69,8 @@ def report():
         "camps": "select slug || ' ' || status as x from public.camps order by created_at",
         "updates applied": "select string_agg(name, ' ' order by name) as x from public._migrations",
         "welcome email key set (yes/no only)": "select case when exists (select 1 from vault.secrets where name = 'resend_api_key') then 'yes' else 'no' end as x",
+        "welcome emails": "select 'active signups ' || count(*) || ', welcome sent ' || count(welcomed_at) || ', not sent because: ' || coalesce(string_agg(distinct welcome_error, '; '), 'nothing') as x from public.subscribers where status = 'active'",
+        "last welcome email replies from Resend": "select to_char(s.welcomed_at, 'MM-DD HH24:MI') || ' ' || coalesce(r.status_code::text, 'waiting') || ' ' || left(regexp_replace(coalesce(r.error_msg, case when r.status_code >= 300 then r.content end, ''), '[^@\\s\"]+@[^@\\s\"]+', '(address)', 'g'), 140) as x from public.subscribers s left join net._http_response r on r.id = s.welcome_req where s.welcome_req is not null order by s.welcomed_at desc limit 6",
         "admin sign-in": "select count(*) || ' admin login(s), password last changed ' || to_char(max(updated_at), 'YYYY-MM-DD') as x from public.admin_users",
     }
     for label, sql in q.items():
